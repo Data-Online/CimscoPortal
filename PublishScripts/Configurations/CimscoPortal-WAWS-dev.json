@@ -1,0 +1,21 @@
+{
+    "environmentSettings": {
+        "webSite": {
+            "name": "CimscoPortal",
+            "location": "Australia Southeast"
+        },
+        "databases": [
+            {
+                "connectionStringName": "DefaultConnection",
+                "databaseName": "CimscoPortal_db",
+                "serverName": "lk2znlcdfm",
+                "user": "graeme",
+                "password": "",
+                "edition": "",
+                "size": "",
+                "collation": "",
+                "location": "Australia East"
+            }
+        ]
+    }
+}

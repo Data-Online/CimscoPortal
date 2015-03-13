@@ -1,0 +1,30 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <img src="~/assets/img/cimsco-logo.png" />>
+    <h1>Welcome to the Cimsco Portal</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Already Have an Account?</h2>
+        <p>
+            Click on the link below to login to the portal
+        </p>
+        @*<p>@Html.ActionLink("Login >>", "Login", "Account", routeValues: new { @returnUrl = '/' }, htmlAttributes: new { @class = "btn btn-default" }) </p>*@
+        <p>@Html.ActionLink("Login >>", "Login", "Account", routeValues: new { @returnUrl = "/Dashboard" }, htmlAttributes: new { @class = "btn btn-default" })</p>
+    </div>
+    <div class="col-md-4">
+        <h2>Register</h2>
+        <p>Registration is simple, and easy.</p>
+        <p>@Html.ActionLink("Register >>", "Register", "Account", null, new { @class = "btn btn-default" })</p>
+    </div>
+    <div class="col-md-4">
+        <h2>Want to find out more?</h2>
+        <p>More details on the benifits on better understanding your electricity consumption</p>
+        <p><a class="btn btn-default" href="#">Learn more >></a></p>
+    </div>
+</div>
+<div class="push-sticky-footer"></div> 
