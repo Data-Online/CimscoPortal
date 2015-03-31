@@ -110,13 +110,12 @@ var InitiateDonutChart = function () {
             Morris.Donut({
                 element: 'donut-chart',
                 data: [
-                  { label: 'IOS', value: 40 , },
-                  { label: 'Win', value: 30 },
-                  { label: 'Android', value: 25 },
-                  { label: 'Java', value: 5 }
+                  { label: 'Line', value: 3540.45 , },
+                  { label: 'Energy', value: 10968.34 },
+                  { label: 'Other', value: 234.89 }
                 ],
                 colors: [themeprimary, themesecondary, themethirdcolor, themefourthcolor],
-                formatter: function (y) { return y + "%" }
+                formatter: function (y) { return "$" + y }
             });
         }
     };

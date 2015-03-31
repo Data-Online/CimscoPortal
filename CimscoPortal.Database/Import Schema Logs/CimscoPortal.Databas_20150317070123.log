@@ -1,0 +1,75 @@
+17/03/2015 20:01:23	This log contains information about the import schema operation into project 'CimscoPortal.Database' on computer 'DEVELOP02' by user 'Graeme'.
+17/03/2015 20:01:23	Import of database schema has started.
+17/03/2015 20:01:27	Gathering database options
+17/03/2015 20:01:27	Gathering users
+17/03/2015 20:01:27	Gathering roles
+17/03/2015 20:01:27	Gathering application roles
+17/03/2015 20:01:27	Gathering role memberships
+17/03/2015 20:01:27	Gathering filegroups
+17/03/2015 20:01:27	Gathering full-text catalogs
+17/03/2015 20:01:27	Gathering assemblies
+17/03/2015 20:01:27	Gathering certificates
+17/03/2015 20:01:27	Gathering asymmetric keys
+17/03/2015 20:01:27	Gathering symmetric keys
+17/03/2015 20:01:27	Gathering encrypted symmetric keys
+17/03/2015 20:01:27	Gathering schemas
+17/03/2015 20:01:27	Gathering XML schema collections
+17/03/2015 20:01:27	Gathering user-defined data types
+17/03/2015 20:01:27	Gathering user-defined types
+17/03/2015 20:01:27	Gathering table types
+17/03/2015 20:01:27	Gathering unique keys for table types
+17/03/2015 20:01:27	Gathering primary keys for table types
+17/03/2015 20:01:27	Gathering check constraints for table types
+17/03/2015 20:01:27	Gathering default constraints for table types
+17/03/2015 20:01:27	Gathering partition functions
+17/03/2015 20:01:27	Gathering partition schemes
+17/03/2015 20:01:27	Gathering functions
+17/03/2015 20:01:27	Gathering encrypted functions
+17/03/2015 20:01:27	Gathering aggregates
+17/03/2015 20:01:27	Gathering procedures
+17/03/2015 20:01:27	Gathering encrypted procedures
+17/03/2015 20:01:27	Gathering tables
+17/03/2015 20:01:27	Gathering primary keys
+17/03/2015 20:01:27	Gathering unique constraints
+17/03/2015 20:01:27	Gathering foreign keys
+17/03/2015 20:01:27	Gathering default constraints
+17/03/2015 20:01:27	Gathering check constraints
+17/03/2015 20:01:27	Gathering views
+17/03/2015 20:01:27	Gathering encrypted views
+17/03/2015 20:01:27	Gathering indexes
+17/03/2015 20:01:27	Gathering statistics
+17/03/2015 20:01:27	Gathering full-text index stoplists
+17/03/2015 20:01:27	Gathering search property lists
+17/03/2015 20:01:27	Gathering search properties
+17/03/2015 20:01:27	Gathering full-text indexes
+17/03/2015 20:01:27	Gathering column store indexes
+17/03/2015 20:01:27	Gathering spatial indexes
+17/03/2015 20:01:27	Gathering XML indexes
+17/03/2015 20:01:27	Gathering encrypted triggers
+17/03/2015 20:01:27	Gathering triggers
+17/03/2015 20:01:27	Gathering encrypted and clr ddl triggers
+17/03/2015 20:01:27	Gathering ddl triggers
+17/03/2015 20:01:27	Gathering synonyms
+17/03/2015 20:01:27	Gathering defaults
+17/03/2015 20:01:27	Gathering data constraint uddt bindings
+17/03/2015 20:01:27	Gathering rules
+17/03/2015 20:01:27	Gathering data constraint uddt bindings
+17/03/2015 20:01:27	Gathering message types
+17/03/2015 20:01:27	Gathering queues
+17/03/2015 20:01:27	Gathering contracts
+17/03/2015 20:01:27	Gathering services
+17/03/2015 20:01:27	Gathering event notifications
+17/03/2015 20:01:27	Gathering remote service bindings
+17/03/2015 20:01:27	Gathering broker priorities
+17/03/2015 20:01:27	Gathering signatures
+17/03/2015 20:01:27	Gathering data compression options
+17/03/2015 20:01:27	Gathering sequence types
+17/03/2015 20:01:27	Gathering extended properties
+17/03/2015 20:01:27	Gathering credentials
+17/03/2015 20:01:27	Gathering logins
+17/03/2015 20:01:27	Gathering server audits
+17/03/2015 20:01:28	Scanning project for duplicate elements
+17/03/2015 20:01:28	Finished duplicate element processing
+17/03/2015 20:01:28	Finished importing database.
+17/03/2015 20:01:28	A summary of the import was saved to the following location: P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Database\Import Schema Logs\CimscoPortal.Databas_20150317070123.log
+17/03/2015 20:01:28	Click Finish to continue...

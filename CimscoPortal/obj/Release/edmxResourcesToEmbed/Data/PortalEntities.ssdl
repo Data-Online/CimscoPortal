@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="CimscoPortalModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Customers">
+    <Key>
+      <PropertyRef Name="CustomerId" />
+    </Key>
+    <Property Name="CustomerId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CustomerName" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="MessageCategories">
+    <Key>
+      <PropertyRef Name="MessageCategoryId" />
+    </Key>
+    <Property Name="MessageCategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CategoryName" Type="nvarchar" MaxLength="20" />
+  </EntityType>
+  <EntityType Name="MessageTypes">
+    <Key>
+      <PropertyRef Name="MessageTypeId" />
+    </Key>
+    <Property Name="MessageTypeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TypeName" Type="nvarchar" MaxLength="10" />
+  </EntityType>
+  <EntityType Name="PortalMessages">
+    <Key>
+      <PropertyRef Name="PortalMessageId" />
+    </Key>
+    <Property Name="PortalMessageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CustomerId" Type="int" />
+    <Property Name="MessageCategoryId" Type="int" />
+    <Property Name="Message" Type="nvarchar" MaxLength="100" />
+    <Property Name="MessageTypeId" Type="int" />
+  </EntityType>
+  <Association Name="FK_PortalMessages_Customers">
+    <End Role="Customers" Type="Self.Customers" Multiplicity="0..1" />
+    <End Role="PortalMessages" Type="Self.PortalMessages" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customers">
+        <PropertyRef Name="CustomerId" />
+      </Principal>
+      <Dependent Role="PortalMessages">
+        <PropertyRef Name="CustomerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PortalMessages_MessageCategories">
+    <End Role="MessageCategories" Type="Self.MessageCategories" Multiplicity="0..1" />
+    <End Role="PortalMessages" Type="Self.PortalMessages" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MessageCategories">
+        <PropertyRef Name="MessageCategoryId" />
+      </Principal>
+      <Dependent Role="PortalMessages">
+        <PropertyRef Name="MessageCategoryId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PortalMessages_MessageTypes">
+    <End Role="MessageTypes" Type="Self.MessageTypes" Multiplicity="0..1" />
+    <End Role="PortalMessages" Type="Self.PortalMessages" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MessageTypes">
+        <PropertyRef Name="MessageTypeId" />
+      </Principal>
+      <Dependent Role="PortalMessages">
+        <PropertyRef Name="MessageTypeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="CimscoPortalModelStoreContainer">
+    <EntitySet Name="Customers" EntityType="Self.Customers" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MessageCategories" EntityType="Self.MessageCategories" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MessageTypes" EntityType="Self.MessageTypes" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PortalMessages" EntityType="Self.PortalMessages" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_PortalMessages_Customers" Association="Self.FK_PortalMessages_Customers">
+      <End Role="Customers" EntitySet="Customers" />
+      <End Role="PortalMessages" EntitySet="PortalMessages" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PortalMessages_MessageCategories" Association="Self.FK_PortalMessages_MessageCategories">
+      <End Role="MessageCategories" EntitySet="MessageCategories" />
+      <End Role="PortalMessages" EntitySet="PortalMessages" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PortalMessages_MessageTypes" Association="Self.FK_PortalMessages_MessageTypes">
+      <End Role="MessageTypes" EntitySet="MessageTypes" />
+      <End Role="PortalMessages" EntitySet="PortalMessages" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

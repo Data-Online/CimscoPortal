@@ -1,0 +1,19 @@
+﻿** Highlights
+     Tables that will be rebuilt
+       None
+     Clustered indexes that will be dropped
+       None
+     Clustered indexes that will be created
+       None
+     Possible data issues
+       None
+
+** User actions
+     Create
+       [dbo].[MessageCategories] (Table)
+       [dbo].[MessageTypes] (Table)
+       [dbo].[PortalMessages] (Table)
+       [dbo].[FK_PortalMessages_MessageCategories] (Foreign Key)
+       [dbo].[FK_PortalMessages_MessageTypes] (Foreign Key)
+
+** Supporting actions

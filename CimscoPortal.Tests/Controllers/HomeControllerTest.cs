@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CimscoPortal;
 using CimscoPortal.Controllers;
+using Telerik.JustMock;
 
 namespace CimscoPortal.Tests.Controllers
 {
@@ -13,13 +14,20 @@ namespace CimscoPortal.Tests.Controllers
     public class HomeControllerTest
     {
         [TestMethod]
-        public void Index()
+        public void IndexRedirectsToPortalIndexIfUserAuthenticated()
         {
             // Arrange
             HomeController controller = new HomeController();
+            var httpContext = Mock.Create<System.Web.HttpContextBase>();
+            var response = Mock.Create<System.Web.HttpResponseBase>();
+            var routeData = new System.Web.Routing.RouteData();
+            var controllerContext = new ControllerContext(httpContext, routeData, Mock.Create<ControllerBase>());
+            Mock.Arrange(() => httpContext.Request.IsAuthenticated).Returns(true);
+            controller.ControllerContext = controllerContext;
 
             // Act
-            ViewResult result = controller.Index() as ViewResult;
+            //ViewResult result = controller.Index() as ViewResult;
+            RedirectToRouteResult result = controller.Index() as RedirectToRouteResult;
 
             // Assert
             Assert.IsNotNull(result);

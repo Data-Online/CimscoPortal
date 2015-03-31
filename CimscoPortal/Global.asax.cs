@@ -16,6 +16,10 @@ namespace CimscoPortal
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            Bootstrapper.Initialise();
+
+            CimscoPortal.App_Start.AutoMapperConfig.Configure();
         }
     }
 }

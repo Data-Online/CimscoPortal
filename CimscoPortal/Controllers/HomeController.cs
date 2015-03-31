@@ -10,6 +10,10 @@ namespace CimscoPortal.Controllers
     {
         public virtual ActionResult Index()
         {
+            if (Request.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Portal");
+            }
             return View();
         }
 
@@ -31,5 +35,6 @@ namespace CimscoPortal.Controllers
         {
             return View();
         }
+
     }
 }
