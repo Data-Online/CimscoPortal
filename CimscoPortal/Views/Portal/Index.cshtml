@@ -25,6 +25,7 @@
         </div>
     </div>
 </div>
+
 <div class="row">
     <div class="col-xs-12 col-md-6 col-lg-6">
         <div class="databox databox-xxlg databox-vertical databox-shadowed bg-white radius-bordered">
@@ -64,10 +65,7 @@
     <script src="/assets/js/charts/morris/morris-init.js"></script>
 
 
-    <script src="/assets/js/charts/flot/jquery.flot.js"></script>
-    <script src="/assets/js/charts/flot/jquery.flot.orderBars.js"></script>
-    <script src="/assets/js/charts/flot/jquery.flot.tooltip.js"></script>
-    <script src="/assets/js/charts/flot/jquery.flot.resize.js"></script>
+
 
     <script src="/assets/js/charts/chartjs/Chart.js"></script>
 
@@ -82,105 +80,28 @@
             themefifthcolor = getThemeColorFromCss('themefifthcolor');
 
             //  InitiateAreaChart.init();
-            //  InitiateBarChart.init();
+            var data = getjsonData("~/App_Data/TestJsonData.txt");
+            alert(data.length);
+            InitiateBarChart.init(data);
             InitiateDonutChart.init();
             InitiateLineChart.init();
             //    InitiateLineChart2.init();
         });
-    </script>
 
-    <script>
-
-        function getData(msgType) {
-            var url = "/portal/GetPieChartData/" + msgType
-            return $.getJSON(url);
+        function getjsonData(viewmodel, dim) {
+            if (typeof dim === 'undefined') { dim = ''; }
+            //alert(viewmodel+' '+dim);
+            var myArray = [];
+            // Ensures the data is returned before passing to spark element
+            $.ajaxSetup({ "async": false });
+            var jq = $.getJSON(viewmodel)
+                .done(function (data) {
+                    $.each(data, function (i) { myArray.push(data[i]) });
+                });
+            //alert(target);
+            //myArray = [1, 2, 3, 4];
+            return myArray;
         }
-        var zz = getData("a");
-
-        var chartfirstcolor = "#57b5e3";
-        var chartsecondcolor = "#f4b400";
-        var chartthirdcolor = "#d73d32";
-        var chartfourthcolor = "#8cc474";
-        var chartfifthcolor = "#bc5679";
-        var gridbordercolor = "#eee";
-        //Bar Chart
-        var d1_1 = [];
-        for (var i = 1; i <= 7; i += 1)
-            d1_1.push([i, parseInt(Math.random() * 50)]);
-
-        var d1_2 = [];
-        for (var i = 1; i <= 7; i += 1)
-            d1_2.push([i, parseInt(Math.random() * 50)]);
-
-        var d1_3 = [];
-        for (var i = 1; i <= 7; i += 1)
-            d1_3.push([i, parseInt(Math.random() * 50)]);
-
-        var data1 = [
-            {
-                label: "Energy",
-                data: d1_1,
-                bars: {
-                    show: true,
-                  //  order: 1,
-                    fillColor: { colors: [{ color: chartthirdcolor }, { color: chartthirdcolor }] }
-                },
-                color: chartthirdcolor
-            },
-            {
-                label: "Line",
-                data: d1_2,
-                bars: {
-                    show: true,
-                   // order: 2,
-                    fillColor: { colors: [{ color: chartsecondcolor }, { color: chartsecondcolor }] }
-                },
-                color: chartsecondcolor
-            },
-            {
-                label: "Other",
-                data: d1_3,
-                bars: {
-                    show: true,
-                 //   order: 3,
-                    fillColor: { colors: [{ color: chartfirstcolor }, { color: chartfirstcolor }] }
-                },
-                color: chartfirstcolor
-            }
-        ];
-
-       // alert(data1[0].data);
-        $.plot($("#bar-chart"), data1, {
-            series: {
-                stack: true,
-                bars: { show: true }
-            },
-            bars: {
-                align: "center",
-                barWidth: 0.2,
-                lineWidth: 1,
-                borderWidth: 0,
-                fillColor: { colors: [{ opacity: 0.6 }, { opacity: 1 }] }
-            },
-            xaxis: {
-                ticks: [[1, 'Jan'], [2, 'Feb'], [3, 'Mar'], [4, 'April'], [5, 'May'], [6, 'June'], [7, 'July']],
-                color: gridbordercolor
-            },
-            yaxis: {
-                color: gridbordercolor
-            },
-            grid: {
-                hoverable: true,
-                clickable: false,
-                borderWidth: 0,
-                aboveData: false
-            },
-            legend: true,
-            tooltip: true,
-            tooltipOpts: {
-                defaultTheme: false,
-                content: "<b>%s</b> : <span>%x</span> : <span>%y</span>",
-            }
-        });
     </script>
 }
+<a href="~/App_Data/TestJsonData.txt">~/App_Data/TestJsonData.txt</a>

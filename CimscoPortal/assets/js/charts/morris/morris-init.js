@@ -42,23 +42,16 @@ var InitiateAreaChart = function () {
 
 var InitiateBarChart = function () {
     return {
-        init: function () {
+        init: function (json) {
             Morris.Bar({
                 element: 'bar-chart',
-                data: [
-                  { y: '2006', a: 100, b: 90, c:80 },
-                  { y: '2007', a: 75, b: 65 , c:25},
-                  { y: '2008', a: 50, b: 40 , c:90},
-                  { y: '2009', a: 75, b: 65 , c:15},
-                  { y: '2010', a: 50, b: 40 , c:50},
-                  { y: '2011', a: 75, b: 65 ,c:10},
-                  { y: '2012', a: 100, b: 90 ,c:90}
-                ],
+                data: json,
                 xkey: 'y',
                 ykeys: ['a', 'b', 'c'],
                 labels: ['Series A', 'Series B', 'Series C'],
                 hideHover: 'auto',
-                barColors: [themeprimary, themesecondary, themethirdcolor]
+                barColors: [themeprimary, themesecondary, themethirdcolor],
+                stacked: true
             });
         }
     };
