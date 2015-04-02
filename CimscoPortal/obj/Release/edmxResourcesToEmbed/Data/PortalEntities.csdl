@@ -15,6 +15,8 @@
     <Property Name="MessageCategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <NavigationProperty Name="PortalMessages" Relationship="Self.FK_PortalMessages_MessageCategories" FromRole="MessageCategories" ToRole="PortalMessages" />
     <Property Name="CategoryName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="Element1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Element2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
   </EntityType>
   <EntityType Name="MessageType">
     <Key>
@@ -23,6 +25,7 @@
     <Property Name="MessageTypeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <NavigationProperty Name="PortalMessages" Relationship="Self.FK_PortalMessages_MessageTypes" FromRole="MessageTypes" ToRole="PortalMessages" />
     <Property Name="TypeName" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="TypeElement" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
   </EntityType>
   <EntityType Name="PortalMessage">
     <Key>
@@ -36,6 +39,10 @@
     <NavigationProperty Name="MessageCategory" Relationship="Self.FK_PortalMessages_MessageCategories" FromRole="PortalMessages" ToRole="MessageCategories" />
     <NavigationProperty Name="MessageType" Relationship="Self.FK_PortalMessages_MessageTypes" FromRole="PortalMessages" ToRole="MessageTypes" />
     <Property Name="Message" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="MessageFormatId" Type="Int32" />
+    <Property Name="TimeStamp" Type="DateTime" Precision="3" />
+    <Property Name="Footer" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ExpiryDate" Type="DateTime" Precision="3" />
   </EntityType>
   <Association Name="FK_PortalMessages_Customers">
     <End Role="Customers" Type="Self.Customer" Multiplicity="0..1" />

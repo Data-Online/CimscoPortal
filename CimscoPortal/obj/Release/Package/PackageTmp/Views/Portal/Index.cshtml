@@ -1,6 +1,173 @@
 ﻿@{
-    ViewBag.Title = "Blank Page";
-    ViewBag.Description = "blank page";
+    ViewBag.Title = "Dashboard";
+    ViewBag.Description = "Cimsco Dashboard";
     Layout = "~/Views/Shared/_Default.cshtml";
 }
 
+<div class="row">
+    <div class="col-lg-12 col-sm-12 col-xs-12">
+        <div class="databox databox-xxlg radius-bordered databox-shadowed databox-vertical databox-graded">
+            <div class="databox-top bordered-bottom-2 bordered-orange bg-ivory">
+                <div class="col-lg-8 col-sm-8 col-xs-8 text-align-left">
+                    <span class="databox-text carbon">ELECTRICITY COSTS</span>
+                    <span class="databox-text carbon no-margin">Previous 7 Months</span>
+                </div>
+                <div class="col-lg-4 col-sm-4 col-xs-4 text-align-right">
+                    <div class="databox-stat bg-palegreen radius-bordered">
+                        <div class="stat-text">58%</div>
+                        <i class="stat-icon fa fa-arrow-up"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="databox-bottom">
+                <div id="bar-chart" class="chart"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12 col-md-6 col-lg-6">
+        <div class="databox databox-xxlg databox-vertical databox-shadowed bg-white radius-bordered">
+            <div class="databox-top bg-blue">
+                <span class="databox-header">JANUARY 2015</span>
+                <span class="databox-header">total</span>
+            </div>
+            <div class="databox-row row-12">
+                <div class="databox-cell cell-6 text-center">
+                    <div id="donut-chart" class="chart" style="height:190px;"></div>
+                </div>
+                <div class="databox-cell cell-6 text-center">
+                    <div class="databox-row row-12">
+                        <div class="databox-text carbon">TOTAL CHARGE : $10,354.03</div>
+                        <div class="databox-text carbon">DUE DATE : 31 May 2015</div>
+                        <div class="databox-text carbon">
+                            <label>
+                                <input id="checkbox_fixedsidebar" type="checkbox">
+                                <span class="text">Approved</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section PageScripts{
+    <script src="assets/js/beyond.min.js"></script>
+
+    <!--Page Related Scripts-->
+    <script src="/assets/js/charts/morris/raphael-2.0.2.min.js"></script>
+    <script src="/assets/js/charts/morris/morris.js"></script>
+    <script src="/assets/js/charts/morris/morris-init.js"></script>
+
+
+    <script src="/assets/js/charts/flot/jquery.flot.js"></script>
+    <script src="/assets/js/charts/flot/jquery.flot.orderBars.js"></script>
+    <script src="/assets/js/charts/flot/jquery.flot.tooltip.js"></script>
+    <script src="/assets/js/charts/flot/jquery.flot.resize.js"></script>
+
+    <script src="/assets/js/charts/chartjs/Chart.js"></script>
+
+    <script type="text/javascript">
+        $(window).bind("load", function () {
+
+            /*Sets Themed Colors Based on Themes*/
+            themeprimary = getThemeColorFromCss('themeprimary');
+            themesecondary = getThemeColorFromCss('themesecondary');
+            themethirdcolor = getThemeColorFromCss('themethirdcolor');
+            themefourthcolor = getThemeColorFromCss('themefourthcolor');
+            themefifthcolor = getThemeColorFromCss('themefifthcolor');
+
+            //  InitiateAreaChart.init();
+            //  InitiateBarChart.init();
+            InitiateDonutChart.init();
+            InitiateLineChart.init();
+            //    InitiateLineChart2.init();
+        });
+    </script>
+
+    <script>
+        var chartfirstcolor = "#57b5e3";
+        var chartsecondcolor = "#f4b400";
+        var chartthirdcolor = "#d73d32";
+        var chartfourthcolor = "#8cc474";
+        var chartfifthcolor = "#bc5679";
+        var gridbordercolor = "#eee";
+        //Bar Chart
+        var d1_1 = [];
+        for (var i = 1; i <= 7; i += 1)
+            d1_1.push([i, parseInt(Math.random() * 50)]);
+
+        var d1_2 = [];
+        for (var i = 1; i <= 7; i += 1)
+            d1_2.push([i, parseInt(Math.random() * 50)]);
+
+        var d1_3 = [];
+        for (var i = 1; i <= 7; i += 1)
+            d1_3.push([i, parseInt(Math.random() * 50)]);
+
+        var data1 = [
+            {
+                label: "Energy",
+                data: d1_1,
+                bars: {
+                    show: true,
+                    order: 1,
+                    fillColor: { colors: [{ color: chartthirdcolor }, { color: chartthirdcolor }] }
+                },
+                color: chartthirdcolor
+            },
+            {
+                label: "Line",
+                data: d1_2,
+                bars: {
+                    show: true,
+                    order: 2,
+                    fillColor: { colors: [{ color: chartsecondcolor }, { color: chartsecondcolor }] }
+                },
+                color: chartsecondcolor
+            },
+            {
+                label: "Other",
+                data: d1_3,
+                bars: {
+                    show: true,
+                    order: 3,
+                    fillColor: { colors: [{ color: chartfirstcolor }, { color: chartfirstcolor }] }
+                },
+                color: chartfirstcolor
+            }
+        ];
+
+        $.plot($("#bar-chart"), data1, {
+            bars: {
+                barWidth: 0.2,
+                lineWidth: 1,
+                borderWidth: 0,
+                fillColor: { colors: [{ opacity: 0.6 }, { opacity: 1 }] }
+            },
+            xaxis: {
+                ticks: [[1, 'Jan'], [2, 'Feb'], [3, 'Mar'], [4, 'April'], [5, 'May'], [6, 'June'], [7, 'July']],
+                color: gridbordercolor
+            },
+            yaxis: {
+                color: gridbordercolor
+            },
+            grid: {
+                hoverable: true,
+                clickable: false,
+                borderWidth: 0,
+                aboveData: false
+            },
+            legend: true,
+            tooltip: true,
+            tooltipOpts: {
+                defaultTheme: false,
+                content: "<b>%s</b> : <span>%x</span> : <span>%y</span>",
+            }
+        });
+    </script>
+}

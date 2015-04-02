@@ -90,6 +90,13 @@
     </script>
 
     <script>
+
+        function getData(msgType) {
+            var url = "/portal/GetPieChartData/" + msgType
+            return $.getJSON(url);
+        }
+        var zz = getData("a");
+
         var chartfirstcolor = "#57b5e3";
         var chartsecondcolor = "#f4b400";
         var chartthirdcolor = "#d73d32";
@@ -115,7 +122,7 @@
                 data: d1_1,
                 bars: {
                     show: true,
-                    order: 1,
+                  //  order: 1,
                     fillColor: { colors: [{ color: chartthirdcolor }, { color: chartthirdcolor }] }
                 },
                 color: chartthirdcolor
@@ -125,7 +132,7 @@
                 data: d1_2,
                 bars: {
                     show: true,
-                    order: 2,
+                   // order: 2,
                     fillColor: { colors: [{ color: chartsecondcolor }, { color: chartsecondcolor }] }
                 },
                 color: chartsecondcolor
@@ -135,15 +142,21 @@
                 data: d1_3,
                 bars: {
                     show: true,
-                    order: 3,
+                 //   order: 3,
                     fillColor: { colors: [{ color: chartfirstcolor }, { color: chartfirstcolor }] }
                 },
                 color: chartfirstcolor
             }
         ];
 
+       // alert(data1[0].data);
         $.plot($("#bar-chart"), data1, {
+            series: {
+                stack: true,
+                bars: { show: true }
+            },
             bars: {
+                align: "center",
                 barWidth: 0.2,
                 lineWidth: 1,
                 borderWidth: 0,

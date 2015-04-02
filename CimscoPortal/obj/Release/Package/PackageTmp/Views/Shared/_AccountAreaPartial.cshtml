@@ -1,94 +1,66 @@
 ﻿<ul class="account-area">
     <li>
-        <a class=" dropdown-toggle" data-toggle="dropdown" title="Help" href="#">
+        <a id="pg-alert-button" class="dropdown-toggle" data-toggle="dropdown" title="Help" href="#">
             <i class="icon fa fa-warning"></i>
         </a>
         <!--Notification Dropdown-->
-        <ul id="pg-alerts" class="pull-right dropdown-menu dropdown-arrow dropdown-notifications">
+        <ul id="pg-alert" class="pull-right dropdown-menu dropdown-arrow dropdown-notifications">
             <li>
                 <a href="#">
                     <div class="clearfix">
                         <div class="notification-icon">
-                            <i class="fa fa-phone bg-themeprimary white"></i>
+                            <i class="{{Element1}}"></i>
                         </div>
                         <div class="notification-body">
                             <span class="title">{{MessageText}}</span>
                             <span class="description">{{MessageTime}}</span>
                         </div>
                         <div class="notification-extra">
-                            <i class="fa fa-clock-o themeprimary"></i>
+                            <i class="{{Element2}}"></i>
                             <span class="description">{{MessageFooter}}</span>
                         </div>
                     </div>
                 </a>
             </li>
+            <li class="dropdown-footer ">
+                <span>
+                    Today, March 28
+                </span>
+                <span class="pull-right">
+                    10°c
+                    <i class="wi wi-cloudy"></i>
+                </span>
+            </li>
         </ul>
         <!--/Notification Dropdown-->
     </li>
     <li>
-        <a class="dropdown-toggle" data-toggle="dropdown" title="Help" href="#">
+        <a id="pg-note-button" class="dropdown-toggle" data-toggle="dropdown" title="Help" href="#">
             <i class="icon fa fa-envelope"></i>
             <span class="badge">3</span>
         </a>
         <!--Messages Dropdown-->
-        <ul class="pull-right dropdown-menu dropdown-arrow dropdown-messages">
+        <ul id="pg-note" class=" pull-right dropdown-menu dropdown-arrow dropdown-messages">
             <li>
                 <a href="#">
-                    <img src="/assets/img/avatars/divyia.jpg" class="message-avatar" alt="Divyia Austin">
+                    <img src="/assets/img/avatars/{{Avitar}}.jpg" class="message-avatar" alt="{{AvitarName}}">
                     <div class="message">
                         <span class="message-sender">
-                            Divyia Austin
+                            {{Name}}
                         </span>
                         <span class="message-time">
-                            2 minutes ago
+                            {{When}}
                         </span>
                         <span class="message-subject">
-                            Here's the recipe for apple pie
+                            {{Subject}}
                         </span>
                         <span class="message-body">
-                            to identify the sending application when the senders image is shown for the main icon
+                            {{MessageBody}}
                         </span>
                     </div>
                 </a>
             </li>
-            <li>
-                <a href="#">
-                    <img src="/assets/img/avatars/bing.png" class="message-avatar" alt="Microsoft Bing">
-                    <div class="message">
-                        <span class="message-sender">
-                            Bing.com
-                        </span>
-                        <span class="message-time">
-                            Yesterday
-                        </span>
-                        <span class="message-subject">
-                            Bing Newsletter: The January Issue‏
-                        </span>
-                        <span class="message-body">
-                            Discover new music just in time for the Grammy® Awards.
-                        </span>
-                    </div>
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <img src="/assets/img/avatars/adam-jansen.jpg" class="message-avatar" alt="Divyia Austin">
-                    <div class="message">
-                        <span class="message-sender">
-                            Nicolas
-                        </span>
-                        <span class="message-time">
-                            Friday, September 22
-                        </span>
-                        <span class="message-subject">
-                            New 4K Cameras
-                        </span>
-                        <span class="message-body">
-                            The 4K revolution has come over the horizon and is reaching the general populous
-                        </span>
-                    </div>
-                </a>
-            </li>
+            <li></li>
         </ul>
         <!--/Messages Dropdown-->
     </li>

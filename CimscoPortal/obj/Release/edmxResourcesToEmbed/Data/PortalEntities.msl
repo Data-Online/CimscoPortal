@@ -12,6 +12,8 @@
     <EntitySetMapping Name="MessageCategories">
       <EntityTypeMapping TypeName="CimscoPortalModel.MessageCategory">
         <MappingFragment StoreEntitySet="MessageCategories">
+          <ScalarProperty Name="Element2" ColumnName="Element2" />
+          <ScalarProperty Name="Element1" ColumnName="Element1" />
           <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
           <ScalarProperty Name="MessageCategoryId" ColumnName="MessageCategoryId" />
         </MappingFragment>
@@ -20,6 +22,7 @@
     <EntitySetMapping Name="MessageTypes">
       <EntityTypeMapping TypeName="CimscoPortalModel.MessageType">
         <MappingFragment StoreEntitySet="MessageTypes">
+          <ScalarProperty Name="TypeElement" ColumnName="TypeElement" />
           <ScalarProperty Name="TypeName" ColumnName="TypeName" />
           <ScalarProperty Name="MessageTypeId" ColumnName="MessageTypeId" />
         </MappingFragment>
@@ -28,6 +31,10 @@
     <EntitySetMapping Name="PortalMessages">
       <EntityTypeMapping TypeName="CimscoPortalModel.PortalMessage">
         <MappingFragment StoreEntitySet="PortalMessages">
+          <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+          <ScalarProperty Name="Footer" ColumnName="Footer" />
+          <ScalarProperty Name="TimeStamp" ColumnName="TimeStamp" />
+          <ScalarProperty Name="MessageFormatId" ColumnName="MessageFormatId" />
           <ScalarProperty Name="Message" ColumnName="Message" />
           <ScalarProperty Name="PortalMessageId" ColumnName="PortalMessageId" />
           <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />

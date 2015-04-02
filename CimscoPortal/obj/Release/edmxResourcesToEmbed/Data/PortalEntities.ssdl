@@ -13,6 +13,8 @@
     </Key>
     <Property Name="MessageCategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="CategoryName" Type="nvarchar" MaxLength="20" />
+    <Property Name="Element1" Type="nvarchar" MaxLength="50" />
+    <Property Name="Element2" Type="nvarchar" MaxLength="50" />
   </EntityType>
   <EntityType Name="MessageTypes">
     <Key>
@@ -20,6 +22,7 @@
     </Key>
     <Property Name="MessageTypeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="TypeName" Type="nvarchar" MaxLength="10" />
+    <Property Name="TypeElement" Type="nvarchar" MaxLength="20" />
   </EntityType>
   <EntityType Name="PortalMessages">
     <Key>
@@ -30,6 +33,10 @@
     <Property Name="MessageCategoryId" Type="int" />
     <Property Name="Message" Type="nvarchar" MaxLength="100" />
     <Property Name="MessageTypeId" Type="int" />
+    <Property Name="MessageFormatId" Type="int" />
+    <Property Name="TimeStamp" Type="datetime" />
+    <Property Name="Footer" Type="nvarchar" MaxLength="100" />
+    <Property Name="ExpiryDate" Type="datetime" />
   </EntityType>
   <Association Name="FK_PortalMessages_Customers">
     <End Role="Customers" Type="Self.Customers" Multiplicity="0..1" />
