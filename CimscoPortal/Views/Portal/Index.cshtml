@@ -80,9 +80,9 @@
             themefifthcolor = getThemeColorFromCss('themefifthcolor');
 
             //  InitiateAreaChart.init();
-            var data = getjsonData("~/App_Data/TestJsonData.txt");
+            var data = getjsonData("/portal/GetMonthlyEnergySummary");
             alert(data.length);
-            InitiateBarChart.init(data);
+            InitiateBarChart.init();
             InitiateDonutChart.init();
             InitiateLineChart.init();
             //    InitiateLineChart2.init();

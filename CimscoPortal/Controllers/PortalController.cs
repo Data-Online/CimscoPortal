@@ -82,8 +82,18 @@ namespace CimscoPortal.Controllers
             return Json(test, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult GetMonthlyEnergySummary(string id)
+        {
+            StackedBarChartViewModel model = new StackedBarChartViewModel()
+            {
+                MonthlyData = new IEnumerable<EnergyData>() 
+                { 
+                    new EnergyData() { Energy = 10056.00M, Line = 4675.34M, Other = 56.89M, Month = "Jan" },
+                    new EnergyData() { Energy = 10056.00M, Line = 4675.34M, Other = 56.89M, Month = "Jan" }
+                }
+            };
 
-
-
-    }
+            return Json(model, JsonRequestBehavior.AllowGet);
+        }
+      }
     }

@@ -45,4 +45,17 @@ namespace CimscoPortal.Models
         public int reading { get; set; }
     }
 
+    public class StackedBarChartViewModel
+    {
+        public EnergyData[] MonthlyData { get; set; }
+    }
+
+    public class EnergyData
+    {
+        public string Month { get; set; }
+        public decimal Energy { get; set; }
+        public decimal Line { get; set; }
+        public decimal Other { get; set; }
+    }
+
 }

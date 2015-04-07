@@ -12,6 +12,22 @@ var tax_data = [
                  { "period": "2005 Q4", "licensed": 3289, "sorned": null }
 ];
 
+var json_data = [
+                  { Month: 'Jan', Energy: 100, Line: 90, Other: 80 },
+                  { Month: 'Feb', Energy: 75, Line: 65, Other: 25 },
+                  { Month: 'March', Energy: 50, Line: 40, Other: 90 },
+                  { Month: 'April', Energy: 75, Line: 65, Other: 15 },
+                  { Month: 'May', Energy: 50, Line: 40, Other: 50 },
+                  { Month: 'June', Energy: 75, Line: 65, Other: 10 },
+                  { Month: 'July', Energy: 100, Line: 90, Other: 90 },
+                  { Month: 'Aug', Energy: 100, Line: 90, Other: 80 },
+                  { Month: 'Sept', Energy: 75, Line: 65, Other: 25 },
+                  { Month: 'Oct', Energy: 50, Line: 40, Other: 90 },
+                  { Month: 'Nov', Energy: 75, Line: 65, Other: 15 },
+                  { Month: 'Dec', Energy: 75, Line: 65, Other: 15 }
+
+];
+
 var InitiateAreaChart = function () {
     return {
         init: function () {
@@ -45,10 +61,10 @@ var InitiateBarChart = function () {
         init: function (json) {
             Morris.Bar({
                 element: 'bar-chart',
-                data: json,
-                xkey: 'y',
-                ykeys: ['a', 'b', 'c'],
-                labels: ['Series A', 'Series B', 'Series C'],
+                data: json_data,
+                xkey: 'Month',
+                ykeys: ['Energy', 'Line', 'Other'],
+                labels: ['Energy', 'Line', 'Other'],
                 hideHover: 'auto',
                 barColors: [themeprimary, themesecondary, themethirdcolor],
                 stacked: true
