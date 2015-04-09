@@ -57,11 +57,12 @@ var InitiateAreaChart = function () {
 }();
 
 var InitiateBarChart = function () {
+   
     return {
-        init: function (json) {
+        init: function (json, elementId) {
             Morris.Bar({
-                element: 'bar-chart',
-                data: json_data,
+                element: elementId,
+                data: json,
                 xkey: 'Month',
                 ykeys: ['Energy', 'Line', 'Other'],
                 labels: ['Energy', 'Line', 'Other'],
@@ -115,17 +116,33 @@ var InitiateLineChart2 = function () {
 
 var InitiateDonutChart = function () {
     return {
-        init: function () {
+        init: function (json, elementId) {
+            //alert(elementId);
             Morris.Donut({
-                element: 'donut-chart',
-                data: [
-                  { label: 'Line', value: 3540.45 , },
-                  { label: 'Energy', value: 10968.34 },
-                  { label: 'Other', value: 234.89 }
-                ],
+                element: elementId,
+                data: json,
                 colors: [themeprimary, themesecondary, themethirdcolor, themefourthcolor],
                 formatter: function (y) { return "$" + y }
             });
         }
     };
+
+
+    //var InitiateDonutChart = function () {
+    //    return {
+    //        init: function () {
+    //            Morris.Donut({
+    //                element: 'donut-chart',
+    //                data: [
+    //                  { label: 'Line', value: 3540.45 , },
+    //                  { label: 'Energy', value: 10968.34 },
+    //                  { label: 'Other', value: 234.89 }
+    //                ],
+    //                colors: [themeprimary, themesecondary, themethirdcolor, themefourthcolor],
+    //                formatter: function (y) { return "$" + y }
+    //            });
+    //        }
+    //    };
 }();
+
+

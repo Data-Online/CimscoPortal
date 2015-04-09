@@ -54,15 +54,15 @@ namespace CimscoPortal.Controllers
             //     { 
             //        new AlertViewModel { CategoryName = "alert_tick_red", TypeName = "Alert" }
             //     });
-            var test = new List<Item>()
-            {
-                new Item { data = 10.2M, label = "Energy", bars = new Bars { order=1, show=true, 
-                                            fillColor = new Fillcolor { colors = new Color[] { new Color { color = "red" }, new Color { color = "green" } } } } },
+            //var test = new List<Item>()
+            //{
+            //    new Item { data = 10.2M, label = "Energy", bars = new Bars { order=1, show=true, 
+            //                                fillColor = new Fillcolor { colors = new Color[] { new Color { color = "red" }, new Color { color = "green" } } } } },
 
-                new Item { data = 10.2M, label = "Energy", bars = new Bars { order=1, show=true, 
-                                            fillColor = new Fillcolor { colors = new Color[] { new Color { color = "yellow" }, new Color { color = "blue" } } } } }
+            //    new Item { data = 10.2M, label = "Energy", bars = new Bars { order=1, show=true, 
+            //                                fillColor = new Fillcolor { colors = new Color[] { new Color { color = "yellow" }, new Color { color = "blue" } } } } }
 
-            };
+            //};
 
             //fillColor = new Fillcolor  { colors = new Colors { color = "red" } },
 
@@ -77,23 +77,36 @@ namespace CimscoPortal.Controllers
             ////    },
             ////    color: chartthirdcolor
             ////},
+            MonthlySummaryViewModel model = new MonthlySummaryViewModel()
+            {
+                PieChartData = new List<PieChartData> { 
+                    new PieChartData() { label="Energy", value=10968.34M },
+                    new PieChartData() { label="Line", value=3540.45M },
+                    new PieChartData() { label="Other", value=234.89M }
+                },
+                SummaryData = new SummaryData
+                {
+                    TotalCharge = "$10,456.45",
+                    Approved = 0,
+                    DueDate = "26 Feb 2015",
+                    Month = "FEBRUARY 2015"
+                }
+            };
 
-
-            return Json(test, JsonRequestBehavior.AllowGet);
+            return Json(model, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetMonthlyEnergySummary(string id)
         {
             StackedBarChartViewModel model = new StackedBarChartViewModel()
             {
-                MonthlyData = new IEnumerable<EnergyData>() 
-                { 
-                    new EnergyData() { Energy = 10056.00M, Line = 4675.34M, Other = 56.89M, Month = "Jan" },
-                    new EnergyData() { Energy = 10056.00M, Line = 4675.34M, Other = 56.89M, Month = "Jan" }
+                MonthlyData = new List<EnergyData> { 
+                    new EnergyData() { Energy = 10056.00M, Line = 4675.34M, Other = 156.89M, Month = "Jan" },
+                    new EnergyData() { Energy = 20056.00M, Line = 5675.34M, Other = 1186.89M, Month = "Feb" }
                 }
             };
 
             return Json(model, JsonRequestBehavior.AllowGet);
         }
-      }
     }
+}

@@ -12,7 +12,7 @@
 		</CustomData>
 		<CustomData Category="Reference" Type="Assembly">
 			<Metadata Name="LogicalName" Value="CimscoPortal.Database.dll" />
-			<Metadata Name="FileName" Value="C:\USERS\GATKINSON\DOCUMENTS\GITHUB\CIMSCOPORTAL\CIMSCOPORTAL.DATABASE\OBJ\DEBUG\CIMSCOPORTAL.DATABASE.DLL" />
+			<Metadata Name="FileName" Value="P:\PROJECTS\CLOUD_DEVELOPMENT\GITHUB\CIMSCOPORTAL\CIMSCOPORTAL.DATABASE\OBJ\DEBUG\CIMSCOPORTAL.DATABASE.DLL" />
 			<Metadata Name="AssemblyName" Value="CimscoPortal.Database" />
 			<Metadata Name="PermissionSet" Value="SAFE" />
 			<Metadata Name="Owner" Value="" />
@@ -20,7 +20,7 @@
 			<Metadata Name="IsVisible" Value="True" />
 			<Metadata Name="IsModelAware" Value="True" />
 			<Metadata Name="SkipCreationIfEmpty" Value="True" />
-			<Metadata Name="AssemblySymbolsName" Value="C:\Users\GAtkinson\Documents\GitHub\CimscoPortal\CimscoPortal.Database\obj\Debug\CimscoPortal.Database.pdb" />
+			<Metadata Name="AssemblySymbolsName" Value="P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Database\obj\Debug\CimscoPortal.Database.pdb" />
 		</CustomData>
 		<CustomData Category="SqlCmdVariables" Type="SqlCmdVariable" />
 	</Header>

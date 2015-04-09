@@ -1,0 +1,23 @@
+﻿<div class="databox databox-xxlg databox-vertical databox-shadowed bg-white radius-bordered">
+    <div class="databox-top bg-blue">
+        <span class="databox-header">{{month}}</span>
+        <span class="databox-header">total</span>
+    </div>
+    <div class="databox-row row-12">
+        <div class="databox-cell cell-6 text-center">
+            <div id="{{elementId}}" class="chart" style="height:190px;"></div>
+        </div>
+        <div class="databox-cell cell-6 text-center">
+            <div class="databox-row row-12">
+                <div class="databox-text carbon">TOTAL CHARGE : {{total}}</div>
+                <div class="databox-text carbon">DUE DATE : {{dueDate}}</div>
+                <div class="databox-text carbon">
+                    <label>
+                        <input id="checkbox_approved" type="checkbox" {{checked}}>
+                        <span class="text">Approved</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

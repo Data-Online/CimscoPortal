@@ -221,6 +221,7 @@
     <Compile Include="Data\Customer.cs">
       <DependentUpon>PortalEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\JavaScriptHelper.cs" />
     <Compile Include="Infrastructure\ICimscoPortalEntities.cs" />
     <Compile Include="Data\MessageCategory.cs">
       <DependentUpon>PortalEntities.tt</DependentUpon>
@@ -264,7 +265,8 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\MessageViewModels.cs" />
-    <Compile Include="Models\PieChartViewModel.cs" />
+    <Compile Include="Models\MonthlySummaryViewModel.cs" />
+    <Compile Include="Models\StackedBarChartViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Infrastructure\IPortalService.cs" />
     <Compile Include="Services\PortalService.cs" />
@@ -581,6 +583,8 @@
     <Content Include="Views\Portal\Index.cshtml" />
     <Content Include="Views\Shared\_AccountAreaPartial.cshtml" />
     <Content Include="Views\Portal\Index_test.cshtml" />
+    <Content Include="Views\Portal\_MonthlySummary.cshtml" />
+    <Content Include="Views\Portal\_YearToDateGraph.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />
