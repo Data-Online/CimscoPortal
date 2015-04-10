@@ -84,7 +84,7 @@ namespace CimscoPortal.Controllers
                     new PieChartData() { label="Line", value=3540.45M },
                     new PieChartData() { label="Other", value=234.89M }
                 },
-                SummaryData = new SummaryData
+                SummaryData = new SummaryDataZ
                 {
                     TotalCharge = "$10,456.45",
                     Approved = 0,
@@ -96,6 +96,43 @@ namespace CimscoPortal.Controllers
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult DonutChartData(string id)
+        {
+            DonutChartViewModel model = new DonutChartViewModel()
+            {
+                DonutChartData = new List<DonutChartData>
+                {
+                    new DonutChartData() {label="Energy", value=10968.34M},
+                    new DonutChartData() {label="Line", value=3540.45M},
+                    new DonutChartData() {label="Other", value=234.89M}
+                },
+                SummaryData = new List<SummaryData>
+                {
+                    new SummaryData { Title="BILL TOTAL", Detail="$10,892.01"},
+                    new SummaryData { Title="DUE DATE", Detail="2 Feb 2015"},
+                },
+                Header = "OCTOBER 2015",
+                DataFor = id
+            };
+
+            MonthlySummaryViewModel modelz = new MonthlySummaryViewModel()
+            {
+                PieChartData = new List<PieChartData> { 
+                    new PieChartData() { label="Energy", value=10968.34M },
+                    new PieChartData() { label="Line", value=3540.45M },
+                    new PieChartData() { label="Other", value=234.89M }
+                },
+                SummaryData = new SummaryDataZ
+                {
+                    TotalCharge = "$10,456.45",
+                    Approved = 0,
+                    DueDate = "26 Feb 2015",
+                    Month = "FEBRUARY 2015"
+                }
+            };
+
+            return Json(model, JsonRequestBehavior.AllowGet);
+        }
         public JsonResult GetMonthlyEnergySummary(string id)
         {
             StackedBarChartViewModel model = new StackedBarChartViewModel()

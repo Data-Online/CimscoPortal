@@ -11,10 +11,18 @@
 </div>
 
 <div class="row">
-    <div id="monthlySummary" class="col-xs-12 col-md-6 col-lg-6">
+    <div id="ZmonthlySummary" class="col-xs-12 col-md-6 col-lg-6">
         @Html.Partial("_MonthlySummary")
     </div>
 </div>
+
+<div class="row">
+    <div id="MonthlySummary" class="col-xs-12 col-md-6 col-lg-6">
+        @Html.Partial("_DonutPlusSummary")
+        <span data-display="donutChartPlusSummary" data-datafor="MonthlySummary" data-objectno="1"></span>
+    </div>
+</div>
+
 
 @section PageScripts{
     <script src="assets/js/beyond.min.js"></script>
@@ -34,6 +42,10 @@
             themefourthcolor = getThemeColorFromCss('themefourthcolor');
             themefifthcolor = getThemeColorFromCss('themefifthcolor');
 
+            createPageDonutCharts.withSummary();
+            //zztest();
+
+            //>>
             var AJAX = [];
             AJAX.push(getData("text"));
             AJAX.push(getData2("text"));
@@ -44,33 +56,35 @@
                 for (var i = 0, len = arguments.length; i < len; i++) {
                     obj.push(arguments[i][0]);
                 }
+                //alert(obj[1].SummaryData.Month);
+                //seedDonutChart.test();
+               // alert(obj.length);
+                seedPieChartElement("ZmonthlySummary", "id-currentMonth", obj[1].SummaryData);
 
-
-                updateElementOnPage("monthlySummary", "id-currentMonth", obj[1].SummaryData);
-
-                // alert(obj[1].PieChartData.length);
+               // alert(obj[1].PieChartData.length);
                 InitiateBarChart.init(obj[0].MonthlyData, 'id-yearToDateChart');
                 InitiateDonutChart.init(obj[1].PieChartData, 'id-currentMonth');
-               // InitiateDonutChart.init(obj[1].PieChartData, 'donut-chart');
-
-                
-            });
+                // InitiateDonutChart.init(obj[1].PieChartData, 'donut-chart');
+        });
+        //<<
             //alert(data.length);
             // InitiateDonutChart.init();
-           // InitiateLineChart.init();
+            // InitiateLineChart.init();
 
-            
+
 
         });
 
-        function updateElementOnPage(elementType, elementId, data) {
+        function seedPieChartElement(elementType, elementId, data) {
             //alert(elementType);
             var template = document.getElementById(elementType).innerHTML;
+            var template2 = document.getElementById("databox-infoLines").innerHTML;
+
             document.getElementById(elementType).innerHTML = '';
             var newTemplate = '';
             newTemplate = insertMessageText(template, elementId, data);
             document.getElementById(elementType).innerHTML = newTemplate;
-            //alert(template);
+            //alert(template2);
         }
 
 

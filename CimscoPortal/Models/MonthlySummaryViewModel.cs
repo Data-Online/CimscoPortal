@@ -10,7 +10,7 @@ namespace CimscoPortal.Models
     public class MonthlySummaryViewModel
     {
         public List<PieChartData> PieChartData { get; set; }
-        public SummaryData SummaryData { get; set; }
+        public SummaryDataZ SummaryData { get; set; }
     }
 
     public class PieChartData
@@ -19,7 +19,7 @@ namespace CimscoPortal.Models
         public decimal value { get; set; }
     }
 
-    public class SummaryData
+    public class SummaryDataZ
     {
         public string TotalCharge { get; set; }
         public string DueDate { get; set; }

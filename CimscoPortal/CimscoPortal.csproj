@@ -262,6 +262,7 @@
       <DependentUpon>T4MVC.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\DonutChartViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\MessageViewModels.cs" />
@@ -585,11 +586,13 @@
     <Content Include="Views\Portal\Index_test.cshtml" />
     <Content Include="Views\Portal\_MonthlySummary.cshtml" />
     <Content Include="Views\Portal\_YearToDateGraph.cshtml" />
+    <Content Include="Views\Shared\_DonutPlusSummary.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />
     <Folder Include="Domain\" />
     <Folder Include="fonts\" />
+    <Folder Include="Views\Portal\PageElementPartials\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

@@ -117,6 +117,7 @@ var InitiateLineChart2 = function () {
 var InitiateDonutChart = function () {
     return {
         init: function (json, elementId) {
+            elementId += "Donut";
             //alert(elementId);
             Morris.Donut({
                 element: elementId,
@@ -126,8 +127,98 @@ var InitiateDonutChart = function () {
             });
         }
     };
+}();
+// Custom code to manage generic object types
+
+var createPageDonutCharts = function () {
+    return {
+        withSummary: function () {
+            var donutCharts = $('[data-display=donutChartPlusSummary]');
+            //alert(donutCharts.length);
+            var AJAXdata = [];
+            AJAXdata.push('header');
+            $.each(donutCharts, function () {
+                var dataFor = $(this).data('datafor');               
+                AJAXdata.push(getJsonData('DonutChartData', dataFor));
+                //var objectNo = $(this).data('objectno');
+            });
+            $.when.apply($, AJAXdata).done(function (data) {
+                var obj = [];
+                for (var i = 0, len = arguments.length; i < len; i++) {
+                    obj.push(arguments[i][0]);
+                }
+                // Read Html element, apply element id for Donut chart
+                // 
+                for (var i = 1, len = obj.length; i < len; i++)
+                {
+                    updateDonutChartElementOnPage(obj[i]);
+                    //alert(obj[i].DataFor);
+                    InitiateDonutChart.init(obj[i].DonutChartData, obj[i].DataFor);
+                   // alert(obj[i].DonutChartData.length);
+                    
+                }
+               // InitiateDonutChart.init(obj[1].DonutChartData, obj[1].DataFor);
+                //alert(obj[2].length);
+                //alert(obj[1].SummaryData[0].Title);
+            });
+        }
+    }
+}();
+
+function updateDonutChartElementOnPage(data) {
+    var pageElement = document.getElementById(data.DataFor).innerHTML;
+    var infoLines = document.getElementById(data.DataFor).getElementsByClassName("databox-infoLines")[0].innerHTML;
+
+    document.getElementById(data.DataFor).innerHTML = '';
+    var newpageElement = '';
+    newpageElement = insertModelDataIntoElementA(data, pageElement);
+    document.getElementById(data.DataFor).innerHTML = newpageElement;
+
+    var newinfoLines = '';
+    for (var i = 0; i < data.SummaryData.length; i++) {
+        newinfoLines += insertModelDataIntoElementB(data.SummaryData[i], infoLines);
+    }
+    document.getElementById(data.DataFor).getElementsByClassName("databox-infoLines")[0].innerHTML = newinfoLines;
+}
+
+function insertModelDataIntoElementA(data, element) {
+    return element
+                    .replace('{{dataFor}}', data.DataFor)
+                    .replace('{{header}}', data.Header)
+    ;
+}
+
+function insertModelDataIntoElementB(data, element) {
+    return element
+                    .replace('{{title}}', data.Title)
+                    .replace('{{detail}}', data.Detail)
+    ;
+}
+
+var seedDonutChart = function () {
+    return {
+        summary: function (pageElementId, dataElementId, summaryData) {
+            var fullTemplate = document.getElementById(pageElementId).innerHTML;
+            var dataLines = document.getElementById("databox-infoLines").innerHTML;
+        },
+        datalines: function (pageElementId) { },
+        test: function () {
+            
+            var donutCharts = $('[data-display=donutChartPlusSummary]');
+            alert(donutCharts.length);
+            $.each(donutCharts, function () {
+                alert($(this).data('viewmodel'))
+                });
+        }
+
+    }
+}();
 
 
+function getJsonData(elementType, elementDataName) {
+    var url = "/portal/" + elementType + "/" + elementDataName;//GetPieChartData"
+    return $.getJSON(url);
+}
     //var InitiateDonutChart = function () {
     //    return {
     //        init: function () {
@@ -143,6 +234,6 @@ var InitiateDonutChart = function () {
     //            });
     //        }
     //    };
-}();
+
 
 
