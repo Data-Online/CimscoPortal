@@ -12,6 +12,9 @@ Post-Deployment Script Template
 delete from dbo.PortalMessages
 delete from dbo.MessageCategories
 delete from dbo.MessageTypes
+delete from dbo.InvoiceSummaries
+
+
 GO
 SET IDENTITY_INSERT [dbo].[MessageCategories] ON
 INSERT INTO [dbo].[MessageCategories] ([MessageCategoryId], [CategoryName], [Element1], [Element2]) VALUES (2, N'alert-phone-blue', N'fa fa-phone bg-themeprimary white', N'fa fa-clock-o themeprimary')
@@ -59,6 +62,24 @@ SET IDENTITY_INSERT [dbo].[PortalMessages] OFF
 
 
 
+
+
+GO
+/****** Script for SelectTopNRows command from SSMS  ******/
+use CimscoNZ
+GO
+
+insert into  [CimscoPortal].[dbo].[InvoiceSummaries]  
+SELECT        Invoices.InvoiceId, Invoices.InvoiceDate, Invoices.InvoiceNumber, Invoices.GstTotal, Invoices.InvoiceTotal, Invoices.AccountNumber, Invoices.CustomerNumber, Invoices.SiteId, Invoices.NetworkChargesTotal, 
+                         Invoices.EnergyChargesTotal, Invoices.MiscChargesTotal, Invoices.TotalCharges, Invoices.GSTCharges, InvoicesElectricityNetworkCharges.TotalNetworkCharges, 
+                         InvoicesElectricityMiscCharges.TotalMiscCharges, InvoicesElectricityCharges.TotalEnergyCharges, EnergyPoints.ConnectionNumber, Sites.SiteName, EnergyPoints.EnergyPointId
+FROM            Invoices INNER JOIN
+                         InvoicesElectricityCharges ON Invoices.InvoiceId = InvoicesElectricityCharges.InvoiceId INNER JOIN
+                         InvoicesElectricityMiscCharges ON Invoices.InvoiceId = InvoicesElectricityMiscCharges.InvoiceId AND Invoices.InvoiceId = InvoicesElectricityMiscCharges.InvoiceId INNER JOIN
+                         InvoicesElectricityNetworkCharges ON Invoices.InvoiceId = InvoicesElectricityNetworkCharges.InvoiceId AND Invoices.InvoiceId = InvoicesElectricityNetworkCharges.InvoiceId INNER JOIN
+                         EnergyPoints ON InvoicesElectricityCharges.EnergyPointId = EnergyPoints.EnergyPointId INNER JOIN
+                         Sites ON Invoices.SiteId = Sites.SiteId
+GO
 
 
 GO

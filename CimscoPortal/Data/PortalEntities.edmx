@@ -12,6 +12,50 @@
           <Property Name="CustomerId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="CustomerName" Type="nvarchar" MaxLength="100" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'CimscoPortal.dbo.InvoiceSummaries' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="InvoiceSummaries">
+          <Key>
+            <PropertyRef Name="InvoiceId" />
+            <PropertyRef Name="InvoiceDate" />
+            <PropertyRef Name="InvoiceNumber" />
+            <PropertyRef Name="GstTotal" />
+            <PropertyRef Name="InvoiceTotal" />
+            <PropertyRef Name="AccountNumber" />
+            <PropertyRef Name="CustomerNumber" />
+            <PropertyRef Name="SiteId" />
+            <PropertyRef Name="NetworkChargesTotal" />
+            <PropertyRef Name="EnergyChargesTotal" />
+            <PropertyRef Name="MiscChargesTotal" />
+            <PropertyRef Name="TotalCharges" />
+            <PropertyRef Name="GSTCharges" />
+            <PropertyRef Name="TotalNetworkCharges" />
+            <PropertyRef Name="TotalMiscCharges" />
+            <PropertyRef Name="TotalEnergyCharges" />
+            <PropertyRef Name="ConnectionNumber" />
+            <PropertyRef Name="SiteName" />
+            <PropertyRef Name="EnergyPointId" />
+          </Key>
+          <Property Name="InvoiceId" Type="int" Nullable="false" />
+          <Property Name="InvoiceDate" Type="date" Nullable="false" />
+          <Property Name="InvoiceNumber" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="GstTotal" Type="decimal" Precision="8" Scale="2" Nullable="false" />
+          <Property Name="InvoiceTotal" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="AccountNumber" Type="nvarchar" MaxLength="12" Nullable="false" />
+          <Property Name="CustomerNumber" Type="nvarchar" MaxLength="12" Nullable="false" />
+          <Property Name="SiteId" Type="int" Nullable="false" />
+          <Property Name="NetworkChargesTotal" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="EnergyChargesTotal" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="MiscChargesTotal" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="TotalCharges" Type="decimal" Precision="8" Scale="2" Nullable="false" />
+          <Property Name="GSTCharges" Type="decimal" Precision="8" Scale="2" Nullable="false" />
+          <Property Name="TotalNetworkCharges" Type="numeric" Precision="12" Scale="2" Nullable="false" />
+          <Property Name="TotalMiscCharges" Type="numeric" Precision="12" Scale="2" Nullable="false" />
+          <Property Name="TotalEnergyCharges" Type="numeric" Precision="14" Scale="2" Nullable="false" />
+          <Property Name="ConnectionNumber" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="SiteName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="EnergyPointId" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="MessageCategories">
           <Key>
             <PropertyRef Name="MessageCategoryId" />
@@ -84,6 +128,29 @@
           <EntitySet Name="MessageCategories" EntityType="Self.MessageCategories" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MessageTypes" EntityType="Self.MessageTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PortalMessages" EntityType="Self.PortalMessages" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InvoiceSummaries" EntityType="Self.InvoiceSummaries" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [InvoiceSummaries].[InvoiceId] AS [InvoiceId], 
+    [InvoiceSummaries].[InvoiceDate] AS [InvoiceDate], 
+    [InvoiceSummaries].[InvoiceNumber] AS [InvoiceNumber], 
+    [InvoiceSummaries].[GstTotal] AS [GstTotal], 
+    [InvoiceSummaries].[InvoiceTotal] AS [InvoiceTotal], 
+    [InvoiceSummaries].[AccountNumber] AS [AccountNumber], 
+    [InvoiceSummaries].[CustomerNumber] AS [CustomerNumber], 
+    [InvoiceSummaries].[SiteId] AS [SiteId], 
+    [InvoiceSummaries].[NetworkChargesTotal] AS [NetworkChargesTotal], 
+    [InvoiceSummaries].[EnergyChargesTotal] AS [EnergyChargesTotal], 
+    [InvoiceSummaries].[MiscChargesTotal] AS [MiscChargesTotal], 
+    [InvoiceSummaries].[TotalCharges] AS [TotalCharges], 
+    [InvoiceSummaries].[GSTCharges] AS [GSTCharges], 
+    [InvoiceSummaries].[TotalNetworkCharges] AS [TotalNetworkCharges], 
+    [InvoiceSummaries].[TotalMiscCharges] AS [TotalMiscCharges], 
+    [InvoiceSummaries].[TotalEnergyCharges] AS [TotalEnergyCharges], 
+    [InvoiceSummaries].[ConnectionNumber] AS [ConnectionNumber], 
+    [InvoiceSummaries].[SiteName] AS [SiteName], 
+    [InvoiceSummaries].[EnergyPointId] AS [EnergyPointId]
+    FROM [dbo].[InvoiceSummaries] AS [InvoiceSummaries]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_PortalMessages_Customers" Association="Self.FK_PortalMessages_Customers">
             <End Role="Customers" EntitySet="Customers" />
             <End Role="PortalMessages" EntitySet="PortalMessages" />
@@ -198,7 +265,50 @@
             <End Role="MessageTypes" EntitySet="MessageTypes" />
             <End Role="PortalMessages" EntitySet="PortalMessages" />
           </AssociationSet>
+          <EntitySet Name="InvoiceSummaries" EntityType="CimscoPortalModel.InvoiceSummary" />
         </EntityContainer>
+        <EntityType Name="InvoiceSummary">
+          <Key>
+            <PropertyRef Name="InvoiceId" />
+            <PropertyRef Name="InvoiceDate" />
+            <PropertyRef Name="InvoiceNumber" />
+            <PropertyRef Name="GstTotal" />
+            <PropertyRef Name="InvoiceTotal" />
+            <PropertyRef Name="AccountNumber" />
+            <PropertyRef Name="CustomerNumber" />
+            <PropertyRef Name="SiteId" />
+            <PropertyRef Name="NetworkChargesTotal" />
+            <PropertyRef Name="EnergyChargesTotal" />
+            <PropertyRef Name="MiscChargesTotal" />
+            <PropertyRef Name="TotalCharges" />
+            <PropertyRef Name="GSTCharges" />
+            <PropertyRef Name="TotalNetworkCharges" />
+            <PropertyRef Name="TotalMiscCharges" />
+            <PropertyRef Name="TotalEnergyCharges" />
+            <PropertyRef Name="ConnectionNumber" />
+            <PropertyRef Name="SiteName" />
+            <PropertyRef Name="EnergyPointId" />
+          </Key>
+          <Property Name="InvoiceId" Type="Int32" Nullable="false" />
+          <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="InvoiceNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="GstTotal" Type="Decimal" Nullable="false" Precision="8" Scale="2" />
+          <Property Name="InvoiceTotal" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="AccountNumber" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerNumber" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="true" />
+          <Property Name="SiteId" Type="Int32" Nullable="false" />
+          <Property Name="NetworkChargesTotal" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="EnergyChargesTotal" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="MiscChargesTotal" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="TotalCharges" Type="Decimal" Nullable="false" Precision="8" Scale="2" />
+          <Property Name="GSTCharges" Type="Decimal" Nullable="false" Precision="8" Scale="2" />
+          <Property Name="TotalNetworkCharges" Type="Decimal" Nullable="false" Precision="12" Scale="2" />
+          <Property Name="TotalMiscCharges" Type="Decimal" Nullable="false" Precision="12" Scale="2" />
+          <Property Name="TotalEnergyCharges" Type="Decimal" Nullable="false" Precision="14" Scale="2" />
+          <Property Name="ConnectionNumber" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="SiteName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EnergyPointId" Type="Int32" Nullable="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -244,6 +354,31 @@
                 <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
                 <ScalarProperty Name="MessageCategoryId" ColumnName="MessageCategoryId" />
                 <ScalarProperty Name="MessageTypeId" ColumnName="MessageTypeId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InvoiceSummaries">
+            <EntityTypeMapping TypeName="CimscoPortalModel.InvoiceSummary">
+              <MappingFragment StoreEntitySet="InvoiceSummaries">
+                <ScalarProperty Name="EnergyPointId" ColumnName="EnergyPointId" />
+                <ScalarProperty Name="SiteName" ColumnName="SiteName" />
+                <ScalarProperty Name="ConnectionNumber" ColumnName="ConnectionNumber" />
+                <ScalarProperty Name="TotalEnergyCharges" ColumnName="TotalEnergyCharges" />
+                <ScalarProperty Name="TotalMiscCharges" ColumnName="TotalMiscCharges" />
+                <ScalarProperty Name="TotalNetworkCharges" ColumnName="TotalNetworkCharges" />
+                <ScalarProperty Name="GSTCharges" ColumnName="GSTCharges" />
+                <ScalarProperty Name="TotalCharges" ColumnName="TotalCharges" />
+                <ScalarProperty Name="MiscChargesTotal" ColumnName="MiscChargesTotal" />
+                <ScalarProperty Name="EnergyChargesTotal" ColumnName="EnergyChargesTotal" />
+                <ScalarProperty Name="NetworkChargesTotal" ColumnName="NetworkChargesTotal" />
+                <ScalarProperty Name="SiteId" ColumnName="SiteId" />
+                <ScalarProperty Name="CustomerNumber" ColumnName="CustomerNumber" />
+                <ScalarProperty Name="AccountNumber" ColumnName="AccountNumber" />
+                <ScalarProperty Name="InvoiceTotal" ColumnName="InvoiceTotal" />
+                <ScalarProperty Name="GstTotal" ColumnName="GstTotal" />
+                <ScalarProperty Name="InvoiceNumber" ColumnName="InvoiceNumber" />
+                <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+                <ScalarProperty Name="InvoiceId" ColumnName="InvoiceId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

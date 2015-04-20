@@ -1,0 +1,46 @@
+﻿** Highlights
+     Tables that will be rebuilt
+       None
+     Clustered indexes that will be dropped
+       None
+     Clustered indexes that will be created
+       None
+     Possible data issues
+       None
+
+** User actions
+     Drop
+       [dbo].[CONSTRAINT_NAME] (Default Constraint)
+       [dbo].[DF_Invoices_AccountManager] (Default Constraint)
+       [dbo].[DF_Invoices_AccountNumber] (Default Constraint)
+       [dbo].[DF_Invoices_BalanceOutstanding] (Default Constraint)
+       [dbo].[DF_Invoices_ContractId] (Default Constraint)
+       [dbo].[DF_Invoices_CustomerNumber] (Default Constraint)
+       [dbo].[DF_Invoices_EnergyChargesTotal] (Default Constraint)
+       [dbo].[DF_Invoices_GSTCharges] (Default Constraint)
+       [dbo].[DF_Invoices_GstTotal] (Default Constraint)
+       [dbo].[DF_Invoices_InputProcess] (Default Constraint)
+       [dbo].[DF_Invoices_InvoicedToCustomer] (Default Constraint)
+       [dbo].[DF_Invoices_InvoicedToGroup] (Default Constraint)
+       [dbo].[DF_Invoices_InvoicedToSite] (Default Constraint)
+       [dbo].[DF_Invoices_InvoiceNumber] (Default Constraint)
+       [dbo].[DF_Invoices_InvoiceSubTotal] (Default Constraint)
+       [dbo].[DF_Invoices_InvoiceTotal] (Default Constraint)
+       [dbo].[DF_Invoices_MiscChargesTotal] (Default Constraint)
+       [dbo].[DF_Invoices_NetworkChargesTotal] (Default Constraint)
+       [dbo].[DF_Invoices_PaymentReceivedDate] (Default Constraint)
+       [dbo].[DF_Invoices_PaymentsReceived] (Default Constraint)
+       [dbo].[DF_Invoices_PeriodStart] (Default Constraint)
+       [dbo].[DF_Invoices_PeriodStop] (Default Constraint)
+       [dbo].[DF_Invoices_PreviousBalance] (Default Constraint)
+       [dbo].[DF_Invoices_PromptPaymentDiscountAvailable] (Default Constraint)
+       [dbo].[DF_Invoices_PromptPaymentDiscountReceived] (Default Constraint)
+       [dbo].[DF_Invoices_PromptPaymentDueDate] (Default Constraint)
+       [dbo].[DF_Invoices_TotalCharges] (Default Constraint)
+       [dbo].[DF_Invoices_Validated] (Default Constraint)
+       unnamed constraint on [dbo].[Invoices] (Default Constraint)
+       unnamed constraint on [dbo].[Invoices] (Default Constraint)
+       unnamed constraint on [dbo].[Invoices] (Default Constraint)
+       unnamed constraint on [dbo].[Invoices] (Default Constraint)
+
+** Supporting actions

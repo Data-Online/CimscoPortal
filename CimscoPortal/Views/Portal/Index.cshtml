@@ -7,19 +7,14 @@
 <div class="row">
     <div id="yearToDateGraph" class="col-lg-12 col-sm-12 col-xs-12">
         @Html.Partial("_YearToDateGraph")
-    </div>
-</div>
-
-<div class="row">
-    <div id="ZmonthlySummary" class="col-xs-12 col-md-6 col-lg-6">
-        @Html.Partial("_MonthlySummary")
+        <span data-display="stackedGraph" data-datafor="YearToDateSummary"></span>
     </div>
 </div>
 
 <div class="row">
     <div id="MonthlySummary" class="col-xs-12 col-md-6 col-lg-6">
         @Html.Partial("_DonutPlusSummary")
-        <span data-display="donutChartPlusSummary" data-datafor="MonthlySummary" data-objectno="1"></span>
+        <span data-display="donutChartPlusSummary" data-datafor="MonthlySummary" ></span>
     </div>
 </div>
 
@@ -43,83 +38,8 @@
             themefifthcolor = getThemeColorFromCss('themefifthcolor');
 
             createPageDonutCharts.withSummary();
-            //zztest();
-
-            //>>
-            var AJAX = [];
-            AJAX.push(getData("text"));
-            AJAX.push(getData2("text"));
-
-            $.when.apply($, AJAX).done(function (data) {
-
-                var obj = [];
-                for (var i = 0, len = arguments.length; i < len; i++) {
-                    obj.push(arguments[i][0]);
-                }
-                //alert(obj[1].SummaryData.Month);
-                //seedDonutChart.test();
-               // alert(obj.length);
-                seedPieChartElement("ZmonthlySummary", "id-currentMonth", obj[1].SummaryData);
-
-               // alert(obj[1].PieChartData.length);
-                InitiateBarChart.init(obj[0].MonthlyData, 'id-yearToDateChart');
-                InitiateDonutChart.init(obj[1].PieChartData, 'id-currentMonth');
-                // InitiateDonutChart.init(obj[1].PieChartData, 'donut-chart');
-        });
-        //<<
-            //alert(data.length);
-            // InitiateDonutChart.init();
-            // InitiateLineChart.init();
-
-
-
+            createPageBarCharts.standard();
         });
 
-        function seedPieChartElement(elementType, elementId, data) {
-            //alert(elementType);
-            var template = document.getElementById(elementType).innerHTML;
-            var template2 = document.getElementById("databox-infoLines").innerHTML;
-
-            document.getElementById(elementType).innerHTML = '';
-            var newTemplate = '';
-            newTemplate = insertMessageText(template, elementId, data);
-            document.getElementById(elementType).innerHTML = newTemplate;
-            //alert(template2);
-        }
-
-
-        function insertMessageText(element, elementId, data) {
-            return element
-                            .replace('{{elementId}}', elementId)
-                            .replace('{{month}}', data.Month)
-                            .replace('{{total}}', data.TotalCharge)
-                            .replace('{{dueDate}}', data.DueDate)
-                            .replace('{{checked}}', data.Approved = 1 ? "checked" : "")
-            ;
-        }
-
-        function getData(msgType) {
-            var url = "/portal/GetMonthlyEnergySummary"
-            return $.getJSON(url);
-        }
-
-        function getData2(msgType) {
-            var url = "/portal/GetPieChartData"
-            return $.getJSON(url);
-        }
-
-        function getjsonData(viewmodel, dim) {
-            if (typeof dim === 'undefined') { dim = ''; }
-            //alert(viewmodel+' '+dim);
-            var myArray = [];
-            // Ensures the data is returned before passing to spark element
-            $.ajaxSetup({ "async": false });
-            var jq = $.getJSON(viewmodel)
-                .done(function (data) {
-                    $.each(data, function (i) { myArray.push(data.MonthlyData[i]) });
-                });
-            //myArray = [1, 2, 3, 4];
-            return myArray;
-        }
-    </script>
+     </script>
 }

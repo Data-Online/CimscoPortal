@@ -7,11 +7,12 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using CimscoPortal.Models;
+using CimscoPortal.Infrastructure;
 
 namespace CimscoPortal.Controllers
 {
     [Authorize]
-    public partial class ManageController : Controller
+    public partial class ManageController : CimscoPortalController
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;

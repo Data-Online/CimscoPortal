@@ -1,0 +1,17 @@
+﻿** Highlights
+     Tables that will be rebuilt
+       None
+     Clustered indexes that will be dropped
+       None
+     Clustered indexes that will be created
+       [dbo].[PK_InvoiceSummaries] on [dbo].[InvoiceSummaries]
+     Possible data issues
+       None
+
+** User actions
+     Alter
+       [dbo].[InvoiceSummaries] (Table)
+     Create
+       [dbo].[PK_InvoiceSummaries] (Primary Key)
+
+** Supporting actions

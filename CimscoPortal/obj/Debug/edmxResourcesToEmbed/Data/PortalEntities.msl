@@ -43,5 +43,30 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="InvoiceSummaries">
+      <EntityTypeMapping TypeName="CimscoPortalModel.InvoiceSummary">
+        <MappingFragment StoreEntitySet="InvoiceSummaries">
+          <ScalarProperty Name="EnergyPointId" ColumnName="EnergyPointId" />
+          <ScalarProperty Name="SiteName" ColumnName="SiteName" />
+          <ScalarProperty Name="ConnectionNumber" ColumnName="ConnectionNumber" />
+          <ScalarProperty Name="TotalEnergyCharges" ColumnName="TotalEnergyCharges" />
+          <ScalarProperty Name="TotalMiscCharges" ColumnName="TotalMiscCharges" />
+          <ScalarProperty Name="TotalNetworkCharges" ColumnName="TotalNetworkCharges" />
+          <ScalarProperty Name="GSTCharges" ColumnName="GSTCharges" />
+          <ScalarProperty Name="TotalCharges" ColumnName="TotalCharges" />
+          <ScalarProperty Name="MiscChargesTotal" ColumnName="MiscChargesTotal" />
+          <ScalarProperty Name="EnergyChargesTotal" ColumnName="EnergyChargesTotal" />
+          <ScalarProperty Name="NetworkChargesTotal" ColumnName="NetworkChargesTotal" />
+          <ScalarProperty Name="SiteId" ColumnName="SiteId" />
+          <ScalarProperty Name="CustomerNumber" ColumnName="CustomerNumber" />
+          <ScalarProperty Name="AccountNumber" ColumnName="AccountNumber" />
+          <ScalarProperty Name="InvoiceTotal" ColumnName="InvoiceTotal" />
+          <ScalarProperty Name="GstTotal" ColumnName="GstTotal" />
+          <ScalarProperty Name="InvoiceNumber" ColumnName="InvoiceNumber" />
+          <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+          <ScalarProperty Name="InvoiceId" ColumnName="InvoiceId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>

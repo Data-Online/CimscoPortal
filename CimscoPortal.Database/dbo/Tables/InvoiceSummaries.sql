@@ -1,0 +1,21 @@
+﻿CREATE TABLE [dbo].[InvoiceSummaries](
+	[InvoiceId] [int] NOT NULL,
+	[InvoiceDate] [date] NOT NULL,
+	[InvoiceNumber] [varchar](20) NOT NULL,
+	[GstTotal] [decimal](8, 2) NOT NULL,
+	[InvoiceTotal] [decimal](10, 2) NOT NULL,
+	[AccountNumber] [nvarchar](12) NOT NULL,
+	[CustomerNumber] [nvarchar](12) NOT NULL,
+	[SiteId] [int] NOT NULL,
+	[NetworkChargesTotal] [decimal](10, 2) NOT NULL,
+	[EnergyChargesTotal] [decimal](10, 2) NOT NULL,
+	[MiscChargesTotal] [decimal](10, 2) NOT NULL,
+	[TotalCharges] [decimal](8, 2) NOT NULL,
+	[GSTCharges] [decimal](8, 2) NOT NULL,
+	[TotalNetworkCharges] [numeric](12, 2) NOT NULL,
+	[TotalMiscCharges] [numeric](12, 2) NOT NULL,
+	[TotalEnergyCharges] [numeric](14, 2) NOT NULL,
+	[ConnectionNumber] [nvarchar](30) NOT NULL,
+	[SiteName] [nvarchar](50) NOT NULL,
+	[EnergyPointId] [int] NOT NULL
+) ON [PRIMARY]

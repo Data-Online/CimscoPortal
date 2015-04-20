@@ -68,6 +68,9 @@
     <Reference Include="Microsoft.Practices.Unity.RegistrationByConvention">
       <HintPath>..\packages\Unity.3.5.1404.0\lib\net45\Microsoft.Practices.Unity.RegistrationByConvention.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Web.Mvc">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.Futures.5.0.0\lib\net40\Microsoft.Web.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="MvcSiteMapProvider">
       <HintPath>..\packages\MvcSiteMapProvider.MVC5.Core.4.6.18\lib\net45\MvcSiteMapProvider.dll</HintPath>
     </Reference>
@@ -209,6 +212,7 @@
     <Compile Include="AccountController.generated.cs">
       <DependentUpon>T4MVC.tt</DependentUpon>
     </Compile>
+    <Compile Include="ActionResults\StandardJsonResult.cs" />
     <Compile Include="App_Start\AutoMapperConfig.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -221,7 +225,11 @@
     <Compile Include="Data\Customer.cs">
       <DependentUpon>PortalEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Data\InvoiceSummary.cs">
+      <DependentUpon>PortalEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\JavaScriptHelper.cs" />
+    <Compile Include="Infrastructure\CimscoPortalController.cs" />
     <Compile Include="Infrastructure\ICimscoPortalEntities.cs" />
     <Compile Include="Data\MessageCategory.cs">
       <DependentUpon>PortalEntities.tt</DependentUpon>
@@ -584,14 +592,15 @@
     <Content Include="Views\Portal\Index.cshtml" />
     <Content Include="Views\Shared\_AccountAreaPartial.cshtml" />
     <Content Include="Views\Portal\Index_test.cshtml" />
-    <Content Include="Views\Portal\_MonthlySummary.cshtml" />
     <Content Include="Views\Portal\_YearToDateGraph.cshtml" />
     <Content Include="Views\Shared\_DonutPlusSummary.cshtml" />
+    <Content Include="Views\Shared\_StackedGraph.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />
     <Folder Include="Domain\" />
     <Folder Include="fonts\" />
+    <Folder Include="Views\CimscoPortal\" />
     <Folder Include="Views\Portal\PageElementPartials\" />
   </ItemGroup>
   <ItemGroup>

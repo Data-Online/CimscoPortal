@@ -56,24 +56,6 @@ var InitiateAreaChart = function () {
     };
 }();
 
-var InitiateBarChart = function () {
-   
-    return {
-        init: function (json, elementId) {
-            Morris.Bar({
-                element: elementId,
-                data: json,
-                xkey: 'Month',
-                ykeys: ['Energy', 'Line', 'Other'],
-                labels: ['Energy', 'Line', 'Other'],
-                hideHover: 'auto',
-                barColors: [themeprimary, themesecondary, themethirdcolor],
-                stacked: true
-            });
-        }
-    };
-}();
-
 var InitiateLineChart = function () {
     return {
         init: function () {
@@ -89,6 +71,7 @@ var InitiateLineChart = function () {
         }
     };
 }();
+
 
 var InitiateLineChart2 = function () {
     return {
@@ -114,14 +97,33 @@ var InitiateLineChart2 = function () {
     };
 }();
 
-var InitiateDonutChart = function () {
+
+var InitiateBarChart = function () {
+
     return {
         init: function (json, elementId) {
-            elementId += "Donut";
+            Morris.Bar({
+                element: elementId,
+                data: json,
+                xkey: 'month',
+                ykeys: ['energy', 'line', 'other'],
+                labels: ['Energy', 'Line', 'Other'],
+                hideHover: 'auto',
+                barColors: [themeprimary, themesecondary, themethirdcolor],
+                stacked: true
+            });
+        }
+    };
+}();
+
+var InitiateDonutChart = function () {
+    return {
+        init: function (json) {
+            var elementId = json.headerData.dataFor + "Donut";
             //alert(elementId);
             Morris.Donut({
                 element: elementId,
-                data: json,
+                data: json.donutChartData,
                 colors: [themeprimary, themesecondary, themethirdcolor, themefourthcolor],
                 formatter: function (y) { return "$" + y }
             });
@@ -134,13 +136,11 @@ var createPageDonutCharts = function () {
     return {
         withSummary: function () {
             var donutCharts = $('[data-display=donutChartPlusSummary]');
-            //alert(donutCharts.length);
             var AJAXdata = [];
             AJAXdata.push('header');
             $.each(donutCharts, function () {
                 var dataFor = $(this).data('datafor');               
                 AJAXdata.push(getJsonData('DonutChartData', dataFor));
-                //var objectNo = $(this).data('objectno');
             });
             $.when.apply($, AJAXdata).done(function (data) {
                 var obj = [];
@@ -148,92 +148,114 @@ var createPageDonutCharts = function () {
                     obj.push(arguments[i][0]);
                 }
                 // Read Html element, apply element id for Donut chart
-                // 
                 for (var i = 1, len = obj.length; i < len; i++)
                 {
                     updateDonutChartElementOnPage(obj[i]);
-                    //alert(obj[i].DataFor);
-                    InitiateDonutChart.init(obj[i].DonutChartData, obj[i].DataFor);
-                   // alert(obj[i].DonutChartData.length);
-                    
+                    InitiateDonutChart.init(obj[i]);
                 }
-               // InitiateDonutChart.init(obj[1].DonutChartData, obj[1].DataFor);
-                //alert(obj[2].length);
-                //alert(obj[1].SummaryData[0].Title);
+            });
+        }
+    }
+}();
+
+var createPageBarCharts = function () {
+    return {
+        standard: function () {
+            var AJAXdata = [];
+            AJAXdata.push({});
+            AJAXdata.push(getJsonData('GetMonthlyEnergySummary', 'a'));
+            $.when.apply($, AJAXdata).done(function (data) {
+
+                var obj = [];
+                obj.push({});
+                for (var i = 1, len = arguments.length; i < len; i++) {
+                    obj.push(arguments[i][0]);
+                }
+                updateBarChartElementOnPage(obj[1].barChartSummaryData);
+                InitiateBarChart.init(obj[1].monthlyData, 'id-yearToDateChart');
             });
         }
     }
 }();
 
 function updateDonutChartElementOnPage(data) {
-    var pageElement = document.getElementById(data.DataFor).innerHTML;
-    var infoLines = document.getElementById(data.DataFor).getElementsByClassName("databox-infoLines")[0].innerHTML;
+    var pageElement = document.getElementById(data.headerData.dataFor).innerHTML;
+    var infoLines = document.getElementById(data.headerData.dataFor).getElementsByClassName("databox-infoLines")[0].innerHTML;
 
-    document.getElementById(data.DataFor).innerHTML = '';
+    document.getElementById(data.headerData.dataFor).innerHTML = '';
     var newpageElement = '';
-    newpageElement = insertModelDataIntoElementA(data, pageElement);
-    document.getElementById(data.DataFor).innerHTML = newpageElement;
+    newpageElement = insertModelDataIntoElementA(data.headerData, pageElement);
+    document.getElementById(data.headerData.dataFor).innerHTML = newpageElement;
 
     var newinfoLines = '';
-    for (var i = 0; i < data.SummaryData.length; i++) {
-        newinfoLines += insertModelDataIntoElementB(data.SummaryData[i], infoLines);
+    for (var i = 0; i < data.summaryData.length; i++) {
+        //data.summaryData[i].detail = '$'+parseFloat(data.summaryData[i].detail).toMoney();
+        newinfoLines += insertModelDataIntoElementB(data.summaryData[i], infoLines);
     }
-    document.getElementById(data.DataFor).getElementsByClassName("databox-infoLines")[0].innerHTML = newinfoLines;
+    document.getElementById(data.headerData.dataFor).getElementsByClassName("databox-infoLines")[0].innerHTML = newinfoLines;
 }
 
+function updateBarChartElementOnPage(data) {
+    var pageElement = document.getElementById('yearToDateGraph').innerHTML;
+    document.getElementById('yearToDateGraph').innerHTML = '';
+    var newPageElement = '';
+    newPageElement = insertModelDataIntoElementC(data, pageElement);
+    document.getElementById('yearToDateGraph').innerHTML = newPageElement;
+}
+// GPA: 1. Standard function for mapping required
 function insertModelDataIntoElementA(data, element) {
     return element
-                    .replace('{{dataFor}}', data.DataFor)
-                    .replace('{{header}}', data.Header)
+                    .replace('{{dataFor}}', data.dataFor)
+                    .replace('{{header}}', data.header)
     ;
 }
 
 function insertModelDataIntoElementB(data, element) {
+    alert (data.detail);
     return element
-                    .replace('{{title}}', data.Title)
-                    .replace('{{detail}}', data.Detail)
+                    .replace('{{title}}', data.title)
+                    .replace('{{detail}}', data.detail) 
     ;
 }
 
-var seedDonutChart = function () {
-    return {
-        summary: function (pageElementId, dataElementId, summaryData) {
-            var fullTemplate = document.getElementById(pageElementId).innerHTML;
-            var dataLines = document.getElementById("databox-infoLines").innerHTML;
-        },
-        datalines: function (pageElementId) { },
-        test: function () {
-            
-            var donutCharts = $('[data-display=donutChartPlusSummary]');
-            alert(donutCharts.length);
-            $.each(donutCharts, function () {
-                alert($(this).data('viewmodel'))
-                });
-        }
-
-    }
-}();
-
+function insertModelDataIntoElementC(data, element) {
+    return element
+                    .replace('{{title}}', data.title)
+                    .replace('{{subTitle}}', data.subTitle)
+                    .replace('{{percentChange}}', data.percentChange)
+    ;
+}
 
 function getJsonData(elementType, elementDataName) {
-    var url = "/portal/" + elementType + "/" + elementDataName;//GetPieChartData"
+    var url = "/portal/" + elementType + "/" + elementDataName;
     return $.getJSON(url);
 }
-    //var InitiateDonutChart = function () {
-    //    return {
-    //        init: function () {
-    //            Morris.Donut({
-    //                element: 'donut-chart',
-    //                data: [
-    //                  { label: 'Line', value: 3540.45 , },
-    //                  { label: 'Energy', value: 10968.34 },
-    //                  { label: 'Other', value: 234.89 }
-    //                ],
-    //                colors: [themeprimary, themesecondary, themethirdcolor, themefourthcolor],
-    //                formatter: function (y) { return "$" + y }
-    //            });
-    //        }
-    //    };
+
+
+/* 
+decimal_sep: character used as deciaml separtor, it defaults to '.' when omitted
+thousands_sep: char used as thousands separator, it defaults to ',' when omitted
+*/
+Number.prototype.toMoney = function (decimals, decimal_sep, thousands_sep) {
+    var n = this,
+    c = isNaN(decimals) ? 2 : Math.abs(decimals), //if decimal is zero we must take it, it means user does not want to show any decimal
+    d = decimal_sep || '.', //if no decimal separator is passed we use the dot as default decimal separator (we MUST use a decimal separator)
+
+    /*
+    according to [http://stackoverflow.com/questions/411352/how-best-to-determine-if-an-argument-is-not-sent-to-the-javascript-function]
+    the fastest way to check for not defined parameter is to use typeof value === 'undefined' 
+    rather than doing value === undefined.
+    */
+    t = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep, //if you don't want to use a thousands separator you can pass empty string as thousands_sep value
+
+    sign = (n < 0) ? '-' : '',
+
+    //extracting the absolute value of the integer part of the number and converting to string
+    i = parseInt(n = Math.abs(n).toFixed(c)) + '',
+
+    j = ((j = i.length) > 3) ? j % 3 : 0;
+    return sign + (j ? i.substr(0, j) + t : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : '');
+}
 
 
 

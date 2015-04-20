@@ -9,11 +9,12 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using CimscoPortal.Models;
+using CimscoPortal.Infrastructure;
 
 namespace CimscoPortal.Controllers
 {
     [Authorize]
-    public partial class AccountController : Controller
+    public partial class AccountController : CimscoPortalController
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;

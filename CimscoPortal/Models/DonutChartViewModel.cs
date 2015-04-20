@@ -10,19 +10,24 @@ namespace CimscoPortal.Models
     {
         public List<DonutChartData> DonutChartData { get; set; }
         public List<SummaryData> SummaryData { get; set; }
-        public string Header { get; set; }
-        public string DataFor { get; set; }
+        public HeaderData HeaderData { get; set; }
     }
 
     public class DonutChartData
     {
-        public string label { get; set; }
-        public decimal value { get; set; }
+        public string Label { get; set; }
+        public decimal Value { get; set; }
     }
 
     public class SummaryData
     {
         public string Title { get; set; }
         public string Detail { get; set; }
+    }
+
+    public class HeaderData
+    {
+        public string Header { get; set; }
+        public string DataFor {  get; set; }
     }
 }

@@ -24,13 +24,27 @@ namespace CimscoPortal.App_Start
                   .ForMember(m => m.TimeStamp, opt => opt.MapFrom(efo => (efo.TimeStamp != null) ? efo.TimeStamp.ToString() : "00:00"))
                   //.ForMember(m => m.TimeStamp, opt => opt.ResolveUsing<test>());
                   ;
+            Mapper.CreateMap<InvoiceSummary, EnergyData>()
+                .ForMember(m => m.Energy,
+                                opt => opt.MapFrom(i => i.TotalEnergyCharges ))
+                .ForMember(m => m.Line,
+                opt => opt.MapFrom(i => i.TotalNetworkCharges))
+                .ForMember(m => m.Other,
+                                opt => opt.MapFrom(i => i.TotalMiscCharges ))
+                .ForMember(m => m.Month,
+                                opt => opt.MapFrom(i => i.InvoiceDate.ToString()))
+                                ;
 
+            //Mapper.CreateMap<InvoiceSummary, DonutChartViewModel>()
+            //    .ForMember(m => m.DonutChartData, opt => opt.MapFrom(i => i.TotalCharges))
+            //    ;
             //Mapper.CreateMap<DateTime?, string>().ConvertUsing<DateTimeToStringConverter>();
             //Mapper.CreateMap<DateTime?, DateTime>().ConvertUsing<DateTimeConverter>();
             //Mapper.CreateMap<DateTime?, DateTime?>().ConvertUsing<NullableDateTimeConverter>();
             //Mapper.CreateMap<DateTime?, string>().ConvertUsing(new DateTimeToStringConverter());
             //Mapper.AddFormatter<DateStringFormatter>();
-            Mapper.AssertConfigurationIsValid();
+
+           // Mapper.AssertConfigurationIsValid();
         }
     }
 
