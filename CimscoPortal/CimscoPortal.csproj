@@ -271,6 +271,7 @@
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\DonutChartViewModel.cs" />
+    <Compile Include="Models\EnergyDataModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\MessageViewModels.cs" />
@@ -337,8 +338,10 @@
     <Content Include="assets\img\avatars\Osvaldus-Valutis.jpg" />
     <Content Include="assets\img\avatars\Sergey-Azovskiy.jpg" />
     <Content Include="assets\img\avatars\Stephanie-Walter.jpg" />
+    <Content Include="assets\img\cimsco-favicon.png" />
     <Content Include="assets\img\cimsco-logo.png" />
     <Content Include="assets\img\cimsco-logoA.png" />
+    <Content Include="assets\img\CimscoLogoBase.png" />
     <Content Include="assets\img\favicon.png" />
     <Content Include="assets\img\jquery.minicolors.png" />
     <Content Include="assets\img\logo-inverted.png" />
@@ -391,6 +394,7 @@
     <Content Include="assets\js\charts\morris\morris.js" />
     <Content Include="assets\js\charts\morris\raphael-2.0.2.min.js" />
     <Content Include="assets\js\charts\sparkline\jquery.sparkline.js" />
+    <Content Include="assets\js\charts\sparkline\sparkline-init-customDEL.js" />
     <Content Include="assets\js\charts\sparkline\sparkline-init.js" />
     <Content Include="assets\js\colorpicker\jquery.minicolors.js" />
     <Content Include="assets\js\colorpicker\jquery.minicolors.min.js" />
@@ -566,6 +570,7 @@
     </None>
     <None Include="Views\Account\Login.cshtml-original" />
     <Content Include="Views\Account\Register.cshtml" />
+    <None Include="Views\Account\Register.cshtml-original" />
     <Content Include="Views\Account\ResetPassword.cshtml" />
     <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
     <Content Include="Views\Account\SendCode.cshtml" />
@@ -595,6 +600,8 @@
     <Content Include="Views\Portal\_YearToDateGraph.cshtml" />
     <Content Include="Views\Shared\_DonutPlusSummary.cshtml" />
     <Content Include="Views\Shared\_StackedGraph.cshtml" />
+    <Content Include="Views\Shared\_SparklineComposite.cshtml" />
+    <Content Include="Views\Portal\SiteSummary.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />

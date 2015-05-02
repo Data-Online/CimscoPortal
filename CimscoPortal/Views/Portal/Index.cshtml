@@ -5,41 +5,52 @@
 }
 
 <div class="row">
-    <div id="yearToDateGraph" class="col-lg-12 col-sm-12 col-xs-12">
-        @Html.Partial("_YearToDateGraph")
-        <span data-display="stackedGraph" data-datafor="YearToDateSummary"></span>
+    <div class="col-lg-6 col-sm-6 col-xs-12">
+        <div class="databox databox-lg radius-bordered databox-shadowed">
+            <div class="databox-left bg-white">
+                <div class="databox-sparkline">
+                    <span data-sparkline="bar" data-height="40px" data-width="100%" data-barwidth="7px" data-barspacing="3px" data-stackedbarcolor='["#11a9cc", "#ffce55"]'>
+                        2:2,2:3,3:2,1:3,3:3
+                    </span>
+                </div>
+            </div>
+            <a href="@Url.Action("SiteSummary", "Portal")">
+                <div class="databox-right bordered-thick bordered-sky bg-white">
+                    <span class="databox-number sky"><i class="fa fa-simplybuilt"></i>Masterton Supermarkets Ltd</span>
+                    <div class="databox-text darkgray">Upper Hutt, 5140</div>
+                    <div class="databox-stat bg-sky radius-bordered">
+                        <div class="stat-text">10 %</div>
+                        <i class="stat-icon fa fa-long-arrow-up"></i>
+                    </div>
+                </div>
+            </a>
+        </div>
     </div>
 </div>
 
-<div class="row">
-    <div id="MonthlySummary" class="col-xs-12 col-md-6 col-lg-6">
-        @Html.Partial("_DonutPlusSummary")
-        <span data-display="donutChartPlusSummary" data-datafor="MonthlySummary" ></span>
-    </div>
-</div>
 
 
-@section PageScripts{
-    <script src="assets/js/beyond.min.js"></script>
 
-    <!--Page Related Scripts-->
-    <script src="/assets/js/charts/morris/raphael-2.0.2.min.js"></script>
-    <script src="/assets/js/charts/morris/morris.js"></script>
-    <script src="/assets/js/charts/morris/morris-init.js"></script>
 
-    <script type="text/javascript">
-        $(window).bind("load", function () {
+    @section PageScripts{
 
-            /*Sets Themed Colors Based on Themes*/
-            themeprimary = getThemeColorFromCss('themeprimary');
-            themesecondary = getThemeColorFromCss('themesecondary');
-            themethirdcolor = getThemeColorFromCss('themethirdcolor');
-            themefourthcolor = getThemeColorFromCss('themefourthcolor');
-            themefifthcolor = getThemeColorFromCss('themefifthcolor');
+        <script src="/assets/js/charts/morris/morris-init.js"></script>
 
-            createPageDonutCharts.withSummary();
-            createPageBarCharts.standard();
-        });
+        <script src="/assets/js/charts/sparkline/jquery.sparkline.js"></script>
+        <script src="/assets/js/charts/sparkline/sparkline-init.js"></script>
 
-     </script>
-}
+        <script type="text/javascript">
+            $(window).bind("load", function () {
+
+                /*Sets Themed Colors Based on Themes*/
+                themeprimary = getThemeColorFromCss('themeprimary');
+                themesecondary = getThemeColorFromCss('themesecondary');
+                themethirdcolor = getThemeColorFromCss('themethirdcolor');
+                themefourthcolor = getThemeColorFromCss('themefourthcolor');
+                themefifthcolor = getThemeColorFromCss('themefifthcolor');
+
+                InitiateSparklineCharts.init();
+
+            });
+        </script>
+    }

@@ -9,12 +9,11 @@
 
 namespace CimscoPortal.Data
 {
-    using CimscoPortal.Infrastructure;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
-
-    public partial class CimscoPortalEntities : DbContext, ICimscoPortalEntities
+    
+    public partial class CimscoPortalEntities : DbContext
     {
         public CimscoPortalEntities()
             : base("name=CimscoPortalEntities")

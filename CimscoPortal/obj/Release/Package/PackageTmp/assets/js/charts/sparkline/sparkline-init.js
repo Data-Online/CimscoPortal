@@ -192,7 +192,7 @@ var InitiateSparklineCharts = function () {
             /*Composite BarTST*/
             var sparklinecompositebars = $('[data-sparkline=compositebartst]');
             $.each(sparklinecompositebars, function () {
-                $(this).sparkline(getjsonData($(this).data('viewmodel'),'1'), {
+                $(this).sparkline(getjsonData($(this).data('viewmodel'), '1'), {
                     type: 'bar',
                     disableHiddenCheck: true,
                     height: $(this).data('height'),
@@ -257,8 +257,8 @@ function getjsonData(viewmodel, dim) {
     //alert(viewmodel+' '+dim);
     var myArray = [];
     // Ensures the data is returned before passing to spark element
-    $.ajaxSetup( { "async": false } );  
-    var jq = $.getJSON("/home/getdata/"+viewmodel+'_'+dim)
+    $.ajaxSetup({ "async": false });
+    var jq = $.getJSON("/home/getdata/" + viewmodel + '_' + dim)
         .done(function (data) {
             $.each(data, function (i) { myArray.push(data[i]) });
         });

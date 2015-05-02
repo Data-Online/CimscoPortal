@@ -166,3 +166,4 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.Owi
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\obj\Debug\CimscoPortal.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\obj\Debug\CimscoPortal.pdb
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\obj\Debug\CimscoPortal.csprojResolveAssemblyReference.cache

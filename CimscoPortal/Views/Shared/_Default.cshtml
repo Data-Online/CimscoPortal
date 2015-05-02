@@ -19,7 +19,7 @@ Purchase: http://wrapbootstrap.com
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link rel="shortcut icon" href="/assets/img/favicon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="/assets/img/cimsco-favicon.png" type="image/x-icon">
 
     <!--Basic Styles-->
     @Styles.Render("~/css/bootstrap")
@@ -53,7 +53,7 @@ Purchase: http://wrapbootstrap.com
                 <div class="navbar-header pull-left">
                     <a href="#" class="navbar-brand">
                         <small>
-                            <img src="/assets/img/logo.png" alt="" />
+                            <img src="~/assets/img/CimscoLogoBase.png" alt="" />
                         </small>
                     </a>
                 </div>
@@ -400,9 +400,11 @@ Purchase: http://wrapbootstrap.com
     <!--Page Related Scripts-->
     @RenderSection("PageScripts", required: false)
 
-    @*<script src="@Url.Content("/assets/js/custom/dashboard-messages.js")" type="text/javascript"></script>
-    <script src="@Url.Content("/assets/js/custom/tools.js")" type="text/javascript"></script>*@
-
+    <script src="@Url.Content("/assets/js/custom/dashboard-messages.js")" type="text/javascript"></script>
+    <script src="@Url.Content("/assets/js/custom/tools.js")" type="text/javascript"></script>
+    <script>
+        populateNavbarData.init();
+    </script>
 
     <style>
         .btn-disable {

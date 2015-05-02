@@ -17,5 +17,7 @@
 	[TotalEnergyCharges] [numeric](14, 2) NOT NULL,
 	[ConnectionNumber] [nvarchar](30) NOT NULL,
 	[SiteName] [nvarchar](50) NOT NULL,
-	[EnergyPointId] [int] NOT NULL
+	[EnergyPointId] [int] NOT NULL, 
+    [InvoiceSummaryId] INT NOT NULL IDENTITY, 
+    CONSTRAINT [PK_InvoiceSummaries] PRIMARY KEY ([InvoiceSummaryId])
 ) ON [PRIMARY]

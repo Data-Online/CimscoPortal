@@ -1,0 +1,65 @@
+﻿@{
+    ViewBag.Title = "Dashboard";
+    ViewBag.Description = "Cimsco Dashboard";
+    Layout = "~/Views/Shared/_Default.cshtml";
+}
+
+<div class="row">
+    <div id="yearToDateGraph" class="col-lg-12 col-sm-12 col-xs-12">
+        @Html.Partial("_YearToDateGraph")
+        <span data-display="stackedGraph" data-datafor="YearToDateSummary"></span>
+    </div>
+</div>
+
+<div class="row">
+    <div id="MonthlySummary" class="col-xs-12 col-md-6 col-lg-6">
+        @Html.Partial("_DonutPlusSummary")
+        <span data-display="donutChartPlusSummary" data-datafor="MonthlySummary" ></span>
+    </div>
+
+    <div id="WeeklyEnergyBySlice" class="col-lg-3 col-sm-6 col-xs-12">
+        @Html.Partial("_SparklineComposite")
+        <span data-display="sparklineComposite" data-datafor="WeeklyEnergyBySlice"></span>
+    </div>
+
+    <div id="WeekendEnergyBySlice" class="col-lg-3 col-sm-6 col-xs-12">
+        @Html.Partial("_SparklineComposite")
+        <span data-display="sparklineComposite" data-datafor="WeekendEnergyBySlice"></span>
+    </div>
+
+</div>
+
+
+
+
+
+
+    @section PageScripts{
+        @*<script src="assets/js/beyond.min.js"></script>*@
+
+        <!--Page Related Scripts-->
+        <script src="/assets/js/charts/morris/raphael-2.0.2.min.js"></script>
+        <script src="/assets/js/charts/morris/morris.js"></script>
+        <script src="/assets/js/charts/morris/morris-init.js"></script>
+
+        <script src="/assets/js/charts/sparkline/jquery.sparkline.js"></script>
+
+        <script type="text/javascript">
+            $(window).bind("load", function () {
+
+                /*Sets Themed Colors Based on Themes*/
+                themeprimary = getThemeColorFromCss('themeprimary');
+                themesecondary = getThemeColorFromCss('themesecondary');
+                themethirdcolor = getThemeColorFromCss('themethirdcolor');
+                themefourthcolor = getThemeColorFromCss('themefourthcolor');
+                themefifthcolor = getThemeColorFromCss('themefifthcolor');
+
+                createPageDonutCharts.withSummary();
+                createPageBarCharts.standard();
+
+                createSparklineCharts.composite();
+                //InitiateSparklineCharts.init();
+            });
+
+        </script>
+    }

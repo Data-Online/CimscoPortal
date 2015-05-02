@@ -19,7 +19,7 @@ go
 go
 :r ".\PortalMessages.data.sql"
 go
-:r ".\InvoiceSummaries.data.sql"
+:r ".\InvoiceSummariesRaw.data.sql"
 go
 
 

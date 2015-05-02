@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
 using System.Data.Entity.SqlServer;
+using System.Globalization;
 
 namespace CimscoPortal.Services
 {
@@ -33,10 +34,10 @@ namespace CimscoPortal.Services
                                             .ToList();
         }
 
-        public List<AlertViewModel> GetNavbarDataFor(int customerId, string elementType)
+        public List<AlertData> GetNavbarDataFor(int customerId, string elementType)
         {
             return _repository.PortalMessages.Where(i => i.MessageType.TypeElement == elementType && i.CustomerId == customerId)
-                                            .Project().To<AlertViewModel>()
+                                            .Project().To<AlertData>()
                                             .ToList();
         }
 
@@ -74,14 +75,23 @@ namespace CimscoPortal.Services
 
         }
 
-        public List<EnergyData> GetHistoryByMonth(int _energyPointId)
+        public StackedBarChartViewModel GetHistoryByMonth(int _energyPointId)
         {
-            var _result = new List<StackedBarChartViewModel>();
+            var _result = new StackedBarChartViewModel();
             List<EnergyData> _data = _repository.InvoiceSummaries.Where(i => i.EnergyPointId == _energyPointId).OrderBy(o => o.InvoiceDate)
                                             .Project().To<EnergyData>()
                                             .ToList();
 
-            return _data;
+            NumberFormatInfo nfi = new CultureInfo("en-US", false).NumberFormat;
+            nfi.PercentDecimalDigits = 0;
+            decimal zz = _data.First().Energy;
+            decimal zzz = _data.ElementAtOrDefault(_data.Count() - 13).Energy;  // .Last().Energy;
+            string _percentageChange = (zz / zzz).ToString("P", nfi);
+            BarChartSummaryData _summaryData = new BarChartSummaryData() { Title = "ELECTRICITY COSTS", SubTitle = "Invoice History", PercentChange = _percentageChange };
+            _result.MonthlyData = _data;
+            _result.BarChartSummaryData = _summaryData;
+
+            return _result;
         }
 
     }

@@ -10,7 +10,7 @@ namespace CimscoPortal.App_Start
 
         public static void Configure()
         {
-            Mapper.CreateMap<PortalMessage, AlertViewModel>()
+            Mapper.CreateMap<PortalMessage, AlertData>()
                 .ForMember(m => m.CategoryName,
                             opt => opt.MapFrom(i => i.MessageCategory.CategoryName))
                 .ForMember(m => m.TypeName,
@@ -21,9 +21,18 @@ namespace CimscoPortal.App_Start
                             opt => opt.MapFrom(i => i.MessageCategory.Element2))
 
                 //                .ForMember(x => x.TimeStamp, opt => opt.MapFrom(efo => efo.TimeStamp.ToString()));
-                  .ForMember(m => m.TimeStamp, opt => opt.MapFrom(efo => (efo.TimeStamp != null) ? efo.TimeStamp.ToString() : "00:00"))
-                  //.ForMember(m => m.TimeStamp, opt => opt.ResolveUsing<test>());
+                .ForMember(m => m.TimeStamp, opt => opt.MapFrom(i => (i.TimeStamp != null) ? i.TimeStamp.ToString() : DateTime.Now.ToString()))
+                //.ForMember(m => m._timeStamp, opt => opt.MapFrom(i => (i.TimeStamp != null) ? i.TimeStamp : DateTime.Now))
+                .ForMember(m => m._timeStamp, opt => opt.NullSubstitute(DateTime.Now))
+                .ForMember(m => m._timeStamp, opt => opt.MapFrom(i => i.TimeStamp))
+                   // .ForMember(m => m._timeStamp, opt => opt.Ignore())
+                    .ForMember(m => m.Subject, opt => opt.Ignore())
+                    .ForMember(m => m.Name, opt => opt.Ignore())
+                   .ForMember(m => m.TimeStamp,  opt => opt.Ignore())
+                  //.ForMember(m => m.TimeStamp, opt => opt.ResolveUsing<TimeStringResolver>());
                   ;
+            Mapper.AssertConfigurationIsValid();
+
             Mapper.CreateMap<InvoiceSummary, EnergyData>()
                 .ForMember(m => m.Energy,
                                 opt => opt.MapFrom(i => i.TotalEnergyCharges ))
@@ -33,12 +42,14 @@ namespace CimscoPortal.App_Start
                                 opt => opt.MapFrom(i => i.TotalMiscCharges ))
                 .ForMember(m => m.Month,
                                 opt => opt.MapFrom(i => i.InvoiceDate.ToString()))
+                .ForMember(m => m._month,
+                                opt => opt.MapFrom(i => i.InvoiceDate))
                                 ;
-
+   
             //Mapper.CreateMap<InvoiceSummary, DonutChartViewModel>()
             //    .ForMember(m => m.DonutChartData, opt => opt.MapFrom(i => i.TotalCharges))
             //    ;
-            //Mapper.CreateMap<DateTime?, string>().ConvertUsing<DateTimeToStringConverter>();
+          //  Mapper.CreateMap<DateTime?, string>().ConvertUsing<DateTimeToStringConverter>();
             //Mapper.CreateMap<DateTime?, DateTime>().ConvertUsing<DateTimeConverter>();
             //Mapper.CreateMap<DateTime?, DateTime?>().ConvertUsing<NullableDateTimeConverter>();
             //Mapper.CreateMap<DateTime?, string>().ConvertUsing(new DateTimeToStringConverter());
@@ -46,7 +57,32 @@ namespace CimscoPortal.App_Start
 
            // Mapper.AssertConfigurationIsValid();
         }
+
     }
+
+    //public interface ITypeConverter<TSource, TDestination>
+    //{
+    //    TDestination Convert(TSource source);
+    //}
+
+    //public class DateTimeToStringConverter : ITypeConverter<DateTime?, string>
+    //{
+    //    public string Convert(DateTime source)
+    //    {
+    //        if (source.HasValue)
+    //            return source.Value.ToString();
+    //        else
+    //            return "00:00";
+    //    }
+    //}
+    //public class TimeStringResolver : ValueResolver<AlertData, string>
+    //{
+    //    protected override string ResolveCore(AlertData value)
+    //    {
+    //        //return (value == null ? "00:00" : value.TimeStamp.ToString());
+    //        return "00:00";
+    //    }
+    //}
 
     //public class test : ValueResolver<DateTime?, string>
     //{
@@ -92,16 +128,7 @@ namespace CimscoPortal.App_Start
     //    }
     //}
 
-    //public class DateTimeToStringConverter : TypeConverter<DateTime?, string>
-    //{
-    //    protected override string ConvertCore(DateTime? source)
-    //    {
-    //        if (source.HasValue)
-    //            return source.Value.ToString();
-    //        else
-    //            return "00:00";
-    //    }
-    //}
+
 
     //public class NullableDateTimeConverter : TypeConverter<DateTime?, DateTime?>
     //{

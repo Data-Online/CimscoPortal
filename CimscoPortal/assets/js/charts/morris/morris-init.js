@@ -1,98 +1,51 @@
-﻿var gridbordercolor = "#eee";
-
-var tax_data = [
-                 { "period": "2011 Q3", "licensed": 3407, "sorned": 660 },
-                 { "period": "2011 Q2", "licensed": 3351, "sorned": 629 },
-                 { "period": "2011 Q1", "licensed": 3269, "sorned": 618 },
-                 { "period": "2010 Q4", "licensed": 3246, "sorned": 661 },
-                 { "period": "2009 Q4", "licensed": 3171, "sorned": 676 },
-                 { "period": "2008 Q4", "licensed": 3155, "sorned": 681 },
-                 { "period": "2007 Q4", "licensed": 3226, "sorned": 620 },
-                 { "period": "2006 Q4", "licensed": 3245, "sorned": null },
-                 { "period": "2005 Q4", "licensed": 3289, "sorned": null }
-];
-
-var json_data = [
-                  { Month: 'Jan', Energy: 100, Line: 90, Other: 80 },
-                  { Month: 'Feb', Energy: 75, Line: 65, Other: 25 },
-                  { Month: 'March', Energy: 50, Line: 40, Other: 90 },
-                  { Month: 'April', Energy: 75, Line: 65, Other: 15 },
-                  { Month: 'May', Energy: 50, Line: 40, Other: 50 },
-                  { Month: 'June', Energy: 75, Line: 65, Other: 10 },
-                  { Month: 'July', Energy: 100, Line: 90, Other: 90 },
-                  { Month: 'Aug', Energy: 100, Line: 90, Other: 80 },
-                  { Month: 'Sept', Energy: 75, Line: 65, Other: 25 },
-                  { Month: 'Oct', Energy: 50, Line: 40, Other: 90 },
-                  { Month: 'Nov', Energy: 75, Line: 65, Other: 15 },
-                  { Month: 'Dec', Energy: 75, Line: 65, Other: 15 }
-
-];
-
-var InitiateAreaChart = function () {
+﻿var InitiateSparklineCharts = function () {
     return {
-        init: function () {
-            Morris.Area({
-                element: 'area-chart',
-                data: [
-                  { period: '2010 Q1', iphone: 2666, ipad: null, itouch: 2647 },
-                  { period: '2010 Q2', iphone: 2778, ipad: 2294, itouch: 2441 },
-                  { period: '2010 Q3', iphone: 4912, ipad: 1969, itouch: 2501 },
-                  { period: '2010 Q4', iphone: 3767, ipad: 3597, itouch: 5689 },
-                  { period: '2011 Q1', iphone: 6810, ipad: 1914, itouch: 2293 },
-                  { period: '2011 Q2', iphone: 5670, ipad: 4293, itouch: 1881 },
-                  { period: '2011 Q3', iphone: 4820, ipad: 3795, itouch: 1588 },
-                  { period: '2011 Q4', iphone: 15073, ipad: 5967, itouch: 5175 },
-                  { period: '2012 Q1', iphone: 10687, ipad: 4460, itouch: 2028 },
-                  { period: '2012 Q2', iphone: 8432, ipad: 5713, itouch: 1791 }
-                ],
-                xkey: 'period',
-                ykeys: ['iphone', 'ipad', 'itouch'],
-                labels: ['iPhone', 'iPad', 'iPod Touch'],
-                pointSize: 2,
-                hideHover: 'auto',
-                lineColors: [themethirdcolor, themesecondary, themeprimary]
+        init: function (json, elementId) {
+            /*Composite Bar*/
+            //var sparklinecompositebars = $('[data-sparkline=compositebar]');
+            var sparklinecompositebars = $('#' + elementId + ' span');//WeeklyEnergyBySliceSlineComposite' + ' span');
+            $.each(sparklinecompositebars.first(), function () {
+                $(this).sparkline(json.energyCostByBracket, {
+                    type: 'bar',
+                    disableHiddenCheck: true,
+                    height: $(this).data('height'),
+                    width: $(this).data('width'),
+                    barColor: themeprimary, //getcolor($(this).data('barcolor')),
+                    negBarColor: getcolor($(this).data('negbarcolor')),
+                    zeroColor: getcolor($(this).data('zerocolor')),
+                    barWidth: $(this).data('barwidth'),
+                    barSpacing: $(this).data('barspacing'),
+                    stackedBarColor: getcolor($(this).data('stackedbarcolor')),
+                    tooltipFormat: '{{offset:slice}}<br/><span style="color: {{color}}">&#9679;</span> charge: ${{value}}',
+                    tooltipValueLookups: {
+                        slice: $.range_map({
+                            '0': '00-04am', '1': '04-08am', '2': '08-12am',
+                            '3': '12-16pm', '4': '16-20pm', '5': '20-24pm'
+                        })
+                    },
+                    chartRangeMax: 2400.00
+                });
+                $(this).sparkline(json.energyChargesByBracket, {
+                    type: 'line',
+                    height: $(this).data('height'),
+                    disableHiddenCheck: true,
+                    width: $(this).data('width'),
+                    lineColor: themesecondary, //getcolor($(this).data('linecolor')),
+                    fillColor: getcolor($(this).data('fillcolor')),
+                    spotRadius: $(this).data('spotradius'),
+                    lineWidth: $(this).data('linewidth'),
+                    spotRadius: $(this).data('spotradius'),
+                    spotColor: getcolor($(this).data('spotcolor')),
+                    minSpotColor: getcolor($(this).data('minspotcolor')),
+                    maxSpotColor: getcolor($(this).data('maxspotcolor')),
+                    highlightSpotColor: getcolor($(this).data('highlightspotcolor')),
+                    highlightLineColor: getcolor($(this).data('highlightlinecolor')),
+                    tooltipFormat: '<span style="color: {{color}}">&#9679;</span> cost per kw: ${{y}}',
+                    composite: true,
+                    chartRangeMax: 18.00
+                });
+
             });
-        }
-    };
-}();
-
-var InitiateLineChart = function () {
-    return {
-        init: function () {
-            Morris.Line({
-                element: 'line-chart',
-                data: tax_data,
-                xkey: 'period',
-                ykeys: ['licensed', 'sorned'],
-                labels: ['Licensed', 'Off the road'],
-                lineColors: [themeprimary, themethirdcolor]
-            });
-
-        }
-    };
-}();
-
-
-var InitiateLineChart2 = function () {
-    return {
-        init: function () {
-            Morris.Line({
-                element: 'line-chart-2',
-                data: [
-                  { y: '2006', a: 100, b: 90 },
-                  { y: '2007', a: 75, b: 65 },
-                  { y: '2008', a: 50, b: 40 },
-                  { y: '2009', a: 75, b: 65 },
-                  { y: '2010', a: 50, b: 40 },
-                  { y: '2011', a: 75, b: 65 },
-                  { y: '2012', a: 100, b: 90 }
-                ],
-                xkey: 'y',
-                ykeys: ['a', 'b'],
-                labels: ['Series A', 'Series B'],
-                lineColors: [themeprimary, themethirdcolor]
-            });
-
         }
     };
 }();
@@ -111,6 +64,11 @@ var InitiateBarChart = function () {
                 hideHover: 'auto',
                 barColors: [themeprimary, themesecondary, themethirdcolor],
                 stacked: true
+                //,
+                //hoverCallback: function (index, options, content) {
+                //    var row = options.data[index];
+                //    return "sin(" + row.x + ") = " + row.y;
+                //}
             });
         }
     };
@@ -118,8 +76,9 @@ var InitiateBarChart = function () {
 
 var InitiateDonutChart = function () {
     return {
-        init: function (json) {
-            var elementId = json.headerData.dataFor + "Donut";
+        init: function (json, elementId) {
+           // alert(element);
+            //var elementId = json.headerData.dataFor + "Donut";
             //alert(elementId);
             Morris.Donut({
                 element: elementId,
@@ -150,8 +109,8 @@ var createPageDonutCharts = function () {
                 // Read Html element, apply element id for Donut chart
                 for (var i = 1, len = obj.length; i < len; i++)
                 {
-                    updateDonutChartElementOnPage(obj[i]);
-                    InitiateDonutChart.init(obj[i]);
+                    var elementId = updateDonutChartElementOnPage(obj[i]);
+                    InitiateDonutChart.init(obj[i], elementId);
                 }
             });
         }
@@ -165,7 +124,6 @@ var createPageBarCharts = function () {
             AJAXdata.push({});
             AJAXdata.push(getJsonData('GetMonthlyEnergySummary', 'a'));
             $.when.apply($, AJAXdata).done(function (data) {
-
                 var obj = [];
                 obj.push({});
                 for (var i = 1, len = arguments.length; i < len; i++) {
@@ -178,59 +136,133 @@ var createPageBarCharts = function () {
     }
 }();
 
+var createSparklineCharts = function () {
+    return {
+        composite: function () {
+            var sparklineCharts = $('[data-display=sparklineComposite]');
+            var AJAXdata = [];
+            AJAXdata.push({});
+            $.each(sparklineCharts, function () {
+                var dataFor = $(this).data('datafor');
+                AJAXdata.push(getJsonData('GetSparklineDataFor', dataFor));
+            });
+            $.when.apply($, AJAXdata).done(function (data) {
+                var obj = []; obj.push({});
+                for (var i = 1, len = arguments.length; i < len; i++) {
+                    obj.push(arguments[i][0]);
+                }
+                for (var i = 1, len = obj.length; i < len; i++) {
+                    var elementId = updateElementOnPage.compositeSparkline(obj[i]);
+                    InitiateSparklineCharts.init(obj[i], elementId);
+                }              
+            });
+        }
+    }
+}();
+
 function updateDonutChartElementOnPage(data) {
     var pageElement = document.getElementById(data.headerData.dataFor).innerHTML;
     var infoLines = document.getElementById(data.headerData.dataFor).getElementsByClassName("databox-infoLines")[0].innerHTML;
-
+    
     document.getElementById(data.headerData.dataFor).innerHTML = '';
     var newpageElement = '';
-    newpageElement = insertModelDataIntoElementA(data.headerData, pageElement);
+    newpageElement = insertModelDataIntoElement(pageElement, data.headerData);
+    
     document.getElementById(data.headerData.dataFor).innerHTML = newpageElement;
-
+    
+    var graphicElementId = $("#" + data.headerData.dataFor + " .chart").attr('id'); //alert(graphicElementId);
     var newinfoLines = '';
     for (var i = 0; i < data.summaryData.length; i++) {
         //data.summaryData[i].detail = '$'+parseFloat(data.summaryData[i].detail).toMoney();
-        newinfoLines += insertModelDataIntoElementB(data.summaryData[i], infoLines);
+        newinfoLines += insertModelDataIntoElement(infoLines, data.summaryData[i]);
     }
     document.getElementById(data.headerData.dataFor).getElementsByClassName("databox-infoLines")[0].innerHTML = newinfoLines;
+
+    return graphicElementId;
 }
 
 function updateBarChartElementOnPage(data) {
     var pageElement = document.getElementById('yearToDateGraph').innerHTML;
     document.getElementById('yearToDateGraph').innerHTML = '';
     var newPageElement = '';
-    newPageElement = insertModelDataIntoElementC(data, pageElement);
+    newPageElement = insertModelDataIntoElement(pageElement, data);
     document.getElementById('yearToDateGraph').innerHTML = newPageElement;
 }
+
+
+var updateElementOnPage = function () {
+    return {
+        compositeSparkline: function (data) {
+            var pageElement = document.getElementById(data.headerData.dataFor).innerHTML;
+            //alert(pageElement);
+            var newpageElement = '';
+            newpageElement = insertModelDataIntoElement(pageElement, data.headerData);
+            newpageElement = insertModelDataIntoElement(newpageElement, data);
+            document.getElementById(data.headerData.dataFor).innerHTML = newpageElement;
+            var graphicElementId = $("#" + data.headerData.dataFor + " .cp-graph-element").attr('id');
+            return graphicElementId;
+            //alert(graphicElementId);
+        }
+    }
+}();
+
 // GPA: 1. Standard function for mapping required
-function insertModelDataIntoElementA(data, element) {
-    return element
-                    .replace('{{dataFor}}', data.dataFor)
-                    .replace('{{header}}', data.header)
-    ;
+
+function insertModelDataIntoElement(element, data) {
+    var $currentElem = new RegExp();
+    for (var key in data) {
+        $currentElem = new RegExp('{{' + key + '}}');
+        element = element.replace($currentElem, data[key]);
+    }
+    return element;
 }
 
-function insertModelDataIntoElementB(data, element) {
-    alert (data.detail);
-    return element
-                    .replace('{{title}}', data.title)
-                    .replace('{{detail}}', data.detail) 
-    ;
-}
 
-function insertModelDataIntoElementC(data, element) {
-    return element
-                    .replace('{{title}}', data.title)
-                    .replace('{{subTitle}}', data.subTitle)
-                    .replace('{{percentChange}}', data.percentChange)
-    ;
-}
+//function insertModelDataIntoElementA(data, element) {
+//    return element
+//                    .replace('{{dataFor}}', data.dataFor)
+//                    .replace('{{header}}', data.header)
+//    ;
+//}
+
+//function insertModelDataIntoElementB(data, element) {
+//    return element
+//                    .replace('{{title}}', data.title)
+//                    .replace('{{detail}}', data.detail) 
+//    ;
+//}
+
+//function insertModelDataIntoElementC(data, element) {
+//    return element
+//                    .replace('{{title}}', data.title)
+//                    .replace('{{subTitle}}', data.subTitle)
+//                    .replace('{{percentChange}}', data.percentChange)
+//    ;
+//}
+
+//function insertModelDataIntoElementD(data, element) {
+//    return element
+//                    .replace('{{maxCharge}}', data.maxCharge)
+//                    .replace('{{totalCost}}', data.totalCost)
+//    ;
+//}
 
 function getJsonData(elementType, elementDataName) {
+    //alert("Get data" + elementType + ' ' + elementDataName);
     var url = "/portal/" + elementType + "/" + elementDataName;
     return $.getJSON(url);
 }
 
+function stringtoarray(str) {
+    var myArray = str.split(",");
+    for (var i = 0; i < myArray.length; i++) {
+        myArray[i] = +myArray[i];
+    }
+    for (var i = 0; i < myArray.length; i++) {
+        myArray[i] = parseInt(myArray[i], 10);
+    }
+    return myArray;
+}
 
 /* 
 decimal_sep: character used as deciaml separtor, it defaults to '.' when omitted

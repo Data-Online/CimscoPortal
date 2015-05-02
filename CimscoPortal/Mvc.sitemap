@@ -3,9 +3,10 @@
             xmlns="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0"
             xsi:schemaLocation="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0 MvcSiteMapSchema.xsd">
 
-  <mvcSiteMapNode title="Dashboard" controller="Home" action="Index" imageUrl="glyphicon glyphicon-home" description="dashboard">
-    <mvcSiteMapNode title="Databoxes" controller="Home" action="Databoxes" imageUrl="glyphicon glyphicon-tasks" description="beyond containers"/>
-    <mvcSiteMapNode title="Widgets" controller="Home" action="Widgets" imageUrl="fa fa-th" description="flexible containers"/>
+  <mvcSiteMapNode title="Dashboard" controller="Portal" action="Index" imageUrl="glyphicon glyphicon-home" description="dashboard">
+    <!--<mvcSiteMapNode title="Databoxes" controller="Home" action="Databoxes" imageUrl="glyphicon glyphicon-tasks" description="beyond containers"/>-->
+    <mvcSiteMapNode title="Site Summary" controller="Portal" action="SiteSummary" imageUrl="glyphicon glyphicon-tasks" description="cimsco portal"/>
+    <!--<mvcSiteMapNode title="Widgets" controller="Home" action="Widgets" imageUrl="fa fa-th" description="flexible containers"/>
     <mvcSiteMapNode title="Elements" url="/0" imageUrl="fa fa-desktop" description="elements">
       <mvcSiteMapNode title="Basic Elements" controller="Home" action="Elements" description="Basics"/>
       <mvcSiteMapNode title="Icons" url="/00" description="Icons">
@@ -72,7 +73,7 @@
     <mvcSiteMapNode title="Right to Left" controller="Home" action="RTL" imageUrl="fa fa-align-right" description="">
       <mvcSiteMapNode title="Arabic Layout" controller="Home" action="Arabic" description="Arabic Layout"/>
       <mvcSiteMapNode title="Persian Layout" controller="Home" action="Persian" description="Persian Layout"/>
-    </mvcSiteMapNode>
+    </mvcSiteMapNode>-->
   </mvcSiteMapNode>
 
 </mvcSiteMap>

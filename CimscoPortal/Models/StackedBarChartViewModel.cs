@@ -22,6 +22,7 @@ namespace CimscoPortal.Models
     public class EnergyData
     {
         public string Month { get; set; }
+        public DateTime _month { get; set; }
         public decimal Energy { get; set; }
         public decimal Line { get; set; }
         public decimal Other { get; set; }
