@@ -222,18 +222,21 @@
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Controllers\AdministrationController.cs" />
+    <Compile Include="Controllers\UserAdminController.cs" />
     <Compile Include="Data\Customer.cs">
       <DependentUpon>PortalEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Data\InvoiceSummary.cs">
       <DependentUpon>PortalEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\JavaScriptHelper.cs" />
-    <Compile Include="Infrastructure\CimscoPortalController.cs" />
-    <Compile Include="Infrastructure\ICimscoPortalEntities.cs" />
-    <Compile Include="Data\MessageCategory.cs">
+    <Compile Include="Data\MessageFormat.cs">
       <DependentUpon>PortalEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\JavaScriptHelper.cs" />
+    <Compile Include="Helpers\MenuVisibilityProvider.cs" />
+    <Compile Include="Infrastructure\CimscoPortalController.cs" />
+    <Compile Include="Infrastructure\ICimscoPortalEntities.cs" />
     <Compile Include="Data\MessageType.cs">
       <DependentUpon>PortalEntities.tt</DependentUpon>
     </Compile>
@@ -270,6 +273,7 @@
       <DependentUpon>T4MVC.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AdminViewModel.cs" />
     <Compile Include="Models\DonutChartViewModel.cs" />
     <Compile Include="Models\EnergyDataModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -602,6 +606,13 @@
     <Content Include="Views\Shared\_StackedGraph.cshtml" />
     <Content Include="Views\Shared\_SparklineComposite.cshtml" />
     <Content Include="Views\Portal\SiteSummary.cshtml" />
+    <Content Include="Views\Administration\Index.cshtml" />
+    <Content Include="Views\UserAdmin\Index.cshtml" />
+    <Content Include="Views\UserAdmin\Create.cshtml" />
+    <Content Include="Views\UserAdmin\Delete.cshtml" />
+    <Content Include="Views\UserAdmin\Details.cshtml" />
+    <Content Include="Views\UserAdmin\Edit.cshtml" />
+    <Content Include="Views\UserAdmin\_EditableDataTable.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />

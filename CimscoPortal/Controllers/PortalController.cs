@@ -39,7 +39,7 @@ namespace CimscoPortal.Controllers
 
             var user = User.Identity.Name;
             var userId = User.Identity.GetUserId();
-            
+            var zz = User.IsInRole("Admin");
             return View();            
         }
 
@@ -63,16 +63,18 @@ namespace CimscoPortal.Controllers
         public JsonResult GetNavbarData(string id)
         {
             int customerId = 1;
+            string pageElement = id;
             // var userName = User.Identity.Name;
+            var userId = User.Identity.GetUserId();
             AlertViewModel model = new AlertViewModel();
-            List<AlertData> alertData = _portalService.GetNavbarDataFor(customerId, id);
+            List<AlertData> alertData = _portalService.GetNavbarDataFor(customerId, pageElement);
 
             if (alertData.Count() > 0)
             {
                 alertData[0].TimeStamp = alertData[0]._timeStamp.ToString("m");
             }
             model.AlertData = alertData;
-            model.HeaderData = new HeaderData() { DataFor = id };
+            model.HeaderData = new HeaderData() { DataFor = pageElement };
 
             return JsonSuccess(model);
         }

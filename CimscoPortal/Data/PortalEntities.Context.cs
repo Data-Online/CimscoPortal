@@ -9,11 +9,12 @@
 
 namespace CimscoPortal.Data
 {
+    using CimscoPortal.Infrastructure;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
-    
-    public partial class CimscoPortalEntities : DbContext
+
+    public partial class CimscoPortalEntities : DbContext, ICimscoPortalEntities
     {
         public CimscoPortalEntities()
             : base("name=CimscoPortalEntities")
@@ -26,9 +27,9 @@ namespace CimscoPortal.Data
         }
     
         public virtual DbSet<Customer> Customers { get; set; }
-        public virtual DbSet<MessageCategory> MessageCategories { get; set; }
-        public virtual DbSet<MessageType> MessageTypes { get; set; }
+        public virtual DbSet<MessageFormat> MessageFormats { get; set; }
         public virtual DbSet<PortalMessage> PortalMessages { get; set; }
         public virtual DbSet<InvoiceSummary> InvoiceSummaries { get; set; }
+        public virtual DbSet<MessageType> MessageTypes { get; set; }
     }
 }

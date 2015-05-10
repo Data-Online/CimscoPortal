@@ -1,0 +1,38 @@
+﻿** Highlights
+     Tables that will be rebuilt
+       None
+     Clustered indexes that will be dropped
+       None
+     Clustered indexes that will be created
+       None
+     Possible data issues
+       None
+
+** User actions
+     Create
+       [dbo].[__MigrationHistory] (Table)
+       [dbo].[AspNetRoles] (Table)
+       [dbo].[AspNetRoles].[RoleNameIndex] (Index)
+       [dbo].[AspNetUserClaims] (Table)
+       [dbo].[AspNetUserClaims].[IX_UserId] (Index)
+       [dbo].[AspNetUserLogins] (Table)
+       [dbo].[AspNetUserLogins].[IX_UserId] (Index)
+       [dbo].[AspNetUserRoles] (Table)
+       [dbo].[AspNetUserRoles].[IX_UserId] (Index)
+       [dbo].[AspNetUserRoles].[IX_RoleId] (Index)
+       [dbo].[AspNetUsers] (Table)
+       [dbo].[AspNetUsers].[UserNameIndex] (Index)
+       [dbo].[Customers] (Table)
+       [dbo].[InvoiceSummaries] (Table)
+       [dbo].[MessageFormats] (Table)
+       [dbo].[MessageTypes] (Table)
+       [dbo].[PortalMessages] (Table)
+       [dbo].[FK_dbo.AspNetUserClaims_dbo.AspNetUsers_UserId] (Foreign Key)
+       [dbo].[FK_dbo.AspNetUserLogins_dbo.AspNetUsers_UserId] (Foreign Key)
+       [dbo].[FK_dbo.AspNetUserRoles_dbo.AspNetRoles_RoleId] (Foreign Key)
+       [dbo].[FK_dbo.AspNetUserRoles_dbo.AspNetUsers_UserId] (Foreign Key)
+       [dbo].[FK_MessageFormats_MessageTypes] (Foreign Key)
+       [dbo].[FK_PortalMessages_Customers] (Foreign Key)
+       [dbo].[FK_PortalMessages_MessageTypes] (Foreign Key)
+
+** Supporting actions

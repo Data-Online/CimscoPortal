@@ -11,14 +11,12 @@ namespace CimscoPortal.App_Start
         public static void Configure()
         {
             Mapper.CreateMap<PortalMessage, AlertData>()
-                .ForMember(m => m.CategoryName,
-                            opt => opt.MapFrom(i => i.MessageCategory.CategoryName))
                 .ForMember(m => m.TypeName,
-                            opt => opt.MapFrom(i => i.MessageType.TypeName))
+                            opt => opt.MapFrom(i => i.MessageFormat.MessageType.Description))
                 .ForMember(m => m.Element1,
-                            opt => opt.MapFrom(i => i.MessageCategory.Element1))
+                            opt => opt.MapFrom(i => i.MessageFormat.Element1))
                 .ForMember(m => m.Element2,
-                            opt => opt.MapFrom(i => i.MessageCategory.Element2))
+                            opt => opt.MapFrom(i => i.MessageFormat.Element2))
 
                 //                .ForMember(x => x.TimeStamp, opt => opt.MapFrom(efo => efo.TimeStamp.ToString()));
                 .ForMember(m => m.TimeStamp, opt => opt.MapFrom(i => (i.TimeStamp != null) ? i.TimeStamp.ToString() : DateTime.Now.ToString()))
@@ -26,9 +24,10 @@ namespace CimscoPortal.App_Start
                 .ForMember(m => m._timeStamp, opt => opt.NullSubstitute(DateTime.Now))
                 .ForMember(m => m._timeStamp, opt => opt.MapFrom(i => i.TimeStamp))
                    // .ForMember(m => m._timeStamp, opt => opt.Ignore())
+                    .ForMember(m => m.CategoryName, opt => opt.Ignore())
                     .ForMember(m => m.Subject, opt => opt.Ignore())
                     .ForMember(m => m.Name, opt => opt.Ignore())
-                   .ForMember(m => m.TimeStamp,  opt => opt.Ignore())
+                 //  .ForMember(m => m.TimeStamp,  opt => opt.Ignore())
                   //.ForMember(m => m.TimeStamp, opt => opt.ResolveUsing<TimeStringResolver>());
                   ;
             Mapper.AssertConfigurationIsValid();

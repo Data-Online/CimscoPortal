@@ -1,0 +1,150 @@
+﻿@model CimscoPortal.Models.EditUserViewModel
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Default.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-lg-12 col-sm-12 col-xs-12">
+            <h5 class="row-title before-magenta"><i class="fa fa-edit magenta"></i>@ViewBag.Title</h5>
+            <div class="row">
+                <div class="col-lg-6 col-sm-6 col-xs-12">
+                    <div class="widget flat radius-bordered">
+                        <div class="widget-header bg-blue">
+                            <span class="widget-caption">User Details</span>
+                        </div>
+                        <div class="widget-body">
+                            <div id="useredit-form">
+                                <form role="form">
+                                    <div class="form-title">
+                                        Login Information
+                                    </div>
+                                    <div class="form-group">
+                                        <span class="input-icon icon-right">
+                                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                                            <i class="fa fa-envelope-o circular"></i>
+                                        </span>
+                                    </div>
+                                    <div class="form-group">
+                                        <span class="input-icon icon-right">
+                                            <input type="text" class="form-control" id="passwordInput" placeholder="Password">
+                                            <i class="fa fa-lock circular"></i>
+                                        </span>
+                                    </div>
+                                    <div class="form-group">
+                                        <span class="input-icon icon-right">
+                                            <input type="text" class="form-control" id="confirmPasswordInput" placeholder="Confirm Password">
+                                            <i class="fa fa-lock circular"></i>
+                                        </span>
+                                    </div>
+                                    <div class="form-title">
+                                        Roles
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            @foreach (var item in Model.RolesList)
+                                            {
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" name="SelectedRole" value="@item.Value" checked="@item.Selected" class="colored-blue" />
+                                                        @Html.Label(item.Value, new { @class = "text" } )
+                                                    </label>
+                                                </div>
+                                                @*@Html.Bootstrap().CheckBox("SelectedRole").Text(@item.Value).IsChecked(@item.Selected).HtmlAttributes(new { @class = "colored-blue" })*@
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <div class="form-title">
+                                        Personal Information
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <span class="input-icon icon-right">
+                                                    <input type="text" class="form-control" placeholder="Name">
+                                                    <i class="fa fa-user"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <span class="input-icon icon-right">
+                                                    <input type="text" class="form-control" placeholder="Family">
+                                                    <i class="fa fa-user"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <span class="input-icon icon-right">
+                                                    <input type="text" class="form-control" placeholder="Phone">
+                                                    <i class="glyphicon glyphicon-earphone"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <span class="input-icon icon-right">
+                                                    <input type="text" class="form-control" placeholder="Mobile">
+                                                    <i class="glyphicon glyphicon-phone"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr class="wide" />
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <span class="input-icon icon-right">
+                                                    <input class="form-control date-picker" id="id-date-picker-1" type="text" data-date-format="dd-mm-yyyy" placeholder="Birth Date">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <span class="input-icon icon-right">
+                                                    <input type="text" class="form-control" placeholder="Birth Place">
+                                                    <i class="fa fa-globe"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="submit" value="save" class="btn btn-info">Save</button>
+                                    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-blue" })
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@section PageScripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+    <link href="/assets/css/dataTables.bootstrap.css" rel="stylesheet" />
+    <script src="/assets/js/datatable/jquery.dataTables.min.js"></script>
+    <script src="/assets/js/datatable/ZeroClipboard.js"></script>
+    <script src="/assets/js/datatable/dataTables.tableTools.min.js"></script>
+    <script src="/assets/js/datatable/dataTables.bootstrap.min.js"></script>
+    <script src="/assets/js/datatable/datatables-init.js"></script>
+    <script>
+        InitiateSimpleDataTable.init();
+        InitiateEditableDataTable.init();
+        InitiateExpandableDataTable.init();
+        InitiateSearchableDataTable.init();
+    </script>
+
+}

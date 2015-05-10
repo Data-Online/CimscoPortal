@@ -7,29 +7,9 @@
     <Property Name="CustomerId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="CustomerName" Type="nvarchar" MaxLength="100" />
   </EntityType>
-  <!--Errors Found During Generation:
-warning 6002: The table/view 'CimscoPortal.dbo.InvoiceSummaries' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
   <EntityType Name="InvoiceSummaries">
     <Key>
-      <PropertyRef Name="InvoiceId" />
-      <PropertyRef Name="InvoiceDate" />
-      <PropertyRef Name="InvoiceNumber" />
-      <PropertyRef Name="GstTotal" />
-      <PropertyRef Name="InvoiceTotal" />
-      <PropertyRef Name="AccountNumber" />
-      <PropertyRef Name="CustomerNumber" />
-      <PropertyRef Name="SiteId" />
-      <PropertyRef Name="NetworkChargesTotal" />
-      <PropertyRef Name="EnergyChargesTotal" />
-      <PropertyRef Name="MiscChargesTotal" />
-      <PropertyRef Name="TotalCharges" />
-      <PropertyRef Name="GSTCharges" />
-      <PropertyRef Name="TotalNetworkCharges" />
-      <PropertyRef Name="TotalMiscCharges" />
-      <PropertyRef Name="TotalEnergyCharges" />
-      <PropertyRef Name="ConnectionNumber" />
-      <PropertyRef Name="SiteName" />
-      <PropertyRef Name="EnergyPointId" />
+      <PropertyRef Name="InvoiceSummaryId" />
     </Key>
     <Property Name="InvoiceId" Type="int" Nullable="false" />
     <Property Name="InvoiceDate" Type="date" Nullable="false" />
@@ -50,23 +30,25 @@ warning 6002: The table/view 'CimscoPortal.dbo.InvoiceSummaries' does not have a
     <Property Name="ConnectionNumber" Type="nvarchar" MaxLength="30" Nullable="false" />
     <Property Name="SiteName" Type="nvarchar" MaxLength="50" Nullable="false" />
     <Property Name="EnergyPointId" Type="int" Nullable="false" />
+    <Property Name="InvoiceSummaryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
   </EntityType>
-  <EntityType Name="MessageCategories">
+  <EntityType Name="MessageFormats">
     <Key>
-      <PropertyRef Name="MessageCategoryId" />
+      <PropertyRef Name="MessageFormatId" />
     </Key>
-    <Property Name="MessageCategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="CategoryName" Type="nvarchar" MaxLength="20" />
+    <Property Name="MessageFormatId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="MessageTypeId" Type="int" />
     <Property Name="Element1" Type="nvarchar" MaxLength="50" />
     <Property Name="Element2" Type="nvarchar" MaxLength="50" />
+    <Property Name="DisplayFormat" Type="nvarchar" MaxLength="50" />
   </EntityType>
   <EntityType Name="MessageTypes">
     <Key>
       <PropertyRef Name="MessageTypeId" />
     </Key>
     <Property Name="MessageTypeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="TypeName" Type="nvarchar" MaxLength="10" />
-    <Property Name="TypeElement" Type="nvarchar" MaxLength="20" />
+    <Property Name="Description" Type="nvarchar" MaxLength="20" />
+    <Property Name="PageElement" Type="nvarchar" MaxLength="20" />
   </EntityType>
   <EntityType Name="PortalMessages">
     <Key>
@@ -74,14 +56,24 @@ warning 6002: The table/view 'CimscoPortal.dbo.InvoiceSummaries' does not have a
     </Key>
     <Property Name="PortalMessageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="CustomerId" Type="int" />
-    <Property Name="MessageCategoryId" Type="int" />
     <Property Name="Message" Type="nvarchar" MaxLength="100" />
-    <Property Name="MessageTypeId" Type="int" />
     <Property Name="MessageFormatId" Type="int" />
     <Property Name="TimeStamp" Type="datetime" />
     <Property Name="Footer" Type="nvarchar" MaxLength="100" />
     <Property Name="ExpiryDate" Type="datetime" />
   </EntityType>
+  <Association Name="FK_MessageFormats_MessageTypes">
+    <End Role="MessageTypes" Type="Self.MessageTypes" Multiplicity="0..1" />
+    <End Role="MessageFormats" Type="Self.MessageFormats" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MessageTypes">
+        <PropertyRef Name="MessageTypeId" />
+      </Principal>
+      <Dependent Role="MessageFormats">
+        <PropertyRef Name="MessageTypeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_PortalMessages_Customers">
     <End Role="Customers" Type="Self.Customers" Multiplicity="0..1" />
     <End Role="PortalMessages" Type="Self.PortalMessages" Multiplicity="*" />
@@ -94,68 +86,34 @@ warning 6002: The table/view 'CimscoPortal.dbo.InvoiceSummaries' does not have a
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK_PortalMessages_MessageCategories">
-    <End Role="MessageCategories" Type="Self.MessageCategories" Multiplicity="0..1" />
-    <End Role="PortalMessages" Type="Self.PortalMessages" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="MessageCategories">
-        <PropertyRef Name="MessageCategoryId" />
-      </Principal>
-      <Dependent Role="PortalMessages">
-        <PropertyRef Name="MessageCategoryId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="FK_PortalMessages_MessageTypes">
-    <End Role="MessageTypes" Type="Self.MessageTypes" Multiplicity="0..1" />
+    <End Role="MessageFormats" Type="Self.MessageFormats" Multiplicity="0..1" />
     <End Role="PortalMessages" Type="Self.PortalMessages" Multiplicity="*" />
     <ReferentialConstraint>
-      <Principal Role="MessageTypes">
-        <PropertyRef Name="MessageTypeId" />
+      <Principal Role="MessageFormats">
+        <PropertyRef Name="MessageFormatId" />
       </Principal>
       <Dependent Role="PortalMessages">
-        <PropertyRef Name="MessageTypeId" />
+        <PropertyRef Name="MessageFormatId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
   <EntityContainer Name="CimscoPortalModelStoreContainer">
     <EntitySet Name="Customers" EntityType="Self.Customers" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="MessageCategories" EntityType="Self.MessageCategories" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="InvoiceSummaries" EntityType="Self.InvoiceSummaries" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MessageFormats" EntityType="Self.MessageFormats" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MessageTypes" EntityType="Self.MessageTypes" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="PortalMessages" EntityType="Self.PortalMessages" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="InvoiceSummaries" EntityType="Self.InvoiceSummaries" store:Type="Tables" store:Schema="dbo">
-      <DefiningQuery>SELECT 
-    [InvoiceSummaries].[InvoiceId] AS [InvoiceId], 
-    [InvoiceSummaries].[InvoiceDate] AS [InvoiceDate], 
-    [InvoiceSummaries].[InvoiceNumber] AS [InvoiceNumber], 
-    [InvoiceSummaries].[GstTotal] AS [GstTotal], 
-    [InvoiceSummaries].[InvoiceTotal] AS [InvoiceTotal], 
-    [InvoiceSummaries].[AccountNumber] AS [AccountNumber], 
-    [InvoiceSummaries].[CustomerNumber] AS [CustomerNumber], 
-    [InvoiceSummaries].[SiteId] AS [SiteId], 
-    [InvoiceSummaries].[NetworkChargesTotal] AS [NetworkChargesTotal], 
-    [InvoiceSummaries].[EnergyChargesTotal] AS [EnergyChargesTotal], 
-    [InvoiceSummaries].[MiscChargesTotal] AS [MiscChargesTotal], 
-    [InvoiceSummaries].[TotalCharges] AS [TotalCharges], 
-    [InvoiceSummaries].[GSTCharges] AS [GSTCharges], 
-    [InvoiceSummaries].[TotalNetworkCharges] AS [TotalNetworkCharges], 
-    [InvoiceSummaries].[TotalMiscCharges] AS [TotalMiscCharges], 
-    [InvoiceSummaries].[TotalEnergyCharges] AS [TotalEnergyCharges], 
-    [InvoiceSummaries].[ConnectionNumber] AS [ConnectionNumber], 
-    [InvoiceSummaries].[SiteName] AS [SiteName], 
-    [InvoiceSummaries].[EnergyPointId] AS [EnergyPointId]
-    FROM [dbo].[InvoiceSummaries] AS [InvoiceSummaries]</DefiningQuery>
-    </EntitySet>
+    <AssociationSet Name="FK_MessageFormats_MessageTypes" Association="Self.FK_MessageFormats_MessageTypes">
+      <End Role="MessageTypes" EntitySet="MessageTypes" />
+      <End Role="MessageFormats" EntitySet="MessageFormats" />
+    </AssociationSet>
     <AssociationSet Name="FK_PortalMessages_Customers" Association="Self.FK_PortalMessages_Customers">
       <End Role="Customers" EntitySet="Customers" />
       <End Role="PortalMessages" EntitySet="PortalMessages" />
     </AssociationSet>
-    <AssociationSet Name="FK_PortalMessages_MessageCategories" Association="Self.FK_PortalMessages_MessageCategories">
-      <End Role="MessageCategories" EntitySet="MessageCategories" />
-      <End Role="PortalMessages" EntitySet="PortalMessages" />
-    </AssociationSet>
     <AssociationSet Name="FK_PortalMessages_MessageTypes" Association="Self.FK_PortalMessages_MessageTypes">
-      <End Role="MessageTypes" EntitySet="MessageTypes" />
+      <End Role="MessageFormats" EntitySet="MessageFormats" />
       <End Role="PortalMessages" EntitySet="PortalMessages" />
     </AssociationSet>
   </EntityContainer>

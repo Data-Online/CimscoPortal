@@ -12,18 +12,20 @@ namespace CimscoPortal.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class MessageCategory
+    public partial class MessageFormat
     {
-        public MessageCategory()
+        public MessageFormat()
         {
             this.PortalMessages = new HashSet<PortalMessage>();
         }
     
-        public int MessageCategoryId { get; set; }
-        public string CategoryName { get; set; }
+        public int MessageFormatId { get; set; }
+        public Nullable<int> MessageTypeId { get; set; }
         public string Element1 { get; set; }
         public string Element2 { get; set; }
+        public string DisplayFormat { get; set; }
     
         public virtual ICollection<PortalMessage> PortalMessages { get; set; }
+        public virtual MessageType MessageType { get; set; }
     }
 }

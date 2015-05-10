@@ -16,11 +16,16 @@ INSERT INTO [dbo].[PortalMessages] ([PortalMessageId], [CustomerId], [MessageCat
 			)
 SET IDENTITY_INSERT [dbo].[PortalMessages] OFF
 */
-SET IDENTITY_INSERT [dbo].[PortalMessages] ON
-INSERT INTO [dbo].[PortalMessages] ([PortalMessageId], [CustomerId], [MessageCategoryId], [Message], [MessageTypeId], [MessageFormatId], [TimeStamp], [Footer], [ExpiryDate]) VALUES (1, 1, 2, N'Test phone message', 1, NULL, N'2015-03-25 02:30:00', N'Test footer', N'2015-03-01 00:00:00')
-INSERT INTO [dbo].[PortalMessages] ([PortalMessageId], [CustomerId], [MessageCategoryId], [Message], [MessageTypeId], [MessageFormatId], [TimeStamp], [Footer], [ExpiryDate]) VALUES (2, 1, 4, N'Test tick message', 1, NULL, N'2015-03-25 03:45:00', N'Test footer2', N'2015-04-01 00:00:00')
+SET IDENTITY_INSERT [dbo].[PortalMessages] ON 
+
+GO
+INSERT [dbo].[PortalMessages] ([PortalMessageId], [CustomerId], [Message], [MessageFormatId], [TimeStamp], [Footer], [ExpiryDate]) VALUES (1, 1, N'Test phone message', 2, CAST(0x0000A466002932E0 AS DateTime), N'Test footer', CAST(0x0000A44E00000000 AS DateTime))
+GO
+INSERT [dbo].[PortalMessages] ([PortalMessageId], [CustomerId], [Message], [MessageFormatId], [TimeStamp], [Footer], [ExpiryDate]) VALUES (2, 1, N'Test tick message', 2, CAST(0x0000A466003DCC50 AS DateTime), N'Test footer2', CAST(0x0000A46D00000000 AS DateTime))
+GO
+INSERT [dbo].[PortalMessages] ([PortalMessageId], [CustomerId], [Message], [MessageFormatId], [TimeStamp], [Footer], [ExpiryDate]) VALUES (3, 1, N'Blue phone', 1, CAST(0x0000A48B00000000 AS DateTime), N'With footer', CAST(0x0000A4A600000000 AS DateTime))
+GO
 SET IDENTITY_INSERT [dbo].[PortalMessages] OFF
-
-
+GO
 
 

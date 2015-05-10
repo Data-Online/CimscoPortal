@@ -16,13 +16,13 @@ namespace CimscoPortal.Data
     {
         public MessageType()
         {
-            this.PortalMessages = new HashSet<PortalMessage>();
+            this.MessageFormats = new HashSet<MessageFormat>();
         }
     
         public int MessageTypeId { get; set; }
-        public string TypeName { get; set; }
-        public string TypeElement { get; set; }
+        public string Description { get; set; }
+        public string PageElement { get; set; }
     
-        public virtual ICollection<PortalMessage> PortalMessages { get; set; }
+        public virtual ICollection<MessageFormat> MessageFormats { get; set; }
     }
 }

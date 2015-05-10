@@ -41,7 +41,8 @@ namespace CimscoPortal
         // Microsoft.AspNet.Identity.IUserStore`1 [...], is an interface and cannot be constructed. Are you missing a type mapping?
         // Ref http://stackoverflow.com/questions/24740619/identity-provider-and-unity-dependency-injection
         container.RegisterType<AccountController>(new InjectionConstructor());
-        container.RegisterType<ManageController>(new InjectionConstructor());        
+        container.RegisterType<ManageController>(new InjectionConstructor());
+        container.RegisterType<UserAdminController>(new InjectionConstructor());
     }
   }
 }

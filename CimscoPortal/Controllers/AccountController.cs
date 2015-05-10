@@ -58,6 +58,9 @@ namespace CimscoPortal.Controllers
         [AllowAnonymous]
         public virtual ActionResult Login(string returnUrl)
         {
+            //CreateDefaultAdminAccount();
+            var ss = CreateDefaultAdminAccountNotAsync();
+
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
@@ -423,6 +426,75 @@ namespace CimscoPortal.Controllers
 
             base.Dispose(disposing);
         }
+
+        #region Private modules
+        private async Task CreateDefaultAdminAccount()
+        {
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var roleManager = HttpContext.GetOwinContext().Get<ApplicationRoleManager>();
+            const string name = "admin@cimsco.co.nz";
+            const string password = "C1msc0@";
+            const string roleName = "Admin";
+
+            //Create Role Admin if it does not exist
+            var role = await roleManager.FindByNameAsync(roleName);
+            if (role == null)
+            {
+                role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole(roleName);
+                var roleresult = await roleManager.CreateAsync(role);
+            }
+
+            var user = userManager.FindByName(name);
+            if (user == null)
+            {
+                user = new ApplicationUser { UserName = name, Email = name };
+                var result = await userManager.CreateAsync(user, password);
+                result = await userManager.SetLockoutEnabledAsync(user.Id, false);
+            }
+
+            // Add user admin to Role Admin if not already added
+            var rolesForUser = await userManager.GetRolesAsync(user.Id);
+            if (!rolesForUser.Contains(role.Name))
+            {
+                var result = await userManager.AddToRoleAsync(user.Id, role.Name);
+            }
+        }
+
+        private bool CreateDefaultAdminAccountNotAsync()
+        {
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var roleManager = HttpContext.GetOwinContext().Get<ApplicationRoleManager>();
+            const string name = "admin@cimsco.co.nz";
+            const string password = "C1msc0@";
+            const string roleName = "Admin";
+
+            //Create Role Admin if it does not exist
+            var role = roleManager.FindByName(roleName);
+            if (role == null)
+            {
+                role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole(roleName);
+                var roleresult = roleManager.Create(role);
+            }
+
+            var user = userManager.FindByName(name);
+            if (user == null)
+            {
+                user = new ApplicationUser { UserName = name, Email = name };
+                var result = userManager.Create(user, password);
+                result = userManager.SetLockoutEnabled(user.Id, false);
+            }
+
+            // Add user admin to Role Admin if not already added
+            var rolesForUser = userManager.GetRoles(user.Id);
+            if (!rolesForUser.Contains(role.Name))
+            {
+                var result = userManager.AddToRole(user.Id, role.Name);
+            }
+
+            return true;
+        }
+
+        #endregion
 
         #region Helpers
         // Used for XSRF protection when adding external logins

@@ -140,4 +140,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="NetworkChargesTotal" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="aa39e07b-e3d6-45b2-8983-0aee8e367ee0" ChangeDateTime="05/02/2015 08:06:20">
+    <Property Name="ElementName" Value="[dbo].[MessageTypes].[MessageType]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[MessageTypes]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Description" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="ff8e2d26-7248-4414-81b8-1cc6646208f3" ChangeDateTime="05/02/2015 08:06:26">
+    <Property Name="ElementName" Value="[dbo].[MessageTypes].[MessageElement]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[MessageTypes]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="PageElement" />
+  </Operation>
 </Operations>

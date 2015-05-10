@@ -1,15 +1,31 @@
-﻿CREATE TABLE [dbo].[PortalMessages]
+﻿CREATE TABLE [dbo].[PortalMessages](
+	[PortalMessageId] [int] IDENTITY(1,1) NOT NULL,
+	[CustomerId] [int] NULL,
+	[Message] [nvarchar](100) NULL,
+	[MessageFormatId] [int] NULL,
+	[TimeStamp] [datetime] NULL,
+	[Footer] [nvarchar](100) NULL,
+	[ExpiryDate] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
 (
-	[PortalMessageId] INT NOT NULL PRIMARY KEY IDENTITY, 
-    [CustomerId] INT NULL, 
-    [MessageCategoryId] INT NULL, 
-    [Message] NVARCHAR(100) NULL, 
-    [MessageTypeId] INT NULL, 
-    [MessageFormatId] INT NULL, 
-    [TimeStamp] DATETIME NULL, 
-    [Footer] NVARCHAR(100) NULL, 
-    [ExpiryDate] DATETIME NULL, 
-    CONSTRAINT [FK_PortalMessages_MessageCategories] FOREIGN KEY ([MessageCategoryId]) REFERENCES [MessageCategories]([MessageCategoryId]), 
-    CONSTRAINT [FK_PortalMessages_MessageTypes] FOREIGN KEY ([MessageTypeId]) REFERENCES [MessageTypes]([MessageTypeId]), 
-    CONSTRAINT [FK_PortalMessages_Customers] FOREIGN KEY ([CustomerId]) REFERENCES [Customers]([CustomerId]) 
+	[PortalMessageId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) 
 )
+
+GO
+
+ALTER TABLE [dbo].[PortalMessages]  WITH CHECK ADD  CONSTRAINT [FK_PortalMessages_Customers] FOREIGN KEY([CustomerId])
+REFERENCES [dbo].[Customers] ([CustomerId])
+GO
+
+ALTER TABLE [dbo].[PortalMessages] CHECK CONSTRAINT [FK_PortalMessages_Customers]
+GO
+
+ALTER TABLE [dbo].[PortalMessages]  WITH CHECK ADD  CONSTRAINT [FK_PortalMessages_MessageTypes] FOREIGN KEY([MessageFormatId])
+REFERENCES [dbo].[MessageFormats] ([MessageFormatId])
+GO
+
+ALTER TABLE [dbo].[PortalMessages] CHECK CONSTRAINT [FK_PortalMessages_MessageTypes]
+GO
+
+

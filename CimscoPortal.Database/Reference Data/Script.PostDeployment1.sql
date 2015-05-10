@@ -11,9 +11,9 @@ Post-Deployment Script Template
 */
 :r ".\Delete.data.sql"
 go
-:r ".\MessageCategories.data.sql"
-go
 :r ".\MessageTypes.data.sql"
+go
+:r ".\MessageFormats.data.sql"
 go
 :r ".\Customers.data.sql"
 go

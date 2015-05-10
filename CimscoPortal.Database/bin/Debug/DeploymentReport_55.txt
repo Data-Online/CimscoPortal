@@ -1,0 +1,22 @@
+﻿** Highlights
+     Tables that will be rebuilt
+       None
+     Clustered indexes that will be dropped
+       None
+     Clustered indexes that will be created
+       None
+     Possible data issues
+       None
+
+** User actions
+     Create
+       [dbo].[Customers] (Table)
+       [dbo].[InvoiceSummaries] (Table)
+       [dbo].[MessageFormats] (Table)
+       [dbo].[MessageTypes] (Table)
+       [dbo].[PortalMessages] (Table)
+       [dbo].[FK_MessageFormats_MessageTypes] (Foreign Key)
+       [dbo].[FK_PortalMessages_Customers] (Foreign Key)
+       [dbo].[FK_PortalMessages_MessageTypes] (Foreign Key)
+
+** Supporting actions

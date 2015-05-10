@@ -33,5 +33,6 @@ namespace CimscoPortal.Data
         public string ConnectionNumber { get; set; }
         public string SiteName { get; set; }
         public int EnergyPointId { get; set; }
+        public int InvoiceSummaryId { get; set; }
     }
 }

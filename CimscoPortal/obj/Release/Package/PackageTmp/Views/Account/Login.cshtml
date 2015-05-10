@@ -27,7 +27,8 @@
                 @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
             </div>
             <div class="loginbox-forgot">
-                <a href="">Forgot Password?</a>
+                @Html.ActionLink("Forgot Password?", "ForgotPassword")
+                @*<a href="">Forgot Password?</a>*@
             </div>
             <div class="loginbox-submit">
                 @Html.Bootstrap().SubmitButton().Text("Login").Color(BootstrapColors.Primary).ButtonBlock()

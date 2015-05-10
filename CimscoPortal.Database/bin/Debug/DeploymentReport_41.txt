@@ -1,0 +1,34 @@
+﻿** Highlights
+     Tables that will be rebuilt
+       [dbo].[MessageTypes]
+     Clustered indexes that will be dropped
+       None
+     Clustered indexes that will be created
+       None
+     Possible data issues
+       The column [dbo].[MessageTypes].[TypeElement] is being dropped, data loss could occur.
+       The column [dbo].[MessageTypes].[TypeName] is being dropped, data loss could occur.
+       The column [dbo].[PortalMessages].[MessageCategoryId] is being dropped, data loss could occur.
+       The column [dbo].[PortalMessages].[MessageTypeId] is being dropped, data loss could occur.
+
+** User actions
+     Drop
+       [dbo].[FK_PortalMessages_MessageTypes] (Foreign Key)
+       [dbo].[FK_PortalMessages_Customers] (Foreign Key)
+       [dbo].[FK_PortalMessages_MessageCategories] (Foreign Key)
+     Table rebuild
+       [dbo].[MessageTypes] (Table)
+     Alter
+       [dbo].[PortalMessages] (Table)
+     Create
+       [dbo].[MessageFormats] (Table)
+       [dbo].[FK_PortalMessages_MessageTypes] (Foreign Key)
+       [dbo].[FK_MessageFormats_MessageTypes] (Foreign Key)
+
+** Supporting actions
+
+The column [dbo].[MessageTypes].[TypeElement] is being dropped, data loss could occur.
+The column [dbo].[MessageTypes].[TypeName] is being dropped, data loss could occur.
+The column [dbo].[PortalMessages].[MessageCategoryId] is being dropped, data loss could occur.
+The column [dbo].[PortalMessages].[MessageTypeId] is being dropped, data loss could occur.
+

@@ -20,4 +20,4 @@
 	[EnergyPointId] [int] NOT NULL, 
     [InvoiceSummaryId] INT NOT NULL IDENTITY, 
     CONSTRAINT [PK_InvoiceSummaries] PRIMARY KEY ([InvoiceSummaryId])
-) ON [PRIMARY]
+) 

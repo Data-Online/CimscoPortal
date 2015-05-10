@@ -9,22 +9,14 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="MessageCategories">
-      <EntityTypeMapping TypeName="CimscoPortalModel.MessageCategory">
-        <MappingFragment StoreEntitySet="MessageCategories">
+    <EntitySetMapping Name="MessageFormats">
+      <EntityTypeMapping TypeName="CimscoPortalModel.MessageFormat">
+        <MappingFragment StoreEntitySet="MessageFormats">
+          <ScalarProperty Name="DisplayFormat" ColumnName="DisplayFormat" />
           <ScalarProperty Name="Element2" ColumnName="Element2" />
           <ScalarProperty Name="Element1" ColumnName="Element1" />
-          <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
-          <ScalarProperty Name="MessageCategoryId" ColumnName="MessageCategoryId" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="MessageTypes">
-      <EntityTypeMapping TypeName="CimscoPortalModel.MessageType">
-        <MappingFragment StoreEntitySet="MessageTypes">
-          <ScalarProperty Name="TypeElement" ColumnName="TypeElement" />
-          <ScalarProperty Name="TypeName" ColumnName="TypeName" />
           <ScalarProperty Name="MessageTypeId" ColumnName="MessageTypeId" />
+          <ScalarProperty Name="MessageFormatId" ColumnName="MessageFormatId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -36,16 +28,15 @@
           <ScalarProperty Name="TimeStamp" ColumnName="TimeStamp" />
           <ScalarProperty Name="MessageFormatId" ColumnName="MessageFormatId" />
           <ScalarProperty Name="Message" ColumnName="Message" />
-          <ScalarProperty Name="PortalMessageId" ColumnName="PortalMessageId" />
           <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
-          <ScalarProperty Name="MessageCategoryId" ColumnName="MessageCategoryId" />
-          <ScalarProperty Name="MessageTypeId" ColumnName="MessageTypeId" />
+          <ScalarProperty Name="PortalMessageId" ColumnName="PortalMessageId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="InvoiceSummaries">
       <EntityTypeMapping TypeName="CimscoPortalModel.InvoiceSummary">
         <MappingFragment StoreEntitySet="InvoiceSummaries">
+          <ScalarProperty Name="InvoiceSummaryId" ColumnName="InvoiceSummaryId" />
           <ScalarProperty Name="EnergyPointId" ColumnName="EnergyPointId" />
           <ScalarProperty Name="SiteName" ColumnName="SiteName" />
           <ScalarProperty Name="ConnectionNumber" ColumnName="ConnectionNumber" />
@@ -65,6 +56,15 @@
           <ScalarProperty Name="InvoiceNumber" ColumnName="InvoiceNumber" />
           <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
           <ScalarProperty Name="InvoiceId" ColumnName="InvoiceId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MessageTypes">
+      <EntityTypeMapping TypeName="CimscoPortalModel.MessageType">
+        <MappingFragment StoreEntitySet="MessageTypes">
+          <ScalarProperty Name="PageElement" ColumnName="PageElement" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="MessageTypeId" ColumnName="MessageTypeId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

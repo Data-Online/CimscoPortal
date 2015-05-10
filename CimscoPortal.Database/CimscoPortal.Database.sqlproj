@@ -71,10 +71,10 @@
     <Build Include="dbo\Tables\AspNetUserLogins.sql" />
     <Build Include="dbo\Tables\__MigrationHistory.sql" />
     <Build Include="dbo\Tables\PortalMessages.sql" />
-    <Build Include="dbo\Tables\MessageCategories.sql" />
     <Build Include="dbo\Tables\MessageTypes.sql" />
     <Build Include="dbo\Tables\Customers.sql" />
     <Build Include="dbo\Tables\InvoiceSummaries.sql" />
+    <Build Include="dbo\Tables\MessageFormats.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="CimscoPortal.Database.refactorlog" />
@@ -82,11 +82,11 @@
   <ItemGroup>
     <None Include="CimscoPortal.Database.publish.xml" />
     <None Include="Reference Data\MessageTypes.data.sql" />
-    <None Include="Reference Data\MessageCategories.data.sql" />
     <None Include="Reference Data\PortalMessages.data.sql" />
     <None Include="Reference Data\Customers.data.sql" />
     <None Include="Reference Data\Delete.data.sql" />
     <None Include="Reference Data\InvoiceSummaries.data.sql" />
+    <None Include="Reference Data\MessageFormats.data.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Reference Data\Script.PostDeployment1.sql" />

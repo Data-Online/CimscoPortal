@@ -27,16 +27,16 @@ namespace CimscoPortal.Services
             get { return _repository.PortalMessages; }
         }
 
-        public List<AlertViewModel> GetAlertsFor(int category)
-        {
-            return _repository.PortalMessages.Where(i => i.MessageCategoryId == category)
-                                            .Project().To<AlertViewModel>()
-                                            .ToList();
-        }
+        //public List<AlertViewModel> GetAlertsFor(int category)
+        //{
+        //    return _repository.PortalMessages.Where(i => i.MessageCategoryId == category)
+        //                                    .Project().To<AlertViewModel>()
+        //                                    .ToList();
+        //}
 
-        public List<AlertData> GetNavbarDataFor(int customerId, string elementType)
+        public List<AlertData> GetNavbarDataFor(int customerId, string pageElement)
         {
-            return _repository.PortalMessages.Where(i => i.MessageType.TypeElement == elementType && i.CustomerId == customerId)
+            return _repository.PortalMessages.Where(i => i.MessageFormat.MessageType.PageElement == pageElement && i.CustomerId == customerId)
                                             .Project().To<AlertData>()
                                             .ToList();
         }
