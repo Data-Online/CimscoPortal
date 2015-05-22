@@ -5,6 +5,7 @@ using CimscoPortal.Infrastructure;
 using CimscoPortal.Services;
 using CimscoPortal.Data;
 using CimscoPortal.Controllers;
+using CimscoPortal.Data.Models;
 
 namespace CimscoPortal
 {
@@ -36,6 +37,7 @@ namespace CimscoPortal
     {
         container.RegisterType<IPortalService, PortalService>();
         container.RegisterType<ICimscoPortalEntities, CimscoPortalEntities>();
+        container.RegisterType<ICimscoPortalContext, CimscoPortalContext>(new PerRequestLifetimeManager());
 
         // I dont understand why this is required, but account controller fails with 
         // Microsoft.AspNet.Identity.IUserStore`1 [...], is an interface and cannot be constructed. Are you missing a type mapping?

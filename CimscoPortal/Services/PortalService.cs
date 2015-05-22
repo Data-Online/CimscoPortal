@@ -16,10 +16,12 @@ namespace CimscoPortal.Services
     class PortalService : IPortalService
     {
         ICimscoPortalEntities _repository;
+        ICimscoPortalContext _repo2;
 
-        public PortalService(ICimscoPortalEntities repository)
+        public PortalService(ICimscoPortalEntities repository, ICimscoPortalContext repo2)
         {
             this._repository = repository;
+            this._repo2 = repo2;
         }
 
         public DbSet<PortalMessage> PortalMessages
@@ -36,6 +38,7 @@ namespace CimscoPortal.Services
 
         public List<AlertData> GetNavbarDataFor(int customerId, string pageElement)
         {
+            var zz = _repo2.PortalMessages.Where(i => i.CustomerId == 3).ToList();
             return _repository.PortalMessages.Where(i => i.MessageFormat.MessageType.PageElement == pageElement && i.CustomerId == customerId)
                                             .Project().To<AlertData>()
                                             .ToList();

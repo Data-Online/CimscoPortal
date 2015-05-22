@@ -20,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configurations", "Configura
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "CimscoPortal.Database", "CimscoPortal.Database\CimscoPortal.Database.sqlproj", "{92DCF0D8-9372-4B46-806B-441B5DB62B61}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CimscoPortal.Data", "CimscoPortal.data\CimscoPortal.Data.csproj", "{3C4D1CAD-7C99-4C4D-A620-774FD13F9D96}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +42,10 @@ Global
 		{92DCF0D8-9372-4B46-806B-441B5DB62B61}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92DCF0D8-9372-4B46-806B-441B5DB62B61}.Release|Any CPU.Build.0 = Release|Any CPU
 		{92DCF0D8-9372-4B46-806B-441B5DB62B61}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{3C4D1CAD-7C99-4C4D-A620-774FD13F9D96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C4D1CAD-7C99-4C4D-A620-774FD13F9D96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C4D1CAD-7C99-4C4D-A620-774FD13F9D96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C4D1CAD-7C99-4C4D-A620-774FD13F9D96}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

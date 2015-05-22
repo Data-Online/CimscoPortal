@@ -16,3 +16,12 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Database\obj\Debu
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Database\obj\Debug\refactor.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Database\obj\Debug\postdeploy.sql
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Database\obj\Debug\predeploy.sql
+P:\Projects\Cloud_Development\CIMSCO\_refCimscoPortal\CimscoPortal\CimscoPortal.Database\bin\Debug\CimscoPortal.Database.dacpac
+P:\Projects\Cloud_Development\CIMSCO\_refCimscoPortal\CimscoPortal\CimscoPortal.Database\bin\Debug\CimscoPortal.Database.dll
+P:\Projects\Cloud_Development\CIMSCO\_refCimscoPortal\CimscoPortal\CimscoPortal.Database\bin\Debug\CimscoPortal.Database.pdb
+P:\Projects\Cloud_Development\CIMSCO\_refCimscoPortal\CimscoPortal\CimscoPortal.Database\obj\Debug\CimscoPortal.Database.dll
+P:\Projects\Cloud_Development\CIMSCO\_refCimscoPortal\CimscoPortal\CimscoPortal.Database\obj\Debug\CimscoPortal.Database.pdb
+P:\Projects\Cloud_Development\CIMSCO\_refCimscoPortal\CimscoPortal\CimscoPortal.Database\obj\Debug\Model.xml
+P:\Projects\Cloud_Development\CIMSCO\_refCimscoPortal\CimscoPortal\CimscoPortal.Database\obj\Debug\refactor.xml
+P:\Projects\Cloud_Development\CIMSCO\_refCimscoPortal\CimscoPortal\CimscoPortal.Database\obj\Debug\postdeploy.sql
+P:\Projects\Cloud_Development\CIMSCO\_refCimscoPortal\CimscoPortal\CimscoPortal.Database\obj\Debug\predeploy.sql

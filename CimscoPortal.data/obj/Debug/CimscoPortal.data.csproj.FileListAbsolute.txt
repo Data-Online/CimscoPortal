@@ -1,0 +1,10 @@
+P:\Projects\Cloud_Development\CIMSCO\_refCimscoPortal\CimscoPortal\CimscoPortal.data\bin\Debug\CimscoPortal.data.dll.config
+P:\Projects\Cloud_Development\CIMSCO\_refCimscoPortal\CimscoPortal\CimscoPortal.data\bin\Debug\CimscoPortal.data.dll
+P:\Projects\Cloud_Development\CIMSCO\_refCimscoPortal\CimscoPortal\CimscoPortal.data\bin\Debug\CimscoPortal.data.pdb
+P:\Projects\Cloud_Development\CIMSCO\_refCimscoPortal\CimscoPortal\CimscoPortal.data\bin\Debug\EntityFramework.dll
+P:\Projects\Cloud_Development\CIMSCO\_refCimscoPortal\CimscoPortal\CimscoPortal.data\bin\Debug\EntityFramework.SqlServer.dll
+P:\Projects\Cloud_Development\CIMSCO\_refCimscoPortal\CimscoPortal\CimscoPortal.data\bin\Debug\EntityFramework.xml
+P:\Projects\Cloud_Development\CIMSCO\_refCimscoPortal\CimscoPortal\CimscoPortal.data\bin\Debug\EntityFramework.SqlServer.xml
+P:\Projects\Cloud_Development\CIMSCO\_refCimscoPortal\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.data.dll
+P:\Projects\Cloud_Development\CIMSCO\_refCimscoPortal\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.data.pdb
+P:\Projects\Cloud_Development\CIMSCO\_refCimscoPortal\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.data.csprojResolveAssemblyReference.cache
