@@ -17,13 +17,14 @@ namespace CimscoPortal.Data
     public partial class CimscoPortalEntities : DbContext, ICimscoPortalEntities
     {
         public CimscoPortalEntities()
-            : base("name=CimscoPortalEntities")
+            //: base("name=CimscoPortalEntities")
+            : base("name=CimscoPortalContext")
         {
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            throw new UnintentionalCodeFirstException();
+            //throw new UnintentionalCodeFirstException();
         }
     
         public virtual DbSet<Customer> Customers { get; set; }

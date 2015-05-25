@@ -30,6 +30,8 @@ namespace CimscoPortal
       // e.g. container.RegisterType<ITestService, TestService>();    
       RegisterTypes(container);
 
+      // Web.API DI 
+      System.Web.Http.GlobalConfiguration.Configuration.DependencyResolver = new WebApiContrib.IoC.Unity.UnityResolver(container);
       return container;
     }
 

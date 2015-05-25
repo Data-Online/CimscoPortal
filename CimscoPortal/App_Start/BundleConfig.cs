@@ -20,38 +20,38 @@ namespace CimscoPortal
                         "~/Scripts/modernizr-*"));
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                "~/assets/js/bootstrap.min.js",
-                "~/assets/js/slimscroll/jquery.slimscroll.min.js"
+                "~/Scripts/bootstrap.min.js",
+                "~/Scripts/slimscroll/jquery.slimscroll.min.js"
                 ));
                         //          "~/Scripts/respond.js"));
 
-            bundles.Add(new StyleBundle("~/css/bootstrap").Include(
-                "~/assets/css/bootstrap.min.css"));
+            bundles.Add(new StyleBundle("~/Content/css/bootstrap").Include(
+                "~/Content/css/bootstrap.min.css"));
 
-            bundles.Add(new StyleBundle("~/css/beyond").Include(
-                "~/assets/css/beyond.min.css",
-                "~/assets/css/demo.min.css",
-                "~/assets/css/font-awesome.min.css",
-                "~/assets/css/typicons.min.css",
-                "~/assets/css/weather-icons.min.css",
-                "~/assets/css/animate.min.css"));
+            bundles.Add(new StyleBundle("~/Content/css/beyond").Include(
+                "~/Content/css/beyond.min.css",
+                "~/Content/css/demo.min.css",
+                "~/Content/css/font-awesome.min.css",
+                "~/Content/css/typicons.min.css",
+                "~/Content/css/weather-icons.min.css",
+                "~/Content/css/animate.min.css"));
 
             bundles.Add(new ScriptBundle("~/bundles/skin").Include(
-                "~/assets/js/skins.min.js"));
+                "~/Scripts/skins.min.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/beyond").Include(
-                "~/assets/js/beyond.min.js"));
+                "~/Scripts/beyond.min.js"));
 
             bundles.Add(new StyleBundle("~/css/bootstrap-rtl").Include(
-                "~/assets/css/bootstrap-rtl.min.css"));
+                "~/Content/css/bootstrap-rtl.min.css"));
 
             bundles.Add(new StyleBundle("~/css/beyond-rtl").Include(
-                "~/assets/css/beyond-rtl.min.css",
-                "~/assets/css/demo.min.css",
-                "~/assets/css/font-awesome.min.css",
-                "~/assets/css/typicons.min.css",
-                "~/assets/css/weather-icons.min.css",
-                "~/assets/css/animate.min.css"));
+                "~/Content/css/beyond-rtl.min.css",
+                "~/Content/css/demo.min.css",
+                "~/Content/css/font-awesome.min.css",
+                "~/Content/css/typicons.min.css",
+                "~/Content/css/weather-icons.min.css",
+                "~/Content/css/animate.min.css"));
 
         }
     }

@@ -5,7 +5,7 @@ using System;
 
 namespace CimscoPortal.App_Start
 {
-    public class AutoMapperConfig 
+    public class AutoMapperConfig
     {
 
         public static void Configure()
@@ -23,38 +23,63 @@ namespace CimscoPortal.App_Start
                 //.ForMember(m => m._timeStamp, opt => opt.MapFrom(i => (i.TimeStamp != null) ? i.TimeStamp : DateTime.Now))
                 .ForMember(m => m._timeStamp, opt => opt.NullSubstitute(DateTime.Now))
                 .ForMember(m => m._timeStamp, opt => opt.MapFrom(i => i.TimeStamp))
-                   // .ForMember(m => m._timeStamp, opt => opt.Ignore())
+                // .ForMember(m => m._timeStamp, opt => opt.Ignore())
                     .ForMember(m => m.CategoryName, opt => opt.Ignore())
                     .ForMember(m => m.Subject, opt => opt.Ignore())
                     .ForMember(m => m.Name, opt => opt.Ignore())
-                 //  .ForMember(m => m.TimeStamp,  opt => opt.Ignore())
-                  //.ForMember(m => m.TimeStamp, opt => opt.ResolveUsing<TimeStringResolver>());
+                //  .ForMember(m => m.TimeStamp,  opt => opt.Ignore())
+                //.ForMember(m => m.TimeStamp, opt => opt.ResolveUsing<TimeStringResolver>());
                   ;
+
+
+            Mapper.CreateMap<PortalMessage, MessageViewModel>()
+                .ForMember(m => m.TypeName,
+                            opt => opt.MapFrom(i => i.MessageFormat.MessageType.Description))
+                .ForMember(m => m.Element1,
+                            opt => opt.MapFrom(i => i.MessageFormat.Element1))
+                .ForMember(m => m.Element2,
+                            opt => opt.MapFrom(i => i.MessageFormat.Element2))
+
+                //                .ForMember(x => x.TimeStamp, opt => opt.MapFrom(efo => efo.TimeStamp.ToString()));
+                .ForMember(m => m.TimeStamp, opt => opt.MapFrom(i => (i.TimeStamp != null) ? i.TimeStamp.ToString() : DateTime.Now.ToString()))
+                            //.ForMember(m => m._timeStamp, opt => opt.MapFrom(i => (i.TimeStamp != null) ? i.TimeStamp : DateTime.Now))
+                .ForMember(m => m._timeStamp, opt => opt.NullSubstitute(DateTime.Now))
+                .ForMember(m => m._timeStamp, opt => opt.MapFrom(i => i.TimeStamp))
+                            // .ForMember(m => m._timeStamp, opt => opt.Ignore())
+                    .ForMember(m => m.CategoryName, opt => opt.Ignore())
+                    .ForMember(m => m.Subject, opt => opt.Ignore())
+                    .ForMember(m => m.Name, opt => opt.Ignore())
+                            //  .ForMember(m => m.TimeStamp,  opt => opt.Ignore())
+                            //.ForMember(m => m.TimeStamp, opt => opt.ResolveUsing<TimeStringResolver>());
+                  ;
+
+
+
             Mapper.AssertConfigurationIsValid();
 
             Mapper.CreateMap<InvoiceSummary, EnergyData>()
                 .ForMember(m => m.Energy,
-                                opt => opt.MapFrom(i => i.TotalEnergyCharges ))
+                                opt => opt.MapFrom(i => i.TotalEnergyCharges))
                 .ForMember(m => m.Line,
                 opt => opt.MapFrom(i => i.TotalNetworkCharges))
                 .ForMember(m => m.Other,
-                                opt => opt.MapFrom(i => i.TotalMiscCharges ))
+                                opt => opt.MapFrom(i => i.TotalMiscCharges))
                 .ForMember(m => m.Month,
                                 opt => opt.MapFrom(i => i.InvoiceDate.ToString()))
                 .ForMember(m => m._month,
                                 opt => opt.MapFrom(i => i.InvoiceDate))
                                 ;
-   
+
             //Mapper.CreateMap<InvoiceSummary, DonutChartViewModel>()
             //    .ForMember(m => m.DonutChartData, opt => opt.MapFrom(i => i.TotalCharges))
             //    ;
-          //  Mapper.CreateMap<DateTime?, string>().ConvertUsing<DateTimeToStringConverter>();
+            //  Mapper.CreateMap<DateTime?, string>().ConvertUsing<DateTimeToStringConverter>();
             //Mapper.CreateMap<DateTime?, DateTime>().ConvertUsing<DateTimeConverter>();
             //Mapper.CreateMap<DateTime?, DateTime?>().ConvertUsing<NullableDateTimeConverter>();
             //Mapper.CreateMap<DateTime?, string>().ConvertUsing(new DateTimeToStringConverter());
             //Mapper.AddFormatter<DateStringFormatter>();
 
-           // Mapper.AssertConfigurationIsValid();
+            // Mapper.AssertConfigurationIsValid();
         }
 
     }

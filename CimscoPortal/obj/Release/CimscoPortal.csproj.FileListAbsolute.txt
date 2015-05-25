@@ -83,3 +83,8 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.Pra
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Net.Http.Formatting.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Http.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.Web.Mvc.dll
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\CimscoPortal.data.dll
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\CimscoPortal.data.pdb
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Http.WebHost.dll
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\WebApiContrib.IoC.Unity.dll
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Http.WebHost.xml

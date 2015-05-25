@@ -8,5 +8,8 @@ namespace CimscoPortal.Infrastructure
         CimscoPortal.Models.StackedBarChartViewModel GetHistoryByMonth(int _energyPointId);
         System.Collections.Generic.List<CimscoPortal.Models.AlertData> GetNavbarDataFor(int customerId, string elementType);
         System.Data.Entity.DbSet<CimscoPortal.Data.PortalMessage> PortalMessages { get; }
+
+        System.Collections.Generic.IEnumerable<CimscoPortal.Models.MessageViewModel> GetNavbarDataForZ(int customerId, string pageElement);
+
     }
 }

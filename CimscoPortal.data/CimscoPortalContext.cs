@@ -12,8 +12,8 @@ namespace CimscoPortal.Data.Models
         }
 
         public CimscoPortalContext()
-            //: base("Name=CimscoPortalContext")
-            : base("Name=DefaultConnection")
+            : base("Name=CimscoPortalContext")
+            //: base("Name=DefaultConnection")
         {
         }
 

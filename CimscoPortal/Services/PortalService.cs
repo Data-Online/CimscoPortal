@@ -24,6 +24,11 @@ namespace CimscoPortal.Services
             this._repo2 = repo2;
         }
 
+        //public PortalService(ICimscoPortalContext repo2)
+        //{
+        //    this._repo2 = repo2;
+        //}
+
         public DbSet<PortalMessage> PortalMessages
         {
             get { return _repository.PortalMessages; }
@@ -35,6 +40,14 @@ namespace CimscoPortal.Services
         //                                    .Project().To<AlertViewModel>()
         //                                    .ToList();
         //}
+
+        public IEnumerable<MessageViewModel> GetNavbarDataForZ(int customerId, string pageElement)
+        {
+            var zz = _repo2.PortalMessages.Where(i => i.CustomerId == 3).ToList();
+            return _repository.PortalMessages.Where(i => i.MessageFormat.MessageType.PageElement == pageElement && i.CustomerId == customerId)
+                                            .Project().To<MessageViewModel>()
+                                            .ToList();
+        }
 
         public List<AlertData> GetNavbarDataFor(int customerId, string pageElement)
         {
