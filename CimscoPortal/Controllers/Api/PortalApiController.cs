@@ -9,6 +9,7 @@ using System.Web.Http;
 
 namespace CimscoPortal.Controllers.Api
 {
+    [Authorize]
     [RoutePrefix("api")]
     public class PortalApiController : ApiController
     {
@@ -36,5 +37,34 @@ namespace CimscoPortal.Controllers.Api
             return request.CreateResponse<MessageViewModel[]>(HttpStatusCode.OK, messages.ToArray());
         }
 
+        [HttpGet]
+        [Route("common")]
+        public HttpResponseMessage GetCommonData(HttpRequestMessage request)
+        {
+            return request.CreateResponse<CommonInfoViewModel>(HttpStatusCode.OK, _portalService.GetCommonData());
+        }
+
+        [HttpGet]
+        [Route("companylistfor/{customerId}")]
+        public HttpResponseMessage GetCompanyData(HttpRequestMessage request, int customerId)
+        {
+            return request.CreateResponse<CustomerHierarchyViewModel>(HttpStatusCode.OK, _portalService.GetCompanyData(customerId));
+        }
+
+        [HttpGet]
+        [Route("companyinvoicedatafor/{customerId}")]
+        public HttpResponseMessage GetCompanyInvoiceData(HttpRequestMessage request, int customerId)
+        {
+            var data = _portalService.GetCompanyInvoiceData(customerId);
+            return request.CreateResponse<CompanyInvoiceViewModel[]>(HttpStatusCode.OK, data.ToArray());
+        }
+
+        [HttpGet]
+        [Route("summarydatafor/{customerId}")]
+        public HttpResponseMessage GetSummaryDataFor(HttpRequestMessage request, int customerId)
+        {
+            var data = _portalService.GetSummaryDataFor(customerId);
+            return request.CreateResponse<SummaryViewModel>(HttpStatusCode.OK, data);
+        }
     }
 }

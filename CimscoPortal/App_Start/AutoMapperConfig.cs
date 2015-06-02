@@ -32,7 +32,7 @@ namespace CimscoPortal.App_Start
                   ;
 
 
-            Mapper.CreateMap<PortalMessage, MessageViewModel>()
+            Mapper.CreateMap<CimscoPortal.Data.Models.PortalMessage, MessageViewModel>()
                 .ForMember(m => m.TypeName,
                             opt => opt.MapFrom(i => i.MessageFormat.MessageType.Description))
                 .ForMember(m => m.Element1,
@@ -54,6 +54,8 @@ namespace CimscoPortal.App_Start
                   ;
 
 
+            ////Mapper.CreateMap<CimscoPortal.Data.Models.Contact, CimscoPortal.Services.CompanyDataViewModel>()
+            ////    .ForMember(m => m .GroupName, opt => opt.MapFrom(i => i.Groups.G))
 
             Mapper.AssertConfigurationIsValid();
 

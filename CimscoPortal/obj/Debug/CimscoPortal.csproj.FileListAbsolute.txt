@@ -259,3 +259,6 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\obj\Debug\CimscoP
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Http.WebHost.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Http.WebHost.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\WebApiContrib.IoC.Unity.dll
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Cors.dll
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Http.Cors.dll
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Http.Cors.xml

@@ -9,3 +9,4 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Release\
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Release\CimscoPortal.Data.csproj.GenerateResource.Cache
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Release\CimscoPortal.data.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Release\CimscoPortal.data.pdb
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Release\CimscoPortal.Data.csprojResolveAssemblyReference.cache

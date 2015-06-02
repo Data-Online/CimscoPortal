@@ -74,6 +74,25 @@ namespace CimscoPortal.Data.Migrations
                 cd => cd.Message,
                     new PortalMessage { CustomerId = 3, Message = "Test Message 1", MessageFormatId = 3, TimeStamp = DateTime.Now, ExpiryDate = DateTime.Now })
                     ;
+
+            context.Contacts.AddOrUpdate(
+                cd => cd.LastName,
+                new Contact
+                {
+                    FirstName = "Stephen",
+                    LastName = "Nelson",
+                    eMail = "StephenN@megapetone.co.nz"
+                }
+            );
+
+            context.Groups.AddOrUpdate(
+                cd => cd.GroupName,
+                new Group
+                {
+                    GroupId = 1,
+                    GroupName = "Test parent group",
+                    AddressId = 1
+                });
         }
     }
 }

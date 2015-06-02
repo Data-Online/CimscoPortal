@@ -5,30 +5,30 @@
         </a>
         <!--Notification Dropdown-->
         <ul id="pg-alert" class="pull-right dropdown-menu dropdown-arrow dropdown-notifications">
-            <li>
+            <li ng-repeat="message in msgs">
                 <a href="#">
                     <div class="clearfix">
                         <div class="notification-icon">
-                            <i class="{{element1}}"></i>
+                            <i class="{{message.element1}}"></i>
                         </div>
                         <div class="notification-body">
-                            <span class="title">{{message}}</span>
-                            <span class="description">{{timeStamp}}</span>
+                            <span class="title">{{message.message}}</span>
+                            <span class="description">{{message._timeStamp | date:'MMM d yyyy hh:mm a'}}</span>
                         </div>
                         <div class="notification-extra">
-                            <i class="{{element2}}"></i>
-                            <span class="description">{{footer}}</span>
+                            <i class="{{message.element2}}"></i>
+                            <span class="description">{{message.footer}}</span>
                         </div>
                     </div>
                 </a>
             </li>
             <li class="dropdown-footer ">
                 <span>
-                    Today, March 28
+                    {{common.today | date:'EEE, d MMM'}}
                 </span>
                 <span class="pull-right">
-                    10°c
-                    <i class="wi wi-cloudy"></i>
+                    {{common.temperature}}°c
+                    <i class="{{common.weatherIcon}}"></i>
                 </span>
             </li>
         </ul>

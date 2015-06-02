@@ -10,6 +10,11 @@ namespace CimscoPortal.Infrastructure
         System.Data.Entity.DbSet<CimscoPortal.Data.PortalMessage> PortalMessages { get; }
 
         System.Collections.Generic.IEnumerable<CimscoPortal.Models.MessageViewModel> GetNavbarDataForZ(int customerId, string pageElement);
+        CimscoPortal.Models.CommonInfoViewModel GetCommonData();
 
+        CimscoPortal.Models.CustomerHierarchyViewModel GetCompanyData(int contactId);
+        System.Collections.Generic.IEnumerable<CimscoPortal.Models.CompanyInvoiceViewModel> GetCompanyInvoiceData(int contactId);
+
+        CimscoPortal.Models.SummaryViewModel GetSummaryDataFor(int customerId);
     }
 }

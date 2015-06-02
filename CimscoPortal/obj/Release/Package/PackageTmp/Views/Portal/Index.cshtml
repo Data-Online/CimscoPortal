@@ -4,53 +4,56 @@
     Layout = "~/Views/Shared/_Default.cshtml";
 }
 
-<div class="row">
-    <div class="col-lg-6 col-sm-6 col-xs-12">
-        <div class="databox databox-lg radius-bordered databox-shadowed">
-            <div class="databox-left bg-white">
-                <div class="databox-sparkline">
-                    <span data-sparkline="bar" data-height="40px" data-width="100%" data-barwidth="7px" data-barspacing="3px" data-stackedbarcolor='["#11a9cc", "#ffce55"]'>
-                        2:2,2:3,3:2,1:3,3:3
-                    </span>
-                </div>
-            </div>
-            <a href="@Url.Action("SiteSummary", "Portal")">
-                <div class="databox-right bordered-thick bordered-sky bg-white">
-                    <span class="databox-number sky"><i class="fa fa-simplybuilt"></i>Masterton Supermarkets Ltd</span>
-                    <div class="databox-text darkgray">Upper Hutt, 5140</div>
-                    <div class="databox-stat bg-sky radius-bordered">
-                        <div class="stat-text">10 %</div>
-                        <i class="stat-icon fa fa-long-arrow-up"></i>
-                    </div>
-                </div>
-            </a>
-        </div>
+<div class="row" ng-controller="MorrisCtrl2">
+    <div class="col-xs-12 col-md-3 col-lg-3">
+        @Html.Partial("_CompanyList2")
+    </div>
+    <div class="col-xs-12 col-md-6">
+       @Html.Partial("_InvoiceHistory")
+    </div>
+    <div class="col-md-3 col-sm-3 col-xs-12">
+        @Html.Partial("_InvoiceApproval")
     </div>
 </div>
 
 
 
+@section PageScripts{
 
+    <script src="/Scripts/charts/morris/morris-init.js"></script>
 
-    @section PageScripts{
+    <script src="/Scripts/charts/sparkline/jquery.sparkline.js"></script>
+    <script src="/Scripts/charts/sparkline/sparkline-init.js"></script>
 
-        <script src="/Scripts/charts/morris/morris-init.js"></script>
+    <script type="text/javascript">
+        $(window).bind("load", function () {
 
-        <script src="/Scripts/charts/sparkline/jquery.sparkline.js"></script>
-        <script src="/Scripts/charts/sparkline/sparkline-init.js"></script>
+            /*Sets Themed Colors Based on Themes*/
+            themeprimary = getThemeColorFromCss('themeprimary');
+            themesecondary = getThemeColorFromCss('themesecondary');
+            themethirdcolor = getThemeColorFromCss('themethirdcolor');
+            themefourthcolor = getThemeColorFromCss('themefourthcolor');
+            themefifthcolor = getThemeColorFromCss('themefifthcolor');
 
-        <script type="text/javascript">
-            $(window).bind("load", function () {
+            InitiateSparklineCharts.init();
 
-                /*Sets Themed Colors Based on Themes*/
-                themeprimary = getThemeColorFromCss('themeprimary');
-                themesecondary = getThemeColorFromCss('themesecondary');
-                themethirdcolor = getThemeColorFromCss('themethirdcolor');
-                themefourthcolor = getThemeColorFromCss('themefourthcolor');
-                themefifthcolor = getThemeColorFromCss('themefifthcolor');
+            //InitiateBarChart.init();
+        });
+    </script>
 
-                InitiateSparklineCharts.init();
-
+    <script src="~/Scripts/nestable/jquery.nestable.min.js"></script>
+    <script type="text/javascript">
+        jQuery(function ($) {
+            $('.dd').nestable();
+            $('.dd-handle a').on('mousedown', function (e) {
+                e.stopPropagation();
             });
-        </script>
-    }
+        });
+    </script>
+    <script src="~/App/Dashboard/ViewModels/dbCompanyDetails.js"></script>
+    <script src="~/App/Dashboard/coDataSource.js"></script>
+
+    <script src="~/Scripts/charts/morris/raphael-2.0.2.min.js"></script>
+    <script src="~/Scripts/charts/morris/morris.js"></script>
+    <script src="~/Scripts/charts/morris/morris-init-orig.js"></script>
+}
