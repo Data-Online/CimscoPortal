@@ -24,7 +24,7 @@
         };
 
     };
-    var module = angular.module("portalEnvironment");
+    var module = angular.module("message");
     module.factory("msgsource", msgsource);
 
 }());

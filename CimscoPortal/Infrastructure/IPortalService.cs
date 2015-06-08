@@ -13,8 +13,9 @@ namespace CimscoPortal.Infrastructure
         CimscoPortal.Models.CommonInfoViewModel GetCommonData();
 
         CimscoPortal.Models.CustomerHierarchyViewModel GetCompanyData(int contactId);
-        System.Collections.Generic.IEnumerable<CimscoPortal.Models.CompanyInvoiceViewModel> GetCompanyInvoiceData(int contactId);
-
+        System.Collections.Generic.IEnumerable<CimscoPortal.Models.InvoiceDetail> GetCompanyInvoiceData(int contactId);
         CimscoPortal.Models.SummaryViewModel GetSummaryDataFor(int customerId);
+
+        CimscoPortal.Models.InvoiceDetailViewModel GetCurrentMonth_(int _energyPointId);
     }
 }

@@ -61,29 +61,27 @@ namespace CimscoPortal.Services
             {
                 GroupName = "Test Group Name",
                 CustomerData = new List<CustomerData> 
-                                                    { new CustomerData { Address1 = "Addr1", CustomerName = "Customer Name" },
-                                                      new CustomerData { Address1 = "Addr2", CustomerName = "Customer Name 2" } }
+                                                    { new CustomerData { Address1 = "Addr1", CustomerName = "Customer Name", CustomerId = 1 },
+                                                      new CustomerData { Address1 = "Addr2", CustomerName = "Customer Name 2", CustomerId = 2 } }
             };
             //return _repo2.Contacts.Where(i => i.ContactId == contactId)
             //                                .Project().To <CompanyDataViewModel>();
         }
 
-        public IEnumerable<CompanyInvoiceViewModel> GetCompanyInvoiceData(int contactId)
+        public IEnumerable<InvoiceDetail> GetCompanyInvoiceData(int contactId)
         {
-            Random rnd = new Random();
-            return new List<CompanyInvoiceViewModel> {  new CompanyInvoiceViewModel { Month = "Jan", YearA = rnd.Next(8000, 12000).ToString(), YearB = rnd.Next(8000, 12000).ToString() },
-                                                        new CompanyInvoiceViewModel { Month = "Feb", YearA = rnd.Next(8000, 12000).ToString(), YearB = rnd.Next(8000, 12000).ToString() },
-                                                        new CompanyInvoiceViewModel { Month = "Mar", YearA = rnd.Next(8000, 12000).ToString(), YearB = rnd.Next(8000, 12000).ToString() },
-                                                        new CompanyInvoiceViewModel { Month = "Apr", YearA = rnd.Next(8000, 12000).ToString(), YearB = rnd.Next(8000, 12000).ToString() },
-                                                        new CompanyInvoiceViewModel { Month = "May", YearA = rnd.Next(8000, 12000).ToString(), YearB = rnd.Next(8000, 12000).ToString() },
-                                                        new CompanyInvoiceViewModel { Month = "Jun", YearA = rnd.Next(8000, 12000).ToString(), YearB = rnd.Next(8000, 12000).ToString() },
-                                                        new CompanyInvoiceViewModel { Month = "July", YearA = rnd.Next(8000, 12000).ToString(), YearB = rnd.Next(8000, 12000).ToString() },
-                                                        new CompanyInvoiceViewModel { Month = "Aug", YearA = rnd.Next(8000, 12000).ToString(), YearB = rnd.Next(8000, 12000).ToString() },
-                                                        new CompanyInvoiceViewModel { Month = "Sept", YearA = rnd.Next(8000, 12000).ToString(), YearB = rnd.Next(8000, 12000).ToString() },
-                                                        new CompanyInvoiceViewModel { Month = "Oct", YearA = rnd.Next(8000, 12000).ToString(), YearB = rnd.Next(8000, 12000).ToString() },
-                                                        new CompanyInvoiceViewModel { Month = "Nov", YearA = rnd.Next(8000, 12000).ToString(), YearB = rnd.Next(8000, 12000).ToString() },
-                                                        new CompanyInvoiceViewModel { Month = "Dec",YearA = rnd.Next(8000, 12000).ToString(), YearB = rnd.Next(8000, 12000).ToString() },
-            };
+            List<InvoiceDetail> _invoices = new List<InvoiceDetail>();
+            if (contactId == 1)
+            {
+                _invoices.Add(new InvoiceDetail { Amount = 10352, DueDate = new DateTime(2014,1,1), PercentChange = 2, InvoiceId = 1 }); 
+                _invoices.Add(new InvoiceDetail { Amount = 14362, DueDate = new DateTime(2014,2, 1) , PercentChange = 4, InvoiceId = 2 });
+            }
+            else
+            {
+                _invoices.Add(new InvoiceDetail { Amount = 13944, DueDate = new DateTime(2014, 1, 1), PercentChange = 3, InvoiceId = 3 });
+                _invoices.Add(new InvoiceDetail { Amount = 19833, DueDate = new DateTime(2014, 2, 1), PercentChange = 4, InvoiceId = 4 });
+            }
+            return _invoices;
         }
 
         public SummaryViewModel GetSummaryDataFor(int customerId)
@@ -132,9 +130,9 @@ namespace CimscoPortal.Services
             model.SummaryData = new List<InvoiceDataForCompany>();
 
             List<InvoiceDetail> _invoicesDue = new List<InvoiceDetail>() { 
-                new InvoiceDetail { Amount = 10352, DueDate = new DateTime(2014,1,1), PercentChange = 2 }, 
-                new InvoiceDetail { Amount = 14362, DueDate = new DateTime(2014,2, 1) , PercentChange = 4} 
-            } ;
+                new InvoiceDetail { Amount = 10352, DueDate = new DateTime(2014,1,1), PercentChange = 2, InvoiceId = 1 }, 
+                new InvoiceDetail { Amount = 14362, DueDate = new DateTime(2014,2, 1) , PercentChange = 4, InvoiceId = 2 } 
+            };
 
             InvoiceDataForCompany zz = new InvoiceDataForCompany() { InvoiceHistory = _invoiceData, Year = 2014, InvoicesDue = _invoicesDue };
             model.SummaryData.Add(zz);
@@ -146,8 +144,8 @@ namespace CimscoPortal.Services
             zz = new InvoiceDataForCompany() { InvoiceHistory = _invoiceData2, Year = 2013, InvoicesDue = _invoicesDue };
             model.SummaryData.Add(zz);
             model.InvoicesDue = new List<InvoiceDetail>();
-            model.InvoicesDue.Add(new InvoiceDetail() { Amount = 10352, DueDate = new DateTime(2014,1,1), PercentChange = 2 });
-            model.InvoicesDue.Add(new InvoiceDetail() { Amount = 14362, DueDate = new DateTime(2014,2, 1) , PercentChange = 4});
+            model.InvoicesDue.Add(new InvoiceDetail() { Amount = 10352, DueDate = new DateTime(2014, 1, 1), PercentChange = 2, InvoiceId = 3 });
+            model.InvoicesDue.Add(new InvoiceDetail() { Amount = 14362, DueDate = new DateTime(2014, 2, 1), PercentChange = 4, InvoiceId = 4 });
 
             model.MaxValue = 12000;
 
@@ -192,7 +190,75 @@ namespace CimscoPortal.Services
             var _result = q.FirstOrDefault();
             _result.SummaryData[0].Detail = Convert.ToDecimal(_result.SummaryData[0].Detail).ToString("C");
 
+            ///
+            var model = new List<EnergyDataModel>() {   
+                new EnergyDataModel { 
+                    EnergyChargesByBracket = new List<decimal> { 10.665M, 11.756M, 15.639M, 14.786M, 16.199M, 13.918M }, 
+                    EnergyCostByBracket = new List<decimal> { 239.14M, 923.52M, 2344.94M, 2041.24M, 2136.30M, 300.30M }, 
+                    HeaderData = new HeaderData { Header = "Weekday Costs" }
+                },
+                new EnergyDataModel {
+                    EnergyChargesByBracket = new List<decimal> { 8.888M, 9.797M, 13.032M, 12.319M, 13.499M, 11.599M }, 
+                    EnergyCostByBracket = new List<decimal> { 82.38M, 249.15M, 1036.01M, 927.74M, 572.29M, 115.38M }, 
+                    HeaderData = new HeaderData { Header = "Weekend Costs" }
+                }
+            };
+            ////
+
             return _result;
+
+        }
+
+        public InvoiceDetailViewModel GetCurrentMonth_(int _energyPointId)
+        {
+            //string _dateFormat = "m";
+            //GPA:  1. Region specific formats. 
+            //      2. 
+            IQueryable<DonutChartViewModel> q = from r in _repository.InvoiceSummaries.OrderByDescending(o => o.InvoiceDate)
+                                                where (r.EnergyPointId == _energyPointId)
+                                                select new DonutChartViewModel()
+                                                {
+                                                    DonutChartData = new List<DonutChartData> { new DonutChartData() { Value = r.TotalEnergyCharges, Label = "Energy" },
+                                                                    new DonutChartData() { Value = r.TotalMiscCharges, Label = "Other"},
+                                                                    new DonutChartData() { Value = r.TotalNetworkCharges, Label = "Network"}
+                                                                  },
+                                                    HeaderData = new HeaderData()
+                                                    {
+                                                        DataFor = "",
+                                                        Header = SqlFunctions.DateName("mm", r.InvoiceDate).ToUpper() + " " + SqlFunctions.DateName("YY", r.InvoiceDate).ToUpper()
+                                                    },
+                                                    SummaryData = new List<SummaryData> { new SummaryData() {   
+                                                                Title = "BILL TOTAL", 
+                                                                Detail = SqlFunctions.StringConvert(r.TotalEnergyCharges+r.TotalMiscCharges+r.TotalNetworkCharges) }, 
+                                                              new SummaryData() { 
+                                                                Title = "DUE DATE", 
+                                                                Detail = SqlFunctions.DateName("dd", r.InvoiceDate) + " " +  SqlFunctions.DateName("mm", r.InvoiceDate) + " "  + SqlFunctions.DateName("YY", r.InvoiceDate)}
+                        }
+                                                };
+
+            var _result = q.FirstOrDefault();
+            _result.SummaryData[0].Detail = Convert.ToDecimal(_result.SummaryData[0].Detail).ToString("C");
+
+            ///
+            var model = new List<EnergyDataModel>() {   
+                new EnergyDataModel { 
+                    EnergyChargesByBracket = new List<decimal> { 10.665M, 11.756M, 15.639M, 14.786M, 16.199M, 13.918M }, 
+                    EnergyCostByBracket = new List<decimal> { 239.14M, 923.52M, 2344.94M, 2041.24M, 2136.30M, 300.30M }, 
+                    HeaderData = new HeaderData { Header = "Weekday Costs", DataFor = "1", _TempData = "WeeklyEnergyBySlice" }
+                },
+                new EnergyDataModel {
+                    EnergyChargesByBracket = new List<decimal> { 8.888M, 9.797M, 13.032M, 12.319M, 13.499M, 11.599M }, 
+                    EnergyCostByBracket = new List<decimal> { 82.38M, 249.15M, 1036.01M, 927.74M, 572.29M, 115.38M }, 
+                    HeaderData = new HeaderData { Header = "Weekend Costs", DataFor = "2", _TempData = "WeekendEnergyBySlice" }
+                }
+            };
+            ////
+            InvoiceDetailViewModel returnData = new InvoiceDetailViewModel();
+
+            returnData.ChartData = _result;
+            returnData.EnergyCostData = model;
+
+            return returnData;
 
         }
 
@@ -207,11 +273,16 @@ namespace CimscoPortal.Services
             nfi.PercentDecimalDigits = 0;
             decimal zz = _data.First().Energy;
             decimal zzz = _data.ElementAtOrDefault(_data.Count() - 13).Energy;  // .Last().Energy;
-            string _percentageChange = (zz / zzz).ToString("P", nfi);
-            BarChartSummaryData _summaryData = new BarChartSummaryData() { Title = "ELECTRICITY COSTS", SubTitle = "Invoice History", PercentChange = _percentageChange };
-            _result.MonthlyData = _data;
-            _result.BarChartSummaryData = _summaryData;
+            decimal _percentageChange = (1 - (zz / zzz)); //.ToString("P", nfi);
+            BarChartSummaryData _summaryData = new BarChartSummaryData() { Title = "ELECTRICITY COSTS", SubTitle = "Invoice History. Feb 2010 - Mar 2111", PercentChange = _percentageChange };
 
+            _result.BarChartSummaryData = _summaryData;
+            _result.MonthlyData = _data;
+
+            for (int i = 0; i < _result.MonthlyData.Count(); i++)
+            {
+                _result.MonthlyData[i].Month = _result.MonthlyData[i]._month.ToString("MMM");
+            }
             return _result;
         }
 

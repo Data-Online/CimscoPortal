@@ -16,7 +16,7 @@ namespace CimscoPortal.Models
     {
         public string Title { get; set; }
         public string SubTitle { get; set; }
-        public string PercentChange { get; set; }
+        public decimal PercentChange { get; set; }
     }
 
     public class EnergyData

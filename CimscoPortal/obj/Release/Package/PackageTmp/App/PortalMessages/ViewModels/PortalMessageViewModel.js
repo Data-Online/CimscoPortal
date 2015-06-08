@@ -1,8 +1,8 @@
 ﻿(function () {
 
-    var module = angular.module("portalEnvironment");
+    var module = angular.module("message");
 
-    var PortalMessageViewModel = function ($scope, msgsource) {
+    var portalMessageViewModel = function ($scope, msgsource) {
 
         var onRepo = function (data) {
             $scope.msgs = data;
@@ -27,6 +27,6 @@
             .then(onCommonRepo, onCommonError);
     };
 
-    module.controller("PortalMessageViewModel", PortalMessageViewModel);
+    module.controller("portalMessageViewModel", portalMessageViewModel);
 
 }());

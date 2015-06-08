@@ -294,6 +294,7 @@
     <Compile Include="Models\DonutChartViewModel.cs" />
     <Compile Include="Models\EnergyDataModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\InvoiceDetailViewModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\MessageViewModels_new.cs" />
     <Compile Include="Models\MessageViewModels.cs" />
@@ -316,12 +317,16 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App\App.js" />
-    <Content Include="App\Dashboard\coDataSource.js" />
-    <Content Include="App\Dashboard\msgsource.js" />
-    <Content Include="App\Dashboard\TestPage1.html" />
-    <Content Include="App\Dashboard\TestPage.html" />
-    <Content Include="App\Dashboard\ViewModels\dbCompanyDetails.js" />
-    <Content Include="App\Dashboard\ViewModels\PortalMessageViewModel.js" />
+    <Content Include="App\Dashboard\App.js" />
+    <Content Include="App\Dashboard\dbDataSource.js" />
+    <Content Include="App\Dashboard\ViewModels\DashboardViewModel.js" />
+    <Content Include="App\Invoice\App.js" />
+    <Content Include="App\Invoice\inDataSource.js" />
+    <Content Include="App\Invoice\ViewModels\InvoiceOverviewViewModel.js" />
+    <Content Include="App\Invoice\ViewModels\InvoiceViewModel.js" />
+    <Content Include="App\PortalMessages\poDataSource.js" />
+    <Content Include="App\PortalMessages\ViewModels\PortalMessageViewModel.js" />
+    <Content Include="App\PortalMessages\App.js" />
     <Content Include="App_Data\TestJsonData.txt" />
     <Content Include="assets\fonts\BYekan.woff" />
     <Content Include="assets\fonts\fontawesome-webfont.eot" />
@@ -418,7 +423,9 @@
     <Content Include="Content\fonts\weathericons-regular-webfont.svg" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="Mvc.sitemap" />
+    <Content Include="Mvc.sitemap">
+      <SubType>Designer</SubType>
+    </Content>
     <EntityDeploy Include="Data\PortalEntities.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>PortalEntities.Designer.cs</LastGenOutput>
@@ -525,6 +532,7 @@
     <Content Include="Scripts\charts\morris\morris.js" />
     <Content Include="Scripts\charts\morris\raphael-2.0.2.min.js" />
     <Content Include="Scripts\charts\sparkline\jquery.sparkline.js" />
+    <Content Include="Scripts\charts\sparkline\sparkline-composite.js" />
     <Content Include="Scripts\charts\sparkline\sparkline-init-customDEL.js" />
     <Content Include="Scripts\charts\sparkline\sparkline-init.js" />
     <Content Include="Scripts\colorpicker\jquery.minicolors.js" />
@@ -1431,9 +1439,9 @@
     <Content Include="Views\Shared\_AccountAreaPartial.cshtml" />
     <Content Include="Views\Portal\Index_test.cshtml" />
     <Content Include="Views\Portal\_YearToDateGraph.cshtml" />
-    <Content Include="Views\Shared\_DonutPlusSummary.cshtml" />
+    <Content Include="Views\Portal\_DonutPlusSummary.cshtml" />
     <Content Include="Views\Shared\_StackedGraph.cshtml" />
-    <Content Include="Views\Shared\_SparklineComposite.cshtml" />
+    <Content Include="Views\Shared\_SparklineComposite-old.cshtml" />
     <Content Include="Views\Portal\SiteSummary.cshtml" />
     <Content Include="Views\Administration\Index.cshtml" />
     <Content Include="Views\UserAdmin\Index.cshtml" />
@@ -1442,10 +1450,15 @@
     <Content Include="Views\UserAdmin\Details.cshtml" />
     <Content Include="Views\UserAdmin\Edit.cshtml" />
     <Content Include="Views\UserAdmin\_EditableDataTable.cshtml" />
-    <Content Include="Views\Portal\_CompanyList.cshtml" />
+    <Content Include="Views\Portal\_CompanyList-old.cshtml" />
     <Content Include="Views\Portal\_InvoiceHistory.cshtml" />
-    <Content Include="Views\Portal\_CompanyList2.cshtml" />
+    <Content Include="Views\Portal\_CompanyList.cshtml" />
     <Content Include="Views\Portal\_InvoiceApproval.cshtml" />
+    <Content Include="Views\Portal\InvoiceDetail.cshtml" />
+    <Content Include="Views\Portal\_YearToDateGraph-old.cshtml" />
+    <Content Include="Views\Shared\_DonutPlusSummary-old.cshtml" />
+    <Content Include="Views\Portal\_SparklineComposite.cshtml" />
+    <Content Include="Views\Portal\InvoiceOverview.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />

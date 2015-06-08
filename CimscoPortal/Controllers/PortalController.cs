@@ -54,6 +54,17 @@ namespace CimscoPortal.Controllers
             return View();
         }
 
+        public ActionResult InvoiceOverview()
+        {
+            return View();
+        }
+
+        public ActionResult InvoiceDetail(string id)
+        {
+            ViewBag.InvoiceId = id;
+            return View();
+        }
+
         public ActionResult Index_test()
         {
             // int categoryId = 2;
@@ -127,17 +138,18 @@ namespace CimscoPortal.Controllers
                 //},
                 BarChartSummaryData = new BarChartSummaryData()
                 {
-                    PercentChange = "50%",
+                    //PercentChange = "50%",
+                    PercentChange = 50.00M,
                     Title = "ELECTRICITY COSTS",
                     SubTitle = "Bill History"
                 }
             };
             var ss = _portalService.GetHistoryByMonth(2);
            // model.MonthlyData = ss;
-            for (int i = 0; i < ss.MonthlyData.Count(); i++)
-            {
-                ss.MonthlyData[i].Month = ss.MonthlyData[i]._month.ToString("MMM");
-            }
+            //for (int i = 0; i < ss.MonthlyData.Count(); i++)
+            //{
+            //    ss.MonthlyData[i].Month = ss.MonthlyData[i]._month.ToString("MMM");
+            //}
             return JsonSuccess(ss);
         }
 

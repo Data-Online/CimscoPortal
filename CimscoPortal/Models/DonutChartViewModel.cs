@@ -29,5 +29,6 @@ namespace CimscoPortal.Models
     {
         public string Header { get; set; }
         public string DataFor {  get; set; }
+        public string _TempData { get; set; }
     }
 }

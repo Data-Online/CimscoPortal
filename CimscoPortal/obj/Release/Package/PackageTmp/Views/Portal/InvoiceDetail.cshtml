@@ -1,0 +1,88 @@
+﻿@{
+    ViewBag.Title = "Dashboard";
+    ViewBag.Description = "Cimsco Dashboard";
+    Layout = "~/Views/Shared/_Default.cshtml";
+}
+
+<div data-ng-app="invoice" data-ng-controller="invoiceViewModel" data-ng-init="init(@ViewBag.InvoiceId)">
+
+    <div class="row">
+        <div class="col-xs-12 col-md-6 col-lg-6">
+            @Html.Partial("_DonutPlusSummary")
+        </div>
+        <div class="col-lg-3 col-sm-6 col-xs-12" data-ng-repeat="nrgData in slModel">
+            @Html.Partial("_SparklineComposite")
+            <span data-display="sparklineComposite" data-datafor="{{nrgData.headerData._TempData}}"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div id="yearToDateGraph" class="col-lg-12 col-sm-12 col-xs-12">
+            @Html.Partial("_YearToDateGraph")
+        </div>
+    </div>
+</div>
+
+<style>
+    .morris-hover {
+        position: absolute;
+        z-index: 1000;
+    }
+
+        .morris-hover.morris-default-style {
+            border-radius: 10px;
+            padding: 6px;
+            color: #666;
+            background: rgb(0, 0, 0);
+            border: solid 2px rgb(0, 0, 0);
+            font-family: sans-serif;
+            font-size: 12px;
+            text-align: center;
+        }
+
+            .morris-hover.morris-default-style .morris-hover-row-label {
+                font-weight: bold;
+                margin: 0.25em 0;
+            }
+
+            .morris-hover.morris-default-style .morris-hover-point {
+                white-space: nowrap;
+                margin: 0.1em 0;
+            }
+</style>
+
+@section PageScripts{
+    @*<script src="assets/js/beyond.min.js"></script>*@
+
+    <!--Page Related Scripts-->
+    <script src="/Scripts/charts/morris/raphael-2.0.2.min.js"></script>
+    <script src="/Scripts/charts/morris/morris.js"></script>
+    <script src="/Scripts/charts/morris/morris-init.js"></script>
+
+    <script src="/Scripts/charts/sparkline/jquery.sparkline.js"></script>
+    <script src="~/Scripts/charts/sparkline/sparkline-composite.js"></script>
+
+    <script type="text/javascript">
+        $(window).bind("load", function () {
+
+            /*Sets Themed Colors Based on Themes*/
+            themeprimary = getThemeColorFromCss('themeprimary');
+            themesecondary = getThemeColorFromCss('themesecondary');
+            themethirdcolor = getThemeColorFromCss('themethirdcolor');
+            themefourthcolor = getThemeColorFromCss('themefourthcolor');
+            themefifthcolor = getThemeColorFromCss('themefifthcolor');
+            setTimeout(function () {
+                createSparklineCharts.composite();
+            }, 500);
+        });
+
+    </script>
+
+
+    <script src="~/App/Invoice/App.js"></script>
+    <script src="~/App/Invoice/inDataSource.js"></script>
+    <script src="~/App/Invoice/ViewModels/InvoiceViewModel.js"></script>
+
+
+
+
+}

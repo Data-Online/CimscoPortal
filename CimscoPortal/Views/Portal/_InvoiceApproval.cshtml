@@ -1,16 +1,18 @@
 ﻿
-<div class="databox databox-lg radius-bordered databox-shadowed" ng-repeat="inv in invoicesDue">
+<div class="databox databox-lg radius-bordered databox-shadowed" ng-repeat="inv in invoiceData">
     <div class="databox-left bg-white">
         <div class="databox-stat bg-sky radius-bordered">
             <div class="stat-text">{{inv.percentChange}} %</div>
-            <i class="stat-icon fa fa-long-arrow-up"></i>
+            <i class="stat-icon fa fa-long-arrow-up" ></i>
         </div>
         <div class="databox-cell cell-12 no-padding padding-top-30  text-align-center">
             <span class="databox-number orange no-margin">
-                <a href="@Url.Action("SiteSummary", "Portal")">
+                <a href="@Url.Action("InvoiceDetail", "Portal")/{{inv.invoiceId}}" title="Invoice Details">
                     <i class="fa fa-cogs"></i>
                 </a>
-                <i class="fa fa-download"></i>
+                <a href="#" title="Download PDF">
+                    <i class="fa fa-download"></i>
+                </a>
             </span>
         </div>
     </div>

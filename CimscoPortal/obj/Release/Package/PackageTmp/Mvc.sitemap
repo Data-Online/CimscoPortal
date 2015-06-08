@@ -5,7 +5,7 @@
 
   <mvcSiteMapNode title="Dashboard" controller="Portal" action="Index" imageUrl="glyphicon glyphicon-home" description="dashboard" visibility="Condition1">
     <!--<mvcSiteMapNode title="Databoxes" controller="Home" action="Databoxes" imageUrl="glyphicon glyphicon-tasks" description="beyond containers"/>-->
-    <mvcSiteMapNode title="Site Summary" controller="Portal" action="SiteSummary" imageUrl="glyphicon glyphicon-signal" description="cimsco portal" visibility="AllUsers"/>
+    <mvcSiteMapNode title="Invoice Overview" controller="Portal" action="InvoiceOverview" imageUrl="glyphicon glyphicon-signal" description="cimsco portal" visibility="AllUsers"/>
     <mvcSiteMapNode title="Administration" url="/0" imageUrl="fa fa-desktop" description="Administration Tasks" visibility="AdminOnly">
       <mvcSiteMapNode title="Users" controller ="UserAdmin" action="Index" imageUrl="glyphicon glyphicon-user" clickable="false" description="Manage Users" visibility="AdminOnly" />
     </mvcSiteMapNode>

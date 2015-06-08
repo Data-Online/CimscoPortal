@@ -1,6 +1,6 @@
 ﻿(function () {
 
-    var coDataSource = function ($http) {
+    var dbDataSource = function ($http) {
 
         var getCompanyTree = function () {
             var dataApi = "/api/companylistfor/1";
@@ -33,7 +33,7 @@
         };
 
     };
-    var module = angular.module("portalEnvironment");
-    module.factory("coDataSource", coDataSource);
+    var module = angular.module("dashboard");
+    module.factory("dbDataSource", dbDataSource);
 
 }());

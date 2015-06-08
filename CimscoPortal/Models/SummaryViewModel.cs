@@ -39,5 +39,6 @@ namespace CimscoPortal.Models
         public DateTime DueDate { get; set; }
         public decimal Amount { get; set; }
         public Int16 PercentChange { get; set; }
+        public int InvoiceId { get; set; }
     }
 }

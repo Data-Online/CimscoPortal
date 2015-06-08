@@ -56,7 +56,7 @@ namespace CimscoPortal.Controllers.Api
         public HttpResponseMessage GetCompanyInvoiceData(HttpRequestMessage request, int customerId)
         {
             var data = _portalService.GetCompanyInvoiceData(customerId);
-            return request.CreateResponse<CompanyInvoiceViewModel[]>(HttpStatusCode.OK, data.ToArray());
+            return request.CreateResponse<InvoiceDetail[]>(HttpStatusCode.OK, data.ToArray());
         }
 
         [HttpGet]
@@ -66,5 +66,25 @@ namespace CimscoPortal.Controllers.Api
             var data = _portalService.GetSummaryDataFor(customerId);
             return request.CreateResponse<SummaryViewModel>(HttpStatusCode.OK, data);
         }
+
+        #region Invoice data
+        [HttpGet]
+        [Route("invoicesummaryfor/{invoiceId}")]
+        public HttpResponseMessage GetInvoiceData(HttpRequestMessage request, int invoiceId)
+        {
+            var data = _portalService.GetHistoryByMonth(2);
+            return request.CreateResponse<StackedBarChartViewModel>(HttpStatusCode.OK, data);
+        }
+
+        [HttpGet]
+        [Route("invoicedetailfor/{invoiceId}")]
+        public HttpResponseMessage GetInvoiceDetailData(HttpRequestMessage request, int invoiceId)
+        {
+            var data = _portalService.GetCurrentMonth_(2);
+            return request.CreateResponse<InvoiceDetailViewModel>(HttpStatusCode.OK, data);
+        }
+
+        #endregion
+
     }
 }
