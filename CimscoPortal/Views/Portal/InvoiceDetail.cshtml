@@ -4,16 +4,26 @@
     Layout = "~/Views/Shared/_Default.cshtml";
 }
 
-<div data-ng-app="invoice" data-ng-controller="invoiceViewModel" data-ng-init="init(@ViewBag.InvoiceId)">
+<div data-ng-app="invoice" data-ng-controller="invoiceDetailViewModel" data-ng-init="init(@ViewBag.InvoiceId)">
 
     <div class="row">
+        @*<div class="col-xs-12 col-md-6 col-lg-6">
+                @Html.Partial("_DonutPlusSummary")
+            </div>*@
         <div class="col-xs-12 col-md-6 col-lg-6">
-            @Html.Partial("_DonutPlusSummary")
+            @Html.Partial("_DonutPlusSummary_")
         </div>
-        <div class="col-lg-3 col-sm-6 col-xs-12" data-ng-repeat="nrgData in slModel">
+
+        <div class="col-lg-3 col-sm-6 col-xs-12" data-ng-repeat="nrgData in slModel.energyCostSeries">
             @Html.Partial("_SparklineComposite")
-            <span data-display="sparklineComposite" data-datafor="{{nrgData.headerData._TempData}}"></span>
+            <span data-display="sparklineComposite"></span>
         </div>
+        <div class="col-lg-3 col-sm-6 col-xs-12" data-ng-repeat="nrgData in slModel.energyCostSeries">
+            @Html.Partial("_SparklineBar")
+            <span data-display="sparklineBar"></span>
+        </div>
+
+
     </div>
     <div class="row">
         <div id="yearToDateGraph" class="col-lg-12 col-sm-12 col-xs-12">
@@ -72,6 +82,7 @@
             themefifthcolor = getThemeColorFromCss('themefifthcolor');
             setTimeout(function () {
                 createSparklineCharts.composite();
+                createSparklineCharts.bar();
             }, 500);
         });
 
@@ -80,7 +91,7 @@
 
     <script src="~/App/Invoice/App.js"></script>
     <script src="~/App/Invoice/inDataSource.js"></script>
-    <script src="~/App/Invoice/ViewModels/InvoiceViewModel.js"></script>
+    <script src="~/App/Invoice/ViewModels/InvoiceDetailViewModel.js"></script>
 
 
 

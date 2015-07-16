@@ -8,20 +8,21 @@ namespace CimscoPortal.Models
 {
     public class EnergyDataModel
     {
-        public List<decimal> EnergyCostByBracket { get; set; }
-        public List<decimal> EnergyChargesByBracket { get; set; }
+        public List<decimal> EnergyRateByBracket { get; set; }
+        public List<decimal> EnergyChargeByBracket { get; set; }
         public HeaderData HeaderData { get; set; }
-        public decimal MaxCost
-        {
-            get { return EnergyCostByBracket.Max(); }
-        }
         public decimal MaxCharge
         {
-            get { return EnergyChargesByBracket.Max(); }
+            get
+            { return EnergyChargeByBracket.Max(); }
+        }
+        public decimal MaxRate
+        {
+            get { return EnergyRateByBracket.Max(); }
         }
         public decimal TotalCost
         {
-            get { return EnergyCostByBracket.Sum(); }
+            get { return EnergyChargeByBracket.Sum(); }
         }
     }
 }

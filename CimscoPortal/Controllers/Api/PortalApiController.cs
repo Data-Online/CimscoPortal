@@ -7,6 +7,8 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
+using Microsoft.AspNet.Identity;
+
 namespace CimscoPortal.Controllers.Api
 {
     [Authorize]
@@ -17,6 +19,18 @@ namespace CimscoPortal.Controllers.Api
         public PortalApiController(IPortalService portalService)
         {
             this._portalService = portalService;
+        }
+
+        public int ZZTest(int test)
+        {
+           var user = User.Identity.Name;
+           var userId = User.Identity.GetUserId();
+
+            if (user == "test")
+                return 1;
+            else
+                return 2;
+
         }
 
         [HttpGet]
@@ -41,30 +55,43 @@ namespace CimscoPortal.Controllers.Api
         [Route("common")]
         public HttpResponseMessage GetCommonData(HttpRequestMessage request)
         {
-            return request.CreateResponse<CommonInfoViewModel>(HttpStatusCode.OK, _portalService.GetCommonData());
+            var userId = User.Identity.Name;
+            return request.CreateResponse<CommonInfoViewModel>(HttpStatusCode.OK, _portalService.GetCommonData(userId));
+        }
+
+        //[HttpGet]
+        //[Route("companyhierarchy")]
+        //public HttpResponseMessage GetCompanyData(HttpRequestMessage request)
+        //{
+        //    var userId = User.Identity.Name;
+        //    //var zz = User.IsInRole("Admin");
+        //    //var userId = User.Identity.GetUserId();
+        //    return request.CreateResponse<CustomerHierarchyViewModel>(HttpStatusCode.OK, _portalService.GetCompanyHierarchy(userId));
+        //}
+
+        [HttpGet]
+        [Route("sitehierarchy")]
+        public HttpResponseMessage GetSiteHierarchy(HttpRequestMessage request)
+        {
+            var userId = User.Identity.Name;
+            return request.CreateResponse<SiteHierarchyViewModel>(HttpStatusCode.OK, _portalService.GetSiteHierarchy(userId));
         }
 
         [HttpGet]
-        [Route("companylistfor/{customerId}")]
-        public HttpResponseMessage GetCompanyData(HttpRequestMessage request, int customerId)
+        [Route("siteinvoicedatafor/{siteId}")]
+        public HttpResponseMessage GetCompanyInvoiceData(HttpRequestMessage request, int siteId)
         {
-            return request.CreateResponse<CustomerHierarchyViewModel>(HttpStatusCode.OK, _portalService.GetCompanyData(customerId));
-        }
-
-        [HttpGet]
-        [Route("companyinvoicedatafor/{customerId}")]
-        public HttpResponseMessage GetCompanyInvoiceData(HttpRequestMessage request, int customerId)
-        {
-            var data = _portalService.GetCompanyInvoiceData(customerId);
+            var data = _portalService.GetSiteInvoiceData(siteId);
             return request.CreateResponse<InvoiceDetail[]>(HttpStatusCode.OK, data.ToArray());
         }
 
         [HttpGet]
-        [Route("summarydatafor/{customerId}")]
-        public HttpResponseMessage GetSummaryDataFor(HttpRequestMessage request, int customerId)
+        [Route("summarydata")]
+        public HttpResponseMessage GetSummaryDataFor(HttpRequestMessage request)
         {
-            var data = _portalService.GetSummaryDataFor(customerId);
-            return request.CreateResponse<SummaryViewModel>(HttpStatusCode.OK, data);
+            var data = _portalService.GetSummaryDataFor(User.Identity.Name);
+            var _return = request.CreateResponse<SummaryViewModel>(HttpStatusCode.OK, data);
+            return _return;
         }
 
         #region Invoice data
@@ -72,7 +99,7 @@ namespace CimscoPortal.Controllers.Api
         [Route("invoicesummaryfor/{invoiceId}")]
         public HttpResponseMessage GetInvoiceData(HttpRequestMessage request, int invoiceId)
         {
-            var data = _portalService.GetHistoryByMonth(2);
+            var data = _portalService.GetHistoryByMonth(invoiceId);
             return request.CreateResponse<StackedBarChartViewModel>(HttpStatusCode.OK, data);
         }
 
@@ -80,11 +107,39 @@ namespace CimscoPortal.Controllers.Api
         [Route("invoicedetailfor/{invoiceId}")]
         public HttpResponseMessage GetInvoiceDetailData(HttpRequestMessage request, int invoiceId)
         {
-            var data = _portalService.GetCurrentMonth_(2);
+            var data = _portalService.GetCurrentMonth_(invoiceId);
             return request.CreateResponse<InvoiceDetailViewModel>(HttpStatusCode.OK, data);
+        }
+
+        [HttpGet]
+        [Route("invoicedetailfor_/{invoiceId}")]
+        public HttpResponseMessage GetCurrentMonth(HttpRequestMessage request, int invoiceId)   // Rename ?
+        {
+            var data = _portalService.GetCurrentMonth(invoiceId);
+            return request.CreateResponse<InvoiceDetailViewModel_>(HttpStatusCode.OK, data);
+        }
+
+        [System.Web.Mvc.ValidateAntiForgeryToken]
+        [HttpPost]
+        [Route("invoiceapproval/{invoiceId}")]
+        public HttpResponseMessage SetInvoiceApproved(HttpRequestMessage request, int invoiceId)
+        {
+            var userId = User.Identity.Name;
+            _portalService.ApproveInvoice(invoiceId, userId);
+            return request.CreateResponse(HttpStatusCode.OK);
         }
 
         #endregion
 
+
+        public object CheckUserAccess(string UserName)
+        {
+            var user = User.Identity.Name;
+            var userId = User.Identity.GetUserId();
+
+            _portalService.ConfirmUserAccess(user);
+
+            return true;
+        }
     }
 }

@@ -19,17 +19,25 @@
         };
 
         var getSummaryData = function () {
-            var dataApi = "/api/summarydatafor/1";
+            var dataApi = "/api/summarydata";
             return $http.get(dataApi)
                         .then(function (response) {
                             return response.data;
                         });
         };
 
+        var postInvoiceApproval = function (invoiceId)
+        {
+            //var data = { "InvoiceId": 20, "Approved": true };
+            var dataApi = "/api/invoiceapproval/" + invoiceId;
+            return $http.post(dataApi);
+        }
+
         return {
             getCompanyTree: getCompanyTree,
             getCompanyInvoiceData: getCompanyInvoiceData,
-            getSummaryData: getSummaryData
+            getSummaryData: getSummaryData,
+            postInvoiceApproval: postInvoiceApproval
         };
 
     };

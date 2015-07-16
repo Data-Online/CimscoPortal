@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using CimscoPortal.Data;
+using CimscoPortal.Data.Models;
 using CimscoPortal.Models;
 using System;
 
@@ -42,15 +42,15 @@ namespace CimscoPortal.App_Start
 
                 //                .ForMember(x => x.TimeStamp, opt => opt.MapFrom(efo => efo.TimeStamp.ToString()));
                 .ForMember(m => m.TimeStamp, opt => opt.MapFrom(i => (i.TimeStamp != null) ? i.TimeStamp.ToString() : DateTime.Now.ToString()))
-                            //.ForMember(m => m._timeStamp, opt => opt.MapFrom(i => (i.TimeStamp != null) ? i.TimeStamp : DateTime.Now))
+                //.ForMember(m => m._timeStamp, opt => opt.MapFrom(i => (i.TimeStamp != null) ? i.TimeStamp : DateTime.Now))
                 .ForMember(m => m._timeStamp, opt => opt.NullSubstitute(DateTime.Now))
                 .ForMember(m => m._timeStamp, opt => opt.MapFrom(i => i.TimeStamp))
-                            // .ForMember(m => m._timeStamp, opt => opt.Ignore())
+                // .ForMember(m => m._timeStamp, opt => opt.Ignore())
                     .ForMember(m => m.CategoryName, opt => opt.Ignore())
                     .ForMember(m => m.Subject, opt => opt.Ignore())
                     .ForMember(m => m.Name, opt => opt.Ignore())
-                            //  .ForMember(m => m.TimeStamp,  opt => opt.Ignore())
-                            //.ForMember(m => m.TimeStamp, opt => opt.ResolveUsing<TimeStringResolver>());
+                //  .ForMember(m => m.TimeStamp,  opt => opt.Ignore())
+                //.ForMember(m => m.TimeStamp, opt => opt.ResolveUsing<TimeStringResolver>());
                   ;
 
 
@@ -82,86 +82,119 @@ namespace CimscoPortal.App_Start
             //Mapper.AddFormatter<DateStringFormatter>();
 
             // Mapper.AssertConfigurationIsValid();
+
+            //Mapper.CreateMap<Customer, CustomerData>();
+            //Mapper.CreateMap<Group, CustomerHierarchyViewModel>()
+            //    //.ForMember(m => m.GroupName, opt => opt.MapFrom(i => i.GroupName))
+            //    .ForMember(m => m.CustomerData, opt => opt.MapFrom(i => i.Customers));
+
+            Mapper.CreateMap<Site, SiteData>();
+            Mapper.CreateMap<Group, SiteHierarchyViewModel>()
+                .ForMember(m => m.HeaderName, opt => opt.MapFrom(i => i.GroupName))
+                .ForMember(m => m.SiteData, opt => opt.MapFrom(i => i.Sites));
+            Mapper.CreateMap<Customer, SiteHierarchyViewModel>()
+                .ForMember(m => m.HeaderName, opt => opt.MapFrom(i => i.CustomerName))
+                .ForMember(m => m.SiteData, opt => opt.MapFrom(i => i.Sites));
+
+
+            Mapper.CreateMap<InvoiceSummary, CompanyInvoiceViewModel2>()
+                .ForMember(m => m.YearA, opt => opt.MapFrom(i => i.TotalCharges));
+
+            Mapper.CreateMap<InvoiceSummary, InvoiceDetail>()
+                .ForMember(m => m.ApproversName, opt => opt.MapFrom(i => i.UserId.FirstName + " " + i.UserId.LastName))
+                .ForMember(m => m.ApprovedDate, opt => opt.NullSubstitute(DateTime.Parse("01-01-0001")));
+
+            Mapper.CreateMap<AspNetUser, CommonInfoViewModel>()
+                .ForMember(m => m.FullName, opt => opt.MapFrom(i => i.FirstName + " " + i.LastName))
+                .ForMember(m => m.CompanyLogo, opt => opt.MapFrom(i => "\\Content\\images\\" + i.CompanyLogo));
+            //    .ForMember(m => m.UserInfo.FullName, opt => opt.MapFrom(i => i.;
+
+
+            Mapper.CreateMap<InvoiceSummary, InvoiceDetailViewModel>();
+
         }
 
+
     }
-
-    //public interface ITypeConverter<TSource, TDestination>
-    //{
-    //    TDestination Convert(TSource source);
-    //}
-
-    //public class DateTimeToStringConverter : ITypeConverter<DateTime?, string>
-    //{
-    //    public string Convert(DateTime source)
-    //    {
-    //        if (source.HasValue)
-    //            return source.Value.ToString();
-    //        else
-    //            return "00:00";
-    //    }
-    //}
-    //public class TimeStringResolver : ValueResolver<AlertData, string>
-    //{
-    //    protected override string ResolveCore(AlertData value)
-    //    {
-    //        //return (value == null ? "00:00" : value.TimeStamp.ToString());
-    //        return "00:00";
-    //    }
-    //}
-
-    //public class test : ValueResolver<DateTime?, string>
-    //{
-    //    protected override string ResolveCore(DateTime? source)
-    //    {
-    //        return "00:00";
-    //    }
-    //}
-    //public class DateStringFormatter : BaseFormatter<DateTime?>
-    //{
-    //    protected override string FormatValueCore(DateTime value)
-    //    {
-    //        return value.ToString("dddd, MMM dd, yyyy");
-    //    }
-    //}
-    //public abstract class BaseFormatter<T> 
-    //{
-    //    public string FormatValue(ResolutionContext context)
-    //    {
-    //        if (context.SourceValue == null)
-    //            return null;
-
-    //        if (!(context.SourceValue is T))
-    //            return context.SourceValue ==
-    //                                 null ? String.Empty : context.SourceValue.ToString();
-
-    //        return FormatValueCore((T)context.SourceValue);
-    //    }
-
-    //    protected abstract string FormatValueCore(T value);
-    //}
-
-    //
-
-    //public class DateTimeConverter : TypeConverter<DateTime?, DateTime>
-    //{
-    //    protected override DateTime ConvertCore(DateTime? source)
-    //    {
-    //        if (source.HasValue)
-    //            return source.Value;
-    //        else
-    //            return default(DateTime);
-    //    }
-    //}
-
-
-
-    //public class NullableDateTimeConverter : TypeConverter<DateTime?, DateTime?>
-    //{
-    //    protected override DateTime? ConvertCore(DateTime? source)
-    //    {
-    //        return source;
-    //    }
-    //}
-
 }
+
+
+
+
+//public interface ITypeConverter<TSource, TDestination>
+//{
+//    TDestination Convert(TSource source);
+//}
+
+//public class DateTimeToStringConverter : ITypeConverter<DateTime?, string>
+//{
+//    public string Convert(DateTime source)
+//    {
+//        if (source.HasValue)
+//            return source.Value.ToString();
+//        else
+//            return "00:00";
+//    }
+//}
+//public class TimeStringResolver : ValueResolver<AlertData, string>
+//{
+//    protected override string ResolveCore(AlertData value)
+//    {
+//        //return (value == null ? "00:00" : value.TimeStamp.ToString());
+//        return "00:00";
+//    }
+//}
+
+//public class test : ValueResolver<DateTime?, string>
+//{
+//    protected override string ResolveCore(DateTime? source)
+//    {
+//        return "00:00";
+//    }
+//}
+//public class DateStringFormatter : BaseFormatter<DateTime?>
+//{
+//    protected override string FormatValueCore(DateTime value)
+//    {
+//        return value.ToString("dddd, MMM dd, yyyy");
+//    }
+//}
+//public abstract class BaseFormatter<T> 
+//{
+//    public string FormatValue(ResolutionContext context)
+//    {
+//        if (context.SourceValue == null)
+//            return null;
+
+//        if (!(context.SourceValue is T))
+//            return context.SourceValue ==
+//                                 null ? String.Empty : context.SourceValue.ToString();
+
+//        return FormatValueCore((T)context.SourceValue);
+//    }
+
+//    protected abstract string FormatValueCore(T value);
+//}
+
+//
+
+//public class DateTimeConverter : TypeConverter<DateTime?, DateTime>
+//{
+//    protected override DateTime ConvertCore(DateTime? source)
+//    {
+//        if (source.HasValue)
+//            return source.Value;
+//        else
+//            return default(DateTime);
+//    }
+//}
+
+
+
+//public class NullableDateTimeConverter : TypeConverter<DateTime?, DateTime?>
+//{
+//    protected override DateTime? ConvertCore(DateTime? source)
+//    {
+//        return source;
+//    }
+//}

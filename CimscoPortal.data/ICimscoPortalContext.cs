@@ -16,5 +16,8 @@ namespace CimscoPortal.Data
         System.Data.Entity.DbSet<CimscoPortal.Data.Models.MessageType> MessageTypes { get; set; }
         System.Data.Entity.DbSet<CimscoPortal.Data.Models.PortalMessage> PortalMessages { get; set; }
         System.Data.Entity.DbSet<CimscoPortal.Data.Models.sysdiagram> sysdiagrams { get; set; }
+
+        void Commit();
+        void Update(CimscoPortal.Data.Models.InvoiceSummary _summary);
     }
 }

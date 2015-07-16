@@ -7,8 +7,8 @@ namespace CimscoPortal.Data.Models
     {
         public Address()
         {
-            this.Customers = new List<Customer>();
-            this.Groups = new List<Group>();
+            //this.Customers = new List<Customer>();
+            //this.Groups = new List<Group>();
         }
 
         public int AddressId { get; set; }
@@ -17,7 +17,7 @@ namespace CimscoPortal.Data.Models
         public string Address3 { get; set; }
         public Nullable<int> CityId { get; set; }
         public string PostCode { get; set; }
-        public virtual ICollection<Customer> Customers { get; set; }
-        public virtual ICollection<Group> Groups { get; set; }
+        //public virtual ICollection<Customer> Customers { get; set; }
+        //public virtual ICollection<Group> Groups { get; set; }
     }
 }

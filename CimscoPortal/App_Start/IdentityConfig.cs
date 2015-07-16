@@ -117,7 +117,7 @@ namespace CimscoPortal
         {
             var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var roleManager = HttpContext.Current.GetOwinContext().Get<ApplicationRoleManager>();
-            const string name = "admin@cimsco.co.nz";
+            string name = "admin@cimsco.co.nz";
             const string password = "C1msc0@";
             const string roleName = "Admin";
 
@@ -129,6 +129,24 @@ namespace CimscoPortal
                 var roleresult = roleManager.Create(role);
             }
 
+            var user = AddUser(userManager, name, password);
+
+            // Add user admin to Role Admin if not already added
+            AddUserToRole(userManager, role, user);
+
+        }
+
+        private static void AddUserToRole(ApplicationUserManager userManager, IdentityRole role, ApplicationUser user)
+        {
+            var rolesForUser = userManager.GetRoles(user.Id);
+            if (!rolesForUser.Contains(role.Name))
+            {
+                var result = userManager.AddToRole(user.Id, role.Name);
+            }
+        }
+
+        private static ApplicationUser AddUser(ApplicationUserManager userManager, string name, string password)
+        {
             var user = userManager.FindByName(name);
             if (user == null)
             {
@@ -136,13 +154,7 @@ namespace CimscoPortal
                 var result = userManager.Create(user, password);
                 result = userManager.SetLockoutEnabled(user.Id, false);
             }
-
-            // Add user admin to Role Admin if not already added
-            var rolesForUser = userManager.GetRoles(user.Id);
-            if (!rolesForUser.Contains(role.Name))
-            {
-                var result = userManager.AddToRole(user.Id, role.Name);
-            }
+            return user;
         }
     }
 

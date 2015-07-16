@@ -24,11 +24,11 @@
             </li>
             <li class="dropdown-footer ">
                 <span>
-                    {{common.today | date:'EEE, d MMM'}}
+                    {{common.usefulInfo.today | date:'EEE, d MMM'}}
                 </span>
                 <span class="pull-right">
-                    {{common.temperature}}°c
-                    <i class="{{common.weatherIcon}}"></i>
+                    {{common.usefulInfo.temperature}}°c
+                    <i class="{{common.usefulInfo.weatherIcon}}"></i>
                 </span>
             </li>
         </ul>
@@ -145,47 +145,28 @@
     </li>
     <li>
         <a class="login-area dropdown-toggle" data-toggle="dropdown">
-            <div class="avatar" title="View your public profile">
-                <img src="/assets/img/avatars/adam-jansen.jpg">
+            <div class="avatar" title="View your profile">
+                <img src="{{common.companyLogo}}">
             </div>
             <section>
-                <h2><span class="profile"><span>David Stevenson</span></span></h2>
+                <h2><span class="profile"><span>{{common.fullName}}</span></span></h2>
             </section>
         </a>
         <!--Login Area Dropdown-->
         <ul class="pull-right dropdown-menu dropdown-arrow dropdown-login-area">
-            <li class="username"><a>David Stevenson</a></li>
-            <li class="email"><a>David.Stevenson@live.com</a></li>
+            <li class="username"><a>{{common.fullName}}</a></li>
+            <li class="email"><a>{{common.eMail}}</a></li>
             <!--Avatar Area-->
             <li>
                 <div class="avatar-area">
-                    <img src="/assets/img/avatars/adam-jansen.jpg" class="avatar">
-                    <span class="caption">Change Photo</span>
+                    <img width="60%" src="{{common.companyLogo}}" alt="Company" />
                 </div>
             </li>
             <!--Avatar Area-->
             <li class="edit">
                 <a href="profile.html" class="pull-left">Profile</a>
-                <a href="#" class="pull-right">Setting</a>
+                <a href="#" class="pull-right">Settings</a>
             </li>
-            <!--Theme Selector Area-->
-            <li class="theme-area">
-                <ul class="colorpicker" id="skin-changer">
-                    <li><a class="colorpick-btn" href="#" style="background-color:#5DB2FF;" rel="/Content/css/skins/blue.min.css"></a></li>
-                    <li><a class="colorpick-btn" href="#" style="background-color:#2dc3e8;" rel="/Content/css/skins/azure.min.css"></a></li>
-                    <li><a class="colorpick-btn" href="#" style="background-color:#03B3B2;" rel="/Content/css/skins/teal.min.css"></a></li>
-                    <li><a class="colorpick-btn" href="#" style="background-color:#53a93f;" rel="/Content/css/skins/green.min.css"></a></li>
-                    <li><a class="colorpick-btn" href="#" style="background-color:#FF8F32;" rel="/Content/css/skins/orange.min.css"></a></li>
-                    <li><a class="colorpick-btn" href="#" style="background-color:#cc324b;" rel="/Content/css/skins/pink.min.css"></a></li>
-                    <li><a class="colorpick-btn" href="#" style="background-color:#AC193D;" rel="/Content/css/skins/darkred.min.css"></a></li>
-                    <li><a class="colorpick-btn" href="#" style="background-color:#8C0095;" rel="/Content/css/skins/purple.min.css"></a></li>
-                    <li><a class="colorpick-btn" href="#" style="background-color:#0072C6;" rel="/Content/css/skins/darkblue.min.css"></a></li>
-                    <li><a class="colorpick-btn" href="#" style="background-color:#585858;" rel="/Content/css/skins/gray.min.css"></a></li>
-                    <li><a class="colorpick-btn" href="#" style="background-color:#474544;" rel="/Content/css/skins/black.min.css"></a></li>
-                    <li><a class="colorpick-btn" href="#" style="background-color:#001940;" rel="/Content/css/skins/deepblue.min.css"></a></li>
-                </ul>
-            </li>
-            <!--/Theme Selector Area-->
             @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
             {
             @Html.AntiForgeryToken()

@@ -19,6 +19,16 @@ namespace CimscoPortal.Data.Models.Mapping
             this.Property(t => t.GroupId).HasColumnName("GroupId");
             this.Property(t => t.GroupName).HasColumnName("GroupName");
             this.Property(t => t.AddressId).HasColumnName("AddressId");
+
+            // Relationships
+            this.HasMany(t => t.Users)
+                .WithMany(t => t.Groups)
+                .Map(m =>
+                    {
+                        m.ToTable("GroupUserLink");
+                        m.MapLeftKey("UserId");
+                        m.MapRightKey("GroupId");
+                    });
         }
     }
 }

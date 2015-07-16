@@ -3,11 +3,11 @@
     <ol class="dd-list">
         <li class="dd-item" data-id="1">
             <div class="dd-handle">
-                {{hierarchyData.groupName}}
+                {{hierarchyData.headerName}}
             </div>
             <ol class="dd-list">
                 <li class="dd-item bordered-blue" data-id="4" ng-repeat="cust in hierarchyData.customerData">
-                    <div class="zz-handle" data-ng-click="updateTest(cust.customerId)">
+                    <div class="zz-handle" data-ng-click="updateTest(cust.siteId)">
                         <span class="databox-number sky no-margin">
                             <i class="fa fa-building-o"></i>
                             {{cust.customerName}}

@@ -3,4 +3,7 @@
   <parameter name="CimscoPortalContext-Web.config Connection String" description="CimscoPortalContext Connection String used in web.config by the application to access the database." defaultValue="Data Source=DEVELOP02\SQLSERVER2012;Initial Catalog=CimscoPortal;Integrated Security=True;MultipleActiveResultSets=True" tags="SqlConnectionString">
     <parameterEntry kind="XmlFile" scope="P:\\Projects\\Cloud_Development\\GitHub\\CimscoPortal\\CimscoPortal\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='CimscoPortalContext']/@connectionString" />
   </parameter>
+  <parameter name="CimscoPortalContext_DatabasePublish-Web.config Connection String" description="CimscoPortalContext_DatabasePublish Connection String used in web.config by the application to access the database." defaultValue="CimscoPortalContext_DatabasePublish.ConnetionString" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="P:\\Projects\\Cloud_Development\\GitHub\\CimscoPortal\\CimscoPortal\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='CimscoPortalContext_DatabasePublish']/@connectionString" />
+  </parameter>
 </parameters>

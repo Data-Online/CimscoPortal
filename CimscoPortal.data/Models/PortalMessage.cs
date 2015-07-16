@@ -12,7 +12,7 @@ namespace CimscoPortal.Data.Models
         public Nullable<System.DateTime> TimeStamp { get; set; }
         public string Footer { get; set; }
         public Nullable<System.DateTime> ExpiryDate { get; set; }
-        public virtual Customer Customer { get; set; }
+        //public virtual Customer Customer { get; set; }
         public virtual MessageFormat MessageFormat { get; set; }
     }
 }

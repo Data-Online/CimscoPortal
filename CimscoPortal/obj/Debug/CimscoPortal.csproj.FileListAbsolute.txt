@@ -204,8 +204,11 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\MvcSiteMapPro
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Newtonsoft.Json.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Owin.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Net.Http.Formatting.dll
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Cors.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Helpers.dll
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Http.Cors.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Http.dll
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Http.WebHost.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Mvc.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Optimization.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Razor.dll
@@ -215,11 +218,13 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.We
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\T4MVCExtensions.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Unity.Mvc4.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\WebActivatorEx.dll
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\WebApiContrib.IoC.Unity.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\WebGrease.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\CimscoPortal.data.pdb
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\AutoMapper.pdb
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\AutoMapper.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\AutoMapper.Net4.pdb
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.Owin.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.Practices.ServiceLocation.pdb
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.Practices.ServiceLocation.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.Practices.Unity.xml
@@ -230,6 +235,8 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\MvcSiteMapPro
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\MvcSiteMapProvider.WebActivator.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Net.Http.Formatting.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Http.xml
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Http.Cors.xml
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Http.WebHost.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Helpers.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Mvc.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Optimization.xml
@@ -244,7 +251,6 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\EntityFramewo
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.AspNet.Identity.Core.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.AspNet.Identity.Owin.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.AspNet.Identity.EntityFramework.xml
-P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.Owin.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.Owin.Host.SystemWeb.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.Owin.Security.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.Owin.Security.Facebook.xml
@@ -256,9 +262,3 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.Owi
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\obj\Debug\CimscoPortal.csprojResolveAssemblyReference.cache
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\obj\Debug\CimscoPortal.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\obj\Debug\CimscoPortal.pdb
-P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Http.WebHost.dll
-P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Http.WebHost.xml
-P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\WebApiContrib.IoC.Unity.dll
-P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Cors.dll
-P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Http.Cors.dll
-P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Http.Cors.xml

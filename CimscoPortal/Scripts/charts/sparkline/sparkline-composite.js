@@ -1,37 +1,37 @@
 ﻿var createSparklineCharts = function () {
     return {
         composite: function () {
+            var elementCount = 1;
             var sparklineCharts = $('[data-display=sparklineComposite]');
-            var AJAXdata = [];
-            AJAXdata.push({});
             $.each(sparklineCharts, function () {
-                var dataFor = $(this).data('datafor');
-                AJAXdata.push(getJsonData('GetSparklineDataFor', dataFor));
-            });
-            $.when.apply($, AJAXdata).done(function (data) {
-                var obj = []; obj.push({});
-                for (var i = 1, len = arguments.length; i < len; i++) {
-                    obj.push(arguments[i][0]);
-                }
-                for (var i = 1, len = obj.length; i < len; i++) {
-                    var elementId = i + 'SlineComposite';
-                    InitiateSparklineCharts.init(obj[i], elementId);
-                }
-            });
+                var elementId = elementCount + 'SlineComposite';
+                InitiateSparklineCharts.composite(elementId);
+                elementCount = elementCount + 1;
+            }
+            )
+        },
+        bar: function () {
+            var elementCount = 1;
+            var sparklineCharts = $('[data-display=sparklineBar]');
+            $.each(sparklineCharts, function () {
+                var elementId = elementCount + 'SlineBar';
+                InitiateSparklineCharts.stdbar(elementId);
+                elementCount = elementCount + 1;
+            }
+            )
         }
-    }
+    };
 }();
-
-
 
 var InitiateSparklineCharts = function () {
     return {
-        init: function (json, elementId) {
+        composite: function (elementId) {
             /*Composite Bar*/
-            //var sparklinecompositebars = $('[data-sparkline=compositebar]');
-            var sparklinecompositebars = $('#' + elementId + ' span');//WeeklyEnergyBySliceSlineComposite' + ' span');
+            var sparklinecompositebars = $('#' + elementId + ' span');
             $.each(sparklinecompositebars.first(), function () {
-                $(this).sparkline(json.energyCostByBracket, {
+                var seriesa = $(this).data('seriesa');
+                var seriesb = $(this).data('seriesb');
+                $(this).sparkline(seriesa, {
                     type: 'bar',
                     disableHiddenCheck: true,
                     height: $(this).data('height'),
@@ -49,9 +49,10 @@ var InitiateSparklineCharts = function () {
                             '3': '12-16pm', '4': '16-20pm', '5': '20-24pm'
                         })
                     },
-                    chartRangeMax: 2400.00
+                    chartRangeMax: $(this).data('maxvalueforbar'),//2400.00
+                    chartRangeMin: $(this).data('minvalueforbar')
                 });
-                $(this).sparkline(json.energyChargesByBracket, {
+                $(this).sparkline(seriesb, {                  //json.energyChargesByBracket, {
                     type: 'line',
                     height: $(this).data('height'),
                     disableHiddenCheck: true,
@@ -66,12 +67,42 @@ var InitiateSparklineCharts = function () {
                     maxSpotColor: getcolor($(this).data('maxspotcolor')),
                     highlightSpotColor: getcolor($(this).data('highlightspotcolor')),
                     highlightLineColor: getcolor($(this).data('highlightlinecolor')),
-                    tooltipFormat: '<span style="color: {{color}}">&#9679;</span> cost per kw: ${{y}}',
+                    tooltipFormat: '<span style="color: {{color}}">&#9679;</span> cost per kw: {{y}}c',
                     composite: true,
-                    chartRangeMax: 18.00
+                    chartRangeMax: $(this).data('maxSeriesb'),
+                    chartRangeMin: $(this).data('minSeriesb')
                 });
 
             });
+        },
+        stdbar: function (elementId) {
+            /*Composite Bar*/
+            var sparklinebars = $('#' + elementId + ' span');
+            $.each(sparklinebars.first(), function () {
+                var seriesa = $(this).data('seriesa');
+                var seriesb = $(this).data('seriesb');
+                $(this).sparkline(seriesa, {
+                    type: 'bar',
+                    disableHiddenCheck: true,
+                    height: $(this).data('height'),
+                    width: $(this).data('width'),
+                    barColor: themeprimary, //getcolor($(this).data('barcolor')),
+                    negBarColor: getcolor($(this).data('negbarcolor')),
+                    zeroColor: getcolor($(this).data('zerocolor')),
+                    barWidth: $(this).data('barwidth'),
+                    barSpacing: $(this).data('barspacing'),
+                    stackedBarColor: getcolor($(this).data('stackedbarcolor')),
+                    tooltipFormat: '{{offset:slice}}<br/><span style="color: {{color}}">&#9679;</span> charge: ${{value}}',
+                    tooltipValueLookups: {
+                        slice: $.range_map({
+                            '0': '00-04am', '1': '04-08am', '2': '08-12am',
+                            '3': '12-16pm', '4': '16-20pm', '5': '20-24pm'
+                        })
+                    },
+                    chartRangeMax: $(this).data('maxvalueforbar'),//2400.00
+                    chartRangeMin: $(this).data('minvalueforbar')
+                });
+            });
         }
-    };
+    }
 }();

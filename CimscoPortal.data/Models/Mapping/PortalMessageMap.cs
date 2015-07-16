@@ -28,12 +28,12 @@ namespace CimscoPortal.Data.Models.Mapping
             this.Property(t => t.ExpiryDate).HasColumnName("ExpiryDate");
 
             // Relationships
-            this.HasOptional(t => t.Customer)
-                .WithMany(t => t.PortalMessages)
-                .HasForeignKey(d => d.CustomerId);
-            this.HasOptional(t => t.MessageFormat)
-                .WithMany(t => t.PortalMessages)
-                .HasForeignKey(d => d.MessageFormatId);
+            //this.HasOptional(t => t.Customer)
+            //    .WithMany(t => t.PortalMessages)
+            //    .HasForeignKey(d => d.CustomerId);
+            //this.HasOptional(t => t.MessageFormat)
+            //    .WithMany(t => t.PortalMessages)
+            //    .HasForeignKey(d => d.MessageFormatId);
 
         }
     }

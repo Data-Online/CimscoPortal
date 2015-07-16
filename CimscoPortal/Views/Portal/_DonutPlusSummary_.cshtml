@@ -1,0 +1,73 @@
+﻿<div class="databox databox-xxlg databox-vertical databox-shadowed bg-white radius-bordered">
+    <div class="databox-top bg-blue">
+        <span class="databox-header">{{invoiceDetail.invoiceDate | date:'MMMM d, y'}}</span>
+    </div>
+    <div class="databox-row row-12">
+        <div class="databox-cell cell-4 text-center">
+            <div id="{{doPageElement}}" class="chart" style="height:190px;"></div>
+        </div>
+
+        <div class="databox-cell cell-8 text-left databox-infoLines">
+            <div class="databox-row row-1 padding-5 padding-left-10 text-align-left">
+                <div class="databox-cell cell-4">
+                    <span class="databox-title no-margin">Invoice No</span>
+                </div>
+                <div class="databox-cell cell-8">
+                    <span class="databox-number">
+                        {{invoiceDetail.invoiceNumber}}
+                    </span>
+                </div>
+            </div>
+            <div class="databox-row row-1 padding-5 padding-left-10 text-align-left">
+                <div class="databox-cell cell-4">
+                    <span class="databox-title no-margin">Total</span>
+                </div>
+                <div class="databox-cell cell-8">
+                    <span class="databox-number">
+                        {{invoiceDetail.invoiceTotal | currency:$}}
+                    </span>
+                </div>
+            </div>
+            <div class="databox-row row-1 padding-5 padding-left-10 text-align-left">
+                <div class="databox-cell cell-4">
+                    <span class="databox-title no-margin">Due Date</span>
+                </div>
+                <div class="databox-cell cell-8">
+                    <span class="databox-number">
+                        {{invoiceDetail.invoiceDueDate | date:mediumDate}}
+                    </span>
+                </div>
+            </div>
+            <div class="databox-row row-1"></div>
+            <div class="databox-row row-1"></div>
+            <div class=" databox-row row-1 padding-5 padding-left-10 text-align-left" ng-show="!invoiceDetail.approved">
+                <div class="databox-cell cell-12">
+                    <label>
+                        <input type="checkbox" ng-model="invoiceDetail.approved" ng-click="approveInvoice(invoiceDetail.approved, invoiceDetail.invoiceId)">
+                        <span class="text">Approved</span>
+                    </label>
+                </div>
+            </div>
+            <div class="databox-row row-1 padding-5 padding-left-10 text-align-left" ng-show="invoiceDetail.approved">
+                <div class="databox-cell cell-4">
+                    <span class="databox-title no-margin">Approval Date</span>
+                </div>
+                <div class="databox-cell cell-8">
+                    <span class="databox-number">
+                        {{invoiceDetail.approvedDate | date:'MMM d, y h:mm a'}}
+                    </span>
+                </div>
+            </div>
+            <div class="databox-row row-1 padding-5 padding-left-10 text-align-left" ng-show="invoiceDetail.approved">
+                <div class="databox-cell cell-4">
+                    <span class="databox-title no-margin">Approved By</span>
+                </div>
+                <div class="databox-cell cell-8">
+                    <span class="databox-number">
+                        {{invoiceDetail.approversName}}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

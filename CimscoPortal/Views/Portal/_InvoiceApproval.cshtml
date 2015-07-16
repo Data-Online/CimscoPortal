@@ -1,9 +1,11 @@
 ﻿
-<div class="databox databox-lg radius-bordered databox-shadowed" ng-repeat="inv in invoiceData">
+<div class="databox databox-lg radius-bordered databox-shadowed" ng-repeat="inv in invoiceData |orderBy:'invoiceDate'">
+
     <div class="databox-left bg-white">
-        <div class="databox-stat bg-sky radius-bordered">
-            <div class="stat-text">{{inv.percentChange}} %</div>
-            <i class="stat-icon fa fa-long-arrow-up" ></i>
+        <div ng-class="pctBoxStyle(inv.percentageChange)">
+        @*<div class="databox-stat radius-bordered bg-red">*@
+            <div class="stat-text">{{inv.percentageChange | number:1}} %</div>
+            <i ng-class="negativeValue(inv.percentageChange)"></i>
         </div>
         <div class="databox-cell cell-12 no-padding padding-top-30  text-align-center">
             <span class="databox-number orange no-margin">
@@ -17,9 +19,16 @@
         </div>
     </div>
     <div class="databox-right bordered-thick bordered-sky bg-white">
-        <span class="databox-number sky"><i class="fa fa-calendar"></i>{{inv.dueDate | date:mediumDate}}</span>
-        <div class="databox-header darkgray">{{inv.amount | currency:$}}</div>
+        <span class="databox-number sky"><i class="fa fa-calendar"></i>{{inv.invoiceDate | date:mediumDate}}</span>
+        <div class="databox-header darkgray">
+            {{inv.invoiceTotal | currency:$}}
 
+
+            <label>
+                <input type="checkbox" ng-model="inv.approved"
+                       ng-click="testclick(inv.approved, inv.invoiceId)"><span class="text" style="font-size:8px">approved</span>
+            </label>
+        </div>
     </div>
-</div>
 
+</div>

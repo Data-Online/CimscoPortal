@@ -31,10 +31,18 @@ namespace CimscoPortal.Data.Models.Mapping
                 .IsRequired()
                 .HasMaxLength(50);
 
+            this.Property(t => t.Month)
+               .IsRequired()
+               .HasMaxLength(10);
+
+            this.Property(t => t.ApprovedById)
+                .HasMaxLength(128);
+
             // Table & Column Mappings
             this.ToTable("InvoiceSummaries");
             this.Property(t => t.InvoiceId).HasColumnName("InvoiceId");
             this.Property(t => t.InvoiceDate).HasColumnName("InvoiceDate");
+            this.Property(t => t.InvoiceDueDate).HasColumnName("InvoiceDueDate");
             this.Property(t => t.InvoiceNumber).HasColumnName("InvoiceNumber");
             this.Property(t => t.GstTotal).HasColumnName("GstTotal");
             this.Property(t => t.InvoiceTotal).HasColumnName("InvoiceTotal");
@@ -53,6 +61,14 @@ namespace CimscoPortal.Data.Models.Mapping
             this.Property(t => t.SiteName).HasColumnName("SiteName");
             this.Property(t => t.EnergyPointId).HasColumnName("EnergyPointId");
             this.Property(t => t.InvoiceSummaryId).HasColumnName("InvoiceSummaryId");
+            this.Property(t => t.ApprovedDate).HasColumnName("ApprovedDate");
+           // this.Property(t => t.UserId).HasColumnName("ApprovedById");
+
+            this.HasOptional(o => o.UserId);
+
+            this.HasOptional(o => o.EnergyCharge)
+                .WithRequired(ad => ad.InvoiceSummary).WillCascadeOnDelete(true);
+
         }
     }
 }

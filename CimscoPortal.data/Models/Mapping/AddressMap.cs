@@ -32,24 +32,24 @@ namespace CimscoPortal.Data.Models.Mapping
             this.Property(t => t.CityId).HasColumnName("CityId");
             this.Property(t => t.PostCode).HasColumnName("PostCode");
 
-            // Relationships
-            this.HasMany(t => t.Customers)
-                .WithMany(t => t.Addresses)
-                .Map(m =>
-                    {
-                        m.ToTable("CustomerAddressLink");
-                        m.MapLeftKey("AddressId");
-                        m.MapRightKey("CustomerId");
-                    });
+            //// Relationships
+            //this.HasMany(t => t.Customers)
+            //    .WithMany(t => t.Addresses)
+            //    .Map(m =>
+            //        {
+            //            m.ToTable("CustomerAddressLink");
+            //            m.MapLeftKey("AddressId");
+            //            m.MapRightKey("CustomerId");
+            //        });
 
-            this.HasMany(t => t.Groups)
-                .WithMany(t => t.Addresses)
-                .Map(m =>
-                    {
-                        m.ToTable("GroupAddressLink");
-                        m.MapLeftKey("AddressId");
-                        m.MapRightKey("GroupId");
-                    });
+            //this.HasMany(t => t.Groups)
+            //    .WithMany(t => t.Addresses)
+            //    .Map(m =>
+            //        {
+            //            m.ToTable("GroupAddressLink");
+            //            m.MapLeftKey("AddressId");
+            //            m.MapRightKey("GroupId");
+            //        });
 
 
         }

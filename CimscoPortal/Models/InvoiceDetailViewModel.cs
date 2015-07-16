@@ -11,4 +11,17 @@ namespace CimscoPortal.Models
         public DonutChartViewModel ChartData { get; set; }
         public List<EnergyDataModel> EnergyCostData { get; set; }
     }
+
+    public class InvoiceDetailViewModel_
+    {
+        public List<DonutChartData> DonutChartData { get; set; }
+        //public List<EnergyDataModel> EnergyCostData { get; set; }
+        public EnergyCosts EnergyCosts { get; set; }
+        public InvoiceDetail InvoiceDetail { get; set; }
+    }
+
+    public class EnergyCosts
+    {
+        public List<EnergyDataModel> EnergyCostSeries { get; set; }
+    }
 }

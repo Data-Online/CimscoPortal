@@ -36,6 +36,7 @@ namespace CimscoPortal.Data.Models.Mapping
             this.Property(t => t.LockoutEnabled).HasColumnName("LockoutEnabled");
             this.Property(t => t.AccessFailedCount).HasColumnName("AccessFailedCount");
             this.Property(t => t.UserName).HasColumnName("UserName");
+
         }
     }
 }

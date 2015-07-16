@@ -1,0 +1,55 @@
+﻿
+<form class="form-inline">
+    <input ng-model="query" type="text"
+           placeholder="Find invoice number" autofocus>
+</form>
+<br />
+<a href="" ng-click="order('invoiceDate')">Sort by Invoice Date</a>
+<span class="sortorder" ng-show="predicate === 'orderDate'" ng-class="{reverse:reverse}"></span>
+
+<div ng-repeat="inv in invoiceData | filter: { invoiceNumber:query } |orderBy:predicate:reverse">
+    <div class="well bordered-left bordered-themeprimary" style="margin-bottom:2px;padding:10px;">
+        Invoice number: <b>{{inv.invoiceNumber}} </b><br /><span class="databox-text">Approved by</span> <span class="databox-header">
+            <b>{{inv.approversName}}</b></span> on <b>{{inv.approvedDate |  date:mediumDate}}</b>
+    </div>
+    <div class="databox databox-lg radius-bordered databox-shadowed">
+
+        <div class="databox-left bg-white">
+            <div ng-class="pctBoxStyle(inv.percentageChange)">
+                <div class="stat-text">{{inv.percentageChange | number:1}} %</div>
+                @*<i class="stat-icon fa fa-long-arrow-up"></i>*@
+                <i ng-class="negativeValue(inv.percentageChange)"></i>
+            </div>
+            <div class="databox-cell cell-12 no-padding padding-top-30  text-align-center">
+                <span class="databox-number orange no-margin">
+                    <a href="@Url.Action("InvoiceDetail", "Portal")/{{inv.invoiceId}}" title="Invoice Details">
+                        <i class="fa fa-cogs"></i>
+                    </a>
+                    <a href="#" title="Download PDF">
+                        <i class="fa fa-download"></i>
+                    </a>
+                </span>
+            </div>
+        </div>
+        <div class="databox-right bordered-thick bordered-sky bg-white">
+            <span class="databox-number sky"><i class="fa fa-calendar"></i>{{inv.invoiceDate | date:mediumDate}}</span>
+            <div class="databox-header darkgray">
+                {{inv.invoiceTotal | currency:$}}
+                <label>
+                    <input type="checkbox" ng-model="inv.approved"
+                           ng-click="testclick(inv.approved, inv.invoiceId)"><span class="text" style="font-size:8px">approved</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+<style type="text/css">
+    .sortorder:after {
+        content: '\25b2';
+    }
+
+    .sortorder.reverse:after {
+        content: '\25bc';
+    }
+</style>
+

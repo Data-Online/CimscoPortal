@@ -10,3 +10,5 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Release\
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Release\CimscoPortal.data.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Release\CimscoPortal.data.pdb
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Release\CimscoPortal.Data.csprojResolveAssemblyReference.cache
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Release\CimscoPortal.Data.Migrations.City.resources
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Release\CimscoPortal.Data.Migrations.Customer.resources

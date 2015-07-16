@@ -78,31 +78,31 @@ namespace CimscoPortal.Tests.Controllers
   
         }
 
-        [TestMethod]
-        public void DonutChartDataReturnsJsonResult()
-        { 
-            // Arrange
-            IPortalService _portalService;
-            PortalController _controller;
-            MockContext(out _portalService, out _controller);
+        ////[TestMethod]
+        ////public void DonutChartDataReturnsJsonResult()
+        ////{ 
+        ////    // Arrange
+        ////    IPortalService _portalService;
+        ////    PortalController _controller;
+        ////    MockContext(out _portalService, out _controller);
 
-            string _elementType = "test";
+        ////    string _elementType = "test";
 
-            Mock.Arrange(() => _portalService.GetCurrentMonth(2))
-                .Returns(new DonutChartViewModel()
-                {
-                    DonutChartData = new List<DonutChartData> { new DonutChartData { Label = "test", Value = 10.0M } },
-                    HeaderData = new HeaderData() { Header = "test" },
-                    SummaryData = new List<SummaryData>() { }
-                });
-            // Act
-            JsonResult _result = _controller.DonutChartData(_elementType) as JsonResult;
-            dynamic data = _result.Data;
+        ////    Mock.Arrange(() => _portalService.GetCurrentMonth(2))
+        ////        .Returns(new DonutChartViewModel()
+        ////        {
+        ////            DonutChartData = new List<DonutChartData> { new DonutChartData { Label = "test", Value = 10.0M } },
+        ////            HeaderData = new HeaderData() { Header = "test" },
+        ////            SummaryData = new List<SummaryData>() { }
+        ////        });
+        ////    // Act
+        ////    JsonResult _result = _controller.DonutChartData(_elementType) as JsonResult;
+        ////    dynamic data = _result.Data;
 
-            // Assert
-            Assert.IsNotNull(_result);
-            Assert.AreEqual("MonthlySummary", data.HeaderData.DataFor);
-        }
+        ////    // Assert
+        ////    Assert.IsNotNull(_result);
+        ////    Assert.AreEqual("MonthlySummary", data.HeaderData.DataFor);
+        ////}
 
         #region snippets
         //var _serializer = new JavaScriptSerializer();
@@ -123,7 +123,7 @@ namespace CimscoPortal.Tests.Controllers
             var routeData = new System.Web.Routing.RouteData();
             controllerContext = new ControllerContext(httpContext, routeData, Mock.Create<ControllerBase>());
 
-            // Mock.Arrange(() => httpContext.User.Identity.Name).Returns("test");
+            Mock.Arrange(() => httpContext.User.Identity.Name).Returns("test");
             //Mock.Arrange(() => httpContext.User.Identity.GetUserId()).Returns("test");
         }
 

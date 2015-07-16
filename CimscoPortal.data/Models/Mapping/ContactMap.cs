@@ -43,24 +43,24 @@ namespace CimscoPortal.Data.Models.Mapping
             this.Property(t => t.PhoneNumber).HasColumnName("PhoneNumber");
             this.Property(t => t.eMail).HasColumnName("eMail");
 
-            // Relationships
-            this.HasMany(t => t.Customers)
-                .WithMany(t => t.Contacts)
-                .Map(m =>
-                    {
-                        m.ToTable("ContactCustomerLink");
-                        m.MapLeftKey("ContactId");
-                        m.MapRightKey("CustomerId");
-                    });
+            //// Relationships
+            //this.HasMany(t => t.Customers)
+            //    .WithMany(t => t.Contacts)
+            //    .Map(m =>
+            //        {
+            //            m.ToTable("ContactCustomerLink");
+            //            m.MapLeftKey("ContactId");
+            //            m.MapRightKey("CustomerId");
+            //        });
 
-            this.HasMany(t => t.Groups)
-                .WithMany(t => t.Contacts)
-                .Map(m =>
-                    {
-                        m.ToTable("ContactGroupLink");
-                        m.MapLeftKey("ContactId");
-                        m.MapRightKey("GroupId");
-                    });
+            //this.HasMany(t => t.Groups)
+            //    .WithMany(t => t.Contacts)
+            //    .Map(m =>
+            //        {
+            //            m.ToTable("ContactGroupLink");
+            //            m.MapLeftKey("ContactId");
+            //            m.MapRightKey("GroupId");
+            //        });
 
 
         }

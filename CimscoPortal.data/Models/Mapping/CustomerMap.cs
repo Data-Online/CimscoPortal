@@ -19,6 +19,24 @@ namespace CimscoPortal.Data.Models.Mapping
             this.Property(t => t.CustomerId).HasColumnName("CustomerId");
             this.Property(t => t.CustomerName).HasColumnName("CustomerName");
             this.Property(t => t.AddressId).HasColumnName("AddressId");
+
+            //this.Property(t => t.GroupId).HasColumnName("GroupId");
+
+            //// Relationships
+            //this.HasOptional(t => t.Group)
+            //    .WithMany(t => t.Customers)
+            //    .HasForeignKey(d => d.GroupId);
+
+            // Relationships
+            this.HasMany(t => t.Users)
+                .WithMany(t => t.Customers)
+                .Map(m =>
+                {
+                    m.ToTable("CustomerUserLink");
+                    m.MapLeftKey("CustomerId");
+                    m.MapRightKey("UserId");
+                });
+
         }
     }
 }

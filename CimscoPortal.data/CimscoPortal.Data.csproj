@@ -51,6 +51,14 @@
     <Compile Include="Migrations\201505240641053_Initial.Designer.cs">
       <DependentUpon>201505240641053_Initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201506120104406_City.cs" />
+    <Compile Include="Migrations\201506120104406_City.Designer.cs">
+      <DependentUpon>201506120104406_City.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506140714264_Customer.cs" />
+    <Compile Include="Migrations\201506140714264_Customer.Designer.cs">
+      <DependentUpon>201506140714264_Customer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\AspNetRole.cs" />
@@ -58,8 +66,10 @@
     <Compile Include="Models\AspNetUserClaim.cs" />
     <Compile Include="Models\AspNetUserLogin.cs" />
     <Compile Include="CimscoPortalContext.cs" />
+    <Compile Include="Models\City.cs" />
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\EnergyCharge.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\InvoiceSummary.cs" />
     <Compile Include="Models\Mapping\AddressMap.cs" />
@@ -67,7 +77,10 @@
     <Compile Include="Models\Mapping\AspNetUserClaimMap.cs" />
     <Compile Include="Models\Mapping\AspNetUserLoginMap.cs" />
     <Compile Include="Models\Mapping\AspNetUserMap.cs" />
+    <Compile Include="Models\Mapping\CityMap.cs" />
     <Compile Include="Models\Mapping\ContactMap.cs" />
+    <Compile Include="Models\Mapping\EnergyChargeMap.cs" />
+    <Compile Include="Models\Mapping\SiteMap.cs" />
     <Compile Include="Models\Mapping\CustomerMap.cs" />
     <Compile Include="Models\Mapping\GroupMap.cs" />
     <Compile Include="Models\Mapping\InvoiceSummaryMap.cs" />
@@ -75,10 +88,13 @@
     <Compile Include="Models\Mapping\MessageTypeMap.cs" />
     <Compile Include="Models\Mapping\PortalMessageMap.cs" />
     <Compile Include="Models\Mapping\sysdiagramMap.cs" />
+    <Compile Include="Models\Mapping\UserDetailMap.cs" />
     <Compile Include="Models\MessageFormat.cs" />
     <Compile Include="Models\MessageType.cs" />
     <Compile Include="Models\PortalMessage.cs" />
+    <Compile Include="Models\Site.cs" />
     <Compile Include="Models\sysdiagram.cs" />
+    <Compile Include="Models\UserDetail.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -88,6 +104,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201505240641053_Initial.resx">
       <DependentUpon>201505240641053_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506120104406_City.resx">
+      <DependentUpon>201506120104406_City.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506140714264_Customer.resx">
+      <DependentUpon>201506140714264_Customer.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

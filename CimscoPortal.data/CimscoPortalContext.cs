@@ -6,16 +6,29 @@ namespace CimscoPortal.Data.Models
 {
     public partial class CimscoPortalContext : DbContext, CimscoPortal.Data.ICimscoPortalContext
     {
+
         static CimscoPortalContext()
         {
-            Database.SetInitializer<CimscoPortalContext>(null);
+            //Database.SetInitializer<CimscoPortalContext>(null);
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<CimscoPortalContext, CimscoPortal.Data.Migrations.Configuration>());
         }
 
         public CimscoPortalContext()
             : base("Name=CimscoPortalContext")
-            //: base("Name=DefaultConnection")
+        //: base("Name=DefaultConnection")
         {
         }
+
+        public virtual void Commit()
+        {
+            base.SaveChanges();
+        }
+
+        public virtual void Update(InvoiceSummary _summary)
+        {
+            base.Entry(_summary).State = EntityState.Modified;
+        }
+
 
         public DbSet<Address> Addresses { get; set; }
         public DbSet<AspNetRole> AspNetRoles { get; set; }
@@ -29,6 +42,10 @@ namespace CimscoPortal.Data.Models
         public DbSet<MessageFormat> MessageFormats { get; set; }
         public DbSet<MessageType> MessageTypes { get; set; }
         public DbSet<PortalMessage> PortalMessages { get; set; }
+        public DbSet<City> Cities { get; set; }
+        public DbSet<Site> Sites { get; set; }
+        public DbSet<EnergyCharge> EnergyCharges { get; set; }
+      //  public DbSet<UserDetail> UserDetails { get; set; }
         public DbSet<sysdiagram> sysdiagrams { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -45,7 +62,12 @@ namespace CimscoPortal.Data.Models
             modelBuilder.Configurations.Add(new MessageFormatMap());
             modelBuilder.Configurations.Add(new MessageTypeMap());
             modelBuilder.Configurations.Add(new PortalMessageMap());
+            modelBuilder.Configurations.Add(new CityMap());
+            modelBuilder.Configurations.Add(new SiteMap());
+            modelBuilder.Configurations.Add(new EnergyChargeMap());
+          //  modelBuilder.Configurations.Add(new UserDetailMap());
             modelBuilder.Configurations.Add(new sysdiagramMap());
         }
+
     }
 }

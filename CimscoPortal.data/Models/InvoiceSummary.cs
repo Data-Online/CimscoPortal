@@ -1,12 +1,19 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CimscoPortal.Data.Models
 {
     public partial class InvoiceSummary
     {
+
+        public InvoiceSummary() { }
+
         public int InvoiceId { get; set; }
         public System.DateTime InvoiceDate { get; set; }
+        public System.DateTime InvoiceDueDate { get; set; }
+        public string Month { get; set; }
+        public string Year { get; set; }
         public string InvoiceNumber { get; set; }
         public decimal GstTotal { get; set; }
         public decimal InvoiceTotal { get; set; }
@@ -24,6 +31,15 @@ namespace CimscoPortal.Data.Models
         public string ConnectionNumber { get; set; }
         public string SiteName { get; set; }
         public int EnergyPointId { get; set; }
+        public bool Approved { get; set; }
         public int InvoiceSummaryId { get; set; }
+        public string ApprovedById { get; set; }
+        public Nullable<System.DateTime> ApprovedDate { get; set; }
+        public decimal PercentageChange { get; set; }
+
+        [ForeignKey("ApprovedById")]
+        public virtual AspNetUser UserId { get; set; }
+
+        public virtual EnergyCharge EnergyCharge { get; set; }
     }
 }

@@ -112,7 +112,7 @@ namespace CimscoPortal.Controllers
             //    },
             //};
             var userId = User.Identity.GetUserId();
-            DonutChartViewModel model = _portalService.GetCurrentMonth(2);
+            DonutChartViewModel model = new DonutChartViewModel();//_portalService.GetCurrentMonth(2);
             model.HeaderData.DataFor = "MonthlySummary";
             return JsonSuccess(model);
         }
@@ -122,7 +122,7 @@ namespace CimscoPortal.Controllers
             StackedBarChartViewModel model = new StackedBarChartViewModel()
             {
                 //MonthlyData = new List<EnergyData> { 
-                //    new EnergyData() { Energy = 10056.00M, Line = 4675.34M, Other = 156.89M, Month = "Jan" },
+                //    new EnergyData() { Energy = 10056.00M, Line = 4675.34M, Other = 156.89M,  Month = DateTime.Parse("02-01-2011").ToString("MMM"),  },
                 //    new EnergyData() { Energy = 20056.00M, Line = 5675.34M, Other = 1186.89M, Month = "Feb" },
                 //    new EnergyData() { Energy = 10056.00M, Line = 4675.34M, Other = 156.89M, Month = "March" },
                 //    new EnergyData() { Energy = 20056.00M, Line = 5675.34M, Other = 1186.89M, Month = "April" },
@@ -156,22 +156,24 @@ namespace CimscoPortal.Controllers
         [HttpGet]
         public JsonResult GetSparklineDataFor(string id)
         {
+            id = "WeeklyEnergyBySlice";
             var model = new EnergyDataModel() {};
             model.HeaderData = new HeaderData();
-            switch (id) {
+            switch (id)
+            {
                 case "WeeklyEnergyBySlice":
-                    model.EnergyChargesByBracket    = new List<decimal> { 10.665M, 11.756M, 15.639M, 14.786M, 16.199M, 13.918M };
-                    model.EnergyCostByBracket       = new List<decimal> { 239.14M, 923.52M, 2344.94M, 2041.24M, 2136.30M, 300.30M };
+                    model.EnergyChargeByBracket = new List<decimal> { 10.665M, 11.756M, 15.639M, 14.786M, 16.199M, 13.918M };
+                    model.EnergyRateByBracket = new List<decimal> { 239.14M, 923.52M, 2344.94M, 2041.24M, 2136.30M, 300.30M };
                     model.HeaderData.Header = "Weekday Costs";
                     break;
                 case "WeekendEnergyBySlice":
-                    model.EnergyChargesByBracket = new List<decimal> { 8.888M, 9.797M, 13.032M, 12.319M, 13.499M, 11.599M };
-                    model.EnergyCostByBracket = new List<decimal> { 82.38M, 249.15M, 1036.01M, 927.74M, 572.29M, 115.38M };
+                    model.EnergyChargeByBracket = new List<decimal> { 8.888M, 9.797M, 13.032M, 12.319M, 13.499M, 11.599M };
+                    model.EnergyRateByBracket = new List<decimal> { 82.38M, 249.15M, 1036.01M, 927.74M, 572.29M, 115.38M };
                     model.HeaderData.Header = "Weekend Costs";
                     break;
             };
             model.HeaderData.DataFor = id;
-            var zz = model.MaxCost;
+            var zz = model.MaxCharge;
             return JsonSuccess(model);
         }
 
