@@ -12,7 +12,7 @@
         }
 
         $scope.order = function (predicate) {
-            $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
+            $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : true;
             $scope.predicate = predicate;
         };
 
@@ -20,7 +20,7 @@
             var num = parseInt(myValue);
             var style = 'databox-stat radius-bordered';
             if (num > 0) {
-                style = style + ' bg-red';
+                style = style + ' bg-warning';
             }
             else if (num < 0) {
                 style = style + ' bg-green';

@@ -11,6 +11,8 @@ using Telerik.JustMock;
 
 namespace CimscoPortal.Tests.Services
 {
+
+
     [TestClass]
     public class PortalServiceTests
     {
@@ -18,9 +20,9 @@ namespace CimscoPortal.Tests.Services
         public void GetCompanyDataFor_ReturnsHierachyForCustomer()
         {
             //// Arrange 
-            //ICimscoPortalContext _repository;
-            //PortalService _portalService;
-            //MockContext(out _repository, out _portalService);
+            ICimscoPortalContext _repository;
+            PortalService _portalService;
+            MockContext(out _repository, out _portalService);
             //Mock.Arrange(() => _repository.Contacts.Where(i => i.ContactId == 1).Select.Returns(
             //    new CustomerHierarchyViewModel()
             //              {
@@ -35,6 +37,28 @@ namespace CimscoPortal.Tests.Services
             //var _testData = new CustomerHierarchyViewModel();
             //// Assert
             //Assert.AreEqual(_testData.ToString(), _result.ToString());
+
+        }
+
+        [TestMethod]
+        public void GetCommonData_ReturnsCommonDataModel()
+        {
+            //// Arrange 
+            ICimscoPortalContext _repository;
+            PortalService _portalService;
+            var _mockMapper = Mock.Create<CimscoPortal.Infrastructure.IMappingService>();
+            MockContext(out _repository, out _portalService);
+            //CimscoPortal.Data.Models.AspNetUser zzztest;
+            IQueryable<CimscoPortal.Data.Models.AspNetUser> zztest = Enumerable.Empty<CimscoPortal.Data.Models.AspNetUser>().AsQueryable();// = new IList<CimscoPortal.Data.Models.AspNetUser()>;
+           // zztest = 
+            //var zz = new CommonInfoViewModel();
+            //var zz = IQueryable<Mock.Create<new CimscoPortal.Data.Models.AspNetUser()>>;
+            //Mock.Arrange(() => _repository.AspNetUsers.Where(s => s.UserName == "testuser").FirstOrDefault()).Returns(zztest);
+
+            var result = _portalService.GetCommonData("testuser");
+
+            // Assert
+            Assert.IsNotNull(result);
 
         }
 

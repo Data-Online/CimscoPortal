@@ -15,7 +15,7 @@ namespace CimscoPortal.Data.Models.Mapping
 
             this.ToTable("EnergyCharges");
             //this.Property(t => t.EnergyChargeId).HasColumnName("EnergyChargeId");
-
+            //this.Property(t => t.LossRate).HasPrecision(8, 6);
           //  this.HasRequired(o => o.InvoiceSummary);
         }
     }

@@ -35,10 +35,14 @@
             <span class="databox-number sky"><i class="fa fa-calendar"></i>{{inv.invoiceDate | date:mediumDate}}</span>
             <div class="databox-header darkgray">
                 {{inv.invoiceTotal | currency:$}}
-                <label>
+                <span class="btn-xs btn-labeled btn-palegreen pull-right" href="javascript:void(0);">
+                    <i class="btn-label glyphicon glyphicon-ok"></i>
+                    Approved
+                </span>
+                @*<label>
                     <input type="checkbox" ng-model="inv.approved"
                            ng-click="testclick(inv.approved, inv.invoiceId)"><span class="text" style="font-size:8px">approved</span>
-                </label>
+                </label>*@
             </div>
         </div>
     </div>

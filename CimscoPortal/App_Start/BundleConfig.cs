@@ -34,7 +34,8 @@ namespace CimscoPortal
                 "~/Content/css/font-awesome.min.css",
                 "~/Content/css/typicons.min.css",
                 "~/Content/css/weather-icons.min.css",
-                "~/Content/css/animate.min.css"));
+                "~/Content/css/animate.min.css",
+                "~/Content/css/cimsco-custom.css"));
 
             bundles.Add(new ScriptBundle("~/bundles/skin").Include(
                 "~/Scripts/skins.min.js"));

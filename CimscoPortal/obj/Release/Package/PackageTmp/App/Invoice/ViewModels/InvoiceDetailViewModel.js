@@ -44,12 +44,13 @@
         }
 
         var donutchart_ = function () {
-            console.log('Creating invoice detail donut new for invoice ID: ' + $scope.invoiceId);
+            console.log('Creating invoice detail donut (% based) new for invoice ID: ' + $scope.invoiceId);
             morris = Morris.Donut({
                 element: $scope.doPageElement,
                 data: $scope.donutChartData,
                 colors: [themeprimary, themethirdcolor, themesecondary, themefourthcolor],
-                formatter: function (y) { return "$" + y }
+                //formatter: function (y) { return "$" + y }
+                formatter: function (y) { return y + "%"}
             });
         }
 
@@ -86,13 +87,44 @@
         };
 
         var onDetailData_ = function (data) {
-            console.log('Got invoice detail data new');
+            console.log('Got invoice detail data new V2');
+            //$scope.zztest = themeprimary;
             $scope.donutChartData = data.donutChartData;
             $scope.invoiceDetail = data.invoiceDetail;
             //$scope.doHeader = data.chartData.headerData;
             //$scope.doSummary = data.chartData.summaryData;
             //$scope.doApproval = data.chartData.approvalData;
             $scope.slModel = data.energyCosts;
+            $scope.otherCharges = data.otherCharges;
+            $scope.networkCharges = data.networkCharges;
+            $scope.ncTotal = data.networkCharges[0] + data.networkCharges[1] + data.networkCharges[2] + data.networkCharges[3] + data.networkCharges[4];
+            $scope.ocTotal = data.otherCharges[0] + data.otherCharges[1] + data.otherCharges[2] + data.otherCharges[3];// + data.otherCharges[4];
+            $scope.slModel.maxYbar = Math.max(data.energyCosts.energyCostSeries[0].maxCharge, data.energyCosts.energyCostSeries[1].maxCharge);
+            $scope.slModel.minYbar = $scope.slModel.maxYbar * 0.1;
+            $scope.slModel.maxYgraph = Math.max(data.energyCosts.energyCostSeries[0].maxRate, data.energyCosts.energyCostSeries[1].maxRate);
+            $scope.slModel.minYgraph = $scope.slModel.maxYgraph * 0.1;
+            $scope.slModel.lossRate = $scope.invoiceDetail.lossRate;
+            console.log('Percent change = ' + data.invoiceDetail.percentageChange);
+            if (data.invoiceDetail.percentageChange < 0.00) {
+                //$scope.invoiceDetail.percentChange = $scope.invoiceDetail.percentageChange * -1;
+                console.log('negative change');
+                $scope.invoiceDetail.arrow = 'fa-arrow-down';
+            }
+            else if (data.invoiceDetail.percentageChange > 0.00) {
+                console.log('positive change');
+                $scope.invoiceDetail.arrow = 'fa-arrow-up';
+            }
+            else {
+                console.log('zero %');
+                $scope.invoiceDetail.arrow = 'fa-arrows-h';
+            }
+            console.log('Max bar : ' + $scope.slModel.maxYbar + ' max graph : ' + $scope.slModel.maxYgraph);
+
+            if ((data.invoiceDetail.invoiceNumber).charAt(0) == 't') {
+                console.log('sample invoice!');
+                $scope.invoiceDetail.invoiceIcon = 'fa-magic';
+            }
+
             donutchart_();
         };
 

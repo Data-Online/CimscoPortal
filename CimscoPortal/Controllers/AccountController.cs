@@ -23,7 +23,7 @@ namespace CimscoPortal.Controllers
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -35,9 +35,9 @@ namespace CimscoPortal.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -58,8 +58,10 @@ namespace CimscoPortal.Controllers
         [AllowAnonymous]
         public virtual ActionResult Login(string returnUrl)
         {
+            if (CreateRoles()) { }
             if (CreateDefaultAdminAccountNotAsync())
-            {}
+            { }
+
 
             ViewBag.ReturnUrl = returnUrl;
             return View();
@@ -124,7 +126,7 @@ namespace CimscoPortal.Controllers
             // If a user enters incorrect codes for a specified amount of time then the user account 
             // will be locked out for a specified amount of time. 
             // You can configure the account lockout settings in IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -159,8 +161,8 @@ namespace CimscoPortal.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
@@ -460,6 +462,27 @@ namespace CimscoPortal.Controllers
             }
         }
 
+        private bool CreateRoles()
+        {
+            var roleManager = HttpContext.GetOwinContext().Get<ApplicationRoleManager>();
+            string[] _rolesToAdd = { "Admin", "Approval" };
+            var _role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
+            foreach (string _roleName in _rolesToAdd)
+            {
+                _role = roleManager.FindByName(_roleName);
+                if (_role == null)
+                {
+                    _role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole(_roleName);
+                    try
+                    {
+                        roleManager.Create(_role);
+                    }
+                    catch { return false; }
+                }
+            }
+            return true;
+        }
+
         private bool CreateDefaultAdminAccountNotAsync()
         {
             string name = "admin@cimsco.co.nz";
@@ -484,24 +507,22 @@ namespace CimscoPortal.Controllers
                 AddUserToRole(userManager, role, user);
 
                 // Test users
-                name = "user1@cimsco.co.nz";
-                user = AddUser(name, password, userManager);
-                AddUserToRole(userManager, role, user);
+                string[] _sampleUsers = new string[] { 
+                        "user1@cimsco.co.nz", 
+                        "mitre10@cimsco.co.nz", 
+                        "intercontinental@cimsco.co.nz", 
+                        "masterton@cimsco.co.nz", 
+                        "admin@cimsco.co.nz" };
 
-                name = "user2@cimsco.co.nz";
-                user = AddUser(name, password, userManager);
-                AddUserToRole(userManager, role, user);
-
-                name = "user3@cimsco.co.nz";
-                user = AddUser(name, password, userManager);
-                AddUserToRole(userManager, role, user);
-
-                name = "user4@cimsco.co.nz";
-                user = AddUser(name, password, userManager);
-                AddUserToRole(userManager, role, user);
+                foreach (var _userName in _sampleUsers)
+                {
+                    user = AddUser(_userName, password, userManager);
+                    AddUserToRole(userManager, role, user);
+                }
 
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 return false;
             }
             return true;

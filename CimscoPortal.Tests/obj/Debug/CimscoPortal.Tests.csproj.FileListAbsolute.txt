@@ -137,8 +137,6 @@ P:\Projects\Cloud_Development\CIMSCO\_refCimscoPortal\CimscoPortal\CimscoPortal.
 P:\Projects\Cloud_Development\CIMSCO\_refCimscoPortal\CimscoPortal\CimscoPortal.Tests\obj\Debug\CimscoPortal.Tests.pdb
 P:\Projects\Cloud_Development\CIMSCO\_refCimscoPortal\CimscoPortal\CimscoPortal.Tests\bin\Debug\CimscoPortal.data.dll
 P:\Projects\Cloud_Development\CIMSCO\_refCimscoPortal\CimscoPortal\CimscoPortal.Tests\bin\Debug\CimscoPortal.data.pdb
-P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\bin\Debug\AutoMapper.Net4.dll
-P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\bin\Debug\AutoMapper.Unity.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\bin\Debug\CimscoPortal.Tests.dll.config
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\bin\Debug\CimscoPortal.Tests.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\bin\Debug\CimscoPortal.Tests.pdb

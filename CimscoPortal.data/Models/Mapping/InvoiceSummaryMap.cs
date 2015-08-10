@@ -59,15 +59,22 @@ namespace CimscoPortal.Data.Models.Mapping
             this.Property(t => t.TotalEnergyCharges).HasColumnName("TotalEnergyCharges");
             this.Property(t => t.ConnectionNumber).HasColumnName("ConnectionNumber");
             this.Property(t => t.SiteName).HasColumnName("SiteName");
-            this.Property(t => t.EnergyPointId).HasColumnName("EnergyPointId");
+           // this.Property(t => t.EnergyPointId).HasColumnName("EnergyPointId");
             this.Property(t => t.InvoiceSummaryId).HasColumnName("InvoiceSummaryId");
             this.Property(t => t.ApprovedDate).HasColumnName("ApprovedDate");
+            this.Property(t => t.EnergyPointId).HasColumnName("EnergyPointId");
            // this.Property(t => t.UserId).HasColumnName("ApprovedById");
 
             this.HasOptional(o => o.UserId);
 
             this.HasOptional(o => o.EnergyCharge)
                 .WithRequired(ad => ad.InvoiceSummary).WillCascadeOnDelete(true);
+
+            this.HasOptional(o => o.NetworkCharge)
+                .WithRequired(ad => ad.InvoiceSummary).WillCascadeOnDelete(true);
+
+            //this.HasOptional(o => o.EnergyPoint)
+            //    .WithRequired(ad => ad.InvoiceSummary).WillCascadeOnDelete(true);
 
         }
     }

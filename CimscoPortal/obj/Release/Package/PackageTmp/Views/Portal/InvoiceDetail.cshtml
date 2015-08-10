@@ -7,19 +7,169 @@
 <div data-ng-app="invoice" data-ng-controller="invoiceDetailViewModel" data-ng-init="init(@ViewBag.InvoiceId)">
 
     <div class="row">
-        @*<div class="col-xs-12 col-md-6 col-lg-6">
-            @Html.Partial("_DonutPlusSummary")
-        </div>*@
-        <div class="col-xs-12 col-md-6 col-lg-6">
-            @Html.Partial("_DonutPlusSummary_")
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+            @Html.Partial("_DonutPlusSummary_revised")
         </div>
-        <div class="col-lg-3 col-sm-6 col-xs-12" data-ng-repeat="nrgData in slModel.energyCostSeries">
-            @Html.Partial("_SparklineComposite")
-            <span data-display="sparklineComposite" data-datafor="{{nrgData.headerData._TempData}}"></span>
+        @*<div class="col-lg-3 col-sm-3 col-xs-12" data-ng-repeat="nrgData in slModel.energyCostSeries">
+                @Html.Partial("_SparklineComposite")
+                <span data-display="sparklineComposite"></span>
+            </div>*@
+        @*<div class="col-lg-3 col-sm-3 col-xs-12">
+                @Html.Partial("_SparklineBar")
+                <span data-display="sparklineBar"></span>
+            </div>*@
+        @*<div class="col-lg-3 col-sm-3 col-xs-12">
+                @Html.Partial("_OtherChargesTable")
+            </div>*@
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="dashboard-box">
+                        <div class="box-header">
+                            <div class="deadline">
+                                Bill Details
+                            </div>
+                        </div>
+                        @*<div class="box-progress" >
+                            <div class="progress-handle">bill due</div>
+                            <div class="progress progress-xs progress-no-radius bg-whitesmoke">
+                                <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                                </div>
+                            </div>
+                        </div>*@
+                        <div class="box-tabbs">
+                            <div class="tabbable">
+                                <ul class="nav nav-tabs tabs-flat  nav-justified" id="myTab11">
+                                    <li class="active">
+                                        <a data-toggle="tab" href="#energy">
+                                            Energy Charges
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a data-toggle="tab" href="#network">
+                                            Network Charges
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a data-toggle="tab" href="#other">
+                                            Other Charges
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a data-toggle="tab" id="contacttab" href="#bandwidth">
+                                            Analysis
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content tabs-flat no-padding">
+                                    <div id="network" class="tab-pane padding-5 animated fadeInUp">
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                @Html.Partial("_SparklineBar")
+                                                <span data-display="sparklineBar"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="other" class="tab-pane  animated fadeInUp">
+                                        <div class="row">
+                                            <div class="col-lg-6 chart-container">
+                                                @Html.Partial("_OtherChargesTable")
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div id="bandwidth" class="tab-pane padding-10 animated fadeInUp">
+                                        <div class="databox-sparkline bg-themeprimary">
+                                            <span id="dashboard-bandwidth-chart" data-sparkline="compositeline" data-height="250px" data-width="100%" data-linecolor="#fff" data-secondlinecolor="#eee"
+                                                  data-fillcolor="rgba(255,255,255,.1)" data-secondfillcolor="rgba(255,255,255,.25)"
+                                                  data-spotradius="0"
+                                                  data-spotcolor="#fafafa" data-minspotcolor="#fafafa" data-maxspotcolor="#ffce55"
+                                                  data-highlightspotcolor="#fff" data-highlightlinecolor="#fff"
+                                                  data-linewidth="2" data-secondlinewidth="2"
+                                                  data-composite="500, 400, 100, 450, 300, 200, 100, 200">
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div id="energy" class="tab-pane animated fadeInUp no-padding-bottom active" style="padding:20px 20px 0 20px;">
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" data-ng-repeat="nrgData in slModel.energyCostSeries">
+                                                @Html.Partial("_SparklineComposite")
+                                                <span data-display="sparklineComposite"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @*<div class="box-visits">
+                            <div class="row">
+                                <div class="col-lg-4 col-sm-4 col-xs-12">
+                                    <div class="notification">
+                                        <div class="clearfix">
+                                            <div class="notification-icon">
+                                                <i class="fa fa-gift palegreen bordered-1 bordered-palegreen"></i>
+                                            </div>
+                                            <div class="notification-body">
+                                                <span class="title">Kate birthday party</span>
+                                                <span class="description">08:30 pm</span>
+                                            </div>
+                                            <div class="notification-extra">
+                                                <i class="fa fa-calendar palegreen"></i>
+                                                <i class="fa fa-clock-o palegreen"></i>
+                                                <span class="description">at home</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-sm-4 col-xs-12">
+                                    <div class="notification">
+                                        <div class="clearfix">
+                                            <div class="notification-icon">
+                                                <i class="fa fa-check azure bordered-1 bordered-azure"></i>
+                                            </div>
+                                            <div class="notification-body">
+                                                <span class="title">Hanging out with kids</span>
+                                                <span class="description">03:30 pm - 05:15 pm</span>
+                                            </div>
+                                            <div class="notification-extra">
+                                                <i class="fa fa-clock-o azure"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-sm-4 col-xs-12">
+                                    <div class="notification">
+                                        <div class="clearfix">
+                                            <div class="notification-icon">
+                                                <i class="fa fa-phone bordered-1 bordered-orange orange"></i>
+                                            </div>
+                                            <div class="notification-body">
+                                                <span class="title">Meeting with Patty</span>
+                                                <span class="description">01:00 pm</span>
+                                            </div>
+                                            <div class="notification-extra">
+                                                <i class="fa fa-clock-o orange"></i>
+                                                <span class="description">office</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>*@
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row">
-        <div id="yearToDateGraph" class="col-lg-12 col-sm-12 col-xs-12">
+        <div id="yearToDateGraph" class="col-lg-9 col-sm-12 col-xs-12">
             @Html.Partial("_YearToDateGraph")
         </div>
     </div>
@@ -75,6 +225,7 @@
             themefifthcolor = getThemeColorFromCss('themefifthcolor');
             setTimeout(function () {
                 createSparklineCharts.composite();
+                createSparklineCharts.bar();
             }, 500);
         });
 

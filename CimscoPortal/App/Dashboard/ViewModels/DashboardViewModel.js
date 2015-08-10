@@ -62,7 +62,7 @@
             var num = parseInt(myValue);
             var style = 'databox-stat radius-bordered';
             if (num > 0) {
-                style = style + ' bg-red';
+                style = style + ' bg-warning';
             }
             else if (num < 0) {
                 style = style + ' bg-green';

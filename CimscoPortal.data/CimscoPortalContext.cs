@@ -45,11 +45,15 @@ namespace CimscoPortal.Data.Models
         public DbSet<City> Cities { get; set; }
         public DbSet<Site> Sites { get; set; }
         public DbSet<EnergyCharge> EnergyCharges { get; set; }
+        public DbSet<EnergyPoint> EnergyPoints { get; set; }
       //  public DbSet<UserDetail> UserDetails { get; set; }
         public DbSet<sysdiagram> sysdiagrams { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            modelBuilder.Conventions.Remove<System.Data.Entity.ModelConfiguration.Conventions.DecimalPropertyConvention>();
+            modelBuilder.Conventions.Add(new System.Data.Entity.ModelConfiguration.Conventions.DecimalPropertyConvention(12, 4));
+
             modelBuilder.Configurations.Add(new AddressMap());
             modelBuilder.Configurations.Add(new AspNetRoleMap());
             modelBuilder.Configurations.Add(new AspNetUserClaimMap());
@@ -65,6 +69,7 @@ namespace CimscoPortal.Data.Models
             modelBuilder.Configurations.Add(new CityMap());
             modelBuilder.Configurations.Add(new SiteMap());
             modelBuilder.Configurations.Add(new EnergyChargeMap());
+            modelBuilder.Configurations.Add(new EnergyPointMap());
           //  modelBuilder.Configurations.Add(new UserDetailMap());
             modelBuilder.Configurations.Add(new sysdiagramMap());
         }

@@ -398,6 +398,7 @@
     <Content Include="Content\css\bootstrap-theme.min.css" />
     <Content Include="Content\css\bootstrap.css" />
     <Content Include="Content\css\bootstrap.min.css" />
+    <Content Include="Content\css\cimsco-custom.css" />
     <Content Include="Content\css\dataTables.bootstrap.css" />
     <Content Include="Content\css\demo.min.css" />
     <Content Include="Content\css\font-awesome.css" />
@@ -422,6 +423,7 @@
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\fonts\typicons.svg" />
     <Content Include="Content\fonts\weathericons-regular-webfont.svg" />
+    <Content Include="Content\images\mitre10.png" />
     <Content Include="Content\images\PakNSave.jpg" />
     <Content Include="Content\images\uhf_ic_logo.png" />
     <Content Include="favicon.ico" />
@@ -1467,6 +1469,9 @@
     <Content Include="Views\Portal\_InvoiceList.cshtml" />
     <Content Include="Views\Portal\_DonutPlusSummary_.cshtml" />
     <Content Include="Views\Portal\_SparklineBar.cshtml" />
+    <Content Include="Views\Portal\_DonutPlusSummary_revised.cshtml" />
+    <Content Include="Views\Portal\_OtherChargesTable.cshtml" />
+    <Content Include="Views\Portal\_SiteListB.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />

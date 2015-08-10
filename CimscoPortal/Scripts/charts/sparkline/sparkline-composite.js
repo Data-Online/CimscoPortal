@@ -80,7 +80,7 @@ var InitiateSparklineCharts = function () {
             var sparklinebars = $('#' + elementId + ' span');
             $.each(sparklinebars.first(), function () {
                 var seriesa = $(this).data('seriesa');
-                var seriesb = $(this).data('seriesb');
+               // var seriesb = $(this).data('seriesb');
                 $(this).sparkline(seriesa, {
                     type: 'bar',
                     disableHiddenCheck: true,
@@ -92,11 +92,11 @@ var InitiateSparklineCharts = function () {
                     barWidth: $(this).data('barwidth'),
                     barSpacing: $(this).data('barspacing'),
                     stackedBarColor: getcolor($(this).data('stackedbarcolor')),
-                    tooltipFormat: '{{offset:slice}}<br/><span style="color: {{color}}">&#9679;</span> charge: ${{value}}',
+                    tooltipFormat: '{{offset:slice}}<br/><span style="color: {{color}}">&#9679;</span>${{value}}',
                     tooltipValueLookups: {
                         slice: $.range_map({
-                            '0': '00-04am', '1': '04-08am', '2': '08-12am',
-                            '3': '12-16pm', '4': '16-20pm', '5': '20-24pm'
+                            '0': 'Variable Business Day', '1': 'Variable Non Business Day', '2': 'Capacity Charge',
+                            '3': 'Demand Charge', '4': 'Fixed Charge'
                         })
                     },
                     chartRangeMax: $(this).data('maxvalueforbar'),//2400.00

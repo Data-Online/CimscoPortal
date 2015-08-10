@@ -20,6 +20,7 @@ namespace CimscoPortal.Data.Models
         public string AccountNumber { get; set; }
         public string CustomerNumber { get; set; }
         public int SiteId { get; set; }
+        public int EnergyPointId { get; set; }
         public decimal NetworkChargesTotal { get; set; }
         public decimal EnergyChargesTotal { get; set; }
         public decimal MiscChargesTotal { get; set; }
@@ -30,16 +31,26 @@ namespace CimscoPortal.Data.Models
         public decimal TotalEnergyCharges { get; set; }
         public string ConnectionNumber { get; set; }
         public string SiteName { get; set; }
-        public int EnergyPointId { get; set; }
+       // public int EnergyPointId { get; set; }
         public bool Approved { get; set; }
         public int InvoiceSummaryId { get; set; }
         public string ApprovedById { get; set; }
         public Nullable<System.DateTime> ApprovedDate { get; set; }
         public decimal PercentageChange { get; set; }
+        public System.DateTime PeriodStart { get; set; }
+        public System.DateTime PeriodEnd { get; set; }
+
+
+        [ForeignKey("SiteId")]
+        public virtual Site Site { get; set; }
 
         [ForeignKey("ApprovedById")]
         public virtual AspNetUser UserId { get; set; }
 
         public virtual EnergyCharge EnergyCharge { get; set; }
+        public virtual NetworkCharge NetworkCharge { get; set; }
+
+        [ForeignKey("EnergyPointId")]
+        public virtual EnergyPoint EnergyPoint { get; set; }
     }
 }

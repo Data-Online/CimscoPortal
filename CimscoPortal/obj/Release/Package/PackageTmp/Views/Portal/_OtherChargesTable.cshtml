@@ -1,0 +1,30 @@
+﻿<div class="databox databox-xlg radius-bordered databox-shadowed databox-graded databox-vertical">
+    <div class="databox-row bg-blue">
+        @*<span class="databox-header">Other Charges</span>*@
+    </div>
+    <div class="databox-row">
+        <div class="databox-cell cell-12">
+            <div class="databox-row row-3 bordered-bottom bordered-ivory padding-15">
+                <span class="databox-text pull-left no-margin hidden-xs">Business Day Service Charges</span>
+                <span class="databox-number pull-right no-margin uppercase">{{otherCharges[0] | currency:$}}</span>
+            </div>
+            <div class="databox-row row-2 bordered-bottom bordered-ivory padding-15">
+                <span class="databox-text pull-left no-margin hidden-xs">Non Business Day Service Charges</span>
+                <span class="databox-number pull-right no-margin uppercase">{{otherCharges[1] | currency:$}}</span>
+            </div>
+            <div class="databox-row row-2 bordered-bottom bordered-ivory padding-15">
+                <span class="databox-text pull-left no-margin hidden-xs">Electricity Authority Levy</span>
+                <span class="databox-number pull-right no-margin uppercase">{{otherCharges[2] | currency:$}}</span>
+            </div>
+            <div class="databox-row row-2 bordered-bottom bordered-ivory padding-15">
+                <span class="databox-text pull-left no-margin hidden-xs">Meter Charges</span>
+                <span class="databox-number pull-right no-margin uppercase">{{otherCharges[3] | currency:$}}</span>
+            </div>
+            <div class="databox-row row-2 bordered-bottom bordered-ivory padding-15">
+                <span class="databox-text pull-left no-margin hidden-xs">Total</span>
+                <span class="databox-number pull-right no-margin uppercase">{{ocTotal | currency:$}}</span>
+            </div>
+        </div>
+    </div>
+
+</div>

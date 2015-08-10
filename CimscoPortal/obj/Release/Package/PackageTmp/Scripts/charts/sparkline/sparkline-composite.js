@@ -5,22 +5,33 @@
             var sparklineCharts = $('[data-display=sparklineComposite]');
             $.each(sparklineCharts, function () {
                 var elementId = elementCount + 'SlineComposite';
-                InitiateSparklineCharts.init(elementId);
+                InitiateSparklineCharts.composite(elementId);
                 elementCount = elementCount + 1;
             }
-            )}
+            )
+        },
+        bar: function () {
+            var elementCount = 1;
+            var sparklineCharts = $('[data-display=sparklineBar]');
+            $.each(sparklineCharts, function () {
+                var elementId = elementCount + 'SlineBar';
+                InitiateSparklineCharts.stdbar(elementId);
+                elementCount = elementCount + 1;
+            }
+            )
+        }
     };
 }();
 
 var InitiateSparklineCharts = function () {
     return {
-        init: function (elementId) {
+        composite: function (elementId) {
             /*Composite Bar*/
             var sparklinecompositebars = $('#' + elementId + ' span');
             $.each(sparklinecompositebars.first(), function () {
                 var seriesa = $(this).data('seriesa');
                 var seriesb = $(this).data('seriesb');
-                $(this).sparkline(seriesa, { 
+                $(this).sparkline(seriesa, {
                     type: 'bar',
                     disableHiddenCheck: true,
                     height: $(this).data('height'),
@@ -63,6 +74,35 @@ var InitiateSparklineCharts = function () {
                 });
 
             });
+        },
+        stdbar: function (elementId) {
+            /*Composite Bar*/
+            var sparklinebars = $('#' + elementId + ' span');
+            $.each(sparklinebars.first(), function () {
+                var seriesa = $(this).data('seriesa');
+               // var seriesb = $(this).data('seriesb');
+                $(this).sparkline(seriesa, {
+                    type: 'bar',
+                    disableHiddenCheck: true,
+                    height: $(this).data('height'),
+                    width: $(this).data('width'),
+                    barColor: themeprimary, //getcolor($(this).data('barcolor')),
+                    negBarColor: getcolor($(this).data('negbarcolor')),
+                    zeroColor: getcolor($(this).data('zerocolor')),
+                    barWidth: $(this).data('barwidth'),
+                    barSpacing: $(this).data('barspacing'),
+                    stackedBarColor: getcolor($(this).data('stackedbarcolor')),
+                    tooltipFormat: '{{offset:slice}}<br/><span style="color: {{color}}">&#9679;</span>${{value}}',
+                    tooltipValueLookups: {
+                        slice: $.range_map({
+                            '0': 'Variable Business Day', '1': 'Variable Non Business Day', '2': 'Capacity Charge',
+                            '3': 'Demand Charge', '4': 'Fixed Charge'
+                        })
+                    },
+                    chartRangeMax: $(this).data('maxvalueforbar'),//2400.00
+                    chartRangeMin: $(this).data('minvalueforbar')
+                });
+            });
         }
-    };
+    }
 }();

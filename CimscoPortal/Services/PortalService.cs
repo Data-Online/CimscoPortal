@@ -84,6 +84,7 @@ namespace CimscoPortal.Services
 
         private InvoiceDetail GetInvoiceById(int invoiceId)
         {
+            var zz = _repository.InvoiceSummaries.Where(s => s.InvoiceId == invoiceId);
             return _repository.InvoiceSummaries.Where(s => s.InvoiceId == invoiceId).Project().To<InvoiceDetail>().FirstOrDefault();
         }
 
@@ -128,7 +129,7 @@ namespace CimscoPortal.Services
 
             model.SiteHierarchy = _siteHierachy;
 
-            model.MaxValue = 12000;
+            model.MaxValue = 30000;
 
             return model;
         }
@@ -162,13 +163,13 @@ namespace CimscoPortal.Services
             _endOfMonth = _endOfMonth.AddMonths(spanMonths / 2 * -1);
             while (_currentDate < _endOfMonth)
             {
-                string _monthName = _currentDate.ToString("MMMM");
+                int _monthNumber = _currentDate.Month;
                 _currentData = new CompanyInvoiceViewModel2();
-                _currentData.Month = _currentDate.ToString("MMMM");
+                _currentData.Month = _currentDate.ToString("MMM");
                 _currentData.SiteId = siteId;
                 _currentData.Index = index;
-                _currentData.YearA = _yearA.Where(s => s.Month == _monthName).Select(s => s.InvoiceTotal).FirstOrDefault().ToString(); //a.InvoiceTotal.ToString();
-                _currentData.YearB = _yearB.Where(s => s.Month == _monthName).Select(s => s.InvoiceTotal).FirstOrDefault().ToString();
+                _currentData.YearA = _yearA.Where(s => s.InvoiceDate.Month == _monthNumber).Select(s => s.InvoiceTotal).FirstOrDefault().ToString(); //a.InvoiceTotal.ToString();
+                _currentData.YearB = _yearB.Where(s => s.InvoiceDate.Month == _monthNumber).Select(s => s.InvoiceTotal).FirstOrDefault().ToString();
                 _result.Add(_currentData);
                 _currentDate = _currentDate.AddMonths(1);
             }
@@ -190,17 +191,13 @@ namespace CimscoPortal.Services
             InvoiceDetailViewModel_ _result = new InvoiceDetailViewModel_();
             InvoiceDetail _invoiceDetail = GetInvoiceById(invoiceId);
 
-            List<DonutChartData> _donutChartData = new List<DonutChartData> { 
-                                    new DonutChartData() { Value = _invoiceDetail.EnergyChargesTotal, Label = "Energy" },
-                                    new DonutChartData() { Value = _invoiceDetail.MiscChargesTotal, Label = "Other" },
-                                    new DonutChartData() { Value = _invoiceDetail.NetworkChargesTotal, Label = "Network" }
-            };
+            _invoiceDetail.ValidationError = (_invoiceDetail.InvoiceTotal != _invoiceDetail.EnergyChargesTotal + _invoiceDetail.MiscChargesTotal + _invoiceDetail.NetworkChargesTotal);
 
 
-            _result.DonutChartData = _donutChartData;
             //_result.EnergyCosts.EnergyCostSeries = ReturnTestEnergyDataModel();
             _result.InvoiceDetail = _invoiceDetail;
             var _energyCharges = _repository.InvoiceSummaries.Where(a => a.InvoiceId == invoiceId).Select(b => b.EnergyCharge).FirstOrDefault();
+            var _networkCharges = _repository.InvoiceSummaries.Where(a => a.InvoiceId == invoiceId).Select(b => b.NetworkCharge).FirstOrDefault();
            // var _energyCharges = _energyCharges.FirstOrDefault();//.Select(a => a.BD0004 + a.BD0408).FirstOrDefault();
             List<EnergyDataModel> _energyDataModel = new List<EnergyDataModel>();
             EnergyDataModel _businessDayData = new EnergyDataModel()
@@ -217,10 +214,25 @@ namespace CimscoPortal.Services
                 HeaderData = new HeaderData() {  Header = "Non Business Days"}
             };
 
+            _result.OtherCharges = new List<decimal>() { _energyCharges.BDSVC, _energyCharges.NBDSVC, _energyCharges.EALevy, _invoiceDetail.MiscChargesTotal };
+            _result.NetworkCharges = new List<decimal>() { _networkCharges.VariableBD, _networkCharges.VariableNBD, _networkCharges.CapacityCharge, _networkCharges.DemandCharge, _networkCharges.FixedCharge };
+
+            var _zzMiscCharges = _result.InvoiceDetail.MiscChargesTotal;
+            _result.InvoiceDetail.MiscChargesTotal = _result.InvoiceDetail.EnergyChargesTotal - _businessDayData.TotalCost - _nonBusinessDayData.TotalCost + _zzMiscCharges;
+            _result.InvoiceDetail.EnergyChargesTotal = _businessDayData.TotalCost + _nonBusinessDayData.TotalCost;
+
             var _serviceCharges = new List<decimal> { _energyCharges.BDSVC, _energyCharges.BDSVCR };
             var _levyCharges = new List<decimal> {_energyCharges.EALevy, _energyCharges.EALevyR };
-            var _summaryData = new List<decimal> { _energyCharges.LossRate, _energyCharges.MeteredKwh };
+           // var _summaryData = new List<decimal> { _energyCharges.LossRate, _energyCharges.BDMeteredKwh, _energyCharges.BDLossCharge };
 
+            List<DonutChartData> _donutChartData = new List<DonutChartData> { 
+                                    new DonutChartData() { Value = PercentToDecimal2(_invoiceDetail.EnergyChargesTotal, _invoiceDetail.InvoiceTotal), Label = "Energy" },
+                                    new DonutChartData() { Value = PercentToDecimal2(_invoiceDetail.MiscChargesTotal,_invoiceDetail.InvoiceTotal) , Label = "Other" },
+                                    new DonutChartData() { Value = PercentToDecimal2(_invoiceDetail.NetworkChargesTotal,_invoiceDetail.InvoiceTotal) , Label = "Network" }
+            };
+
+
+            _result.DonutChartData = _donutChartData;
 
             _energyDataModel.Add(_businessDayData);
             _energyDataModel.Add(_nonBusinessDayData);
@@ -229,6 +241,11 @@ namespace CimscoPortal.Services
             _result.EnergyCosts.EnergyCostSeries = _energyDataModel;
 
             return _result;
+        }
+
+        private static decimal PercentToDecimal2(decimal value, decimal total)
+        {
+            return decimal.Round((value / total)*100, 2, MidpointRounding.AwayFromZero);
         }
 
         public InvoiceDetailViewModel GetCurrentMonth_(int _invoiceId)
@@ -309,10 +326,10 @@ namespace CimscoPortal.Services
 
         public StackedBarChartViewModel GetHistoryByMonth(int _invoiceId)
         {
-            var _energyPointId = _repository.InvoiceSummaries.Where(s => s.InvoiceId == _invoiceId).FirstOrDefault().EnergyPointId;
+            var _energyPointId = _repository.InvoiceSummaries.Where(s => s.InvoiceId == _invoiceId).FirstOrDefault().EnergyPoint.EnergyPointId;
             var _result = new StackedBarChartViewModel();
             DateTime _fromMonth = DateTime.Today.AddMonths(-13);
-            List<EnergyData> _data = _repository.InvoiceSummaries.Where(i => i.EnergyPointId == _energyPointId && i.InvoiceDate > _fromMonth).OrderBy(o => o.InvoiceDate)
+            List<EnergyData> _data = _repository.InvoiceSummaries.Where(i => i.EnergyPoint.EnergyPointId == _energyPointId && i.InvoiceDate > _fromMonth).OrderBy(o => o.InvoiceDate)
                                             .Project().To<EnergyData>()
                                             .ToList();
             NumberFormatInfo nfi = new CultureInfo("en-US", false).NumberFormat;
@@ -338,6 +355,7 @@ namespace CimscoPortal.Services
                 _result.MonthlyData[i].Month = _result.MonthlyData[i]._month.ToString("MMM");
             }
             return _result;
+            //return new StackedBarChartViewModel();
         }
 
         #region update methods

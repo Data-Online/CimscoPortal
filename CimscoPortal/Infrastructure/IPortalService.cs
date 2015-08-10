@@ -29,4 +29,18 @@ namespace CimscoPortal.Infrastructure
 
         void ApproveInvoice(int invoiceId, string userId);
     }
+
+    public interface IMappingService
+    {
+        TDest Map<TSrc, TDest>(TSrc source) where TDest : class;
+    }
+
+    public class MappingService : IMappingService
+    {
+        public TDest Map<TSrc, TDest>(TSrc source) where TDest : class
+        {
+            return AutoMapper.Mapper.Map<TSrc, TDest>(source);
+        }
+    }
+
 }

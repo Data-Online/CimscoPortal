@@ -1,34 +1,40 @@
-﻿<div class="databox databox-xlg radius-bordered databox-shadowed databox-graded databox-vertical">
+﻿<div class="databox databox-xlg radius-bordered databox-shadowed databox-graded databox-vertical" style="height:230px;">
     <div class="databox-top bg-blue">
         <span class="databox-header">{{nrgData.headerData.header}}</span>
     </div>
+
     <div class="databox-row bg-palegreen">
         <div style="margin: 0 0 4px;max-height: 1px;min-height: 1px;overflow: hidden;"></div>
-            <div id="{{$index + 1}}SlineComposite" class="databox-sparkline no-margin cp-graph-element">
-                <span data-sparkline="compositebar" data-height="100px" data-width="100%"
-                      data-barcolor="#b0dc81"
-                      data-barwidth="15px" data-barspacing="30px"
-                      data-fillcolor="false" data-linecolor="#fff" data-spotradius="3" data-linewidth="2"
-                      data-spotcolor="#fafafa" data-minspotcolor="#fafafa" data-maxspotcolor="#fff"
-                      data-highlightspotcolor="#fff" data-highlightlinecolor="#fff"
-                      data-maxvalueforbar="{{slModel.maxSeriesA}}"
-                      data-minvalueforbar="{{slModel.minSeriesA}}"
-                      data-maxseriesb="{{slModel.maxSeriesB}}"
-                      data-minseriesb="{{slModel.minSeriesB}}"
-                      data-seriesb="{{nrgData.energyRateByBracket}}"
-                      data-seriesa="{{nrgData.energyChargeByBracket}}">
-                </span>
-            </div>
+        <div id="{{$index + 1}}SlineComposite" class="databox-sparkline no-margin cp-graph-element">
+            <span data-sparkline="compositebar" data-height="100px" data-width="100%"
+                  data-barcolor="#b0dc81"
+                  data-barwidth="15px" data-barspacing="30px"
+                  data-fillcolor="false" data-linecolor="#fff" data-spotradius="3" data-linewidth="2"
+                  data-spotcolor="#fafafa" data-minspotcolor="#fafafa" data-maxspotcolor="#fff"
+                  data-highlightspotcolor="#fff" data-highlightlinecolor="#fff"
+                  data-maxvalueforbar="{{slModel.maxYbar}}"
+                  data-minvalueforbar="{{slModel.minYbar}}"
+                  data-maxseriesb="{{slModel.maxYgraph}}"
+                  data-minseriesb="{{slModel.minYgraph}}"
+                  data-seriesb="{{nrgData.energyRateByBracket}}"
+                  data-seriesa="{{nrgData.energyChargeByBracket}}">
+            </span>
+        </div>
     </div>
     <div class="databox-bottom no-padding">
         <div class="databox-row">
             <div class="databox-cell cell-6 text-align-left">
-                <span class="databox-text">Total charge</span>
+                <span class="databox-text">Total energy charge</span>
                 <span class="databox-number">${{nrgData.totalCost | number:2}}</span>
             </div>
             <div class="databox-cell cell-6 text-align-right">
                 <span class="databox-text">Max cents per KWh</span>
                 <span class="databox-number font-70">{{nrgData.maxRate | number:2}}c</span>
+            </div>
+        </div>
+        <div class="databox-row">
+            <div class="databox-cell cell-12 text-align-left">
+                <span class="databox-text">Total includes losses of ${{nrgData.totalCost * slModel.lossRate  | number:2}} ({{slModel.lossRate | number:4}}%)</span>
             </div>
         </div>
     </div>

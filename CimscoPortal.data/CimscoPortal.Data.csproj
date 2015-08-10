@@ -69,6 +69,10 @@
     <Compile Include="Models\City.cs" />
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\EnergyPoints.cs" />
+    <Compile Include="Models\Mapping\EnergyPointMap.cs" />
+    <Compile Include="Models\Mapping\NetworkChargeMap.cs" />
+    <Compile Include="Models\NetworkCharge.cs" />
     <Compile Include="Models\EnergyCharge.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\InvoiceSummary.cs" />

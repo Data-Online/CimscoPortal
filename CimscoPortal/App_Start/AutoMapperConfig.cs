@@ -61,11 +61,12 @@ namespace CimscoPortal.App_Start
 
             Mapper.CreateMap<InvoiceSummary, EnergyData>()
                 .ForMember(m => m.Energy,
-                                opt => opt.MapFrom(i => i.TotalEnergyCharges))
+                                opt => opt.MapFrom(i => i.EnergyChargesTotal))
                 .ForMember(m => m.Line,
-                opt => opt.MapFrom(i => i.TotalNetworkCharges))
+                                //opt => opt.MapFrom(i => i.TotalNetworkCharges))
+                                opt => opt.MapFrom(i => i.NetworkChargesTotal))
                 .ForMember(m => m.Other,
-                                opt => opt.MapFrom(i => i.TotalMiscCharges))
+                                opt => opt.MapFrom(i => i.MiscChargesTotal))
                 .ForMember(m => m.Month,
                                 opt => opt.MapFrom(i => i.InvoiceDate.ToString()))
                 .ForMember(m => m._month,
@@ -102,11 +103,15 @@ namespace CimscoPortal.App_Start
 
             Mapper.CreateMap<InvoiceSummary, InvoiceDetail>()
                 .ForMember(m => m.ApproversName, opt => opt.MapFrom(i => i.UserId.FirstName + " " + i.UserId.LastName))
-                .ForMember(m => m.ApprovedDate, opt => opt.NullSubstitute(DateTime.Parse("01-01-0001")));
+                .ForMember(m => m.ApprovedDate, opt => opt.NullSubstitute(DateTime.Parse("01-01-0001")))
+               // .ForMember(m => m.BDLossCharge, opt => opt.MapFrom(i => i.EnergyCharge.BDLossCharge))
+               .ForMember(m => m.LossRate, opt => opt.MapFrom(i => (i.EnergyCharge.LossRate != null ? i.EnergyCharge.LossRate : 0.00M)))
+               //.ForMember(m => m.BDMeteredKwh, opt => opt.MapFrom(i => i.EnergyCharge.BDMeteredKwh))
+                ;
 
             Mapper.CreateMap<AspNetUser, CommonInfoViewModel>()
                 .ForMember(m => m.FullName, opt => opt.MapFrom(i => i.FirstName + " " + i.LastName))
-                .ForMember(m => m.CompanyLogo, opt => opt.MapFrom(i => "\\Content\\images\\" + i.CompanyLogo));
+                .ForMember(m => m.CompanyLogo, opt => opt.MapFrom(i => "/Content/images/" + i.CompanyLogo));
             //    .ForMember(m => m.UserInfo.FullName, opt => opt.MapFrom(i => i.;
 
 

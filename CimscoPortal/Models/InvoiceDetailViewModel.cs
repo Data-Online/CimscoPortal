@@ -18,6 +18,8 @@ namespace CimscoPortal.Models
         //public List<EnergyDataModel> EnergyCostData { get; set; }
         public EnergyCosts EnergyCosts { get; set; }
         public InvoiceDetail InvoiceDetail { get; set; }
+        public List<decimal> OtherCharges { get; set; }
+        public List<decimal> NetworkCharges { get; set; }
     }
 
     public class EnergyCosts

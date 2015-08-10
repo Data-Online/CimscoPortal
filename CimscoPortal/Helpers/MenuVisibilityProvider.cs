@@ -27,6 +27,8 @@ namespace CimscoPortal.Helpers
                     return true;
                 case "AdminOnly":
                     return true;
+                case "Hidden":
+                    return false;
             }
             return true;
         }
