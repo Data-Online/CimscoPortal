@@ -10,6 +10,8 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using CimscoPortal.Infrastructure;
+using CimscoPortal.Services;
 
 namespace CimscoPortal.Controllers
 {
@@ -56,7 +58,9 @@ namespace CimscoPortal.Controllers
         // GET: /Users/
         public async Task<ActionResult> Index()
         {
-            return View(await UserManager.Users.ToListAsync());
+            var repository = new CimscoPortal.Data.Models.CimscoPortalContext();
+            IPortalService _portalService = new PortalService(repository);
+            return View(await _portalService.GetUserByGroupOrCompany(User.Identity.GetUserId()));
         }
 
         //
@@ -76,6 +80,7 @@ namespace CimscoPortal.Controllers
 
         //
         // GET: /Users/Create
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Create()
         {
             //Get the list of Roles
@@ -122,6 +127,7 @@ namespace CimscoPortal.Controllers
 
         //
         // GET: /Users/Edit/1
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Edit(string id)
         {
             if (id == null)
@@ -192,6 +198,7 @@ namespace CimscoPortal.Controllers
 
         //
         // GET: /Users/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Delete(string id)
         {
             if (id == null)

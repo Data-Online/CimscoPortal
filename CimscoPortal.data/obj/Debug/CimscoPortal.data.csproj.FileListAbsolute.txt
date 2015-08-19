@@ -22,3 +22,17 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Debug\Ci
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.data.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.data.pdb
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.Data.csprojResolveAssemblyReference.cache
+F:\Project\CimscoPortal\CimscoPortal.data\bin\Debug\CimscoPortal.data.dll.config
+F:\Project\CimscoPortal\CimscoPortal.data\bin\Debug\CimscoPortal.data.dll
+F:\Project\CimscoPortal\CimscoPortal.data\bin\Debug\CimscoPortal.data.pdb
+F:\Project\CimscoPortal\CimscoPortal.data\bin\Debug\EntityFramework.dll
+F:\Project\CimscoPortal\CimscoPortal.data\bin\Debug\EntityFramework.SqlServer.dll
+F:\Project\CimscoPortal\CimscoPortal.data\bin\Debug\EntityFramework.xml
+F:\Project\CimscoPortal\CimscoPortal.data\bin\Debug\EntityFramework.SqlServer.xml
+F:\Project\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.Data.csprojResolveAssemblyReference.cache
+F:\Project\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.Data.Migrations.Initial.resources
+F:\Project\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.Data.Migrations.City.resources
+F:\Project\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.Data.Migrations.Customer.resources
+F:\Project\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.Data.csproj.GenerateResource.Cache
+F:\Project\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.data.dll
+F:\Project\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.data.pdb

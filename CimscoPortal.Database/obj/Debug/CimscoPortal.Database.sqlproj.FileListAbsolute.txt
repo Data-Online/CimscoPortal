@@ -21,3 +21,8 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Database\bin\Debu
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Database\bin\Debug\CimscoPortal.Database.pdb
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Database\obj\Debug\CimscoPortal.Database.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Database\obj\Debug\CimscoPortal.Database.pdb
+F:\Project\CimscoPortal\CimscoPortal.Database\bin\Debug\CimscoPortal.Database.dacpac
+F:\Project\CimscoPortal\CimscoPortal.Database\bin\Debug\CimscoPortal.Database.dll
+F:\Project\CimscoPortal\CimscoPortal.Database\bin\Debug\CimscoPortal.Database.pdb
+F:\Project\CimscoPortal\CimscoPortal.Database\obj\Debug\CimscoPortal.Database.dll
+F:\Project\CimscoPortal\CimscoPortal.Database\obj\Debug\CimscoPortal.Database.pdb

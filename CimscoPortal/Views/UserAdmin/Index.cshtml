@@ -1,12 +1,9 @@
-﻿@model IEnumerable<CimscoPortal.Models.ApplicationUser>
-
+﻿@model IEnumerable<CimscoPortal.Data.Models.AspNetUser>
 @{
     ViewBag.Title = "User Accounts";
     Layout = "~/Views/Shared/_Default.cshtml";
 }
-
 <h2>@ViewBag.Title</h2>
-
 <div class="row">
     <div class="col-xs-12 col-md-12">
         <div class="widget">
@@ -26,7 +23,8 @@
             </div>
             <div class="widget-body">
                 <div class="table-toolbar">
-                    @Html.ActionLink("Add New User", "Create", null, new { @class="btn btn-default"})
+                    @Html.Add(Url.Action("Create"), User.IsInRole("Admin"), true, null, "Add New User")
+                    @*@Html.ActionLink("Add New User", "Create", null, new { @class = "btn btn-default" })*@
                     <div class="btn-group pull-right">
                         <a class="btn btn-default" href="javascript:void(0);">Tools</a>
                         <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);"><i class="fa fa-angle-down"></i></a>
@@ -63,11 +61,9 @@
                                 Company
                             </th>
                             <th>
-
                             </th>
                         </tr>
                     </thead>
-
                     <tbody>
                         @foreach (var item in Model)
                         {
@@ -77,23 +73,22 @@
                                 <td>Roles</td>
                                 <td>Company</td>
                                 <td>
-                                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class="btn btn-info btn-xs" })
-                                    @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class="btn btn-info btn-xs" }) 
-                                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class="btn btn-danger btn-xs" })
+                                    @Html.Edit(Url.Action("Edit", new { id = item.Id }), User.IsInRole("Admin"))
+                                    @*@Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-info btn-xs" })*@
+                                    @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-info btn-xs" })
+                                    @*@Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-xs" })*@
+                                    @Html.Delete(Url.Action("Delete", new { id = item.Id }), User.IsInRole("Admin"))
                                 </td>
                             </tr>
                         }
                     </tbody>
                 </table>
-
             </div>
         </div>
     </div>
 </div>
-
 @section PageScripts {
     @Scripts.Render("~/bundles/jqueryval")
-
 
     <link href="/Content/css/dataTables.bootstrap.css" rel="stylesheet" />
     <script src="/Scripts/datatable/jquery.dataTables.min.js"></script>
@@ -107,7 +102,5 @@
         //InitiateExpandableDataTable.init();
         //InitiateSearchableDataTable.init();
     </script>
-
 }
-
 
