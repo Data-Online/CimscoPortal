@@ -14,6 +14,7 @@ using CimscoPortal.Infrastructure;
 namespace CimscoPortal.Controllers
 {
     [Authorize]
+
     public partial class AccountController : CimscoPortalController
     {
         private ApplicationSignInManager _signInManager;

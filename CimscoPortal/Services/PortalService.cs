@@ -390,6 +390,7 @@ namespace CimscoPortal.Services
 
         #region update methods
 
+
         public void ApproveInvoice(int invoiceId, string userId)
         {
             CimscoPortal.Data.Models.InvoiceSummary _invoice = new CimscoPortal.Data.Models.InvoiceSummary();
@@ -419,13 +420,26 @@ namespace CimscoPortal.Services
             var _userRecordId = _repository.AspNetUsers.Where(s => s.UserName == userId).Select(d => d.Id).FirstOrDefault();
             return _userRecordId;
         }
+
+        public async Task<List<CimscoPortal.Data.Models.AspNetUser>> GetUserByGroupOrCompany(string id)
+        {
+            var _customers = _repository.Customers.FirstOrDefault(f => f.Users.Any(w => w.Id == id));
+            if (_customers != null)
+            {
+                return await _repository.AspNetUsers.Where(w => w.Customers.Any(a=>a.CustomerId == _customers.CustomerId)).ToListAsync();
+            } 
+            else
+            {
+                return await _repository.AspNetUsers.Where(w => w.Groups.Any(f => f.GroupId == _repository.Groups.FirstOrDefault(g => g.Users.Any(a => a.Id == id)).GroupId)).ToListAsync();
+            }
+        }
         #endregion
     }
 }
 
 
 
-//Random rnd = new Random();
+//Random rnd = new Random()
 //List<CompanyInvoiceViewModel> _invoiceData = new List<CompanyInvoiceViewModel>  {
 //                                            new CompanyInvoiceViewModel { CustomerId=1,  Month = DateTime.Parse("02-01-2011").ToString("MMM"), YearA = rnd.Next(8000, 12000).ToString(), YearB = rnd.Next(8000, 12000).ToString() },
 //                                            new CompanyInvoiceViewModel { CustomerId=1, Month = "Feb", YearA = rnd.Next(8000, 12000).ToString(), YearB = rnd.Next(8000, 12000).ToString() },
