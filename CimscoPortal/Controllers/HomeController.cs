@@ -10,7 +10,6 @@ namespace CimscoPortal.Controllers
     public partial class HomeController : CimscoPortalController
     {
         [Authorize]
-
         public virtual ActionResult Index()
         {
             if (Request.IsAuthenticated)
