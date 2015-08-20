@@ -44,6 +44,15 @@
             return style;
         };
 
+        $scope.setOpacity = function (myValue) {
+            var opacity = 1;
+            if ((myValue).charAt(0) == 't') {
+                console.log('Opacity set');
+                opacity = "0.5";
+            }
+            return { "opacity":opacity };
+        };
+
         var onRepo = function (data) {
             $scope.hierarchyData = data;
         };

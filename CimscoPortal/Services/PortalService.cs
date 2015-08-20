@@ -193,10 +193,40 @@ namespace CimscoPortal.Services
 
             _invoiceDetail.ValidationError = (_invoiceDetail.InvoiceTotal != _invoiceDetail.EnergyChargesTotal + _invoiceDetail.MiscChargesTotal + _invoiceDetail.NetworkChargesTotal);
 
-
+            if (_invoiceDetail.LossRate == 0.0M) { _invoiceDetail.LossRate = 0.028M; }
             //_result.EnergyCosts.EnergyCostSeries = ReturnTestEnergyDataModel();
             _result.InvoiceDetail = _invoiceDetail;
             var _energyCharges = _repository.InvoiceSummaries.Where(a => a.InvoiceId == invoiceId).Select(b => b.EnergyCharge).FirstOrDefault();
+            if (_energyCharges.BD0408 == 0.0M)
+            {
+                // 0004 --> 0408
+                _energyCharges.BD0004 = (_energyCharges.BD0004 / 2.0M) + (_invoiceDetail.LossRate * (_energyCharges.BD0004 / 2.0M));
+                _energyCharges.BD0408 = _energyCharges.BD0004;
+                _energyCharges.BD0408R = _energyCharges.BD0004R;
+
+                // 0812 --> 1216 --> etc
+                _energyCharges.BD0812 = (_energyCharges.BD0812 / 4.0M)  + (_invoiceDetail.LossRate * (_energyCharges.BD0812 / 4.0M));
+                _energyCharges.BD1216 = _energyCharges.BD0812;
+                _energyCharges.BD1216R = _energyCharges.BD0812R;
+                _energyCharges.BD1620 = _energyCharges.BD0812;
+                _energyCharges.BD1620R = _energyCharges.BD0812R;
+                _energyCharges.BD2024 = _energyCharges.BD0812;
+                _energyCharges.BD2024R = _energyCharges.BD0812R;
+
+                _energyCharges.NBD0004 = (_energyCharges.NBD0004 / 2.0M) + (_invoiceDetail.LossRate * (_energyCharges.NBD0004 / 2.0M));
+                _energyCharges.NBD0408 = _energyCharges.NBD0004;
+                _energyCharges.NBD0408R = _energyCharges.NBD0004R;
+
+                _energyCharges.NBD0812 = (_energyCharges.NBD0812 / 4.0M) + (_invoiceDetail.LossRate * (_energyCharges.NBD0812 / 4.0M));
+                _energyCharges.NBD1216 = _energyCharges.NBD0812;
+                _energyCharges.NBD1216R = _energyCharges.NBD0812R;
+                _energyCharges.NBD1620 = _energyCharges.NBD0812;
+                _energyCharges.NBD1620R = _energyCharges.NBD0812R;
+                _energyCharges.NBD2024 = _energyCharges.NBD0812;
+                _energyCharges.NBD2024R = _energyCharges.NBD0812R;
+            }
+            
+
             var _networkCharges = _repository.InvoiceSummaries.Where(a => a.InvoiceId == invoiceId).Select(b => b.NetworkCharge).FirstOrDefault();
            // var _energyCharges = _energyCharges.FirstOrDefault();//.Select(a => a.BD0004 + a.BD0408).FirstOrDefault();
             List<EnergyDataModel> _energyDataModel = new List<EnergyDataModel>();

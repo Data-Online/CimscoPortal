@@ -12,7 +12,7 @@
         Invoice number: <b>{{inv.invoiceNumber}} </b><br /><span class="databox-text">Approved by</span> <span class="databox-header">
             <b>{{inv.approversName}}</b></span> on <b>{{inv.approvedDate |  date:mediumDate}}</b>
     </div>
-    <div class="databox databox-lg radius-bordered databox-shadowed">
+    <div class="databox databox-lg radius-bordered databox-shadowed" ng-style=setOpacity(inv.invoiceNumber)>
 
         <div class="databox-left bg-white">
             <div ng-class="pctBoxStyle(inv.percentageChange)">
@@ -40,9 +40,9 @@
                     Approved
                 </span>
                 @*<label>
-                    <input type="checkbox" ng-model="inv.approved"
-                           ng-click="testclick(inv.approved, inv.invoiceId)"><span class="text" style="font-size:8px">approved</span>
-                </label>*@
+                        <input type="checkbox" ng-model="inv.approved"
+                               ng-click="testclick(inv.approved, inv.invoiceId)"><span class="text" style="font-size:8px">approved</span>
+                    </label>*@
             </div>
         </div>
     </div>

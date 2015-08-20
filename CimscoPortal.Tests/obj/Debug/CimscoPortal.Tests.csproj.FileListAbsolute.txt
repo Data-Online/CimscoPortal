@@ -219,3 +219,5 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\bin\Debug\S
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\obj\Debug\CimscoPortal.Tests.csprojResolveAssemblyReference.cache
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\obj\Debug\CimscoPortal.Tests.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\obj\Debug\CimscoPortal.Tests.pdb
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\bin\Debug\AutoMapper.Net4.dll
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\bin\Debug\AutoMapper.Unity.dll

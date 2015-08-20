@@ -44,8 +44,8 @@
             barchart();
         };
 
-        $scope.testclick = function (setting, invoiceId) {
-            console.log('setting change: ' + setting + ' for ' + invoiceId);
+        $scope.testclick = function (setting, invoiceId, siteIndex) {
+            console.log('setting change: ' + setting + ' for ' + invoiceId + ' site Index ' + siteIndex);
             dbDataSource.postInvoiceApproval(invoiceId);
         }
 
@@ -57,6 +57,15 @@
             .then(onRepo2, onError);
 
         //dbDataSource.postInvoiceApproval();
+        $scope.setOpacity = function (myValue) {
+           //console.log('Opacity set for ' + myValue);
+            var opacity = 1;
+            if ((myValue).charAt(0) == 't') {
+                console.log('Opacity set');
+                opacity = "0.5";
+            }
+            return { "opacity": opacity };
+        };
 
         $scope.pctBoxStyle = function (myValue) {
             var num = parseInt(myValue);
