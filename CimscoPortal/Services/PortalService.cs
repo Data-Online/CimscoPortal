@@ -198,20 +198,20 @@ namespace CimscoPortal.Services
             _result.InvoiceDetail = _invoiceDetail;
             var _energyCharges = _repository.InvoiceSummaries.Where(a => a.InvoiceId == invoiceId).Select(b => b.EnergyCharge).FirstOrDefault();
             var _networkCharges = _repository.InvoiceSummaries.Where(a => a.InvoiceId == invoiceId).Select(b => b.NetworkCharge).FirstOrDefault();
-           // var _energyCharges = _energyCharges.FirstOrDefault();//.Select(a => a.BD0004 + a.BD0408).FirstOrDefault();
+            // var _energyCharges = _energyCharges.FirstOrDefault();//.Select(a => a.BD0004 + a.BD0408).FirstOrDefault();
             List<EnergyDataModel> _energyDataModel = new List<EnergyDataModel>();
             EnergyDataModel _businessDayData = new EnergyDataModel()
             {
                 EnergyChargeByBracket = new List<decimal> { _energyCharges.BD0004, _energyCharges.BD0408, _energyCharges.BD0812, _energyCharges.BD1216, _energyCharges.BD1620, _energyCharges.BD2024 },
                 EnergyRateByBracket = new List<decimal> { _energyCharges.BD0004R, _energyCharges.BD0408R, _energyCharges.BD0812R, _energyCharges.BD1216R, _energyCharges.BD1620R, _energyCharges.BD2024R },
-                HeaderData = new HeaderData() {  Header = "Business Days"}
+                HeaderData = new HeaderData() { Header = "Business Days" }
             };
 
             EnergyDataModel _nonBusinessDayData = new EnergyDataModel()
             {
                 EnergyChargeByBracket = new List<decimal> { _energyCharges.NBD0004, _energyCharges.NBD0408, _energyCharges.NBD0812, _energyCharges.NBD1216, _energyCharges.NBD1620, _energyCharges.NBD2024 },
                 EnergyRateByBracket = new List<decimal> { _energyCharges.NBD0004R, _energyCharges.NBD0408R, _energyCharges.NBD0812R, _energyCharges.NBD1216R, _energyCharges.NBD1620R, _energyCharges.NBD2024R },
-                HeaderData = new HeaderData() {  Header = "Non Business Days"}
+                HeaderData = new HeaderData() { Header = "Non Business Days" }
             };
 
             _result.OtherCharges = new List<decimal>() { _energyCharges.BDSVC, _energyCharges.NBDSVC, _energyCharges.EALevy, _invoiceDetail.MiscChargesTotal };
@@ -222,8 +222,8 @@ namespace CimscoPortal.Services
             _result.InvoiceDetail.EnergyChargesTotal = _businessDayData.TotalCost + _nonBusinessDayData.TotalCost;
 
             var _serviceCharges = new List<decimal> { _energyCharges.BDSVC, _energyCharges.BDSVCR };
-            var _levyCharges = new List<decimal> {_energyCharges.EALevy, _energyCharges.EALevyR };
-           // var _summaryData = new List<decimal> { _energyCharges.LossRate, _energyCharges.BDMeteredKwh, _energyCharges.BDLossCharge };
+            var _levyCharges = new List<decimal> { _energyCharges.EALevy, _energyCharges.EALevyR };
+            // var _summaryData = new List<decimal> { _energyCharges.LossRate, _energyCharges.BDMeteredKwh, _energyCharges.BDLossCharge };
 
             List<DonutChartData> _donutChartData = new List<DonutChartData> { 
                                     new DonutChartData() { Value = PercentToDecimal2(_invoiceDetail.EnergyChargesTotal, _invoiceDetail.InvoiceTotal), Label = "Energy" },
@@ -245,7 +245,7 @@ namespace CimscoPortal.Services
 
         private static decimal PercentToDecimal2(decimal value, decimal total)
         {
-            return decimal.Round((value / total)*100, 2, MidpointRounding.AwayFromZero);
+            return decimal.Round((value / total) * 100, 2, MidpointRounding.AwayFromZero);
         }
 
         public InvoiceDetailViewModel GetCurrentMonth_(int _invoiceId)
@@ -286,9 +286,10 @@ namespace CimscoPortal.Services
                                                                 Detail = r.ApprovedDate.ToString()
                                                                 }
                                                     },
-                                                    ApprovalData = new ApprovalData() { 
-                                                        ApprovalDate =  r.ApprovedDate, 
-                                                        ApproverName = r.ApprovedById 
+                                                    ApprovalData = new ApprovalData()
+                                                    {
+                                                        ApprovalDate = r.ApprovedDate,
+                                                        ApproverName = r.ApprovedById
                                                     }
                                                 };
 
@@ -396,11 +397,28 @@ namespace CimscoPortal.Services
             var _customers = _repository.Customers.FirstOrDefault(f => f.Users.Any(w => w.Id == id));
             if (_customers != null)
             {
-                return await _repository.AspNetUsers.Where(w => w.Customers.Any(a=>a.CustomerId == _customers.CustomerId)).ToListAsync();
-            } 
+                var item = await _repository.AspNetUsers.Where(w => w.Customers.Any(a => a.CustomerId == _customers.CustomerId)).ToListAsync();
+                return item;
+            }
             else
             {
                 return await _repository.AspNetUsers.Where(w => w.Groups.Any(f => f.GroupId == _repository.Groups.FirstOrDefault(g => g.Users.Any(a => a.Id == id)).GroupId)).ToListAsync();
+            }
+        }
+
+        public void InsertGroupOrCustomer(string login_id, string insert_id)
+        {
+            var _customerid = _repository.Customers.Where(f => f.Users.Any(w => w.Id == login_id)).Select(s => s.CustomerId).FirstOrDefault();
+            if (_customerid != null)
+            {
+                using (var ctx = new CimscoPortalEntities())
+                {
+                    int noOfRowInserted = ctx.Database.ExecuteSqlCommand("insert into CustomerUserLink(CustomerId,UserId) values(" + _customerid + ",'" + insert_id + "')");
+                    //var studentName = ctx.Students.SqlQuery("Select studentid, studentname 
+                    //    from Student where studentname='New Student1'").ToList();
+
+                }
+
             }
         }
         #endregion

@@ -57,73 +57,73 @@ namespace CimscoPortal.Data.Migrations
 
         protected override void Seed(CimscoPortal.Data.Models.CimscoPortalContext context)
         {
-            //  This method will be called after migrating to the latest version.
+            ////  This method will be called after migrating to the latest version.
 
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data. E.g.
-            //
-            //    context.People.AddOrUpdate(
-            //      p => p.FullName,
-            //      new Person { FullName = "Andrew Peters" },
-            //      new Person { FullName = "Brice Lambson" },
-            //      new Person { FullName = "Rowan Miller" }
-            //    );
-            //
-            // GPA -- Refactor!!
+            ////  You can use the DbSet<T>.AddOrUpdate() helper extension method 
+            ////  to avoid creating duplicate seed data. E.g.
+            ////
+            ////    context.People.AddOrUpdate(
+            ////      p => p.FullName,
+            ////      new Person { FullName = "Andrew Peters" },
+            ////      new Person { FullName = "Brice Lambson" },
+            ////      new Person { FullName = "Rowan Miller" }
+            ////    );
+            ////
+            //// GPA -- Refactor!!
 
-            //RemoveGroups(context);
-            //RemoveCustomers(context);
-            context.Database.ExecuteSqlCommand("delete from [Sites]");
-            context.Database.ExecuteSqlCommand("delete from [Groups]");
-            context.Database.ExecuteSqlCommand("delete from [Customers]");
-            context.Database.ExecuteSqlCommand("delete from [InvoiceSummaries]");
-            context.Database.ExecuteSqlCommand("delete from [EnergyPoints]");
-            context.SaveChanges();
+            ////RemoveGroups(context);
+            ////RemoveCustomers(context);
+            //context.Database.ExecuteSqlCommand("delete from [Sites]");
+            //context.Database.ExecuteSqlCommand("delete from [Groups]");
+            //context.Database.ExecuteSqlCommand("delete from [Customers]");
+            //context.Database.ExecuteSqlCommand("delete from [InvoiceSummaries]");
+            //context.Database.ExecuteSqlCommand("delete from [EnergyPoints]");
+            //context.SaveChanges();
 
-            // Actual invoice data from data entry
-            context.Database.ExecuteSqlCommand("exec [dbo].[SeedInvoiceSummaries]");
-            context.SaveChanges();
+            //// Actual invoice data from data entry
+            //context.Database.ExecuteSqlCommand("exec [dbo].[SeedInvoiceSummaries]");
+            //context.SaveChanges();
 
-            // Create any not already in source data
-            CreateSites(context, _sampleSites);
-            CreateGroupsAndCustomers(context, _sampleCustomers, _sampleGroups);
-            context.SaveChanges();
+            //// Create any not already in source data
+            //CreateSites(context, _sampleSites);
+            //CreateGroupsAndCustomers(context, _sampleCustomers, _sampleGroups);
+            //context.SaveChanges();
 
-            LinkSitesToCustomersFromSource(context);
+            //LinkSitesToCustomersFromSource(context);
 
-            LinkUsersCustomer("Masterton Supermarkets Ltd", new string[] { "masterton@cimsco.co.nz" }, context);
-            //LinkUsersCustomer("Intercontinental Group", new string[] { "masterton@cimsco.co.nz" }, context);
-            LinkUsersCustomer("Nees Hardware Ltd", new string[] { "mitre10@cimsco.co.nz" }, context);
+            //LinkUsersCustomer("Masterton Supermarkets Ltd", new string[] { "masterton@cimsco.co.nz" }, context);
+            ////LinkUsersCustomer("Intercontinental Group", new string[] { "masterton@cimsco.co.nz" }, context);
+            //LinkUsersCustomer("Nees Hardware Ltd", new string[] { "mitre10@cimsco.co.nz" }, context);
 
-            context.SaveChanges();
+            //context.SaveChanges();
 
-            int _monthsOfDataToCreate = 36;
-
-
+            //int _monthsOfDataToCreate = 36;
 
 
 
-            InvoiceDataSeed(context, "Pak 'n Save Upper Hutt", _monthsOfDataToCreate, "0000103216TR397");
-            InvoiceDataSeed(context, "Pak 'n Save Upper Hutt Fuel Site..", _monthsOfDataToCreate, "t000103216TR399");
-            InvoiceDataSeed(context, "Pak .n Save Upper Hutt Bulk warehouse", _monthsOfDataToCreate, "t000103216TR388");
-            InvoiceDataSeed(context, "Mega Mitre 10 Petone", _monthsOfDataToCreate, "0001452560UN-B21");
-            InvoiceDataSeed(context, "Mega Mitre 10 Porirua", _monthsOfDataToCreate, "t001452560UN-B1"); 
-            InvoiceDataSeed(context, "Mega Retail Park Upper Hutt", _monthsOfDataToCreate, "t001452560UN-B2");
-            InvoiceDataSeed(context, "Mega Mitre 10 Upper Hutt", _monthsOfDataToCreate, "1001127474UN587"); 
-            context.SaveChanges();
 
-            CalculatePercentageChange(context);
-            context.SaveChanges();
 
-            CreateTestMessages(context);
-            CreateContacts(context);
-            CreateCities(context);
+            //InvoiceDataSeed(context, "Pak 'n Save Upper Hutt", _monthsOfDataToCreate, "0000103216TR397");
+            //InvoiceDataSeed(context, "Pak 'n Save Upper Hutt Fuel Site..", _monthsOfDataToCreate, "t000103216TR399");
+            //InvoiceDataSeed(context, "Pak .n Save Upper Hutt Bulk warehouse", _monthsOfDataToCreate, "t000103216TR388");
+            //InvoiceDataSeed(context, "Mega Mitre 10 Petone", _monthsOfDataToCreate, "0001452560UN-B21");
+            //InvoiceDataSeed(context, "Mega Mitre 10 Porirua", _monthsOfDataToCreate, "t001452560UN-B1"); 
+            //InvoiceDataSeed(context, "Mega Retail Park Upper Hutt", _monthsOfDataToCreate, "t001452560UN-B2");
+            //InvoiceDataSeed(context, "Mega Mitre 10 Upper Hutt", _monthsOfDataToCreate, "1001127474UN587"); 
+            //context.SaveChanges();
 
-            ApplyNames(context);
+            //CalculatePercentageChange(context);
+            //context.SaveChanges();
 
-            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Pac n Save', [LastName] = 'Admin', [CompanyLogo] = 'PakNSave.jpg' where [eMail] = 'masterton@cimsco.co.nz'");
-            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Cimsco', [LastName] = 'Admin', [CompanyLogo] = 'uhf_ic_logo.png' where [eMail] = 'admin@cimsco.co.nz'");
-            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Mitre10', [LastName] = 'Admin', [CompanyLogo] = 'mitre10.png' where [eMail] = 'mitre10@cimsco.co.nz'");
+            //CreateTestMessages(context);
+            //CreateContacts(context);
+            //CreateCities(context);
+
+            //ApplyNames(context);
+
+            //context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Pac n Save', [LastName] = 'Admin', [CompanyLogo] = 'PakNSave.jpg' where [eMail] = 'masterton@cimsco.co.nz'");
+            //context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Cimsco', [LastName] = 'Admin', [CompanyLogo] = 'uhf_ic_logo.png' where [eMail] = 'admin@cimsco.co.nz'");
+            //context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Mitre10', [LastName] = 'Admin', [CompanyLogo] = 'mitre10.png' where [eMail] = 'mitre10@cimsco.co.nz'");
 
         }
 

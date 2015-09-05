@@ -1,0 +1,118 @@
+﻿@model CimscoPortal.Models.ApplicationUser
+@{
+    ViewBag.Title = "Profile page";
+    Layout = "~/Views/Shared/_Default.cshtml";
+}
+<div class="row">
+    <div class="col-lg-12 col-sm-12 col-xs-12">
+        <h5 class="row-title before-magenta"><i class="fa fa-edit magenta"></i>@ViewBag.Title</h5>
+        <div class="row">
+            <div class="col-lg-6 col-sm-6 col-xs-12">
+                <div class="widget flat radius-bordered">
+                    <div class="widget-header bg-blue">
+                        <span class="widget-caption">User Details</span>
+                    </div>
+                    <div class="widget-body">
+                        <div id="useredit-form">
+                            <form role="form">
+                                <div class="form-title">
+                                    Login Information
+                                </div>
+                                <div class="form-group">
+                                    <dl class="dl-horizontal">
+                                        <dt>
+                                            @Html.DisplayNameFor(model => model.UserName)
+                                        </dt>
+                                        <dd>
+                                            @Html.DisplayFor(model => model.UserName)
+                                        </dd>
+                                    </dl>
+                                </div>
+                                <div class="form-title">
+                                    Roles
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        @foreach (var item in ViewBag.RoleNames)
+                                        {
+                                            <label class="text">@item</label>
+                                        }
+                                    </div>
+                                </div>
+                                </br>
+                                <div class="form-title">
+                                    Personal Information (inpro)
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <span class="input-icon icon-right">
+                                                <input type="text" class="form-control" placeholder="Name">
+                                                <i class="fa fa-user"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <span class="input-icon icon-right">
+                                                <input type="text" class="form-control" placeholder="Family">
+                                                <i class="fa fa-user"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <span class="input-icon icon-right">
+                                                <input type="text" class="form-control" placeholder="Phone">
+                                                <i class="glyphicon glyphicon-earphone"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <span class="input-icon icon-right">
+                                                <input type="text" class="form-control" placeholder="Mobile">
+                                                <i class="glyphicon glyphicon-phone"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr class="wide" />
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <span class="input-icon icon-right">
+                                                <input class="form-control date-picker" id="id-date-picker-1" type="text" data-date-format="dd-mm-yyyy" placeholder="Birth Date">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <span class="input-icon icon-right">
+                                                <input type="text" class="form-control" placeholder="Birth Place">
+                                                <i class="fa fa-globe"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-blue" })
+                                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-blue" })
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section PageScripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
+

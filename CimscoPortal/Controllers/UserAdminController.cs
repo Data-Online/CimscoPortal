@@ -15,7 +15,7 @@ using CimscoPortal.Services;
 
 namespace CimscoPortal.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class UserAdminController : Controller
     {
         public UserAdminController()
@@ -110,6 +110,9 @@ namespace CimscoPortal.Controllers
                             ViewBag.RoleId = new SelectList(await RoleManager.Roles.ToListAsync(), "Name", "Name");
                             return View();
                         }
+                        var repository = new CimscoPortal.Data.Models.CimscoPortalContext();
+                        IPortalService _portalService = new PortalService(repository);
+                        _portalService.InsertGroupOrCustomer(User.Identity.GetUserId(), user.Id);
                     }
                 }
                 else

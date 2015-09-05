@@ -30,6 +30,8 @@ namespace CimscoPortal.Infrastructure
         void ApproveInvoice(int invoiceId, string userId);
 
         System.Threading.Tasks.Task<List<CimscoPortal.Data.Models.AspNetUser>> GetUserByGroupOrCompany(string id);
+
+        void InsertGroupOrCustomer(string login_id, string insert_id);
     }
 
     public interface IMappingService

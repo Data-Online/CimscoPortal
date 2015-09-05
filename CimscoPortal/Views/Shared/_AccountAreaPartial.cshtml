@@ -164,7 +164,7 @@
             </li>
             <!--Avatar Area-->
             <li class="edit">
-                <a href="profile.html" class="pull-left">Profile</a>
+                <a href="@Url.Action("Index", "UserProfile")" class="pull-left">Profile</a>
                 <a href="#" class="pull-right">Settings</a>
             </li>
             @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))

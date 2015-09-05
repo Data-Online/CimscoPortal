@@ -29,18 +29,21 @@
                                             @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
                                             <i class="fa fa-envelope-o circular"></i>
                                         </span>
+                                        @Html.ValidationMessageFor(m=>m.Email)
                                     </div>
                                     <div class="form-group">
                                         <span class="input-icon icon-right">
-                                            <input type="text" class="form-control" id="passwordInput" placeholder="Password">
+                                            @Html.TextBoxFor(m => m.Password, new { @class = "form-control" })
                                             <i class="fa fa-lock circular"></i>
                                         </span>
+                                        @Html.ValidationMessageFor(m => m.Password)
                                     </div>
                                     <div class="form-group">
                                         <span class="input-icon icon-right">
-                                            <input type="text" class="form-control" id="confirmPasswordInput" placeholder="Confirm Password">
+                                            @Html.TextBoxFor(m => m.ConfirmPassword, new { @class = "form-control" })
                                             <i class="fa fa-lock circular"></i>
                                         </span>
+                                        @Html.ValidationMessageFor(m => m.ConfirmPassword)
                                     </div>
                                     <div class="form-title">
                                         Roles

@@ -240,6 +240,7 @@
     <Compile Include="Controllers\AdministrationController.cs" />
     <Compile Include="Controllers\Api\PortalApiController.cs" />
     <Compile Include="Controllers\UserAdminController.cs" />
+    <Compile Include="Controllers\UserProfileController.cs" />
     <Compile Include="Data\Customer.cs">
       <DependentUpon>PortalEntities.tt</DependentUpon>
     </Compile>
@@ -1473,6 +1474,7 @@
     <Content Include="Views\Portal\_DonutPlusSummary_revised.cshtml" />
     <Content Include="Views\Portal\_OtherChargesTable.cshtml" />
     <Content Include="Views\Portal\_SiteListB.cshtml" />
+    <Content Include="Views\UserProfile\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />
