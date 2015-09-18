@@ -67,6 +67,7 @@ namespace CimscoPortal.Controllers
 
         public ActionResult Index_test()
         {
+
             // int categoryId = 2;
             //var zz = _portalService.GetAlertsFor(categoryId);
             return View();
