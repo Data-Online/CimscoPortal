@@ -34,29 +34,19 @@ namespace CimscoPortal.Controllers.Api
         }
 
         [HttpGet]
-        [Route("messages/{customerId}")]
-        public HttpResponseMessage GetMessages(HttpRequestMessage request, int customerId)
+        [Route("messages")]
+        public HttpResponseMessage GetMessages(HttpRequestMessage request)
         {
-            var messages = PortalDataFactory.GetMessages(customerId);
-            return request.CreateResponse<MessageViewModel[]>(HttpStatusCode.OK, messages.ToArray());
-        }
-
-        [HttpGet]
-        [Route("messagesZ/{customerId}")]
-        public HttpResponseMessage GetMessagesZ(HttpRequestMessage request, int customerId)
-        {
-            //var service = PortalService(new IPortalService());
-            //var messages = repo.MessageFormats.AsEnumerable().AsQueryable();
-            var messages = _portalService.GetNavbarDataForZ(3, "pg-alert");
-            return request.CreateResponse<MessageViewModel[]>(HttpStatusCode.OK, messages.ToArray());
+            return request.CreateResponse<MessageViewModel[]>(HttpStatusCode.OK,
+                            _portalService.GetNavbarDataFor(User.Identity.Name).ToArray());
         }
 
         [HttpGet]
         [Route("common")]
         public HttpResponseMessage GetCommonData(HttpRequestMessage request)
         {
-            var userId = User.Identity.Name;
-            return request.CreateResponse<CommonInfoViewModel>(HttpStatusCode.OK, _portalService.GetCommonData(userId));
+            return request.CreateResponse<CommonInfoViewModel>(HttpStatusCode.OK, 
+                            _portalService.GetCommonData(User.Identity.Name));
         }
 
         //[HttpGet]

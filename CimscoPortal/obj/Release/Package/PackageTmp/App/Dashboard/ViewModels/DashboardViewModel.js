@@ -41,6 +41,8 @@
             $scope.myModel = $scope.InvoiceSummary[0].invoiceHistory;//data.summaryData[0].invoiceHistory;
             $scope.customerName = $scope.siteHierarchyData.siteData[0].siteName;
             $scope.maxValue = data.maxValue
+            $scope.ldgInvHistory = false;
+            $scope.loadingOpacity = "1.0";
             barchart();
         };
 
@@ -53,6 +55,8 @@
             $scope.reason = reason;
         };
 
+        $scope.ldgInvHistory = true;
+        $scope.loadingOpacity = "0.5";
         dbDataSource.getSummaryData()
             .then(onRepo2, onError);
 

@@ -12,16 +12,17 @@ namespace CimscoPortal.Infrastructure
         IEnumerable<CimscoPortal.Models.InvoiceDetail> GetSiteInvoiceData(int contactId);
         CimscoPortal.Models.CommonInfoViewModel GetCommonData(string userId);
         CimscoPortal.Models.InvoiceDetailViewModel_ GetCurrentMonth(int _invoiceId);
+        IEnumerable<CimscoPortal.Models.MessageViewModel> GetNavbarDataFor(string pageElement);
 
         // <--
 
         //System.Collections.Generic.List<CimscoPortal.Models.AlertViewModel> GetAlertsFor(int category);
 
         CimscoPortal.Models.StackedBarChartViewModel GetHistoryByMonth(int _energyPointId);
-        System.Collections.Generic.List<CimscoPortal.Models.AlertData> GetNavbarDataFor(int customerId, string elementType);
+        System.Collections.Generic.List<CimscoPortal.Models.AlertData> GetNavbarDataFor_Z(int customerId, string elementType);
       //  System.Data.Entity.DbSet<CimscoPortal.Data.PortalMessage> PortalMessages { get; }
 
-        IEnumerable<CimscoPortal.Models.MessageViewModel> GetNavbarDataForZ(int customerId, string pageElement);
+        
 
         CimscoPortal.Models.InvoiceDetailViewModel GetCurrentMonth_(int _energyPointId);
 

@@ -78,7 +78,7 @@ namespace CimscoPortal.Controllers
             // var userName = User.Identity.Name;
             var userId = User.Identity.GetUserId();
             AlertViewModel model = new AlertViewModel();
-            List<AlertData> alertData = _portalService.GetNavbarDataFor(customerId, pageElement);
+            List<AlertData> alertData = _portalService.GetNavbarDataFor_Z(customerId, pageElement);
 
             if (alertData.Count() > 0)
             {

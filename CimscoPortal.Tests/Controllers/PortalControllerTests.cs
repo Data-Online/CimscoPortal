@@ -59,7 +59,7 @@ namespace CimscoPortal.Tests.Controllers
             int _customerId = 1;
             string _elementType = "pg-alert";
            
-            Mock.Arrange(() => _portalService.GetNavbarDataFor(_customerId, _elementType))
+            Mock.Arrange(() => _portalService.GetNavbarDataFor_Z(_customerId, _elementType))
                 .Returns(new List<AlertData>()
                  { 
                     new AlertData { CategoryName = "alert_tick_red", TypeName = "Alert", _timeStamp = new System.DateTime(2015,1,1) }

@@ -14,6 +14,12 @@
         $scope.order = function (predicate) {
             $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : true;
             $scope.predicate = predicate;
+            if ($scope.reverse) {
+                $scope.sortArrow = "fa-long-arrow-up";
+            }
+            else {
+                $scope.sortArrow = "fa-long-arrow-down";
+            }
         };
 
         $scope.pctBoxStyle = function (myValue) {
@@ -62,6 +68,7 @@
         };
 
         var onInvData = function (data) {
+            $scope.sortArrow = "fa-long-arrow-down";
             $scope.invoiceData = data;
         };
 

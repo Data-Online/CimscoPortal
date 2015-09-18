@@ -67,6 +67,7 @@
     <Compile Include="Models\AspNetUserLogin.cs" />
     <Compile Include="CimscoPortalContext.cs" />
     <Compile Include="Models\City.cs" />
+    <Compile Include="Models\CommonData.cs" />
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\EnergyPoints.cs" />

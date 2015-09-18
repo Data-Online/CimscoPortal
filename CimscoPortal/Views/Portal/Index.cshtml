@@ -3,19 +3,25 @@
     ViewBag.Description = "Cimsco Dashboard";
     Layout = "~/Views/Shared/_Default.cshtml";
 }
-<div data-ng-app="dashboard" class="row" data-ng-controller="dashboardViewModel">
+
+<div data-ng-app="dashboard" class="row" data-ng-controller="dashboardViewModel" style="opacity:{{loadingOpacity}}">
+    <span class="ajax-loader" ng-show="ldgInvHistory"><i class="fa fa-cog fa-spin fa-3x"></i></span>
+
     <div class="col-xs-12 col-md-3 col-lg-3">
         @Html.Partial("_SiteList")
     </div>
-    <div class="col-xs-12 col-md-6">
-        @Html.Partial("_InvoiceHistory")
-    </div>
-    <div class="col-md-3 col-sm-3 col-xs-12">
-        <div class="databox-top bg-blue">
-            <span class="text-uppercase text-center">Invoices for Approval</span>
+    <div class="col-xs-12 col-md-9 col-lg-9">
+        <div class="col-xs-12 col-md-12 col-lg-12"><h6 class="row-title before-blue">{{customerName}}</h6></div>
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            @Html.Partial("_InvoiceHistory")
         </div>
-        <div style="margin-bottom: 20px;"></div>
-        @Html.Partial("_InvoiceApproval")
+        <div class="col-xs-12 col-md-6 col-lg-6">
+            <div class="databox-top bg-blue" style="margin:2px;">
+                <span class="text-uppercase text-center padding-15">Invoices for Approval</span>
+            </div>
+            <div style="margin-bottom: 20px;"></div>
+            @Html.Partial("_InvoiceApproval")
+        </div>
     </div>
 </div>
 
@@ -45,25 +51,35 @@
                 white-space: nowrap;
                 margin: 0.1em 0;
             }
+
+    .ajax-loader {
+        position: absolute;
+        left: 50%;
+        top: 30%;
+        right: 0;
+        bottom: 0;
+        margin: auto; /* presto! */
+        z-index: 1;
+    }
 </style>
 
 @section PageScripts{
 
     @*<script type="text/javascript">
-        $(window).bind("load", function () {
+           $(window).bind("load", function () {
 
-            /*Sets Themed Colors Based on Themes*/
-            themeprimary = getThemeColorFromCss('themeprimary');
-            themesecondary = getThemeColorFromCss('themesecondary');
-            themethirdcolor = getThemeColorFromCss('themethirdcolor');
-            themefourthcolor = getThemeColorFromCss('themefourthcolor');
-            themefifthcolor = getThemeColorFromCss('themefifthcolor');
+               /*Sets Themed Colors Based on Themes*/
+               themeprimary = getThemeColorFromCss('themeprimary');
+               themesecondary = getThemeColorFromCss('themesecondary');
+               themethirdcolor = getThemeColorFromCss('themethirdcolor');
+               themefourthcolor = getThemeColorFromCss('themefourthcolor');
+               themefifthcolor = getThemeColorFromCss('themefifthcolor');
 
-            InitiateSparklineCharts.init();
+               InitiateSparklineCharts.init();
 
-            //InitiateBarChart.init();
-        });
-     </script>*@
+               //InitiateBarChart.init();
+           });
+        </script>*@
 
     <script src="~/Scripts/nestable/jquery.nestable.min.js"></script>
     <script type="text/javascript">

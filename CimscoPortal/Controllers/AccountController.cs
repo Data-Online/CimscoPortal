@@ -513,7 +513,13 @@ namespace CimscoPortal.Controllers
                         "mitre10@cimsco.co.nz", 
                         "intercontinental@cimsco.co.nz", 
                         "masterton@cimsco.co.nz", 
-                        "admin@cimsco.co.nz" };
+                        "admin@cimsco.co.nz",
+                        "masterton2@cimsco.co.nz",
+                        "foodstuffs@cimsco.co.nz",
+                        "foodstuffs2@cimsco.co.nz",
+                        "holiday1@cimsco.co.nz",
+                        "holiday2@cimsco.co.nz"
+                };
 
                 foreach (var _userName in _sampleUsers)
                 {

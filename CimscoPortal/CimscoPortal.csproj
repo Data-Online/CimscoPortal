@@ -298,8 +298,8 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\InvoiceDetailViewModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\MessageViewModels_new.cs" />
     <Compile Include="Models\MessageViewModels.cs" />
+    <Compile Include="Models\MessageViewModels_del.cs" />
     <Compile Include="Models\MonthlySummaryViewModel.cs" />
     <Compile Include="Models\StackedBarChartViewModel.cs" />
     <Compile Include="Models\SummaryViewModel.cs" />
