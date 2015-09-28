@@ -12,7 +12,7 @@ namespace CimscoPortal.App_Start
         {
             Mapper.CreateMap<PortalMessage, AlertData>()
                 .ForMember(m => m.TypeName,
-                            opt => opt.MapFrom(i => i.MessageFormat.MessageType.Description))
+                            opt => opt.MapFrom(i => i.MessageFormat.MessageType.PageElement))
                 .ForMember(m => m.Element1,
                             opt => opt.MapFrom(i => i.MessageFormat.Element1))
                 .ForMember(m => m.Element2,
@@ -34,7 +34,7 @@ namespace CimscoPortal.App_Start
 
             Mapper.CreateMap<CimscoPortal.Data.Models.PortalMessage, MessageViewModel>()
                 .ForMember(m => m.TypeName,
-                            opt => opt.MapFrom(i => i.MessageFormat.MessageType.Description))
+                            opt => opt.MapFrom(i => i.MessageFormat.MessageType.PageElement))
                 .ForMember(m => m.Element1,
                             opt => opt.MapFrom(i => i.MessageFormat.Element1))
                 .ForMember(m => m.Element2,
@@ -47,7 +47,7 @@ namespace CimscoPortal.App_Start
                 .ForMember(m => m._timeStamp, opt => opt.MapFrom(i => i.TimeStamp))
                 // .ForMember(m => m._timeStamp, opt => opt.Ignore())
                     .ForMember(m => m.CategoryName, opt => opt.Ignore())
-                    .ForMember(m => m.Subject, opt => opt.Ignore())
+                    //.ForMember(m => m.Subject, opt => opt.Ignore())
                     .ForMember(m => m.Name, opt => opt.Ignore())
                 //  .ForMember(m => m.TimeStamp,  opt => opt.Ignore())
                 //.ForMember(m => m.TimeStamp, opt => opt.ResolveUsing<TimeStringResolver>());
@@ -57,7 +57,7 @@ namespace CimscoPortal.App_Start
             ////Mapper.CreateMap<CimscoPortal.Data.Models.Contact, CimscoPortal.Services.CompanyDataViewModel>()
             ////    .ForMember(m => m .GroupName, opt => opt.MapFrom(i => i.Groups.G))
 
-            Mapper.AssertConfigurationIsValid();
+           // Mapper.AssertConfigurationIsValid();
 
             Mapper.CreateMap<InvoiceSummary, EnergyData>()
                 .ForMember(m => m.Energy,

@@ -5,10 +5,10 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\bin\Release\
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\bin\Release\EntityFramework.SqlServer.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\bin\Release\EntityFramework.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\bin\Release\EntityFramework.SqlServer.xml
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Release\CimscoPortal.Data.csprojResolveAssemblyReference.cache
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Release\CimscoPortal.Data.Migrations.Initial.resources
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Release\CimscoPortal.Data.Migrations.City.resources
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Release\CimscoPortal.Data.Migrations.Customer.resources
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Release\CimscoPortal.Data.csproj.GenerateResource.Cache
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Release\CimscoPortal.data.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Release\CimscoPortal.data.pdb
-P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Release\CimscoPortal.Data.csprojResolveAssemblyReference.cache
-P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Release\CimscoPortal.Data.Migrations.City.resources
-P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Release\CimscoPortal.Data.Migrations.Customer.resources

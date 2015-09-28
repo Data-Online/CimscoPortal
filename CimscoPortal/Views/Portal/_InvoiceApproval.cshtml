@@ -1,34 +1,76 @@
 ﻿
-<div class="databox databox-lg radius-bordered databox-shadowed" ng-repeat="inv in invoiceData |orderBy:'invoiceDate'">
-
-    <div class="databox-left bg-white">
-        <div ng-class="pctBoxStyle(inv.percentageChange)">
-        @*<div class="databox-stat radius-bordered bg-red">*@
-            <div class="stat-text">{{inv.percentageChange | number:1}} %</div>
-            <i ng-class="negativeValue(inv.percentageChange)"></i>
-        </div>
-        <div class="databox-cell cell-12 no-padding padding-top-30  text-align-center">
-            <span class="databox-number orange no-margin">
-                <a href="@Url.Action("InvoiceDetail", "Portal")/{{inv.invoiceId}}" title="Invoice Details">
-                    <i class="fa fa-cogs"></i>
-                </a>
-                <a href="#" title="Download PDF">
-                    <i class="fa fa-download"></i>
-                </a>
-            </span>
+<div ng-repeat="inv in invoiceData |orderBy:'invoiceDate'" class="animate">
+    <div class="databox databox-lg radius-bordered databox-shadowed">
+        @*animate" ng-hide="inv.approved">*@
+        <div ng-style=setOpacity(inv.invoiceNumber)>
+            <div class="databox-left bg-white">
+                <div ng-class="pctBoxStyle(inv.percentageChange)">
+                    @*<div class="databox-stat radius-bordered bg-red">*@
+                    <div class="stat-text">{{inv.percentageChange | number:1}} %</div>
+                    <i ng-class="negativeValue(inv.percentageChange)"></i>
+                </div>
+                <div class="databox-cell cell-12 no-padding padding-top-30  text-align-center">
+                    <span class="databox-number orange no-margin">
+                        <a href="@Url.Action("InvoiceDetail", "Portal")/{{inv.invoiceId}}" title="Invoice Details">
+                            <i class="fa fa-cogs"></i>
+                        </a>
+                        <a href="#" title="Download PDF">
+                            <i class="fa fa-download"></i>
+                        </a>
+                    </span>
+                </div>
+            </div>
+            <div class="databox-right bordered-thick bordered-sky bg-white">
+                <span class="databox-number sky"><i class="fa fa-calendar"></i>{{inv.invoiceDate | date:mediumDate}}</span>
+                <div class="databox-header darkgray">
+                    {{inv.invoiceTotal | currency:$}}
+                    @*<label >
+                            <input type="checkbox" ng-model="inv.approved"
+                                   ng-click="testclick(inv.approved, inv.invoiceId)"><span class="text" style="font-size:8px">approved</span>
+                        </label>*@
+                    <label>
+                        <input type="button" ng-model="inv.approved"
+                               ng-click="inv.approved = true; testclick(inv.approved, inv.invoiceId, $index)"
+                               class="btn-sm btn-info" value="Approve">
+                        </input>
+                    </label>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="databox-right bordered-thick bordered-sky bg-white">
-        <span class="databox-number sky"><i class="fa fa-calendar"></i>{{inv.invoiceDate | date:mediumDate}}</span>
-        <div class="databox-header darkgray">
-            {{inv.invoiceTotal | currency:$}}
-
-
-            <label>
-                <input type="checkbox" ng-model="inv.approved"
-                       ng-click="testclick(inv.approved, inv.invoiceId)"><span class="text" style="font-size:8px">approved</span>
-            </label>
-        </div>
-    </div>
-
 </div>
+<style>
+    .animate {
+        -webkit-transition: all linear 0.8s;
+        transition: all linear 0.5s;
+        opacity: 1;
+    }
+
+   .animate.ng-leave {
+        transition: 0.5s;
+        
+
+        line-height: 0;
+            opacity: 1;
+            transition-delay: 0.5s;
+    }
+
+    .animate.ng-leave-active {
+        opacity: 0;
+    }
+
+    .animate.ng-leave-stagger {
+        transition-delay: 0.5s;
+    }
+
+            /*.animate.ng-hide {
+            line-height: 0;
+            opacity: 0;
+            transition-delay: 0.5s;
+        }
+
+    .animate.ng-hide-stagger {
+            transition-delay: 0.1s;
+        }*/
+
+</style>

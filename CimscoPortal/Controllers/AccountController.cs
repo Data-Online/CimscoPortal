@@ -10,6 +10,8 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using CimscoPortal.Models;
 using CimscoPortal.Infrastructure;
+using CimscoPortal.Data.Models;
+using CimscoPortal.Services;
 
 namespace CimscoPortal.Controllers
 {
@@ -86,7 +88,14 @@ namespace CimscoPortal.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+                    {
+                        ApplicationUser user = UserManager.FindByName(model.Email);
+                        LoginHistory loginHistory = new LoginHistory();
+                        IPortalService portalService = new PortalService();
+                        loginHistory.UserId = user.Id;
+                        portalService.UserloginUpdate(loginHistory);
+                        return RedirectToLocal(returnUrl);
+                    }
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -513,7 +522,13 @@ namespace CimscoPortal.Controllers
                         "mitre10@cimsco.co.nz", 
                         "intercontinental@cimsco.co.nz", 
                         "masterton@cimsco.co.nz", 
-                        "admin@cimsco.co.nz" };
+                        "admin@cimsco.co.nz",
+                        "masterton2@cimsco.co.nz",
+                        "foodstuffs@cimsco.co.nz",
+                        "foodstuffs2@cimsco.co.nz",
+                        "holiday1@cimsco.co.nz",
+                        "holiday2@cimsco.co.nz"
+                };
 
                 foreach (var _userName in _sampleUsers)
                 {

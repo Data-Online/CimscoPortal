@@ -12,10 +12,11 @@ using System.Web;
 using System.Web.Mvc;
 using CimscoPortal.Infrastructure;
 using CimscoPortal.Services;
+using CimscoPortal.Data.Models;
 
 namespace CimscoPortal.Controllers
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class UserAdminController : Controller
     {
         public UserAdminController()
@@ -110,9 +111,6 @@ namespace CimscoPortal.Controllers
                             ViewBag.RoleId = new SelectList(await RoleManager.Roles.ToListAsync(), "Name", "Name");
                             return View();
                         }
-                        var repository = new CimscoPortal.Data.Models.CimscoPortalContext();
-                        IPortalService _portalService = new PortalService(repository);
-                        _portalService.InsertGroupOrCustomer(User.Identity.GetUserId(), user.Id);
                     }
                 }
                 else
@@ -137,7 +135,8 @@ namespace CimscoPortal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var user = await UserManager.FindByIdAsync(id);
+            IPortalService _portalService = new PortalService();
+            var user = _portalService.GetUserByID(id);
             if (user == null)
             {
                 return HttpNotFound();
@@ -154,7 +153,10 @@ namespace CimscoPortal.Controllers
                     Selected = userRoles.Contains(x.Name),
                     Text = x.Name,
                     Value = x.Name
-                })
+                }),
+                LastName = user.LastName,
+                Phone = user.PhoneNumber,
+                FirstName = user.FirstName
             });
         }
 
@@ -162,7 +164,7 @@ namespace CimscoPortal.Controllers
         // POST: /Users/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Email,Id")] EditUserViewModel editUser, params string[] selectedRole)
+        public async Task<ActionResult> Edit(EditUserViewModel editUser, params string[] selectedRole)
         {
             if (ModelState.IsValid)
             {
@@ -171,10 +173,8 @@ namespace CimscoPortal.Controllers
                 {
                     return HttpNotFound();
                 }
-
-                user.UserName = editUser.Email;
-                user.Email = editUser.Email;
-
+                IPortalService _portalService = new PortalService();
+                _portalService.UpdateUser(editUser);
                 var userRoles = await UserManager.GetRolesAsync(user.Id);
 
                 selectedRole = selectedRole ?? new string[] { };

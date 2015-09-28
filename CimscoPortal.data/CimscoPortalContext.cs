@@ -46,6 +46,7 @@ namespace CimscoPortal.Data.Models
         public DbSet<Site> Sites { get; set; }
         public DbSet<EnergyCharge> EnergyCharges { get; set; }
         public DbSet<EnergyPoint> EnergyPoints { get; set; }
+        public DbSet<LoginHistory> LoginHistorys { get; set; }
       //  public DbSet<UserDetail> UserDetails { get; set; }
         public DbSet<sysdiagram> sysdiagrams { get; set; }
 
@@ -70,6 +71,7 @@ namespace CimscoPortal.Data.Models
             modelBuilder.Configurations.Add(new SiteMap());
             modelBuilder.Configurations.Add(new EnergyChargeMap());
             modelBuilder.Configurations.Add(new EnergyPointMap());
+            modelBuilder.Configurations.Add(new LoginHistoryMap());
           //  modelBuilder.Configurations.Add(new UserDetailMap());
             modelBuilder.Configurations.Add(new sysdiagramMap());
         }

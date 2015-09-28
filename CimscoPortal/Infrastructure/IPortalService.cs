@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CimscoPortal.Data.Models;
+using CimscoPortal.Models;
+using System;
 using System.Collections.Generic;
 namespace CimscoPortal.Infrastructure
 {
@@ -12,16 +14,17 @@ namespace CimscoPortal.Infrastructure
         IEnumerable<CimscoPortal.Models.InvoiceDetail> GetSiteInvoiceData(int contactId);
         CimscoPortal.Models.CommonInfoViewModel GetCommonData(string userId);
         CimscoPortal.Models.InvoiceDetailViewModel_ GetCurrentMonth(int _invoiceId);
+        IEnumerable<CimscoPortal.Models.MessageViewModel> GetNavbarDataFor(string pageElement);
 
         // <--
 
         //System.Collections.Generic.List<CimscoPortal.Models.AlertViewModel> GetAlertsFor(int category);
 
         CimscoPortal.Models.StackedBarChartViewModel GetHistoryByMonth(int _energyPointId);
-        System.Collections.Generic.List<CimscoPortal.Models.AlertData> GetNavbarDataFor(int customerId, string elementType);
+        System.Collections.Generic.List<CimscoPortal.Models.AlertData> GetNavbarDataFor_Z(int customerId, string elementType);
       //  System.Data.Entity.DbSet<CimscoPortal.Data.PortalMessage> PortalMessages { get; }
 
-        IEnumerable<CimscoPortal.Models.MessageViewModel> GetNavbarDataForZ(int customerId, string pageElement);
+        
 
         CimscoPortal.Models.InvoiceDetailViewModel GetCurrentMonth_(int _energyPointId);
 
@@ -31,7 +34,11 @@ namespace CimscoPortal.Infrastructure
 
         System.Threading.Tasks.Task<List<CimscoPortal.Data.Models.AspNetUser>> GetUserByGroupOrCompany(string id);
 
-        void InsertGroupOrCustomer(string login_id, string insert_id);
+        void UpdateUser(EditUserViewModel model);
+
+        AspNetUser GetUserByID(string id);
+
+        void UserloginUpdate(LoginHistory model);
     }
 
     public interface IMappingService

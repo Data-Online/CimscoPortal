@@ -1,3 +1,3 @@
 ﻿(function () {
-    var dashboardModule = angular.module("dashboard", []);
+    var dashboardModule = angular.module("dashboard", ["ngAnimate"]);
 }());

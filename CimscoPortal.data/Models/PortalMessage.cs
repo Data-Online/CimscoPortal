@@ -11,8 +11,11 @@ namespace CimscoPortal.Data.Models
         public Nullable<int> MessageFormatId { get; set; }
         public Nullable<System.DateTime> TimeStamp { get; set; }
         public string Footer { get; set; }
+        public string Subject { get; set; }
         public Nullable<System.DateTime> ExpiryDate { get; set; }
         //public virtual Customer Customer { get; set; }
         public virtual MessageFormat MessageFormat { get; set; }
+
+        public virtual AspNetUser User { get; set; }
     }
 }

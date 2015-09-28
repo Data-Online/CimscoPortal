@@ -14,6 +14,12 @@
         $scope.order = function (predicate) {
             $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : true;
             $scope.predicate = predicate;
+            if ($scope.reverse) {
+                $scope.sortArrow = "fa-long-arrow-up";
+            }
+            else {
+                $scope.sortArrow = "fa-long-arrow-down";
+            }
         };
 
         $scope.pctBoxStyle = function (myValue) {
@@ -44,6 +50,15 @@
             return style;
         };
 
+        $scope.setOpacity = function (myValue) {
+            var opacity = 1;
+            if ((myValue).charAt(0) == 't') {
+                console.log('Opacity set');
+                opacity = "0.5";
+            }
+            return { "opacity":opacity };
+        };
+
         var onRepo = function (data) {
             $scope.hierarchyData = data;
         };
@@ -53,6 +68,7 @@
         };
 
         var onInvData = function (data) {
+            $scope.sortArrow = "fa-long-arrow-down";
             $scope.invoiceData = data;
         };
 

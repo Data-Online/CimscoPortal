@@ -3,7 +3,7 @@
     var msgsource = function ($http) {
 
         var getMessages = function () {
-            var msgApi = "/api/messagesZ/1";
+            var msgApi = "/api/messages";
             return $http.get(msgApi)
                         .then(function (response) {
                             return response.data;

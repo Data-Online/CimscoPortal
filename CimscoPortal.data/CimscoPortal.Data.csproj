@@ -67,10 +67,13 @@
     <Compile Include="Models\AspNetUserLogin.cs" />
     <Compile Include="CimscoPortalContext.cs" />
     <Compile Include="Models\City.cs" />
+    <Compile Include="Models\CommonData.cs" />
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\EnergyPoints.cs" />
+    <Compile Include="Models\LoginHistory.cs" />
     <Compile Include="Models\Mapping\EnergyPointMap.cs" />
+    <Compile Include="Models\Mapping\LoginHistoryMap.cs" />
     <Compile Include="Models\Mapping\NetworkChargeMap.cs" />
     <Compile Include="Models\NetworkCharge.cs" />
     <Compile Include="Models\EnergyCharge.cs" />

@@ -14,7 +14,13 @@ namespace CimscoPortal.Data.Migrations
             "mitre10@cimsco.co.nz", 
             "intercontinental@cimsco.co.nz", 
             "masterton@cimsco.co.nz", 
-            "admin@cimsco.co.nz" };
+            "admin@cimsco.co.nz",
+            "masterton2@cimsco.co.nz",
+            "foodstuffs@cimsco.co.nz",
+            "foodstuffs2@cimsco.co.nz",
+            "holiday1@cimsco.co.nz",
+            "holiday2@cimsco.co.nz"
+        };
         // ==> Ref at AccountController.cs: This is where these accounts are created
 
         //private string[] _sampleCustomers = new string[] { "Test Customer 1", "Test Customer 2", "Test Customer 3" };
@@ -39,7 +45,8 @@ namespace CimscoPortal.Data.Migrations
             "Hewlett-Packard NZ",
             "Intercontinental Group",
             "Masterton Supermarkets Ltd",
-            "Nees Hardware Ltd"
+            "Nees Hardware Ltd",
+            "Holiday Inn"
         };
 
         private string[] _sampleGroups = new string[] { 
@@ -57,73 +64,74 @@ namespace CimscoPortal.Data.Migrations
 
         protected override void Seed(CimscoPortal.Data.Models.CimscoPortalContext context)
         {
-            ////  This method will be called after migrating to the latest version.
+            //  This method will be called after migrating to the latest version.
 
-            ////  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            ////  to avoid creating duplicate seed data. E.g.
-            ////
-            ////    context.People.AddOrUpdate(
-            ////      p => p.FullName,
-            ////      new Person { FullName = "Andrew Peters" },
-            ////      new Person { FullName = "Brice Lambson" },
-            ////      new Person { FullName = "Rowan Miller" }
-            ////    );
-            ////
-            //// GPA -- Refactor!!
+            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
+            //  to avoid creating duplicate seed data. E.g.
+            //
+            //    context.People.AddOrUpdate(
+            //      p => p.FullName,
+            //      new Person { FullName = "Andrew Peters" },
+            //      new Person { FullName = "Brice Lambson" },
+            //      new Person { FullName = "Rowan Miller" }
+            //    );
+            //
+            // GPA -- Refactor!!
 
-            ////RemoveGroups(context);
-            ////RemoveCustomers(context);
-            //context.Database.ExecuteSqlCommand("delete from [Sites]");
-            //context.Database.ExecuteSqlCommand("delete from [Groups]");
-            //context.Database.ExecuteSqlCommand("delete from [Customers]");
-            //context.Database.ExecuteSqlCommand("delete from [InvoiceSummaries]");
-            //context.Database.ExecuteSqlCommand("delete from [EnergyPoints]");
-            //context.SaveChanges();
+            //RemoveGroups(context);
+            //RemoveCustomers(context);
+            context.Database.ExecuteSqlCommand("delete from [Sites]");
+            context.Database.ExecuteSqlCommand("delete from [Groups]");
+            context.Database.ExecuteSqlCommand("delete from [Customers]");
+            context.Database.ExecuteSqlCommand("delete from [InvoiceSummaries]");
+            context.Database.ExecuteSqlCommand("delete from [EnergyPoints]");
+            context.SaveChanges();
 
-            //// Actual invoice data from data entry
-            //context.Database.ExecuteSqlCommand("exec [dbo].[SeedInvoiceSummaries]");
-            //context.SaveChanges();
+            // Actual invoice data from data entry
+            context.Database.ExecuteSqlCommand("exec [dbo].[SeedInvoiceSummaries]");
+            context.SaveChanges();
 
-            //// Create any not already in source data
-            //CreateSites(context, _sampleSites);
-            //CreateGroupsAndCustomers(context, _sampleCustomers, _sampleGroups);
-            //context.SaveChanges();
+            // Create any not already in source data
+            CreateSites(context, _sampleSites);
+            CreateGroupsAndCustomers(context, _sampleCustomers, _sampleGroups);
+            context.SaveChanges();
 
-            //LinkSitesToCustomersFromSource(context);
+            LinkSitesToCustomersFromSource(context);
 
-            //LinkUsersCustomer("Masterton Supermarkets Ltd", new string[] { "masterton@cimsco.co.nz" }, context);
-            ////LinkUsersCustomer("Intercontinental Group", new string[] { "masterton@cimsco.co.nz" }, context);
-            //LinkUsersCustomer("Nees Hardware Ltd", new string[] { "mitre10@cimsco.co.nz" }, context);
+            LinkUsersCustomer("Masterton Supermarkets Ltd", new string[] { "masterton@cimsco.co.nz", "masterton2@cimsco.co.nz" }, context);
+            //LinkUsersCustomer("Intercontinental Group", new string[] { "masterton@cimsco.co.nz" }, context);
+            LinkUsersCustomer("Nees Hardware Ltd", new string[] { "mitre10@cimsco.co.nz" }, context);
 
-            //context.SaveChanges();
+            LinkUsersGroup("Foodstuffs North Island", new string[] {"foodstuffs@cimsco.co.nz","foodstuffs2@cimsco.co.nz" }, context);
 
-            //int _monthsOfDataToCreate = 36;
+            LinkUsersCustomer("Holiday Inn", new string[] { "holiday1@cimsco.co.nz","holiday2@cimsco.co.nz" }, context);
 
+            context.SaveChanges();
 
+            int _monthsOfDataToCreate = 36;
+            InvoiceDataSeed(context, "Pak 'n Save Upper Hutt", _monthsOfDataToCreate, "0000103216TR397");
+            InvoiceDataSeed(context, "Pak 'n Save Upper Hutt Fuel Site..", _monthsOfDataToCreate, "t000103216TR399");
+            InvoiceDataSeed(context, "Pak .n Save Upper Hutt Bulk warehouse", _monthsOfDataToCreate, "t000103216TR388");
+            InvoiceDataSeed(context, "Mega Mitre 10 Petone", _monthsOfDataToCreate, "0001452560UN-B21");
+            InvoiceDataSeed(context, "Mega Mitre 10 Porirua", _monthsOfDataToCreate, "t001452560UN-B1"); 
+            InvoiceDataSeed(context, "Mega Retail Park Upper Hutt", _monthsOfDataToCreate, "t001452560UN-B2");
+            InvoiceDataSeed(context, "Mega Mitre 10 Upper Hutt", _monthsOfDataToCreate, "1001127474UN587");
 
+            InvoiceDataSeed(context, "Holiday Inn", _monthsOfDataToCreate, "t1234567890"); 
+            context.SaveChanges();
 
+            CalculatePercentageChange(context);
+            context.SaveChanges();
 
-            //InvoiceDataSeed(context, "Pak 'n Save Upper Hutt", _monthsOfDataToCreate, "0000103216TR397");
-            //InvoiceDataSeed(context, "Pak 'n Save Upper Hutt Fuel Site..", _monthsOfDataToCreate, "t000103216TR399");
-            //InvoiceDataSeed(context, "Pak .n Save Upper Hutt Bulk warehouse", _monthsOfDataToCreate, "t000103216TR388");
-            //InvoiceDataSeed(context, "Mega Mitre 10 Petone", _monthsOfDataToCreate, "0001452560UN-B21");
-            //InvoiceDataSeed(context, "Mega Mitre 10 Porirua", _monthsOfDataToCreate, "t001452560UN-B1"); 
-            //InvoiceDataSeed(context, "Mega Retail Park Upper Hutt", _monthsOfDataToCreate, "t001452560UN-B2");
-            //InvoiceDataSeed(context, "Mega Mitre 10 Upper Hutt", _monthsOfDataToCreate, "1001127474UN587"); 
-            //context.SaveChanges();
+            CreateTestMessages(context);
+            CreateContacts(context);
+            CreateCities(context);
 
-            //CalculatePercentageChange(context);
-            //context.SaveChanges();
+            ApplyNames(context);
 
-            //CreateTestMessages(context);
-            //CreateContacts(context);
-            //CreateCities(context);
-
-            //ApplyNames(context);
-
-            //context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Pac n Save', [LastName] = 'Admin', [CompanyLogo] = 'PakNSave.jpg' where [eMail] = 'masterton@cimsco.co.nz'");
-            //context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Cimsco', [LastName] = 'Admin', [CompanyLogo] = 'uhf_ic_logo.png' where [eMail] = 'admin@cimsco.co.nz'");
-            //context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Mitre10', [LastName] = 'Admin', [CompanyLogo] = 'mitre10.png' where [eMail] = 'mitre10@cimsco.co.nz'");
+            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Pac n Save', [LastName] = 'Admin', [CompanyLogo] = 'PakNSave.jpg' where [eMail] = 'masterton@cimsco.co.nz'");
+            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Cimsco', [LastName] = 'Admin', [CompanyLogo] = 'uhf_ic_logo.png' where [eMail] = 'admin@cimsco.co.nz'");
+            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Mitre10', [LastName] = 'Admin', [CompanyLogo] = 'mitre10.png' where [eMail] = 'mitre10@cimsco.co.nz'");
 
         }
 
@@ -288,7 +296,7 @@ namespace CimscoPortal.Data.Migrations
             _targetCustomer = "Nees Hardware Ltd"; _targets = new string[] { "Mega Retail Park Upper Hutt" }; CreateSiteCustomerLinks(_targetCustomer, _targets, context);
             _targetCustomer = "Nees Hardware Ltd"; _targets = new string[] { "Mega Mitre 10 Upper Hutt" }; CreateSiteCustomerLinks(_targetCustomer, _targets, context);
             _targetCustomer = "Field Nelson Holdings Ltd & Nelson Mega Ltd"; _targets = new string[] { "Mitre 10 Mega - Nelson" }; CreateSiteCustomerLinks(_targetCustomer, _targets, context);
-            _targetCustomer = "Customer not set"; _targets = new string[] { "Holiday Inn" }; CreateSiteCustomerLinks(_targetCustomer, _targets, context);
+            _targetCustomer = "Holiday Inn"; _targets = new string[] { "Holiday Inn" }; CreateSiteCustomerLinks(_targetCustomer, _targets, context);
 
         }
 
@@ -335,6 +343,20 @@ namespace CimscoPortal.Data.Migrations
                 foreach (var _userId in _userList)
                 {
                     _cust.Users.Add(_userId);
+                }
+            }
+        }
+
+        private void LinkUsersGroup(string targetGroup, string[] targetUsers, CimscoPortal.Data.Models.CimscoPortalContext context)
+        {
+            AspNetUser[] _userList;
+            CimscoPortal.Data.Models.Group _group = context.Groups.Where(x => x.GroupName == targetGroup).First();
+            foreach (string _entry in targetUsers)
+            {
+                _userList = context.AspNetUsers.Where(x => x.UserName == _entry).ToArray();
+                foreach (var _userId in _userList)
+                {
+                    _group.Users.Add(_userId);
                 }
             }
         }

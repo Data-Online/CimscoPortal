@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
 using System.Data.Entity.SqlServer;
 using System.Globalization;
+using CimscoPortal.Data.Models;
 
 namespace CimscoPortal.Services
 {
@@ -18,7 +19,12 @@ namespace CimscoPortal.Services
         ICimscoPortalContext _repository;
 
         private bool approved = true;
+        private int MonthsOfHistoryData = 24;
 
+        public PortalService()
+        {
+
+        }
         public PortalService(ICimscoPortalContext repository)
         {
             this._repository = repository;
@@ -31,87 +37,48 @@ namespace CimscoPortal.Services
 
         public CommonInfoViewModel GetCommonData(string userId)
         {
-            //userId = "user4@cimsco.co.nz";
-            var CommonData = new CommonInfoViewModel();// { Temperature = "10", WeatherIcon = "wi wi-cloudy" };
-            CommonData = _repository.AspNetUsers.Where(s => s.UserName == userId).Project().To<CommonInfoViewModel>().FirstOrDefault();
-            //CommonData = new CommonInfoViewModel() {  FullName = "Test User", eMail = "test@test.com", CompanyLogo = "/Content/images/PakNSave.jpg" };
-            CommonData.UsefulInfo = new UsefulInfo { Temperature = "10", WeatherIcon = "wi wi-cloudy" };
-            return CommonData;
+            CommonInfoViewModel _commonData = new CommonInfoViewModel();
+            _commonData = _repository.AspNetUsers.Where(s => s.UserName == userId).Project().To<CommonInfoViewModel>().FirstOrDefault();
+            // Raise error if nothing returned - there should be available data for any logged in user
+
+            _commonData.UsefulInfo = new UsefulInfo { Temperature = "10", WeatherIcon = "wi wi-cloudy" };
+            return _commonData;
         }
 
-        public IEnumerable<MessageViewModel> GetNavbarDataForZ(int customerId, string pageElement)
+        public IEnumerable<MessageViewModel> GetNavbarDataFor(string userName)
         {
-            return _repository.PortalMessages.Where(i => i.MessageFormat.MessageType.PageElement == pageElement && i.CustomerId == customerId)
-                                            .Project().To<MessageViewModel>()
-                                            .ToList();
+            return _repository.PortalMessages.Where(i => i.User.Email == userName)
+                                            .Project().To<MessageViewModel>();
         }
-
-        //public CustomerHierarchyViewModel GetCompanyHierarchy(string userId)
-        //{
-        //    // GPA : Allows for testing of API
-        //    var _userRecordId = _repository.AspNetUsers.Where(s => s.UserName == userId).Select(d => d.Id).FirstOrDefault();
-        //    // Hierachy from Group or Company to Site
-        //    // Site has 1 or more energy points
-        //    // Assume 1 invoice per energy point
-        //    CustomerHierarchyViewModel _companyHierarchy = _repository.Groups.Where(i => i.Users.FirstOrDefault().Id == _userRecordId).Project().To<CustomerHierarchyViewModel>().FirstOrDefault();
-
-        //    SiteHierarchyViewModel _siteHierarchy = _repository.Groups.Where(i => i.Users.FirstOrDefault().Id == _userRecordId).Project().To<SiteHierarchyViewModel>().FirstOrDefault();
-
-        //    return _companyHierarchy;
-        //}
 
         public SiteHierarchyViewModel GetSiteHierarchy(string userId)
         {
             // Group level
             // Customer level
             // Site level
-            var _userRecordId = GetUserRecordId(userId);
-            //var test = _repository.Customers.Where(s => s.Users.Any(w => w.Id == _userRecordId));
-            SiteHierarchyViewModel _siteHierarchy = _repository.Groups.Where(s => s.Users.Any(w => w.Id == _userRecordId)).Project().To<SiteHierarchyViewModel>().FirstOrDefault();
-            if (_siteHierarchy == null)
-                _siteHierarchy = _repository.Customers.Where(s => s.Users.Any(w => w.Id == _userRecordId)).Project().To<SiteHierarchyViewModel>().FirstOrDefault();
-
-            return _siteHierarchy;
-        }
-
-
-
-        private List<InvoiceDetail> GetInvoicesForSite(int siteId, bool approved)
-        {
-            List<InvoiceDetail> _invoicesForApproval = _repository.InvoiceSummaries.Where(s => s.SiteId == siteId && s.Approved == approved).Project().To<InvoiceDetail>().ToList();
-            return _invoicesForApproval;
-        }
-
-        private InvoiceDetail GetInvoiceById(int invoiceId)
-        {
-            var zz = _repository.InvoiceSummaries.Where(s => s.InvoiceId == invoiceId);
-            return _repository.InvoiceSummaries.Where(s => s.InvoiceId == invoiceId).Project().To<InvoiceDetail>().FirstOrDefault();
+            switch (GetUserCompanyOrGroup(userId))
+            {
+                case "Customer":
+                    return _repository.Customers.Where(s => s.Users.Any(w => w.Email == userId)).Project().To<SiteHierarchyViewModel>().FirstOrDefault();
+                case "Group":
+                    return _repository.Groups.Where(s => s.Users.Any(w => w.Email == userId)).Project().To<SiteHierarchyViewModel>().FirstOrDefault();
+                default:
+                    // Raise error
+                    return new SiteHierarchyViewModel();
+            }
         }
 
         public IEnumerable<InvoiceDetail> GetSiteInvoiceData(int siteId)
         {
-            List<InvoiceDetail> _invoices = GetInvoicesForSite(siteId, approved);
-            //List<InvoiceDetail2> _invoices = new List<InvoiceDetail2>();
-            //if (contactId == 1)
-            //{
-            //    _invoices.Add(new InvoiceDetail2 { Amount = 10352, DueDate = new DateTime(2014, 1, 1), PercentChange = 2, InvoiceId = 1 });
-            //    _invoices.Add(new InvoiceDetail2 { Amount = 14362, DueDate = new DateTime(2014, 2, 1), PercentChange = 4, InvoiceId = 2 });
-            //}
-            //else
-            //{
-            //    _invoices.Add(new InvoiceDetail2 { Amount = 13944, DueDate = new DateTime(2014, 1, 1), PercentChange = 3, InvoiceId = 3 });
-            //    _invoices.Add(new InvoiceDetail2 { Amount = 19833, DueDate = new DateTime(2014, 2, 1), PercentChange = 4, InvoiceId = 4 });
-            //}
-            return _invoices;
+            return GetInvoicesForSite(siteId); //_invoices;
         }
 
         public SummaryViewModel GetSummaryDataFor(string userId)
         {
+            SummaryViewModel _model = new SummaryViewModel();
+            _model.SummaryData = new List<InvoiceDataForCompany>();
 
-            //var test = _repository.InvoiceSummaries.Where(x => x.SiteId == 231).Project().To<CompanyInvoiceViewModel2>().ToList();
-            SummaryViewModel model = new SummaryViewModel();
-            model.SummaryData = new List<InvoiceDataForCompany>();
-            int _invoiceHistoryMonths = 24;
+            int _invoiceHistoryMonths = MonthsOfHistoryData;
 
             List<InvoiceDetail> _invoicesDue;
 
@@ -123,15 +90,15 @@ namespace CimscoPortal.Services
             {
                 _invoicesDue = new List<InvoiceDetail>(GetInvoicesForSite(s.SiteId, !approved));
                 _invoiceHistory = new InvoiceDataForCompany() { InvoiceHistory = GetInvoiceHistory(_invoiceHistoryMonths, s.SiteId, _index), Year = 2014, InvoicesDue = _invoicesDue };
-                model.SummaryData.Add(_invoiceHistory);
+                _model.SummaryData.Add(_invoiceHistory);
                 _index++;
             }
 
-            model.SiteHierarchy = _siteHierachy;
+            _model.SiteHierarchy = _siteHierachy;
 
-            model.MaxValue = 30000;
+            _model.MaxValue = 30000;
 
-            return model;
+            return _model;
         }
 
         private List<CompanyInvoiceViewModel2> GetInvoiceHistory(int spanMonths, int siteId, int index)
@@ -178,7 +145,7 @@ namespace CimscoPortal.Services
         }
 
 
-        public List<AlertData> GetNavbarDataFor(int customerId, string pageElement)
+        public List<AlertData> GetNavbarDataFor_Z(int customerId, string pageElement)
         {
             var zz = _repository.PortalMessages.Where(i => i.CustomerId == 3).ToList();
             return _repository.PortalMessages.Where(i => i.MessageFormat.MessageType.PageElement == pageElement && i.CustomerId == customerId)
@@ -193,10 +160,40 @@ namespace CimscoPortal.Services
 
             _invoiceDetail.ValidationError = (_invoiceDetail.InvoiceTotal != _invoiceDetail.EnergyChargesTotal + _invoiceDetail.MiscChargesTotal + _invoiceDetail.NetworkChargesTotal);
 
-
+            if (_invoiceDetail.LossRate == 0.0M) { _invoiceDetail.LossRate = 0.028M; }
             //_result.EnergyCosts.EnergyCostSeries = ReturnTestEnergyDataModel();
             _result.InvoiceDetail = _invoiceDetail;
             var _energyCharges = _repository.InvoiceSummaries.Where(a => a.InvoiceId == invoiceId).Select(b => b.EnergyCharge).FirstOrDefault();
+            if (_energyCharges.BD0408 == 0.0M)
+            {
+                // 0004 --> 0408
+                _energyCharges.BD0004 = (_energyCharges.BD0004 / 2.0M) + (_invoiceDetail.LossRate * (_energyCharges.BD0004 / 2.0M));
+                _energyCharges.BD0408 = _energyCharges.BD0004;
+                _energyCharges.BD0408R = _energyCharges.BD0004R;
+
+                // 0812 --> 1216 --> etc
+                _energyCharges.BD0812 = (_energyCharges.BD0812 / 4.0M) + (_invoiceDetail.LossRate * (_energyCharges.BD0812 / 4.0M));
+                _energyCharges.BD1216 = _energyCharges.BD0812;
+                _energyCharges.BD1216R = _energyCharges.BD0812R;
+                _energyCharges.BD1620 = _energyCharges.BD0812;
+                _energyCharges.BD1620R = _energyCharges.BD0812R;
+                _energyCharges.BD2024 = _energyCharges.BD0812;
+                _energyCharges.BD2024R = _energyCharges.BD0812R;
+
+                _energyCharges.NBD0004 = (_energyCharges.NBD0004 / 2.0M) + (_invoiceDetail.LossRate * (_energyCharges.NBD0004 / 2.0M));
+                _energyCharges.NBD0408 = _energyCharges.NBD0004;
+                _energyCharges.NBD0408R = _energyCharges.NBD0004R;
+
+                _energyCharges.NBD0812 = (_energyCharges.NBD0812 / 4.0M) + (_invoiceDetail.LossRate * (_energyCharges.NBD0812 / 4.0M));
+                _energyCharges.NBD1216 = _energyCharges.NBD0812;
+                _energyCharges.NBD1216R = _energyCharges.NBD0812R;
+                _energyCharges.NBD1620 = _energyCharges.NBD0812;
+                _energyCharges.NBD1620R = _energyCharges.NBD0812R;
+                _energyCharges.NBD2024 = _energyCharges.NBD0812;
+                _energyCharges.NBD2024R = _energyCharges.NBD0812R;
+            }
+
+
             var _networkCharges = _repository.InvoiceSummaries.Where(a => a.InvoiceId == invoiceId).Select(b => b.NetworkCharge).FirstOrDefault();
             // var _energyCharges = _energyCharges.FirstOrDefault();//.Select(a => a.BD0004 + a.BD0408).FirstOrDefault();
             List<EnergyDataModel> _energyDataModel = new List<EnergyDataModel>();
@@ -386,6 +383,43 @@ namespace CimscoPortal.Services
 
         #endregion
         #region private methods
+
+        private string GetUserCompanyOrGroup(string userId)
+        {
+            if (_repository.AspNetUsers.Where(s => s.Email == userId).FirstOrDefault().Groups.Any())
+            {
+                return "Group";
+            }
+            else if (_repository.AspNetUsers.Where(s => s.Email == userId).FirstOrDefault().Customers.Any())
+            {
+                return "Customer";
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        private List<InvoiceDetail> GetInvoicesForSite(int siteId)
+        {
+            return _repository.InvoiceSummaries.Where(s => s.SiteId == siteId)
+                .OrderBy(o => o.InvoiceDate).Project().To<InvoiceDetail>().ToList();
+        }
+
+        private List<InvoiceDetail> GetInvoicesForSite(int siteId, bool approved)
+        {
+            return _repository.InvoiceSummaries
+                    .Where(s => s.SiteId == siteId && s.Approved == approved)
+                    .OrderBy(o => o.InvoiceDate).Project().To<InvoiceDetail>().ToList();
+        }
+
+        private InvoiceDetail GetInvoiceById(int invoiceId)
+        {
+            var zz = _repository.InvoiceSummaries.Where(s => s.InvoiceId == invoiceId);
+            return _repository.InvoiceSummaries.Where(s => s.InvoiceId == invoiceId).Project().To<InvoiceDetail>().FirstOrDefault();
+        }
+
+
         private string GetUserRecordId(string userId)
         {
             var _userRecordId = _repository.AspNetUsers.Where(s => s.UserName == userId).Select(d => d.Id).FirstOrDefault();
@@ -397,8 +431,7 @@ namespace CimscoPortal.Services
             var _customers = _repository.Customers.FirstOrDefault(f => f.Users.Any(w => w.Id == id));
             if (_customers != null)
             {
-                var item = await _repository.AspNetUsers.Where(w => w.Customers.Any(a => a.CustomerId == _customers.CustomerId)).ToListAsync();
-                return item;
+                return await _repository.AspNetUsers.Where(w => w.Customers.Any(a => a.CustomerId == _customers.CustomerId)).ToListAsync();
             }
             else
             {
@@ -406,19 +439,67 @@ namespace CimscoPortal.Services
             }
         }
 
-        public void InsertGroupOrCustomer(string login_id, string insert_id)
+        private static CommonInfoViewModel ProvideEmptyUserDetailsIfNull(CommonInfoViewModel _commonData)
         {
-            var _customerid = _repository.Customers.Where(f => f.Users.Any(w => w.Id == login_id)).Select(s => s.CustomerId).FirstOrDefault();
-            if (_customerid != null)
+            if (_commonData == null)
             {
-                using (var ctx = new CimscoPortalEntities())
+                _commonData = new CommonInfoViewModel { eMail = "" };
+            };
+
+            return _commonData;
+        }
+
+        public void UpdateUser(EditUserViewModel model)
+        {
+            using (var db = new CimscoPortalContext())
+            {
+                var item = db.AspNetUsers.FirstOrDefault(f => f.Id == model.Id);
+                item.Email = model.Email;
+                item.FirstName = model.FirstName;
+                item.LastName = model.LastName;
+                item.PhoneNumber = model.Phone;
+                db.AspNetUsers.Add(item);
+                db.Entry(item).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+            
+        }
+
+
+        public AspNetUser GetUserByID(string id)
+        {
+            using (var db = new CimscoPortalContext())
+            {
+                return db.AspNetUsers.FirstOrDefault(f => f.Id == id);
+            }
+        }
+
+        public void UserloginUpdate(LoginHistory model)
+        {
+            using (var db = new CimscoPortalContext())
+            {
+                var item = db.LoginHistorys.FirstOrDefault(f => f.UserId == model.UserId);
+                if (item != null)
                 {
-                    int noOfRowInserted = ctx.Database.ExecuteSqlCommand("insert into CustomerUserLink(CustomerId,UserId) values(" + _customerid + ",'" + insert_id + "')");
-                    //var studentName = ctx.Students.SqlQuery("Select studentid, studentname 
-                    //    from Student where studentname='New Student1'").ToList();
-
+                    item.Details = model.Details;
+                    item.Ip = model.Ip;
+                    item.LastLoginDateTime = DateTime.Now;  
+                    item.UserId = model.UserId;
+                    db.LoginHistorys.Add(item);
+                    db.Entry(item).State = EntityState.Modified;
+                    db.SaveChanges();
                 }
-
+                else
+                {
+                    item = new LoginHistory();
+                    item.Details = model.Details;
+                    item.Ip = model.Ip;
+                    item.LastLoginDateTime = DateTime.Now;
+                    item.UserId = model.UserId;
+                    db.LoginHistorys.Add(item);
+                    db.Entry(item).State = EntityState.Added;
+                    db.SaveChanges();
+                }
             }
         }
         #endregion

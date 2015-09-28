@@ -41,22 +41,41 @@
             $scope.myModel = $scope.InvoiceSummary[0].invoiceHistory;//data.summaryData[0].invoiceHistory;
             $scope.customerName = $scope.siteHierarchyData.siteData[0].siteName;
             $scope.maxValue = data.maxValue
+            $scope.ldgInvHistory = false;
+            $scope.loadingOpacity = "1.0";
             barchart();
         };
 
-        $scope.testclick = function (setting, invoiceId) {
-            console.log('setting change: ' + setting + ' for ' + invoiceId);
+        $scope.testclick = function (setting, invoiceId, index) {
+            console.log('setting change: ' + setting + ' for ' + invoiceId + ' site Index ' + index);
             dbDataSource.postInvoiceApproval(invoiceId);
-        }
+            $scope.invoiceData.splice(index, 1);
+        };
+
+        $scope.removeInvoice = function (index) {
+            console.log('item index = ' + index);
+            $scope.invoiceData.splice(index, 1);
+        };
 
         var onError = function (reason) {
             $scope.reason = reason;
         };
 
+        $scope.ldgInvHistory = true;
+        $scope.loadingOpacity = "0.5";
         dbDataSource.getSummaryData()
             .then(onRepo2, onError);
 
         //dbDataSource.postInvoiceApproval();
+        $scope.setOpacity = function (myValue) {
+           //console.log('Opacity set for ' + myValue);
+            var opacity = 1;
+            if ((myValue).charAt(0) == 't') {
+                console.log('Opacity set');
+                opacity = "0.5";
+            }
+            return { "opacity": opacity };
+        };
 
         $scope.pctBoxStyle = function (myValue) {
             var num = parseInt(myValue);

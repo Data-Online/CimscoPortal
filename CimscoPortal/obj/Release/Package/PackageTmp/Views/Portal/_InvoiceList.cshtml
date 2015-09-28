@@ -1,18 +1,34 @@
 ﻿
 <form class="form-inline">
+    Search:
     <input ng-model="query" type="text"
-           placeholder="Find invoice number" autofocus>
+           placeholder="Invoice number" autofocus>
 </form>
 <br />
-<a href="" ng-click="order('invoiceDate')">Sort by Invoice Date</a>
+
+<label ng-hide="false">
+    <input class="checkbox-slider toggle colored-blue" ng-model="showApprove" type="checkbox">
+    <span class="text"></span>
+</label>
+
+<label>
+    <span ng-click="order('invoiceDate')">
+        <i class="stat-icon fa {{sortArrow}}"></i>&nbsp; Sort by Invoice Date
+    </span>
+</label>
+
 <span class="sortorder" ng-show="predicate === 'orderDate'" ng-class="{reverse:reverse}"></span>
 
-<div ng-repeat="inv in invoiceData | filter: { invoiceNumber:query } |orderBy:predicate:reverse">
+<div ng-repeat="inv in invoiceData | filter: { invoiceNumber:query } |filter: { approved:showApprove } |orderBy:predicate:reverse">
     <div class="well bordered-left bordered-themeprimary" style="margin-bottom:2px;padding:10px;">
-        Invoice number: <b>{{inv.invoiceNumber}} </b><br /><span class="databox-text">Approved by</span> <span class="databox-header">
-            <b>{{inv.approversName}}</b></span> on <b>{{inv.approvedDate |  date:mediumDate}}</b>
+        Invoice number: <b>{{inv.invoiceNumber}} </b><br />
+        <span ng-show="inv.approved">
+            <span class="databox-text">Approved by</span> <span class="databox-header">
+                <b>{{inv.approversName}}</b>
+            </span> on <b>{{inv.approvedDate |  date:mediumDate}}</b>
+        </span>
     </div>
-    <div class="databox databox-lg radius-bordered databox-shadowed">
+    <div class="databox databox-lg radius-bordered databox-shadowed" ng-style=setOpacity(inv.invoiceNumber)>
 
         <div class="databox-left bg-white">
             <div ng-class="pctBoxStyle(inv.percentageChange)">
@@ -35,14 +51,14 @@
             <span class="databox-number sky"><i class="fa fa-calendar"></i>{{inv.invoiceDate | date:mediumDate}}</span>
             <div class="databox-header darkgray">
                 {{inv.invoiceTotal | currency:$}}
-                <span class="btn-xs btn-labeled btn-palegreen pull-right" href="javascript:void(0);">
+                <span ng-show="inv.approved" class="btn-xs btn-labeled btn-palegreen pull-right" href="javascript:void(0);">
                     <i class="btn-label glyphicon glyphicon-ok"></i>
                     Approved
                 </span>
                 @*<label>
-                    <input type="checkbox" ng-model="inv.approved"
-                           ng-click="testclick(inv.approved, inv.invoiceId)"><span class="text" style="font-size:8px">approved</span>
-                </label>*@
+                        <input type="checkbox" ng-model="inv.approved"
+                               ng-click="testclick(inv.approved, inv.invoiceId)"><span class="text" style="font-size:8px">approved</span>
+                    </label>*@
             </div>
         </div>
     </div>
