@@ -474,6 +474,7 @@ namespace CimscoPortal.Services
             }
         }
 
+
         public void UserloginUpdate(LoginHistory model)
         {
             using (var db = new CimscoPortalContext())
