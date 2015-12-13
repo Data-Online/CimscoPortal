@@ -98,15 +98,16 @@ namespace CimscoPortal.App_Start
                 .ForMember(m => m.SiteData, opt => opt.MapFrom(i => i.Sites));
 
 
-            Mapper.CreateMap<InvoiceSummary, CompanyInvoiceViewModel2>()
+            Mapper.CreateMap<InvoiceSummary, CompanyInvoiceViewModel>()
                 .ForMember(m => m.YearA, opt => opt.MapFrom(i => i.TotalCharges));
 
             Mapper.CreateMap<InvoiceSummary, InvoiceDetail>()
                 .ForMember(m => m.ApproversName, opt => opt.MapFrom(i => i.UserId.FirstName + " " + i.UserId.LastName))
                 .ForMember(m => m.ApprovedDate, opt => opt.NullSubstitute(DateTime.Parse("01-01-0001")))
                // .ForMember(m => m.BDLossCharge, opt => opt.MapFrom(i => i.EnergyCharge.BDLossCharge))
-               .ForMember(m => m.LossRate, opt => opt.MapFrom(i => (i.EnergyCharge.LossRate != null ? i.EnergyCharge.LossRate : 0.00M)))
+              // .ForMember(m => m.LossRate, opt => opt.MapFrom(i => (i.EnergyCharge.LossRate != null ? i.EnergyCharge.LossRate : 0.00M)))
                //.ForMember(m => m.BDMeteredKwh, opt => opt.MapFrom(i => i.EnergyCharge.BDMeteredKwh))
+               //.ForMember(m => m.PdfSourceLocation, opt => opt.MapFrom(i => i.SiteId.ToString().ToString().PadRight(6,'0') + "/" + i.InvoiceId.ToString().ToString().PadRight(8,'0') + ".pdf"))
                 ;
 
             Mapper.CreateMap<AspNetUser, CommonInfoViewModel>()
@@ -116,6 +117,15 @@ namespace CimscoPortal.App_Start
 
 
             Mapper.CreateMap<InvoiceSummary, InvoiceDetailViewModel>();
+            Mapper.CreateMap<InvoiceSummary, InvoiceOverviewViewModel>()
+                .ForMember(m => m.ApproversName, opt => opt.MapFrom(i => (i.UserId.FirstName + " " + i.UserId.LastName) == " " ?
+                                                        (i.UserId.UserName) : (i.UserId.FirstName + " " + i.UserId.LastName)))
+                .ForMember(m => m.ApprovedDate, opt => opt.NullSubstitute(DateTime.Parse("01-01-0001")));
+
+            Mapper.CreateMap<SiteData, InvoiceTally>();
+            Mapper.CreateMap<SiteHierarchyViewModel, InvoiceTallyViewModel>()
+                .ForMember(m => m.InvoiceTallies, opt => opt.MapFrom(i => i.SiteData))
+                .ForMember(m => m.GroupCompanyName, opt => opt.Ignore());
 
         }
 

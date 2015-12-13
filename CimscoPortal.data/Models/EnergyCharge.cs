@@ -14,7 +14,7 @@ namespace CimscoPortal.Data.Models
         [Key, ForeignKey("InvoiceSummary")]
         public int EnergyChargeId { get; set; }
 
-        public decimal LossRate { get; set; }
+        //public decimal LossRate { get; set; }
         // Business Day Charges by time slot
         public decimal BD0004 { get; set; }
         public decimal BD0408 { get; set; }
@@ -46,17 +46,22 @@ namespace CimscoPortal.Data.Models
         public decimal NBD1620R { get; set; }
         public decimal NBD2024R { get; set; }
 
-        // Service charges and rates
-        public decimal BDSVC { get; set; }
-        public decimal BDSVCR { get; set; }
-        public decimal NBDSVC { get; set; }
-        public decimal NBDSVCR { get; set; }
+        public decimal BDQ0004 { get; set; }
+        public decimal BDL0004 { get; set; }
 
-        // Levy
-        public decimal EALevy { get; set; }
-        public decimal EALevyR { get; set; }
+        //// Service charges and rates
+        //public decimal BDSVC { get; set; }
+        //public decimal BDSVCR { get; set; }
+        //public decimal NBDSVC { get; set; }
+        //public decimal NBDSVCR { get; set; }
+
+        //// Levy
+        //public decimal EALevy { get; set; }
+        //public decimal EALevyR { get; set; }
 
         // Calculated values
+        public decimal LossRate
+        { get { return (BDL0004 / BDQ0004); } }
         public decimal BDMeteredKwh
         { get { return BD0004/BD0004R + BD0408/BD0004R + BD0812/BD0812R + BD1216/BD1216R + BD1620/BD1620R + BD2024/BD2024R; } }
 

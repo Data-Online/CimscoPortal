@@ -51,7 +51,23 @@
     <Reference Include="BeyondThemes.Bootstrap">
       <HintPath>..\packages\BeyondTheme\BeyondThemes.Bootstrap.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Azure.KeyVault.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Azure.KeyVault.Core.1.0.0\lib\net40\Microsoft.Azure.KeyVault.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Data.Edm, Version=5.6.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Data.Edm.5.6.4\lib\net40\Microsoft.Data.Edm.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Data.OData, Version=5.6.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Data.OData.5.6.4\lib\net40\Microsoft.Data.OData.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Data.Services.Client, Version=5.6.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Data.Services.Client.5.6.4\lib\net40\Microsoft.Data.Services.Client.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
@@ -75,11 +91,19 @@
     <Reference Include="Microsoft.Web.Mvc">
       <HintPath>..\packages\Microsoft.AspNet.Mvc.Futures.5.0.0\lib\net40\Microsoft.Web.Mvc.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Storage, Version=6.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\WindowsAzure.Storage.6.0.1-preview\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MvcSiteMapProvider">
       <HintPath>..\packages\MvcSiteMapProvider.MVC5.Core.4.6.18\lib\net45\MvcSiteMapProvider.dll</HintPath>
     </Reference>
     <Reference Include="MvcSiteMapProvider.WebActivator">
       <HintPath>..\packages\MvcSiteMapProvider.MVC5.4.6.18\lib\net45\MvcSiteMapProvider.WebActivator.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -90,6 +114,10 @@
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Spatial, Version=5.6.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Spatial.5.6.4\lib\net40\System.Spatial.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Web.Cors">
       <HintPath>..\packages\Microsoft.AspNet.Cors.5.2.3\lib\net45\System.Web.Cors.dll</HintPath>
     </Reference>
@@ -176,9 +204,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="EntityFramework">
       <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -249,6 +274,7 @@
     <Compile Include="Data\MessageFormat.cs">
       <DependentUpon>PortalEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Extensions\IntegerExtensions.cs" />
     <Compile Include="Helpers\ButtonExtension.cs" />
     <Compile Include="Helpers\JavaScriptHelper.cs" />
     <Compile Include="Helpers\MenuVisibilityProvider.cs" />
@@ -306,6 +332,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Infrastructure\IPortalService.cs" />
     <Compile Include="Models\CommonInfoViewModel.cs" />
+    <Compile Include="Models\InvoiceCountsViewModel.cs" />
     <Compile Include="Services\PortalService.cs" />
     <Compile Include="SharedController.generated.cs">
       <DependentUpon>T4MVC.tt</DependentUpon>
@@ -319,9 +346,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App\App.js" />
+    <Content Include="App\CompanyOverview\App.js" />
+    <Content Include="App\CompanyOverview\coDataSource.js" />
+    <Content Include="App\CompanyOverview\ViewModels\CompanyOverviewViewModel.js" />
     <Content Include="App\Dashboard\App.js" />
     <Content Include="App\Dashboard\dbDataSource.js" />
     <Content Include="App\Dashboard\ViewModels\DashboardViewModel.js" />
+    <Content Include="App\Directives\widget.js" />
+    <Content Include="App\Directives\widget_old.js" />
     <Content Include="App\Invoice\App.js" />
     <Content Include="App\Invoice\inDataSource.js" />
     <Content Include="App\Invoice\ViewModels\InvoiceOverviewViewModel.js" />
@@ -329,7 +361,18 @@
     <Content Include="App\PortalMessages\poDataSource.js" />
     <Content Include="App\PortalMessages\ViewModels\PortalMessageViewModel.js" />
     <Content Include="App\PortalMessages\App.js" />
+    <Content Include="App\SiteOverview\App.js" />
+    <Content Include="App\SiteOverview\soDataSource.js" />
+    <Content Include="App\SiteOverview\ViewModels\SiteOverviewViewModel.js" />
     <Content Include="App_Data\TestJsonData.txt" />
+    <Content Include="App_\common\directives\angular-flot.js" />
+    <Content Include="App_\common\directives\widget.js" />
+    <Content Include="App_\core\App.js" />
+    <Content Include="App_\core\companyOverview.data.js" />
+    <Content Include="App_\core\companyOverview.ctrl.js" />
+    <Content Include="App_\core\customFilters.js" />
+    <Content Include="App_\core\siteOverview.ctrl.js" />
+    <Content Include="App_\core\siteOverview.data.js" />
     <Content Include="assets\fonts\BYekan.woff" />
     <Content Include="assets\fonts\fontawesome-webfont.eot" />
     <Content Include="assets\fonts\fontawesome-webfont.svg" />
@@ -496,6 +539,7 @@
     <Content Include="Scripts\angular-scenario.js" />
     <Content Include="Scripts\angular-touch.js" />
     <Content Include="Scripts\angular-touch.min.js" />
+    <Content Include="Scripts\angular-ui-utils\angular-ui-utils.js" />
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\beyond.js" />
@@ -510,6 +554,7 @@
     <Content Include="Scripts\charts\easypiechart\easypiechart-init.js" />
     <Content Include="Scripts\charts\easypiechart\jquery.easypiechart.js" />
     <Content Include="Scripts\charts\easypiechart\jquery.easypiechart.min.js" />
+    <Content Include="Scripts\charts\flot\angular-flot.js" />
     <Content Include="Scripts\charts\flot\flot-init.js" />
     <Content Include="Scripts\charts\flot\jquery.flot.axislabels.js" />
     <Content Include="Scripts\charts\flot\jquery.flot.categories.js" />
@@ -1390,7 +1435,9 @@
     </Content>
     <None Include="T4MVC.tt.settings.xml" />
     <Content Include="Unity.Mvc4.README.txt" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -1473,10 +1520,13 @@
     <Content Include="Views\Portal\_DonutPlusSummary_revised.cshtml" />
     <Content Include="Views\Portal\_OtherChargesTable.cshtml" />
     <Content Include="Views\Portal\_SiteListB.cshtml" />
+    <Content Include="Views\Portal\SiteOverview.cshtml" />
+    <Content Include="Views\Portal\SiteOverview - Copy.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />
     <Folder Include="App\Dashboard\Views\" />
+    <Folder Include="App_\common\services\" />
     <Folder Include="Domain\" />
     <Folder Include="fonts\" />
     <Folder Include="Views\CimscoPortal\" />

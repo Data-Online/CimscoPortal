@@ -1,101 +1,332 @@
 ﻿@{
-    ViewBag.Title = "Dashboard";
-    ViewBag.Description = "Cimsco Dashboard";
+    ViewBag.Title = "Company Dashboard";
+    ViewBag.Description = "Company Dashboard";
     Layout = "~/Views/Shared/_Default.cshtml";
 }
 
-<div data-ng-app="dashboard" class="row" data-ng-controller="dashboardViewModel" style="opacity:{{loadingOpacity}}">
-    <span class="ajax-loader" ng-show="ldgInvHistory"><i class="fa fa-cog fa-spin fa-3x"></i></span>
 
-    <div class="col-xs-12 col-md-3 col-lg-3">
-        @Html.Partial("_SiteList")
-    </div>
-    <div class="col-xs-12 col-md-9 col-lg-9">
-        <div class="col-xs-12 col-md-12 col-lg-12"><h6 class="row-title before-blue">{{customerName}}</h6></div>
-        <div class="col-xs-12 col-md-12 col-lg-12">
-            @Html.Partial("_InvoiceHistory")
-        </div>
-        <div class="col-xs-12 col-md-6 col-lg-6">
-            <div class="databox-top bg-blue" style="margin:2px;">
-                <span class="text-uppercase text-center padding-15">Invoices for Approval</span>
+@*<div data-ng-app="companyOverview" data-ng-controller="companyOverviewViewModel">*@
+<div data-ng-app="app" data-ng-controller="companyOverview">
+    <div class="row">
+        <div class="col-lg-6 col-sm-6 col-xs-12">
+            <div class="widget">
+                <div class="widget-header bordered-bottom bordered-blue">
+                    <span class="widget-caption">Company Details</span>
+                    <div class="widget-buttons">
+                        <a href="" widget-config></a>
+                        <a href="" widget-maximize></a>
+                        <a href="" widget-collapse></a>
+                        <a href="" widget-dispose></a>
+                    </div><!--Widget Buttons-->
+                </div>
+                <div class="widget-body">
+                    <div>
+                        Company Details and address
+                    </div>
+                </div>
             </div>
-            <div style="margin-bottom: 20px;"></div>
-            @Html.Partial("_InvoiceApproval")
+        </div>
+        <div class="col-lg-6 col-sm-6 col-xs-12">
+            <div class="widget">
+                <div class="widget-header bordered-bottom bordered-blue">
+                    <span class="widget-caption">Summary Data</span>
+                    <div class="widget-buttons">
+                        <a href="" widget-config></a>
+                        <a href="" widget-maximize></a>
+                        <a href="" widget-collapse></a>
+                        <a href="" widget-dispose></a>
+                    </div><!--Widget Buttons-->
+                </div>
+                <div class="widget-body">
+                    <div>
+                        Summary data
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="row">
+                <div class="col-xs-12">
 
-<style>
-    .morris-hover {
-        position: absolute;
-        z-index: 1000;
-    }
+                    <div class="dashboard-box">
+                        <div class="box-header">
+                            <div class="deadline">
+                                {{tabTableHeader}}
+                            </div>
+                        </div>
+                        <div class="widget-header bordered-bottom bordered-themeprimary">
+                            <span ng-repeat="_month in monthSpanOptions" data-ng-click="reviseMonths(_month)" class="widget-caption" ng-class="{'themeprimary' : monthSpan==_month}" style=" padding-left:5px; padding-right:5px">
+                                <i class="widget-icon fa fa-calendar"></i>
+                                {{_month}} months
+                            </span>
+                        </div>
+                        <div class="box-tabbs">
+                            <div class="tabbable">
+                                <ul class="nav nav-tabs tabs-flat  nav-justified" id="myTab11">
+                                    <li class="active">
+                                        <a data-toggle="tab" href="#approvals">
+                                            Approvals
+                                        </a>
+                                    </li>
+                                    <li ng-show="false">
+                                        <a data-toggle="tab" href="#network">
+                                            Invoice Value
+                                        </a>
+                                        </ling-show>
+                                    <li ng-show="false">
+                                        <a data-toggle="tab" href="#other">
+                                            Consumption
+                                        </a>
+                                    </li>
 
-        .morris-hover.morris-default-style {
-            border-radius: 10px;
-            padding: 6px;
-            color: #666;
-            background: rgb(0, 0, 0);
-            border: solid 2px rgb(0, 0, 0);
-            font-family: sans-serif;
-            font-size: 12px;
-            text-align: center;
-        }
+                                    <li>
+                                        <a data-toggle="tab" href="#analysis">
+                                            Totals and Analysis
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content tabs-flat no-padding">
+                                    <div id="approvals" class="tab-pane animated fadeInUp no-padding-bottom active" style="padding:20px 20px 0 20px;">
+                                        <div class="row">
+                                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                                Key:
+                                            </div>
+                                            <div class="col-lg-8">
+                                                <div ng-repeat="key in invTheme">
+                                                    <div class="progress-bar progress-bar-{{key.theme}}" style="width: 10%">
+                                                        <span> {{key.text}} </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                                <div class="col-lg-4">
+                                                    <span>First Invoice on File</span>
+                                                </div>
+                                                <div class="col-lg-8">
+                                                    <span>Site Name</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-8">
+                                                Invoice Totals
+                                            </div>
+                                        </div>
+                                        <div class="row" ng-repeat="siteSummary in invDistn">
+                                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                                <div class="col-lg-6">
+                                                    <span>{{siteSummary.firstInvoiceDate | date:mediumDate}}</span>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    @{ var url = Url.Action("SiteOverview", "Portal", new { id = "{{siteSummary.siteId}}"});
+                                                       url = HttpUtility.UrlDecode(url);
+                                                       }
+                                                    <a ng-href="@url">{{siteSummary.site}}</a>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 progress progress-bordered">
+                                                <div ng-repeat="line in siteSummary.data">
+                                                    <div class="progress-bar progress-bar-{{invTheme[$index].theme}}" style="width: {{line.percent}}%">
+                                                        <span> {{line.noOfInv}} </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="network" class="tab-pane padding-5 animated fadeInUp">
+                                        <div class="row">
+                                            <div class="col-lg-1"></div>
+                                            <div class="col-lg-10">
+                                                <div height="250px" style="width: 100%; display: block;" class="chart chart-lg no-margin">
+                                                    <flot dataset="visitChartData" options="visitChartOptions"></flot>
+                                                </div>
+                                                @*<div height="250px" style="width: 100%; display: block;" ui-jq="plot" ui-options="{{visitChartData}}, {{visitChartOptions}}"
+                                                         class="chart chart-lg no-margin">
+                                                    </div>*@
+                                            </div>
+                                            <div class="col-lg-1"></div>
+                                        </div>
+                                    </div>
+                                    <div id="other" class="tab-pane  animated fadeInUp">
+                                        <div class="row">
+                                            <div class="col-lg-1"></div>
+                                            <div class="col-lg-10">
+                                                <div height=" 250px" style="width: 100%; display: block;" class="chart chart-lg">
+                                                    <flot dataset="SelectableChartData" options="SelectableChartOptions"></flot>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-1"></div>
+                                        </div>
+                                    </div>
+                                    <div id="analysis" class="tab-pane animated fadeInUp no-padding-bottom" style="padding:20px 20px 0 20px;">
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <label data-toggle="tooltip" title="Sort by Total Value">
+                                                    <span ng-click="order('billTotal')" class="btn-sm btn-labeled btn-palegreen">
+                                                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='billTotal'"></i>Total Value
+                                                    </span>
+                                                </label>
+                                                <label data-toggle="tooltip" title="Sort by Site Name">
+                                                    <span ng-click="order('site')" class="btn-sm btn-labeled btn-palegreen">
+                                                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='site'"></i>Site
+                                                    </span>
+                                                </label>
+                                            </div>
+                                            <div class="col-lg-8" ng-init="options={};options.selected=true">
+                                                <span>Energy Charges</span>
+                                                <label ng-hide="false">
+                                                    <input class="checkbox-slider toggle colored-blue" ng-model="showValue" type="checkbox" ng-init="showValue=options.selected">
+                                                    <span class="text"></span>
+                                                </label>
+                                                <span>Total kWh</span>
+                                                <label ng-hide="false">
+                                                    <input class="checkbox-slider toggle colored-warning" ng-model="showKwh" type="checkbox" ng-init="showKwh=options.selected">
+                                                    <span class="text"></span>
+                                                </label>
+                                                <span>Units per sqM</span>
+                                                <label ng-hide="false">
+                                                    <input class="checkbox-slider toggle colored-palegreen" ng-model="showUsqm" type="checkbox" ng-init="showUsqm=options.selected">
+                                                    <span class="text"></span>
+                                                </label>
+                                                <span>Cost per sqM</span>
+                                                <label ng-hide="false">
+                                                    <input class="checkbox-slider toggle colored-magenta" ng-model="showCsqm" type="checkbox" ng-init="showCsqm=options.selected">
+                                                    <span class="text"></span>
+                                                </label>
+                                            </div>
+                                            <div ng-repeat="invoice in invoiceDetail |orderBy:predicate:reverse">
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <b><span>{{invoice.site}} <i>({{invoice.invCount}} invoices on file, total value of {{invoice.billTotal | currency:$}})</i></span></b>
+                                                    </div>
+                                                </div>
+                                                <div class="row" ng-show="showValue">
+                                                    <div class="col-lg-3">
+                                                        <div class="col-lg-4">
+                                                        </div>
+                                                        <div class="col-lg-8">
+                                                            <span>Energy Charges</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-9 progress-compact progress-bordered">
+                                                        <div ng-repeat="values in invoice.power">
+                                                            <div class="progress-bar progress-bar-{{invTheme[$index+1].theme}}" style="width: {{values.percent}}%">
+                                                                <span ng-show="values.percent>10"> {{values.reading | currency:$}} </span>
+                                                                <span ng-show="values.percent<=10">&nbsp;</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row" ng-show="showKwh">
+                                                    <div class="col-lg-3">
+                                                        <div class="col-lg-4">
+                                                        </div>
+                                                        <div class="col-lg-8">
+                                                            <span>Total kWh</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-9 progress-compact progress-bordered">
+                                                        <div ng-repeat="values in invoice.kWh">
+                                                            <div class="progress-bar progress-bar-{{invTheme[$index+1].theme}}" style="width: {{values.percent}}%">
+                                                                <span> {{values.reading | number:0}} </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row" ng-show="showUsqm">
+                                                    <div class="col-lg-3">
+                                                        <div class="col-lg-4">
+                                                        </div>
+                                                        <div class="col-lg-8">
+                                                            <span>Units per sqM</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-9 progress-compact progress-bordered">
+                                                        <div ng-repeat="values in invoice.upsqm">
+                                                            <div class="progress-bar progress-bar-{{invTheme[$index+1]}}" style="width: {{values.percent}}%">
+                                                                <span> {{values.units}} {{values.reading | number:2}}  </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row" ng-show="showCsqm">
+                                                    <div class="col-lg-3">
+                                                        <div class="col-lg-4">
+                                                        </div>
+                                                        <div class="col-lg-8">
+                                                            <span>Cost per sqM</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-9 progress-compact progress-bordered">
+                                                        <div ng-repeat="values in invoice.cpsqm">
+                                                            <div class="progress-bar progress-bar-{{invTheme[$index+1]}}" style="width: {{values.percent}}%">
+                                                                <span> {{values.reading | currency:$}} </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row"></div>
 
-            .morris-hover.morris-default-style .morris-hover-row-label {
-                font-weight: bold;
-                margin: 0.25em 0;
-            }
+    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <pattern id="smallGrid" width="8" height="8" patternUnits="userSpaceOnUse">
+                <path d="M 8 0 L 0 0 0 8" fill="none" stroke="gray" stroke-width="0.5" />
+            </pattern>
+            <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+                <rect width="80" height="80" fill="url(#smallGrid)" />
+                <path d="M 80 0 L 0 0 0 80" fill="none" stroke="gray" stroke-width="1" />
+            </pattern>
+        </defs>
 
-            .morris-hover.morris-default-style .morris-hover-point {
-                white-space: nowrap;
-                margin: 0.1em 0;
-            }
+        <rect width="100%" height="100%" fill="url(#grid)" />
+    </svg>
 
-    .ajax-loader {
-        position: absolute;
-        left: 50%;
-        top: 30%;
-        right: 0;
-        bottom: 0;
-        margin: auto; /* presto! */
-        z-index: 1;
-    }
-</style>
 
-@section PageScripts{
+    @section PageScripts{
 
-    @*<script type="text/javascript">
-           $(window).bind("load", function () {
+                                                @*<script src="~/Scripts/charts/flot/jquery.flot.crosshair.js"></script>*@
+                                                @*<script src="~/Scripts/charts/flot/jquery.flot.selection.js"></script>*@
+        <script src="~/Scripts/charts/flot/jquery.flot.min.js"></script>
+        <script src="~/Scripts/charts/flot/jquery.flot.resize.js"></script>
+        <script src="~/Scripts/charts/flot/jquery.flot.axislabels.js"></script>
+        <script src="~/Scripts/charts/flot/jquery.flot.tooltip.js"></script>
+        <script src="~/Scripts/charts/flot/angular-flot.js"></script>
 
-               /*Sets Themed Colors Based on Themes*/
-               themeprimary = getThemeColorFromCss('themeprimary');
-               themesecondary = getThemeColorFromCss('themesecondary');
-               themethirdcolor = getThemeColorFromCss('themethirdcolor');
-               themefourthcolor = getThemeColorFromCss('themefourthcolor');
-               themefifthcolor = getThemeColorFromCss('themefifthcolor');
 
-               InitiateSparklineCharts.init();
+                                                @*<script src="~/App/CompanyOverview/App.js"></script>
+                                                    <script src="~/App/CompanyOverview/coDataSource.js"></script>
+                                                    <script src="~/App/CompanyOverview/ViewModels/CompanyOverviewViewModel.js"></script>
+                                                    <script src="~/App/Directives/widget.js"></script>*@
 
-               //InitiateBarChart.init();
-           });
-        </script>*@
+        <script src="~/App_/core/App.js"></script>
+        <script src="~/App_/core/companyOverview.data.js"></script>
+        <script src="~/App_/core/companyOverview.ctrl.js"></script>
+        <script src="~/App_/common/directives/widget.js"></script>
+        <script src="~/App_/core/customFilters.js"></script>
+                                                @*<script src="~/Scripts/angular-ui-utils/angular-ui-utils.js"></script>*@
 
-    <script src="~/Scripts/nestable/jquery.nestable.min.js"></script>
-    <script type="text/javascript">
-        jQuery(function ($) {
-            $('.dd').nestable();
-            $('.dd-handle a').on('mousedown', function (e) {
-                e.stopPropagation();
-            });
-        });
-    </script>
+                                                    }
 
-    <script src="~/App/Dashboard/App.js"></script>
-    <script src="~/App/Dashboard/dbDataSource.js"></script>
-    <script src="~/App/Dashboard/ViewModels/DashboardViewModel.js"></script>
-
-    <script src="~/Scripts/charts/morris/raphael-2.0.2.min.js"></script>
-    <script src="~/Scripts/charts/morris/morris.js"></script>
-    <script src="~/Scripts/charts/morris/morris-init-orig.js"></script>
-}
+                                                    <style>
+                                                                                            .progress-compact {
+                                                                                                /*background-color: #f5f5f5;
+                                                        border-radius: 4px;
+                                                        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
+                                                        height: 20px;*/
+                                                                                                margin-bottom: 5px;
+                                                                                                overflow: hidden;
+                                                                                            }
+                                                    </style>

@@ -69,9 +69,17 @@
                         {
                             <tr>
                                 <td>@Html.DisplayFor(modelItem => item.UserName)</td>
-                                <td>Full Name</td>
-                                <td>Roles</td>
-                                <td>Company</td>
+                                <td>@item.FirstName @item.LastName</td>
+                                <td>@item.AspNetRoles.FirstOrDefault().Name</td>
+                                <td>
+                                    @{
+                            var customer = item.Customers.FirstOrDefault();
+                            if (customer != null)
+                            {
+                                <text>@customer.CustomerName</text>
+                            }
+                                    }
+                                </td>
                                 <td>
                                     @Html.Edit(Url.Action("Edit", new { id = item.Id }), User.IsInRole("Admin"))
                                     @*@Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-info btn-xs" })*@

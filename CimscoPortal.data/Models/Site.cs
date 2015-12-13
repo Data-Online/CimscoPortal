@@ -14,6 +14,7 @@ namespace CimscoPortal.Data.Models
         }
         public int SiteId { get; set; }
         public string SiteName { get; set; }
+        public decimal SiteArea { get; set; }
         public Nullable<int> GroupId { get; set; }
         public Nullable<int> CustomerId { get; set; }
 

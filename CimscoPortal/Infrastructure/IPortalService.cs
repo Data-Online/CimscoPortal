@@ -11,10 +11,14 @@ namespace CimscoPortal.Infrastructure
         //CimscoPortal.Models.CustomerHierarchyViewModel GetCompanyHierarchy(string userId);
         CimscoPortal.Models.SiteHierarchyViewModel GetSiteHierarchy(string userId);
         CimscoPortal.Models.SummaryViewModel GetSummaryDataFor(string userId);
-        IEnumerable<CimscoPortal.Models.InvoiceDetail> GetSiteInvoiceData(int contactId);
+        IEnumerable<CimscoPortal.Models.InvoiceDetail> GetInvoiceDetailForSite(int contactId);
         CimscoPortal.Models.CommonInfoViewModel GetCommonData(string userId);
         CimscoPortal.Models.InvoiceDetailViewModel_ GetCurrentMonth(int _invoiceId);
         IEnumerable<CimscoPortal.Models.MessageViewModel> GetNavbarDataFor(string pageElement);
+        InvoiceTallyViewModel GetInvoiceTally(string userId, int monthSpan);
+        IEnumerable<InvoiceOverviewViewModel> GetInvoiceOverviewForSite(int siteId);
+        IEnumerable<InvoiceOverviewViewModel> GetInvoiceOverviewForSite(int siteId, int invoiceId);
+        InvoiceOverviewViewModel ApproveInvoice(int invoiceId, string userId);
 
         // <--
 
@@ -30,7 +34,7 @@ namespace CimscoPortal.Infrastructure
 
         object ConfirmUserAccess(string p);
 
-        void ApproveInvoice(int invoiceId, string userId);
+        
 
         System.Threading.Tasks.Task<List<CimscoPortal.Data.Models.AspNetUser>> GetUserByGroupOrCompany(string id);
 

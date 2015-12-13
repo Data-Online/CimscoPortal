@@ -11,6 +11,7 @@ using AutoMapper.QueryableExtensions;
 using System.Data.Entity.SqlServer;
 using System.Globalization;
 using CimscoPortal.Data.Models;
+using CimscoPortal.Extensions;
 
 namespace CimscoPortal.Services
 {
@@ -19,7 +20,9 @@ namespace CimscoPortal.Services
         ICimscoPortalContext _repository;
 
         private bool approved = true;
-        private int MonthsOfHistoryData = 24;
+        private int MonthsOfHistoryData = 24; // GPA** Move to configuration for user
+
+        private string _azurePDFsource = System.Configuration.ConfigurationManager.AppSettings["PdfFileSourceRoot"];
 
         public PortalService()
         {
@@ -68,13 +71,48 @@ namespace CimscoPortal.Services
             }
         }
 
-        public IEnumerable<InvoiceDetail> GetSiteInvoiceData(int siteId)
+        public IEnumerable<InvoiceDetail> GetInvoiceDetailForSite(int siteId)
         {
-            return GetInvoicesForSite(siteId); //_invoices;
+            return InvoiceDetailForSite(siteId); //_invoices;
         }
+
+        public IEnumerable<InvoiceDetail> GetInvoiceDetailForSite(int siteId, int invoiceId)
+        {
+            return InvoiceDetailForSite(siteId, invoiceId); //_invoices;
+        }
+
+        public IEnumerable<InvoiceOverviewViewModel> GetInvoiceOverviewForSite(int siteId)
+        {
+            return InvoiceOverviewForSite(siteId); //_invoices;
+        }
+
+        public IEnumerable<InvoiceOverviewViewModel> GetInvoiceOverviewForSite(int siteId, int invoiceId)
+        {
+            return InvoiceOverviewForSite(siteId, invoiceId); //_invoices;
+        }
+
+        private IEnumerable<InvoiceOverviewViewModel> InvoiceOverviewForSite(int siteId)
+        {
+            return _repository.InvoiceSummaries.Where(s => s.SiteId == siteId)
+                  .OrderBy(o => o.InvoiceDate).Project().To<InvoiceOverviewViewModel>().ToList();
+        }
+
+        private IEnumerable<InvoiceOverviewViewModel> InvoiceOverviewForSite(int siteId, int invoiceId)
+        {
+            return _repository.InvoiceSummaries.Where(s => s.SiteId == siteId & s.InvoiceId == invoiceId)
+                  .OrderBy(o => o.InvoiceDate).Project().To<InvoiceOverviewViewModel>().ToList();
+        }
+
+        private InvoiceOverviewViewModel InvoiceOverviewForSite_(int invoiceId)
+        {
+            return _repository.InvoiceSummaries.Where(s => s.InvoiceId == invoiceId)
+                  .OrderBy(o => o.InvoiceDate).Project().To<InvoiceOverviewViewModel>().FirstOrDefault();
+        }
+
 
         public SummaryViewModel GetSummaryDataFor(string userId)
         {
+            decimal _maxInvoiceValue = 0.0M;
             SummaryViewModel _model = new SummaryViewModel();
             _model.SummaryData = new List<InvoiceDataForCompany>();
 
@@ -84,66 +122,29 @@ namespace CimscoPortal.Services
 
             //var test = GetInvoiceHistory(24, 239, 29);
             SiteHierarchyViewModel _siteHierachy = GetSiteHierarchy(userId);
-            InvoiceDataForCompany _invoiceHistory;
+            InvoiceDataForCompany _invoiceDataForUser;
             int _index = 1;
-            foreach (var s in _siteHierachy.SiteData)
+            foreach (var _site in _siteHierachy.SiteData)
             {
-                _invoicesDue = new List<InvoiceDetail>(GetInvoicesForSite(s.SiteId, !approved));
-                _invoiceHistory = new InvoiceDataForCompany() { InvoiceHistory = GetInvoiceHistory(_invoiceHistoryMonths, s.SiteId, _index), Year = 2014, InvoicesDue = _invoicesDue };
-                _model.SummaryData.Add(_invoiceHistory);
+                _invoicesDue = new List<InvoiceDetail>(GetInvoicesForSite(_site.SiteId, !approved));
+                checkInvoiceFileExists(_invoicesDue);
+                _invoiceDataForUser = new InvoiceDataForCompany() { InvoiceHistory = GetInvoiceHistory(_invoiceHistoryMonths, _site.SiteId, _index), Year = 2014, InvoicesDue = _invoicesDue };
+                // Year is not used at the moment, but may be helpful on graph?
+                _model.SummaryData.Add(_invoiceDataForUser);
+                _maxInvoiceValue = Math.Max(
+                    Math.Max(
+                        decimal.Parse(_invoiceDataForUser.InvoiceHistory.Max(s => s.YearA)),
+                        decimal.Parse(_invoiceDataForUser.InvoiceHistory.Max(s => s.YearB))
+                    ),
+                    _maxInvoiceValue);
                 _index++;
             }
 
             _model.SiteHierarchy = _siteHierachy;
-
-            _model.MaxValue = 30000;
+            _model.MaxValue = Decimal.ToInt32(_maxInvoiceValue * 1.1M).RoundOff(); ;
 
             return _model;
         }
-
-        private List<CompanyInvoiceViewModel2> GetInvoiceHistory(int spanMonths, int siteId, int index)
-        {
-            DateTime _today = DateTime.Today;
-            DateTime _endOfMonth = new DateTime(_today.Year, _today.Month, 1).AddMonths(1).AddDays(-1);
-            DateTime _startDateA = new DateTime(_today.Year, _today.Month, 1).AddMonths(1).AddDays(-1).AddMonths(spanMonths * -1);
-            DateTime _endDateA = new DateTime(_today.Year, _today.Month, 1).AddMonths(1).AddDays(-1).AddMonths(spanMonths / 2 * -1);
-            DateTime _startDateB = _endDateA;
-            DateTime _endDateB = _endOfMonth;
-            DateTime _currentDate = _startDateA.AddDays(1);
-
-            string startMonth = DateTime.Today.AddMonths(spanMonths * -1).ToString("MMMM");
-            var _yearA = from a in _repository.InvoiceSummaries
-                         where a.InvoiceDate > _startDateA
-                                 && a.InvoiceDate < _endDateA
-                                 && a.SiteId == siteId
-                         select a;
-
-            var _yearB = from a in _repository.InvoiceSummaries
-                         where a.InvoiceDate > _startDateB
-                                 && a.InvoiceDate < _endDateB
-                                 && a.SiteId == siteId
-                         select a;
-
-            List<CompanyInvoiceViewModel2> _result = new List<CompanyInvoiceViewModel2>();
-            CompanyInvoiceViewModel2 _currentData;
-
-            _endOfMonth = _endOfMonth.AddMonths(spanMonths / 2 * -1);
-            while (_currentDate < _endOfMonth)
-            {
-                int _monthNumber = _currentDate.Month;
-                _currentData = new CompanyInvoiceViewModel2();
-                _currentData.Month = _currentDate.ToString("MMM");
-                _currentData.SiteId = siteId;
-                _currentData.Index = index;
-                _currentData.YearA = _yearA.Where(s => s.InvoiceDate.Month == _monthNumber).Select(s => s.InvoiceTotal).FirstOrDefault().ToString(); //a.InvoiceTotal.ToString();
-                _currentData.YearB = _yearB.Where(s => s.InvoiceDate.Month == _monthNumber).Select(s => s.InvoiceTotal).FirstOrDefault().ToString();
-                _result.Add(_currentData);
-                _currentDate = _currentDate.AddMonths(1);
-            }
-
-            return _result;
-        }
-
 
         public List<AlertData> GetNavbarDataFor_Z(int customerId, string pageElement)
         {
@@ -164,6 +165,7 @@ namespace CimscoPortal.Services
             //_result.EnergyCosts.EnergyCostSeries = ReturnTestEnergyDataModel();
             _result.InvoiceDetail = _invoiceDetail;
             var _energyCharges = _repository.InvoiceSummaries.Where(a => a.InvoiceId == invoiceId).Select(b => b.EnergyCharge).FirstOrDefault();
+            var _otherCharges = _repository.InvoiceSummaries.Where(a => a.InvoiceId == invoiceId).Select(b => b.OtherCharge).FirstOrDefault();
             if (_energyCharges.BD0408 == 0.0M)
             {
                 // 0004 --> 0408
@@ -211,15 +213,15 @@ namespace CimscoPortal.Services
                 HeaderData = new HeaderData() { Header = "Non Business Days" }
             };
 
-            _result.OtherCharges = new List<decimal>() { _energyCharges.BDSVC, _energyCharges.NBDSVC, _energyCharges.EALevy, _invoiceDetail.MiscChargesTotal };
+            _result.OtherCharges = new List<decimal>() { _otherCharges.BDSVC, _otherCharges.NBDSVC, _otherCharges.EALevy, _invoiceDetail.MiscChargesTotal };
             _result.NetworkCharges = new List<decimal>() { _networkCharges.VariableBD, _networkCharges.VariableNBD, _networkCharges.CapacityCharge, _networkCharges.DemandCharge, _networkCharges.FixedCharge };
 
             var _zzMiscCharges = _result.InvoiceDetail.MiscChargesTotal;
             _result.InvoiceDetail.MiscChargesTotal = _result.InvoiceDetail.EnergyChargesTotal - _businessDayData.TotalCost - _nonBusinessDayData.TotalCost + _zzMiscCharges;
             _result.InvoiceDetail.EnergyChargesTotal = _businessDayData.TotalCost + _nonBusinessDayData.TotalCost;
 
-            var _serviceCharges = new List<decimal> { _energyCharges.BDSVC, _energyCharges.BDSVCR };
-            var _levyCharges = new List<decimal> { _energyCharges.EALevy, _energyCharges.EALevyR };
+            var _serviceCharges = new List<decimal> { _otherCharges.BDSVC, _otherCharges.BDSVCR };
+            var _levyCharges = new List<decimal> { _otherCharges.EALevy, _otherCharges.EALevyR };
             // var _summaryData = new List<decimal> { _energyCharges.LossRate, _energyCharges.BDMeteredKwh, _energyCharges.BDLossCharge };
 
             List<DonutChartData> _donutChartData = new List<DonutChartData> { 
@@ -238,11 +240,6 @@ namespace CimscoPortal.Services
             _result.EnergyCosts.EnergyCostSeries = _energyDataModel;
 
             return _result;
-        }
-
-        private static decimal PercentToDecimal2(decimal value, decimal total)
-        {
-            return decimal.Round((value / total) * 100, 2, MidpointRounding.AwayFromZero);
         }
 
         public InvoiceDetailViewModel GetCurrentMonth_(int _invoiceId)
@@ -305,23 +302,6 @@ namespace CimscoPortal.Services
 
         }
 
-        private static List<EnergyDataModel> ReturnTestEnergyDataModel()
-        {
-            var model = new List<EnergyDataModel>() {   
-                new EnergyDataModel { 
-                    EnergyChargeByBracket = new List<decimal> { 10.665M, 11.756M, 15.639M, 14.786M, 16.199M, 13.918M }, 
-                    EnergyRateByBracket = new List<decimal> { 239.14M, 923.52M, 2344.94M, 2041.24M, 2136.30M, 300.30M }, 
-                    HeaderData = new HeaderData { Header = "Weekday Costs", DataFor = "1", _TempData = "WeeklyEnergyBySlice" }
-                },
-                new EnergyDataModel {
-                    EnergyChargeByBracket = new List<decimal> { 8.888M, 9.797M, 13.032M, 12.319M, 13.499M, 11.599M }, 
-                    EnergyRateByBracket = new List<decimal> { 82.38M, 249.15M, 1036.01M, 927.74M, 572.29M, 115.38M }, 
-                    HeaderData = new HeaderData { Header = "Weekend Costs", DataFor = "2", _TempData = "WeekendEnergyBySlice" }
-                }
-            };
-            return model;
-        }
-
         public StackedBarChartViewModel GetHistoryByMonth(int _invoiceId)
         {
             var _energyPointId = _repository.InvoiceSummaries.Where(s => s.InvoiceId == _invoiceId).FirstOrDefault().EnergyPoint.EnergyPointId;
@@ -356,11 +336,95 @@ namespace CimscoPortal.Services
             //return new StackedBarChartViewModel();
         }
 
+        public void UpdateUser(EditUserViewModel model)
+        {
+            using (var db = new CimscoPortalContext())
+            {
+                var item = db.AspNetUsers.FirstOrDefault(f => f.Id == model.Id);
+                item.Email = model.Email;
+                item.FirstName = model.FirstName;
+                item.LastName = model.LastName;
+                item.PhoneNumber = model.Phone;
+                db.AspNetUsers.Add(item);
+                db.Entry(item).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+
+        }
+
+        public AspNetUser GetUserByID(string id)
+        {
+            using (var db = new CimscoPortalContext())
+            {
+                return db.AspNetUsers.FirstOrDefault(f => f.Id == id);
+            }
+        }
+
+        public void UserloginUpdate(LoginHistory model)
+        {
+            using (var db = new CimscoPortalContext())
+            {
+                var item = db.LoginHistorys.FirstOrDefault(f => f.UserId == model.UserId);
+                if (item != null)
+                {
+                    item.Details = model.Details;
+                    item.Ip = model.Ip;
+                    item.LastLoginDateTime = DateTime.Now;
+                    item.UserId = model.UserId;
+                    db.LoginHistorys.Add(item);
+                    db.Entry(item).State = EntityState.Modified;
+                    db.SaveChanges();
+                }
+                else
+                {
+                    item = new LoginHistory();
+                    item.Details = model.Details;
+                    item.Ip = model.Ip;
+                    item.LastLoginDateTime = DateTime.Now;
+                    item.UserId = model.UserId;
+                    db.LoginHistorys.Add(item);
+                    db.Entry(item).State = EntityState.Added;
+                    db.SaveChanges();
+                }
+            }
+        }
+
+        public InvoiceTallyViewModel GetInvoiceTally(string userId, int monthSpan)
+        {
+            if (!monthSpan.In(3, 6, 12, 24)) { monthSpan = 12; }
+
+            DateTime _firstDate = GetFirstDateForSelect(monthSpan);
+
+            InvoiceTallyViewModel _invoiceTally = new InvoiceTallyViewModel();
+            SiteHierarchyViewModel _siteListForUser = GetSiteHierarchy(userId);
+            var _siteIdList = _siteListForUser.SiteData.Select(s => s.SiteId);
+            var _siteData = _repository.InvoiceSummaries.Where(s => _siteIdList.Contains(s.SiteId) & s.InvoiceDate > _firstDate);
+
+            AutoMapper.Mapper.Map(_siteListForUser, _invoiceTally);
+            _invoiceTally.InvoiceCosts = new List<InvoiceCosts>();
+
+            CollateInvoiceDataBySiteId(_invoiceTally, _siteData, _firstDate);
+            _invoiceTally.GroupCompanyName = _siteListForUser.HeaderName;
+            _invoiceTally.MonthsOfData = monthSpan;
+
+            return _invoiceTally;
+        }
+
+        private static DateTime GetFirstDateForSelect(int monthSpan)
+        {
+            DateTime _firstDate = DateTime.Now.AddMonths((monthSpan - 1) * -1);
+            _firstDate = new DateTime(_firstDate.Year, _firstDate.Month, 1);
+            return _firstDate;
+        }
+
+
+
         #region update methods
 
 
-        public void ApproveInvoice(int invoiceId, string userId)
+        public InvoiceOverviewViewModel ApproveInvoice(int invoiceId, string userId)
         {
+            InvoiceOverviewViewModel _result = new InvoiceOverviewViewModel();
             CimscoPortal.Data.Models.InvoiceSummary _invoice = new CimscoPortal.Data.Models.InvoiceSummary();
             try
             {
@@ -371,18 +435,105 @@ namespace CimscoPortal.Services
                 //  _repository.Update
                 _repository.Update(_invoice);
                 _repository.Commit();
+
+                _result = InvoiceOverviewForSite_(invoiceId);
             }
             catch (Exception)
             {
-
-                throw;
+                return _result;
+                //throw;
             }
-
-
+            return _result;
         }
+
 
         #endregion
         #region private methods
+
+        private static void CollateInvoiceDataBySiteId(InvoiceTallyViewModel invoiceTally, IQueryable<Data.Models.InvoiceSummary> siteData, DateTime firstDate)
+        {
+            var _approvedInvoiceCountBySiteId = (from p in siteData
+                                                 where p.Approved == true
+                                                 group p.Approved by p.SiteId into g
+                                                 select new
+                                                 {
+                                                     siteId = g.Key,
+                                                     count = (g.Count() > 0 ? g.Count() : 0)
+                                                 }).ToList();
+
+            var _invoioceCountAndDates = (from p in siteData
+                                          group p by p.SiteId into g
+                                          select new
+                                          {
+                                              siteId = g.Key,
+                                              firstInvoiceOnFileDate = (from f in g orderby f.InvoiceDate ascending select f.InvoiceDate).FirstOrDefault(),
+                                              latestInvoiceDate = (from l in g orderby l.InvoiceDate descending select l.InvoiceDate).FirstOrDefault(),
+                                              count = (g.Count() > 0 ? g.Count() : 0)
+                                          }).ToList();
+
+            var _invoiceTotals = (from p in siteData
+                                  group p by p.SiteId into g
+                                  select new
+                                  {
+                                      siteId = g.Key,
+                                      invoiceValue = (from f in g select f.InvoiceTotal).Sum(),
+                                      energyCharge = (from f in g select f.EnergyChargesTotal).Sum(),
+                                      // energyLosses = (from f in g select f.).Sum(),
+                                      totalKwh = (from f in g select f.KwhTotal).Sum(),
+                                      siteArea = (from f in g select f.Site.SiteArea).FirstOrDefault()
+                                  }).ToList();
+
+            var _calculatedLosses = (from p in siteData
+                                     group p by p.SiteId into g
+                                     select new
+                                     {
+                                         siteId = g.Key,
+                                         calculatedLosses = (from f in g select f.EnergyCharge.BDL0004 / f.EnergyCharge.BDQ0004).FirstOrDefault()
+                                     }).ToList();
+            
+            foreach (var _entry in invoiceTally.InvoiceTallies)
+            {
+                var _matchingResultForApproved = _approvedInvoiceCountBySiteId.FirstOrDefault(s => s.siteId == _entry.SiteId);
+                var _matchingResultForTotal = _invoioceCountAndDates.FirstOrDefault(s => s.siteId == _entry.SiteId);
+                var _matchingResultForLosses = _calculatedLosses.FirstOrDefault(s => s.siteId == _entry.SiteId);
+                var _match = invoiceTally.InvoiceTallies.Where(s => s.SiteId == _entry.SiteId).FirstOrDefault();
+                
+                if (_matchingResultForTotal != null)
+                {
+                    if (_matchingResultForApproved != null)
+                    {
+                        _match.ApprovedInvoices = _matchingResultForApproved.count;
+                    }
+                    _match.PendingInvoices = _matchingResultForTotal.count - _match.ApprovedInvoices;
+                    _match.FirstInvoiceDate = _matchingResultForTotal.firstInvoiceOnFileDate;
+                    _match.LatestInvoiceDate = _matchingResultForTotal.latestInvoiceDate;
+                    _match.CalculatedLossRate = Math.Round(_matchingResultForLosses.calculatedLosses,3);
+                    //_match.MissingInvoices = Math.Max(MonthsFromGivenDate(_matchingResultForTotal.firstInvoiceOnFileDate) - _match.TotalInvoicesOnFile, 0);
+                };
+                _match.MissingInvoices = Math.Max(MonthsFromGivenDate(firstDate) - _match.TotalInvoicesOnFile, 0);
+                _match.CalculatedLossRate = Math.Max(_match.CalculatedLossRate, 0.028M);
+
+                var _data = new InvoiceCosts();
+                _data.SiteId = _entry.SiteId;
+                var _matchingInvoiceData = _invoiceTotals.FirstOrDefault(s => s.siteId == _entry.SiteId);
+                if (_matchingInvoiceData != null)
+                {             
+                    _data.InvoiceValue = _matchingInvoiceData.invoiceValue;
+                    _data.EnergyCharge = _matchingInvoiceData.energyCharge;
+                    _data.TotalKwh = _matchingInvoiceData.totalKwh;
+                    _data.SiteArea = _matchingInvoiceData.siteArea;
+                }
+                invoiceTally.InvoiceCosts.Add(_data);
+            };
+        }
+
+        private static int MonthsFromGivenDate(DateTime date)
+        {
+            var now = DateTime.Now;
+            int _monthsInPreviousYears = Math.Max(((now.Year - date.Year) * 12) - date.Month + 1, 0);
+            int _monthsInThisYear = Math.Max(now.Month - date.Month,0);
+            return (_monthsInPreviousYears + _monthsInThisYear);
+        }
 
         private string GetUserCompanyOrGroup(string userId)
         {
@@ -400,9 +551,15 @@ namespace CimscoPortal.Services
             }
         }
 
-        private List<InvoiceDetail> GetInvoicesForSite(int siteId)
+        private List<InvoiceDetail> InvoiceDetailForSite(int siteId)
         {
             return _repository.InvoiceSummaries.Where(s => s.SiteId == siteId)
+                .OrderBy(o => o.InvoiceDate).Project().To<InvoiceDetail>().ToList();
+        }
+
+        private List<InvoiceDetail> InvoiceDetailForSite(int siteId, int invoiceId)
+        {
+            return _repository.InvoiceSummaries.Where(s => s.SiteId == siteId & s.InvoiceId == invoiceId)
                 .OrderBy(o => o.InvoiceDate).Project().To<InvoiceDetail>().ToList();
         }
 
@@ -418,7 +575,6 @@ namespace CimscoPortal.Services
             var zz = _repository.InvoiceSummaries.Where(s => s.InvoiceId == invoiceId);
             return _repository.InvoiceSummaries.Where(s => s.InvoiceId == invoiceId).Project().To<InvoiceDetail>().FirstOrDefault();
         }
-
 
         private string GetUserRecordId(string userId)
         {
@@ -449,60 +605,115 @@ namespace CimscoPortal.Services
             return _commonData;
         }
 
-        public void UpdateUser(EditUserViewModel model)
+        private void checkInvoiceFileExists(List<InvoiceDetail> _invoicesDue)
         {
-            using (var db = new CimscoPortalContext())
+            // This process needs to be moved to invoice manmagement module, settting "exists" flag there
+            System.Net.HttpWebResponse response = null;
+            System.Net.HttpWebRequest request;
+            string _sourcePdf;
+            foreach (var _invoice in _invoicesDue)
             {
-                var item = db.AspNetUsers.FirstOrDefault(f => f.Id == model.Id);
-                item.Email = model.Email;
-                item.FirstName = model.FirstName;
-                item.LastName = model.LastName;
-                item.PhoneNumber = model.Phone;
-                db.AspNetUsers.Add(item);
-                db.Entry(item).State = EntityState.Modified;
-                db.SaveChanges();
-            }
-            
-        }
-
-
-        public AspNetUser GetUserByID(string id)
-        {
-            using (var db = new CimscoPortalContext())
-            {
-                return db.AspNetUsers.FirstOrDefault(f => f.Id == id);
-            }
-        }
-
-
-        public void UserloginUpdate(LoginHistory model)
-        {
-            using (var db = new CimscoPortalContext())
-            {
-                var item = db.LoginHistorys.FirstOrDefault(f => f.UserId == model.UserId);
-                if (item != null)
+                _sourcePdf = _azurePDFsource + "/" + _invoice.SiteId.ToString().PadLeft(6, '0') + "/" + _invoice.InvoiceId.ToString().PadLeft(8, '0') + ".pdf";
+                request = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(_sourcePdf);
+                request.Method = "Head";
+                try
                 {
-                    item.Details = model.Details;
-                    item.Ip = model.Ip;
-                    item.LastLoginDateTime = DateTime.Now;  
-                    item.UserId = model.UserId;
-                    db.LoginHistorys.Add(item);
-                    db.Entry(item).State = EntityState.Modified;
-                    db.SaveChanges();
+                    response = (System.Net.HttpWebResponse)request.GetResponse();
                 }
-                else
+                catch
                 {
-                    item = new LoginHistory();
-                    item.Details = model.Details;
-                    item.Ip = model.Ip;
-                    item.LastLoginDateTime = DateTime.Now;
-                    item.UserId = model.UserId;
-                    db.LoginHistorys.Add(item);
-                    db.Entry(item).State = EntityState.Added;
-                    db.SaveChanges();
+                    _invoice.InvoicePdf = false;
+                }
+                finally
+                {
+                    if (response != null)
+                    {
+                        _invoice.InvoicePdf = true;
+                        response.Close();
+                    }
                 }
             }
         }
+
+        private List<CompanyInvoiceViewModel> GetInvoiceHistory(int spanMonths, int siteId, int index)
+        {
+            spanMonths = SetToEven(spanMonths);
+
+            DateTime _today = DateTime.Today;
+            DateTime _endOfCurrentMonth = LastDayOfMonth(_today);
+            DateTime _startOfFirstPeriod = _endOfCurrentMonth.AddMonths(spanMonths * -1);
+            DateTime _endOfFirstPeriod = _endOfCurrentMonth.AddMonths(spanMonths / 2 * -1);
+            DateTime _startOfSecondPeriod = _endOfFirstPeriod;
+            DateTime _endOfSecondPeriod = _endOfCurrentMonth;
+            DateTime _currentDate = _startOfFirstPeriod.AddDays(1);
+
+            var _dataForFirstPeriod = GetInvoiceDataFor(siteId, _startOfFirstPeriod, _endOfFirstPeriod);
+            var _dataForSecondPeriod = GetInvoiceDataFor(siteId, _startOfSecondPeriod, _endOfSecondPeriod);
+
+            List<CompanyInvoiceViewModel> _result = new List<CompanyInvoiceViewModel>();
+            CompanyInvoiceViewModel _currentData;
+
+            while (_currentDate < _startOfSecondPeriod)
+            {
+                int _monthNumber = _currentDate.Month;
+                _currentData = new CompanyInvoiceViewModel();
+                _currentData.Month = _currentDate.ToString("MMM");
+                _currentData.SiteId = siteId;
+                _currentData.Index = index;
+                _currentData.YearA = _dataForFirstPeriod.Where(s => s.InvoiceDate.Month == _monthNumber).Select(s => s.InvoiceTotal).FirstOrDefault().ToString(); //a.InvoiceTotal.ToString();
+                _currentData.YearB = _dataForSecondPeriod.Where(s => s.InvoiceDate.Month == _monthNumber).Select(s => s.InvoiceTotal).FirstOrDefault().ToString();
+                _result.Add(_currentData);
+                _currentDate = _currentDate.AddMonths(1);
+            }
+
+            return _result;
+        }
+
+        private static int SetToEven(int value)
+        {
+            if (value % 2 != 0) { value++; }
+            return value;
+        }
+
+        private IQueryable<Data.Models.InvoiceSummary> GetInvoiceDataFor(int siteId, DateTime _startOfFirstPeriod, DateTime _endOfFirstPeriod)
+        {
+            var _dataForFirstPeriod = from a in _repository.InvoiceSummaries
+                                      where a.InvoiceDate > _startOfFirstPeriod
+                                              && a.InvoiceDate < _endOfFirstPeriod
+                                              && a.SiteId == siteId
+                                      select a;
+            return _dataForFirstPeriod;
+        }
+
+        private static DateTime LastDayOfMonth(DateTime _today)
+        {
+            DateTime _endOfMonth = new DateTime(_today.Year, _today.Month, 1).AddMonths(1).AddDays(-1);
+            return _endOfMonth;
+        }
+
+        private static decimal PercentToDecimal2(decimal value, decimal total)
+        {
+            return decimal.Round((value / total) * 100, 2, MidpointRounding.AwayFromZero);
+        }
+
+        private static List<EnergyDataModel> ReturnTestEnergyDataModel()
+        {
+            var model = new List<EnergyDataModel>() {   
+                new EnergyDataModel { 
+                    EnergyChargeByBracket = new List<decimal> { 10.665M, 11.756M, 15.639M, 14.786M, 16.199M, 13.918M }, 
+                    EnergyRateByBracket = new List<decimal> { 239.14M, 923.52M, 2344.94M, 2041.24M, 2136.30M, 300.30M }, 
+                    HeaderData = new HeaderData { Header = "Weekday Costs", DataFor = "1", _TempData = "WeeklyEnergyBySlice" }
+                },
+                new EnergyDataModel {
+                    EnergyChargeByBracket = new List<decimal> { 8.888M, 9.797M, 13.032M, 12.319M, 13.499M, 11.599M }, 
+                    EnergyRateByBracket = new List<decimal> { 82.38M, 249.15M, 1036.01M, 927.74M, 572.29M, 115.38M }, 
+                    HeaderData = new HeaderData { Header = "Weekend Costs", DataFor = "2", _TempData = "WeekendEnergyBySlice" }
+                }
+            };
+            return model;
+        }
+
+
         #endregion
     }
 }

@@ -29,17 +29,23 @@ namespace CimscoPortal.Data.Models
         public decimal TotalNetworkCharges { get; set; }
         public decimal TotalMiscCharges { get; set; }
         public decimal TotalEnergyCharges { get; set; }
+        public decimal KwhTotal { get; set; }
         public string ConnectionNumber { get; set; }
         public string SiteName { get; set; }
        // public int EnergyPointId { get; set; }
         public bool Approved { get; set; }
+        public bool Verified { get; set; }
         public int InvoiceSummaryId { get; set; }
         public string ApprovedById { get; set; }
         public Nullable<System.DateTime> ApprovedDate { get; set; }
         public decimal PercentageChange { get; set; }
         public System.DateTime PeriodStart { get; set; }
         public System.DateTime PeriodEnd { get; set; }
+        public int SupplierId { get; set; }
 
+
+        [ForeignKey("SupplierId")]
+        public virtual EnergySupplier EnergySupplier { get; set; }
 
         [ForeignKey("SiteId")]
         public virtual Site Site { get; set; }
@@ -49,6 +55,7 @@ namespace CimscoPortal.Data.Models
 
         public virtual EnergyCharge EnergyCharge { get; set; }
         public virtual NetworkCharge NetworkCharge { get; set; }
+        public virtual OtherCharge OtherCharge { get; set; }
 
         [ForeignKey("EnergyPointId")]
         public virtual EnergyPoint EnergyPoint { get; set; }

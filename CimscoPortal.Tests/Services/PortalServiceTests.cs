@@ -140,7 +140,7 @@ namespace CimscoPortal.Tests.Services
             _repository.Setup(x => x.InvoiceSummaries).Returns(MockDataSet(FakeInvoices()));
 
             // Act
-           var _result = _portalService.GetSiteInvoiceData(1);
+           var _result = _portalService.GetInvoiceDetailForSite(1);
 
             // Assert
             Assert.IsNotNull(_result);

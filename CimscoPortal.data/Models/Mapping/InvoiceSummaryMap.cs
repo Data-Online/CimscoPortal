@@ -64,6 +64,10 @@ namespace CimscoPortal.Data.Models.Mapping
             this.Property(t => t.ApprovedDate).HasColumnName("ApprovedDate");
             this.Property(t => t.EnergyPointId).HasColumnName("EnergyPointId");
            // this.Property(t => t.UserId).HasColumnName("ApprovedById");
+            this.Property(t => t.SupplierId).HasColumnName("SupplierId");
+            this.Property(t => t.KwhTotal).HasColumnName("KwhTotal");
+
+            //this.HasOptional(o => o.EnergySupplier);
 
             this.HasOptional(o => o.UserId);
 
@@ -71,6 +75,9 @@ namespace CimscoPortal.Data.Models.Mapping
                 .WithRequired(ad => ad.InvoiceSummary).WillCascadeOnDelete(true);
 
             this.HasOptional(o => o.NetworkCharge)
+                .WithRequired(ad => ad.InvoiceSummary).WillCascadeOnDelete(true);
+
+            this.HasOptional(o => o.OtherCharge)
                 .WithRequired(ad => ad.InvoiceSummary).WillCascadeOnDelete(true);
 
             //this.HasOptional(o => o.EnergyPoint)

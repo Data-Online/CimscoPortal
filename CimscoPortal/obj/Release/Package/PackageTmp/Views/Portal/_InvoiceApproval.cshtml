@@ -1,11 +1,13 @@
 ﻿
-<div ng-repeat="inv in invoiceData |orderBy:'invoiceDate'">
-    <div class="databox databox-lg radius-bordered databox-shadowed animate-hide" ng-hide="inv.approved">
+<div ng-repeat="inv in invoiceData |orderBy:'invoiceDate'" class="animate">
+    <div class="databox databox-lg radius-bordered databox-shadowed">
+        @*animate" ng-hide="inv.approved">*@
         <div ng-style=setOpacity(inv.invoiceNumber)>
             <div class="databox-left bg-white">
-                <div ng-class="pctBoxStyle(inv.percentageChange)">
+                <div ng-class="pctBoxStyle(inv.percentageChange)" title="Test">
                     @*<div class="databox-stat radius-bordered bg-red">*@
-                    <div class="stat-text">{{inv.percentageChange | number:1}} %</div>
+                    <div ng-show="-999!={{inv.percentageChange}}" class="stat-text">{{inv.percentageChange | number:1}} %</div>
+                    <div ng-show="-999=={{inv.percentageChange}}" class="stat-text">no data</div>
                     <i ng-class="negativeValue(inv.percentageChange)"></i>
                 </div>
                 <div class="databox-cell cell-12 no-padding padding-top-30  text-align-center">
@@ -13,8 +15,8 @@
                         <a href="@Url.Action("InvoiceDetail", "Portal")/{{inv.invoiceId}}" title="Invoice Details">
                             <i class="fa fa-cogs"></i>
                         </a>
-                        <a href="#" title="Download PDF">
-                            <i class="fa fa-download"></i>
+                        <a ng-show="{{inv.invoicePdf}} "href="https://cimsco.blob.core.windows.net/{{inv.siteId|padNumber:6}}/{{inv.invoiceId|padNumber:8}}.pdf" title="Download PDF">
+                            <i class="fa fa-download"></i>@*{{inv.siteId|padNumber:6}}/{{inv.invoiceId|padNumber:8}}.pdf*@
                         </a>
                     </span>
                 </div>
@@ -23,11 +25,15 @@
                 <span class="databox-number sky"><i class="fa fa-calendar"></i>{{inv.invoiceDate | date:mediumDate}}</span>
                 <div class="databox-header darkgray">
                     {{inv.invoiceTotal | currency:$}}
-
-
+                    @*<label >
+                            <input type="checkbox" ng-model="inv.approved"
+                                   ng-click="testclick(inv.approved, inv.invoiceId)"><span class="text" style="font-size:8px">approved</span>
+                        </label>*@
                     <label>
-                        <input type="checkbox" ng-model="inv.approved"
-                               ng-click="testclick(inv.approved, inv.invoiceId)"><span class="text" style="font-size:8px">approved</span>
+                        <input type="button" ng-model="inv.approved"
+                               ng-click="inv.approved = true; testclick(inv.approved, inv.invoiceId, $index)"
+                               class="btn-sm btn-info" value="Approve">
+                        </input>
                     </label>
                 </div>
             </div>
@@ -35,17 +41,37 @@
     </div>
 </div>
 <style>
-    
+    .animate {
+        -webkit-transition: all linear 0.8s;
+        transition: all linear 0.5s;
+        opacity: 1;
+    }
 
-.animate-hide {
-  -webkit-transition: all linear 0.5s;
-  transition: all linear 0.5s;
-  opacity: 1;
-}
+   .animate.ng-leave {
+        transition: 0.5s;
+        
 
-.animate-hide.ng-hide {
-  line-height: 0;
-  opacity: 0;
-}
+        line-height: 0;
+            opacity: 1;
+            transition-delay: 0.5s;
+    }
+
+    .animate.ng-leave-active {
+        opacity: 0;
+    }
+
+    .animate.ng-leave-stagger {
+        transition-delay: 0.5s;
+    }
+
+            /*.animate.ng-hide {
+            line-height: 0;
+            opacity: 0;
+            transition-delay: 0.5s;
+        }
+
+    .animate.ng-hide-stagger {
+            transition-delay: 0.1s;
+        }*/
 
 </style>

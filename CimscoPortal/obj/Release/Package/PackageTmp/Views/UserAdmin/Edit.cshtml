@@ -66,7 +66,7 @@
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <span class="input-icon icon-right">
-                                                    <input type="text" class="form-control" placeholder="Name">
+                                                    @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control", @placeholder = "Name" })
                                                     <i class="fa fa-user"></i>
                                                 </span>
                                             </div>
@@ -74,7 +74,7 @@
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <span class="input-icon icon-right">
-                                                    <input type="text" class="form-control" placeholder="Family">
+                                                    @Html.TextBoxFor(model => model.LastName, new { @class = "form-control" ,@placeholder="Family"})
                                                     <i class="fa fa-user"></i>
                                                 </span>
                                             </div>
@@ -84,7 +84,7 @@
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <span class="input-icon icon-right">
-                                                    <input type="text" class="form-control" placeholder="Phone">
+                                                    @Html.TextBoxFor(model => model.Phone, new { @class = "form-control", @placeholder = "Phone" })
                                                     <i class="glyphicon glyphicon-earphone"></i>
                                                 </span>
                                             </div>
@@ -92,7 +92,7 @@
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <span class="input-icon icon-right">
-                                                    <input type="text" class="form-control" placeholder="Mobile">
+                                                    @Html.TextBoxFor(model => model.Mobile, new { @class = "form-control", @placeholder = "Mobile" })
                                                     <i class="glyphicon glyphicon-phone"></i>
                                                 </span>
                                             </div>

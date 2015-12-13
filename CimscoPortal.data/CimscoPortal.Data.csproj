@@ -70,11 +70,15 @@
     <Compile Include="Models\CommonData.cs" />
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\EnergySuppliers.cs" />
     <Compile Include="Models\EnergyPoints.cs" />
     <Compile Include="Models\LoginHistory.cs" />
+    <Compile Include="Models\Mapping\EnergySupplierMap.cs" />
     <Compile Include="Models\Mapping\EnergyPointMap.cs" />
     <Compile Include="Models\Mapping\LoginHistoryMap.cs" />
+    <Compile Include="Models\Mapping\OtherChargeMap.cs" />
     <Compile Include="Models\Mapping\NetworkChargeMap.cs" />
+    <Compile Include="Models\OtherCharge.cs" />
     <Compile Include="Models\NetworkCharge.cs" />
     <Compile Include="Models\EnergyCharge.cs" />
     <Compile Include="Models\Group.cs" />

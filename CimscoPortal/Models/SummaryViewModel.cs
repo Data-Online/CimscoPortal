@@ -17,7 +17,7 @@ namespace CimscoPortal.Models
 
     public class InvoiceDataForCompany
     {
-        public List<CompanyInvoiceViewModel2> InvoiceHistory { get; set; }  //refactor:rename
+        public List<CompanyInvoiceViewModel> InvoiceHistory { get; set; }  //refactor:rename
         public List<InvoiceDetail> InvoicesDue { get; set; }
         public int Year { get; set; }
     }
@@ -35,11 +35,18 @@ namespace CimscoPortal.Models
         public string Address1 { get; set; }
     }
 
-    public class InvoiceDetail2
+    public class InvoiceOverviewViewModel
     {
-        public DateTime DueDate { get; set; }
-        public decimal Amount { get; set; }
-        public Int16 PercentChange { get; set; }
+        public DateTime InvoiceDueDate { get; set; }
+        public bool Approved { get; set; }
+        public bool Verified { get; set; }
+        public DateTime ApprovedDate { get; set; }
+        public string ApproversName { get; set; }
+        public decimal InvoiceTotal { get; set; }
+        public decimal PercentageChange { get; set; }
+        public DateTime InvoiceDate { get; set; }
+        public string InvoiceNumber { get; set; }
+        public int SiteId { get; set; }
         public int InvoiceId { get; set; }
     }
 
@@ -61,6 +68,9 @@ namespace CimscoPortal.Models
         public decimal BDLossCharge { get; set; }
         public decimal BDMeteredKwh { get; set; }
         public bool ValidationError { get; set; }
+        public int SiteId { get; set; }
+        public bool InvoicePdf { get; set; }
+       // public string PdfSourceLocation { get; set; }
     }
 
     public class SiteHierarchyViewModel

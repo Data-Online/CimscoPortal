@@ -23,8 +23,8 @@ namespace CimscoPortal.Controllers.Api
 
         public int ZZTest(int test)
         {
-           var user = User.Identity.Name;
-           var userId = User.Identity.GetUserId();
+            var user = User.Identity.Name;
+            var userId = User.Identity.GetUserId();
 
             if (user == "test")
                 return 1;
@@ -45,7 +45,7 @@ namespace CimscoPortal.Controllers.Api
         [Route("common")]
         public HttpResponseMessage GetCommonData(HttpRequestMessage request)
         {
-            return request.CreateResponse<CommonInfoViewModel>(HttpStatusCode.OK, 
+            return request.CreateResponse<CommonInfoViewModel>(HttpStatusCode.OK,
                             _portalService.GetCommonData(User.Identity.Name));
         }
 
@@ -69,10 +69,26 @@ namespace CimscoPortal.Controllers.Api
 
         [HttpGet]
         [Route("siteinvoicedatafor/{siteId}")]
-        public HttpResponseMessage GetCompanyInvoiceData(HttpRequestMessage request, int siteId)
+        public HttpResponseMessage GetSiteInvoiceData(HttpRequestMessage request, int siteId)
         {
-            var data = _portalService.GetSiteInvoiceData(siteId);
+            var data = _portalService.GetInvoiceDetailForSite(siteId);
             return request.CreateResponse<InvoiceDetail[]>(HttpStatusCode.OK, data.ToArray());
+        }
+
+        [HttpGet]
+        [Route("invoiceOverviewFor/{siteId}")]
+        public HttpResponseMessage GetInvoiceOverview(HttpRequestMessage request, int siteId)
+        {
+            var data = _portalService.GetInvoiceOverviewForSite(siteId);
+            return request.CreateResponse<InvoiceOverviewViewModel[]>(HttpStatusCode.OK, data.ToArray());
+        }
+
+        [HttpGet]
+        [Route("invoiceOverviewFor/{siteId}/{invoiceId}")]
+        public HttpResponseMessage GetInvoiceOverview(HttpRequestMessage request, int siteId, int invoiceId)
+        {
+            var data = _portalService.GetInvoiceOverviewForSite(siteId, invoiceId);
+            return request.CreateResponse<InvoiceOverviewViewModel[]>(HttpStatusCode.OK, data.ToArray());
         }
 
         [HttpGet]
@@ -80,11 +96,18 @@ namespace CimscoPortal.Controllers.Api
         public HttpResponseMessage GetSummaryDataFor(HttpRequestMessage request)
         {
             var data = _portalService.GetSummaryDataFor(User.Identity.Name);
-            var _return = request.CreateResponse<SummaryViewModel>(HttpStatusCode.OK, data);
-            return _return;
+            return request.CreateResponse<SummaryViewModel>(HttpStatusCode.OK, data);
         }
 
         #region Invoice data
+        [HttpGet]
+        [Route("invoicetally/{monthSpan}")]
+        public HttpResponseMessage GetInvoiceTally(HttpRequestMessage request, int monthSpan)
+        {
+            var data = _portalService.GetInvoiceTally(User.Identity.Name, monthSpan);
+            return request.CreateResponse<InvoiceTallyViewModel>(HttpStatusCode.OK, data);
+        }
+
         [HttpGet]
         [Route("invoicesummaryfor/{invoiceId}")]
         public HttpResponseMessage GetInvoiceData(HttpRequestMessage request, int invoiceId)
@@ -111,12 +134,14 @@ namespace CimscoPortal.Controllers.Api
 
         [System.Web.Mvc.ValidateAntiForgeryToken]
         [HttpPost]
-        [Route("invoiceapproval/{invoiceId}")]
+        [Route("invoiceApproval/{invoiceId}")]
         public HttpResponseMessage SetInvoiceApproved(HttpRequestMessage request, int invoiceId)
         {
-            var userId = User.Identity.Name;
-            _portalService.ApproveInvoice(invoiceId, userId);
-            return request.CreateResponse(HttpStatusCode.OK);
+            var _data = _portalService.ApproveInvoice(invoiceId, User.Identity.Name);
+            if (_data.Approved)
+                return request.CreateResponse<InvoiceOverviewViewModel>(HttpStatusCode.OK, _data);
+            else
+                return request.CreateResponse(HttpStatusCode.BadRequest);
         }
 
         #endregion

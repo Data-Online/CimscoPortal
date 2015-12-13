@@ -4,9 +4,10 @@
         @*animate" ng-hide="inv.approved">*@
         <div ng-style=setOpacity(inv.invoiceNumber)>
             <div class="databox-left bg-white">
-                <div ng-class="pctBoxStyle(inv.percentageChange)">
+                <div ng-class="pctBoxStyle(inv.percentageChange)" title="Test">
                     @*<div class="databox-stat radius-bordered bg-red">*@
-                    <div class="stat-text">{{inv.percentageChange | number:1}} %</div>
+                    <div ng-show="-999!={{inv.percentageChange}}" class="stat-text">{{inv.percentageChange | number:1}} %</div>
+                    <div ng-show="-999=={{inv.percentageChange}}" class="stat-text">no data</div>
                     <i ng-class="negativeValue(inv.percentageChange)"></i>
                 </div>
                 <div class="databox-cell cell-12 no-padding padding-top-30  text-align-center">
@@ -14,8 +15,8 @@
                         <a href="@Url.Action("InvoiceDetail", "Portal")/{{inv.invoiceId}}" title="Invoice Details">
                             <i class="fa fa-cogs"></i>
                         </a>
-                        <a href="#" title="Download PDF">
-                            <i class="fa fa-download"></i>
+                        <a ng-show="{{inv.invoicePdf}} "href="https://cimsco.blob.core.windows.net/{{inv.siteId|padNumber:6}}/{{inv.invoiceId|padNumber:8}}.pdf" title="Download PDF">
+                            <i class="fa fa-download"></i>@*{{inv.siteId|padNumber:6}}/{{inv.invoiceId|padNumber:8}}.pdf*@
                         </a>
                     </span>
                 </div>

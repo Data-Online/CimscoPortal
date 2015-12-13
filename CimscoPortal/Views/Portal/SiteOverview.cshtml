@@ -1,0 +1,286 @@
+﻿@{
+    ViewBag.Title = "Site Overview";
+    ViewBag.Description = "Site Overview";
+    Layout = "~/Views/Shared/_Default.cshtml";
+}
+
+<div data-ng-app="app" data-ng-controller="app.core.siteOverview" data-ng-init="setSiteId(@ViewBag.siteId)">
+    <div class="row">
+        <div class="col-lg-6 col-sm-6 col-xs-12">
+            <div class="widget">
+                <div class="widget-header bordered-bottom bordered-blue">
+                    <span class="widget-caption">Company Details</span>
+                    <div class="widget-buttons">
+                        <a href="" widget-config></a>
+                        <a href="" widget-maximize></a>
+                        <a href="" widget-collapse></a>
+                        <a href="" widget-dispose></a>
+                    </div><!--Widget Buttons-->
+                </div>
+                <div class="widget-body">
+                    <div>
+                        Company Details and address
+                        <input type="hidden" id="siteId" value="@ViewBag.siteId" />
+                        <span>Site id = @ViewBag.siteId</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-sm-6 col-xs-12">
+            <div class="widget">
+                <div class="widget-header bordered-bottom bordered-blue">
+                    <span class="widget-caption">Summary Data</span>
+                    <div class="widget-buttons">
+                        <a href="" widget-config></a>
+                        <a href="" widget-maximize></a>
+                        <a href="" widget-collapse></a>
+                        <a href="" widget-dispose></a>
+                    </div><!--Widget Buttons-->
+                </div>
+                <div class="widget-body">
+                    <div>
+                        Summary data
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="row">
+                <div class="col-xs-12">
+
+                    <div class="dashboard-box">
+                        <div class="box-header">
+                            <div class="deadline">
+                                {{tabTableHeader}}
+                            </div>
+                        </div>
+                        <div class="widget-header bordered-bottom bordered-themeprimary">
+                            <span ng-repeat="_month in monthSpanOptions" data-ng-click="reviseMonths(_month)" class="widget-caption" ng-class="{'themeprimary' : monthSpan==_month}" style=" padding-left:5px; padding-right:5px">
+                                <i class="widget-icon fa fa-calendar"></i>
+                                {{_month}} months
+                            </span>
+                        </div>
+                        <div class="box-tabbs">
+                            <div class="tabbable">
+                                <ul class="nav nav-tabs tabs-flat  nav-justified" id="myTab11">
+                                    <li class="active">
+                                        <a data-toggle="tab" href="#invoices">
+                                            Invoices
+                                        </a>
+                                    </li>
+                                    <li ng-show="true">
+                                        <a data-toggle="tab" href="#network">
+                                            Invoice Value
+                                        </a>
+                                        </ling-show>
+                                    <li ng-show="true">
+                                        <a data-toggle="tab" href="#other">
+                                            Consumption
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a data-toggle="tab" href="#analysis">
+                                            Totals and Analysis
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content tabs-flat no-padding">
+                                    <div id="invoices" class="tab-pane animated fadeInUp no-padding-bottom active" style="padding:20px 20px 0 20px;">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                @Html.Partial("_InvoiceList")
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="network" class="tab-pane padding-5 animated fadeInUp">
+                                        <div class="row">
+                                            <div class="col-lg-1"></div>
+                                            <div class="col-lg-10">
+                                                <div height="250px" style="width: 100%; display: block;" class="chart chart-lg no-margin">
+                                                    <flot dataset="visitChartData" options="visitChartOptions"></flot>
+                                                </div>
+                                                @*<div height="250px" style="width: 100%; display: block;" ui-jq="plot" ui-options="{{visitChartData}}, {{visitChartOptions}}"
+                                                         class="chart chart-lg no-margin">
+                                                    </div>*@
+                                            </div>
+                                            <div class="col-lg-1"></div>
+                                        </div>
+                                    </div>
+                                    <div id="other" class="tab-pane  animated fadeInUp">
+                                        <div class="row">
+                                            <div class="col-lg-1"></div>
+                                            <div class="col-lg-10">
+                                                <div height=" 250px" style="width: 100%; display: block;" class="chart chart-lg">
+                                                    <flot dataset="SelectableChartData" options="SelectableChartOptions"></flot>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-1"></div>
+                                        </div>
+                                    </div>
+                                    <div id="analysis" class="tab-pane animated fadeInUp no-padding-bottom" style="padding:20px 20px 0 20px;">
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <label data-toggle="tooltip" title="Sort by Total Value">
+                                                    <span ng-click="order('billTotal')" class="btn-sm btn-labeled btn-palegreen">
+                                                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='billTotal'"></i>Total Value
+                                                    </span>
+                                                </label>
+                                                <label data-toggle="tooltip" title="Sort by Site Name">
+                                                    <span ng-click="order('site')" class="btn-sm btn-labeled btn-palegreen">
+                                                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='site'"></i>Site
+                                                    </span>
+                                                </label>
+                                            </div>
+                                            <div class="col-lg-8" ng-init="options={};options.selected=true">
+                                                <span>Energy Charges</span>
+                                                <label ng-hide="false">
+                                                    <input class="checkbox-slider toggle colored-blue" ng-model="showValue" type="checkbox" ng-init="showValue=options.selected">
+                                                    <span class="text"></span>
+                                                </label>
+                                                <span>Total kWh</span>
+                                                <label ng-hide="false">
+                                                    <input class="checkbox-slider toggle colored-warning" ng-model="showKwh" type="checkbox" ng-init="showKwh=options.selected">
+                                                    <span class="text"></span>
+                                                </label>
+                                                <span>Units per sqM</span>
+                                                <label ng-hide="false">
+                                                    <input class="checkbox-slider toggle colored-palegreen" ng-model="showUsqm" type="checkbox" ng-init="showUsqm=options.selected">
+                                                    <span class="text"></span>
+                                                </label>
+                                                <span>Cost per sqM</span>
+                                                <label ng-hide="false">
+                                                    <input class="checkbox-slider toggle colored-magenta" ng-model="showCsqm" type="checkbox" ng-init="showCsqm=options.selected">
+                                                    <span class="text"></span>
+                                                </label>
+                                            </div>
+                                            <div ng-repeat="invoice in invoiceDetail |orderBy:predicate:reverse">
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <b><span>{{invoice.site}} <i>({{invoice.invCount}} invoices on file, total value of {{invoice.billTotal | currency:$}})</i></span></b>
+                                                    </div>
+                                                </div>
+                                                <div class="row" ng-show="showValue">
+                                                    <div class="col-lg-3">
+                                                        <div class="col-lg-4">
+                                                        </div>
+                                                        <div class="col-lg-8">
+                                                            <span>Energy Charges</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-9 progress-compact progress-bordered">
+                                                        <div ng-repeat="values in invoice.power">
+                                                            <div class="progress-bar progress-bar-{{invTheme[$index+1].theme}}" style="width: {{values.percent}}%">
+                                                                <span ng-show="values.percent>10"> {{values.reading | currency:$}} </span>
+                                                                <span ng-show="values.percent<=10">&nbsp;</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row" ng-show="showKwh">
+                                                    <div class="col-lg-3">
+                                                        <div class="col-lg-4">
+                                                        </div>
+                                                        <div class="col-lg-8">
+                                                            <span>Total kWh</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-9 progress-compact progress-bordered">
+                                                        <div ng-repeat="values in invoice.kWh">
+                                                            <div class="progress-bar progress-bar-{{invTheme[$index+1].theme}}" style="width: {{values.percent}}%">
+                                                                <span> {{values.reading | number:0}} </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row" ng-show="showUsqm">
+                                                    <div class="col-lg-3">
+                                                        <div class="col-lg-4">
+                                                        </div>
+                                                        <div class="col-lg-8">
+                                                            <span>Units per sqM</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-9 progress-compact progress-bordered">
+                                                        <div ng-repeat="values in invoice.upsqm">
+                                                            <div class="progress-bar progress-bar-{{invTheme[$index+1]}}" style="width: {{values.percent}}%">
+                                                                <span> {{values.units}} {{values.reading | number:2}}  </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row" ng-show="showCsqm">
+                                                    <div class="col-lg-3">
+                                                        <div class="col-lg-4">
+                                                        </div>
+                                                        <div class="col-lg-8">
+                                                            <span>Cost per sqM</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-9 progress-compact progress-bordered">
+                                                        <div ng-repeat="values in invoice.cpsqm">
+                                                            <div class="progress-bar progress-bar-{{invTheme[$index+1]}}" style="width: {{values.percent}}%">
+                                                                <span> {{values.reading | currency:$}} </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row"></div>
+
+    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <pattern id="smallGrid" width="8" height="8" patternUnits="userSpaceOnUse">
+                <path d="M 8 0 L 0 0 0 8" fill="none" stroke="gray" stroke-width="0.5" />
+            </pattern>
+            <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+                <rect width="80" height="80" fill="url(#smallGrid)" />
+                <path d="M 80 0 L 0 0 0 80" fill="none" stroke="gray" stroke-width="1" />
+            </pattern>
+        </defs>
+
+        <rect width="100%" height="100%" fill="url(#grid)" />
+    </svg>
+
+
+    @section PageScripts{
+
+        @*<script src="~/Scripts/charts/flot/jquery.flot.crosshair.js"></script>*@
+        @*<script src="~/Scripts/charts/flot/jquery.flot.selection.js"></script>*@
+        <script src="~/Scripts/charts/flot/jquery.flot.min.js"></script>
+        <script src="~/Scripts/charts/flot/jquery.flot.resize.js"></script>
+        <script src="~/Scripts/charts/flot/jquery.flot.axislabels.js"></script>
+        <script src="~/Scripts/charts/flot/jquery.flot.tooltip.js"></script>
+        <script src="~/App_/common/directives/angular-flot.js"></script>
+        <script src="~/App_/common/directives/widget.js"></script>
+        <script src="~/App_/core/App.js"></script>
+        <script src="~/App_/core/siteOverview.data.js"></script>
+        <script src="~/App_/core/siteOverview.ctrl.js"></script>
+        <script src="~/App_/core/customFilters.js"></script>
+        @*<script src="~/Scripts/angular-ui-utils/angular-ui-utils.js"></script>*@
+
+    }
+
+    <style>
+        .progress-compact {
+            /*background-color: #f5f5f5;
+                    border-radius: 4px;
+                    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
+                    height: 20px;*/
+            margin-bottom: 5px;
+            overflow: hidden;
+        }
+    </style>
+

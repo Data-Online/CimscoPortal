@@ -5,6 +5,7 @@ namespace CimscoPortal.Data.Migrations
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
+    using System.Configuration;
 
     internal sealed class Configuration : DbMigrationsConfiguration<CimscoPortal.Data.Models.CimscoPortalContext>
     {
@@ -64,6 +65,8 @@ namespace CimscoPortal.Data.Migrations
 
         protected override void Seed(CimscoPortal.Data.Models.CimscoPortalContext context)
         {
+
+            var SeedData = false; //.Configuration.ConfigurationSettings.GetConfig("SeedData");// ConfigurationManager.AppSettings["AccountName"];
             //  This method will be called after migrating to the latest version.
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
@@ -102,23 +105,26 @@ namespace CimscoPortal.Data.Migrations
             //LinkUsersCustomer("Intercontinental Group", new string[] { "masterton@cimsco.co.nz" }, context);
             LinkUsersCustomer("Nees Hardware Ltd", new string[] { "mitre10@cimsco.co.nz" }, context);
 
-            LinkUsersGroup("Foodstuffs North Island", new string[] {"foodstuffs@cimsco.co.nz","foodstuffs2@cimsco.co.nz" }, context);
+            LinkUsersGroup("Foodstuffs North Island", new string[] { "foodstuffs@cimsco.co.nz", "foodstuffs2@cimsco.co.nz" }, context);
 
-            LinkUsersCustomer("Holiday Inn", new string[] { "holiday1@cimsco.co.nz","holiday2@cimsco.co.nz" }, context);
+            LinkUsersCustomer("Holiday Inn", new string[] { "holiday1@cimsco.co.nz", "holiday2@cimsco.co.nz" }, context);
 
             context.SaveChanges();
 
-            int _monthsOfDataToCreate = 36;
-            InvoiceDataSeed(context, "Pak 'n Save Upper Hutt", _monthsOfDataToCreate, "0000103216TR397");
-            InvoiceDataSeed(context, "Pak 'n Save Upper Hutt Fuel Site..", _monthsOfDataToCreate, "t000103216TR399");
-            InvoiceDataSeed(context, "Pak .n Save Upper Hutt Bulk warehouse", _monthsOfDataToCreate, "t000103216TR388");
-            InvoiceDataSeed(context, "Mega Mitre 10 Petone", _monthsOfDataToCreate, "0001452560UN-B21");
-            InvoiceDataSeed(context, "Mega Mitre 10 Porirua", _monthsOfDataToCreate, "t001452560UN-B1"); 
-            InvoiceDataSeed(context, "Mega Retail Park Upper Hutt", _monthsOfDataToCreate, "t001452560UN-B2");
-            InvoiceDataSeed(context, "Mega Mitre 10 Upper Hutt", _monthsOfDataToCreate, "1001127474UN587");
+            if (SeedData)
+            {
+                int _monthsOfDataToCreate = 36;
+                InvoiceDataSeed(context, "Pak 'n Save Upper Hutt", _monthsOfDataToCreate, "0000103216TR397");
+                InvoiceDataSeed(context, "Pak 'n Save Upper Hutt Fuel Site..", _monthsOfDataToCreate, "t000103216TR399");
+                InvoiceDataSeed(context, "Pak .n Save Upper Hutt Bulk warehouse", _monthsOfDataToCreate, "t000103216TR388");
+                InvoiceDataSeed(context, "Mega Mitre 10 Petone", _monthsOfDataToCreate, "0001452560UN-B21");
+                InvoiceDataSeed(context, "Mega Mitre 10 Porirua", _monthsOfDataToCreate, "t001452560UN-B1");
+                InvoiceDataSeed(context, "Mega Retail Park Upper Hutt", _monthsOfDataToCreate, "t001452560UN-B2");
+                InvoiceDataSeed(context, "Mega Mitre 10 Upper Hutt", _monthsOfDataToCreate, "1001127474UN587");
 
-            InvoiceDataSeed(context, "Holiday Inn", _monthsOfDataToCreate, "t1234567890"); 
-            context.SaveChanges();
+                InvoiceDataSeed(context, "Holiday Inn", _monthsOfDataToCreate, "t1234567890");
+                context.SaveChanges();
+            }
 
             CalculatePercentageChange(context);
             context.SaveChanges();
@@ -135,6 +141,7 @@ namespace CimscoPortal.Data.Migrations
 
         }
 
+        #region Private methods
         private static void CreateCities(CimscoPortal.Data.Models.CimscoPortalContext context)
         {
             context.Cities.AddOrUpdate(
@@ -212,7 +219,6 @@ namespace CimscoPortal.Data.Migrations
             //return _sitesToRemove;
         }
 
-        #region private functions
         private static void CreateContacts(CimscoPortal.Data.Models.CimscoPortalContext context)
         {
             context.Contacts.AddOrUpdate(
@@ -365,14 +371,15 @@ namespace CimscoPortal.Data.Migrations
         {
             // Sites
             // ==> Script Name : seed_Sites_table_from_source.sql
-            
+
             foreach (string _entry in sampleSites)
             {
                 context.Sites.AddOrUpdate(
                     cd => cd.SiteName,
                         new CimscoPortal.Data.Models.Site
                         {
-                            SiteName = _entry
+                            SiteName = _entry,
+                            SiteArea = 1234.00M
                         }
                     );
             }
@@ -517,6 +524,7 @@ namespace CimscoPortal.Data.Migrations
                         PeriodStart = _periodStart,
                         PeriodEnd = _periodStart.AddMonths(1).AddDays(-1),
                         EnergyPointId = _energyPointId,
+                        SupplierId = 1,
 
                         EnergyCharge = new EnergyCharge()
                         {
@@ -546,15 +554,7 @@ namespace CimscoPortal.Data.Migrations
                             NBD1620R = 10.2800M,
                             NBD2024R = 8.8000M,
 
-                            BDSVC = 149.37M,
-                            BDSVCR = 0.1200M,
-                            NBDSVC = 79.69M,
-                            NBDSVCR = 0.1200M,
-
-                            EALevy = 204.83M,
-                            EALevyR = 1.0438M,
-
-                            LossRate = 0.028M
+                            //LossRate = 0.028M
                         },
                         NetworkCharge = new NetworkCharge()
                         {
@@ -563,6 +563,17 @@ namespace CimscoPortal.Data.Migrations
                             CapacityCharge = 250.50M,
                             DemandCharge = 2772.38M,
                             FixedCharge = 686.94M
+                        },
+
+                        OtherCharge = new OtherCharge()
+                        {
+                            BDSVC = 149.37M,
+                            BDSVCR = 0.1200M,
+                            NBDSVC = 79.69M,
+                            NBDSVCR = 0.1200M,
+
+                            EALevy = 204.83M,
+                            EALevyR = 1.0438M,
                         }
 
                     });
@@ -570,27 +581,42 @@ namespace CimscoPortal.Data.Migrations
                 _startDate = _startDate.AddMonths(1);
                 _invoiceId++;
                 //_energyPoint++;
-                _lastTotal = _invoiceTotal;
+                _lastTotal = Math.Max(_invoiceTotal, 1);
             }
         }
 
         private void CalculatePercentageChange(CimscoPortal.Data.Models.CimscoPortalContext context)
         {
-            decimal _lastTotal = 0.00M;
-            decimal _currentTotal = 0.00M;
+            //IFormatProvider culture = new System.Globalization.CultureInfo("en-EN", true);
+            decimal _lastTotal;
+            decimal _currentTotal;
             decimal _percentChange;
+            DateTime _lastInvoiceDate; // = new DateTime(1970, 1, 1); // Convert.ToDateTime("01/01/2000"); ; 
+            DateTime _invoiceMonth;
             foreach (var _energyPointId in context.EnergyPoints.Select(i => i.EnergyPointId))
             {
+                _lastTotal = 0.00M;
+                _currentTotal = 0.00M;
+                _lastInvoiceDate = new DateTime(1970, 1, 1);
                 foreach (var _invoice in context.InvoiceSummaries.Where(i => i.EnergyPointId == _energyPointId).OrderBy(i => i.InvoiceDate))
                 {
-                    _currentTotal = _invoice.InvoiceTotal;
-                    _percentChange = 0.0M;
-                    if (_lastTotal > 0.00M)
+                    _invoiceMonth = new DateTime(_invoice.InvoiceDate.Year, _invoice.InvoiceDate.Month, 1);
+                    if (_invoiceMonth.AddMonths(-1) == _lastInvoiceDate)
                     {
-                        _percentChange = ((_currentTotal - _lastTotal) / _lastTotal) * 100;
+                        _currentTotal = _invoice.InvoiceTotal;
+                        _percentChange = 0.0M;
+                        if (_lastTotal > 0.00M)
+                        {
+                            _percentChange = ((_currentTotal - _lastTotal) / _lastTotal) * 100;
+                        }
+                    }
+                    else
+                    {
+                        _percentChange = -999.0M;
                     }
                     _invoice.PercentageChange = _percentChange;
                     _lastTotal = _currentTotal;
+                    _lastInvoiceDate = _invoiceMonth;
                 }
             }
         }
@@ -655,15 +681,7 @@ namespace CimscoPortal.Data.Migrations
                     NBD1620R = 10.2800M,
                     NBD2024R = 8.8000M,
 
-                    BDSVC = 149.37M,
-                    BDSVCR = 0.1200M,
-                    NBDSVC = 79.69M,
-                    NBDSVCR = 0.1200M,
-
-                    EALevy = 204.83M,
-                    EALevyR = 1.0438M,
-
-                    LossRate = 0.028M
+                    //LossRate = 0.028M
                 },
                 NetworkCharge = new NetworkCharge()
                 {
@@ -672,6 +690,16 @@ namespace CimscoPortal.Data.Migrations
                     CapacityCharge = 250.50M,
                     DemandCharge = 2772.38M,
                     FixedCharge = 686.94M
+                },
+                OtherCharge = new OtherCharge()
+                {
+                    BDSVC = 149.37M,
+                    BDSVCR = 0.1200M,
+                    NBDSVC = 79.69M,
+                    NBDSVCR = 0.1200M,
+
+                    EALevy = 204.83M,
+                    EALevyR = 1.0438M
                 }
             });
         }
@@ -713,4 +741,3 @@ namespace CimscoPortal.Data.Migrations
         #endregion
 
 }
-// N'fa fa-phone bg-themeprimary white', N'fa fa-clock-o themeprimary', N'Phone Blue')

@@ -3,7 +3,7 @@
             xmlns="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0"
             xsi:schemaLocation="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0 MvcSiteMapSchema.xsd">
 
-  <mvcSiteMapNode title="Dashboard" controller="Portal" action="Index" imageUrl="glyphicon glyphicon-home" description="dashboard" visibility="Condition1">
+  <mvcSiteMapNode title="Dashboard" controller="Portal" action="Index" imageUrl="glyphicon glyphicon-home" description="Company Overview" visibility="Condition1">
     <!--<mvcSiteMapNode title="Databoxes" controller="Home" action="Databoxes" imageUrl="glyphicon glyphicon-tasks" description="beyond containers"/>-->
     <mvcSiteMapNode title="Invoice Overview" controller="Portal" action="InvoiceOverview" imageUrl="glyphicon glyphicon-signal" description="cimsco portal" visibility="AllUsers"/>
     <mvcSiteMapNode title="Invoice Detail" controller="Portal" action="InvoiceDetail" preservedRouteParameters="id" imageUrl="glyphicon glyphicon-signal" description="cimsco portal" visibility="Hidden"/>

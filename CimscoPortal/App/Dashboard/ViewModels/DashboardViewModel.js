@@ -2,7 +2,7 @@
 
     var module = angular.module("dashboard");
 
-    var dashboardViewModel = function ($scope, dbDataSource) {
+    var dashboardViewModel = function ($scope, dbDataSource, sharedProperties) {
         $scope.pageElement = 'inv-hist-bar-chart2';
         var barchart = function () {
             console.log('creating morris chart 2');
@@ -13,10 +13,19 @@
                 ykeys: $scope.ykeys,
                 labels: $scope.labels,
                 hideHover: 'auto',
-                barColors: [themeprimary, themesecondary, themethirdcolor]
+                barColors: [themeprimary, themesecondary, themethirdcolor],
                 // ,ymin: 0
-               , ymax: $scope.maxValue
+                ymax: $scope.maxValue,
+                resize: true
+                //,hoverCallback: function (index, options, content, row) {
+                //    return "sin(" + row.x + ") = " + row.y;
+                //}
             });
+
+            //morris.options.labels.forEach(function (label, i) {
+            //    var legendItem = $('<span></span>').text(label).css('color', chart.options.lineColors[i])
+            //    $('#legend').append(legendItem)
+            //});
 
             $scope.updateTest = function (siteIndex) {
                 var offSet = 3;
@@ -80,7 +89,11 @@
         $scope.pctBoxStyle = function (myValue) {
             var num = parseInt(myValue);
             var style = 'databox-stat radius-bordered';
-            if (num > 0) {
+            //console.log(num);
+            if (num <= -999) {
+                style = style + ' bg-ivory';
+            }
+            else if (num > 0) {
                 style = style + ' bg-warning';
             }
             else if (num < 0) {
@@ -95,18 +108,40 @@
         $scope.negativeValue = function (myValue) {
             var num = parseInt(myValue);
             var style = 'stat-icon';
-            if (num > 0) {
+            if (num == -999) {
+
+            }
+            else if (num == 0) {
+                style = style + ' fa fa-arrows-h';
+            }
+            else if (num > 0) {
                 style = style + ' fa fa-long-arrow-up';
             }
             else if (num < 0) {
                 style = style + ' fa fa-long-arrow-down';
             }
-            //console.log('Style for value ' + num +' set to ' + style);
+           // console.log('Style for value ' + num +' set to ' + style);
             return style;
         };
 
     };
 
     module.controller("dashboardViewModel", dashboardViewModel);
+
+    // Duplicated in "shared"
+    module.filter('padNumber', function () {
+        return function (n, len) {
+            var num = parseInt(n, 10);
+            len = parseInt(len, 10);
+            if (isNaN(num) || isNaN(len)) {
+                return n;
+            }
+            num = '' + num;
+            while (num.length < len) {
+                num = '0' + num;
+            }
+            return num;
+        };
+    });
 
 }());

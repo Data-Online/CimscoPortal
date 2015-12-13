@@ -954,7 +954,7 @@ var InitiateHorizonalChart = function () {
             var my_data = [[3, 0], [6, 1], [5, 2], [2, 3], [8, 4]];
 
             // Setup labels for use on the Y-axis  
-            var tickLabels = [[0, 'Yes'], [1, 'No'], [2, 'Maybe'], [3, 'Sometimes'], [4, 'Never']];
+            var tickLabels = [[0, 'Site 1'], [1, 'Site 2'], [2, 'Site 3'], [3, 'Site 4'], [4, 'Site 5']];
 
             $.plot($("#horizonal-chart"), [
             {

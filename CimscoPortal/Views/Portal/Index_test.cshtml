@@ -1,9 +1,139 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Index_test";
     Layout = "~/Views/Shared/_Default.cshtml";
 }
 
+
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="dashboard-box">
+                    <div class="box-header">
+                        <div class="deadline">
+                            All Locations
+                        </div>
+                    </div>
+                    @*<div class="box-progress" >
+                            <div class="progress-handle">bill due</div>
+                            <div class="progress progress-xs progress-no-radius bg-whitesmoke">
+                                <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                                </div>
+                            </div>
+                        </div>*@
+                    <div class="box-tabbs">
+                        <div class="tabbable">
+                            <ul class="nav nav-tabs tabs-flat  nav-justified" id="myTab11">
+                                <li class="active">
+                                    <a data-toggle="tab" href="#approvals">
+                                        Approvals
+                                    </a>
+                                </li>
+                                <li>
+                                    <a data-toggle="tab" href="#network">
+                                        Invoice Value
+                                    </a>
+                                </li>
+                                <li>
+                                    <a data-toggle="tab" href="#other">
+                                        Consumption
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a data-toggle="tab" id="contacttab" href="#bandwidth">
+                                        Consumption Analysis
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content tabs-flat no-padding">
+                                <div id="approvals" class="tab-pane animated fadeInUp no-padding-bottom active" style="padding:20px 20px 0 20px;">
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                            <span>Company Name</span>
+                                        </div>
+                                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 progress progress-bordered">
+                                            <div class="progress-bar progress-bar-success" style="width: 55%">
+                                                <span> 12 </span>
+                                            </div>
+                                            <div class="progress-bar progress-bar-warning" style="width: 10%">
+                                                <span> 2 </span>
+                                            </div>
+                                            <div class="progress-bar progress-bar-danger" style="width: 35%">
+                                                <span> 7 </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                            <span>Company Name</span>
+                                        </div>
+                                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 progress progress-bordered">
+                                            <div class="progress-bar progress-bar-success" style="width: 40%">
+                                                <span> 8 </span>
+                                            </div>
+                                            <div class="progress-bar progress-bar-warning" style="width: 30%">
+                                                <span> 6 </span>
+                                            </div>
+                                            <div class="progress-bar progress-bar-danger" style="width: 30%">
+                                                <span> 7 </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                            <span>Company Name</span>
+                                        </div>
+                                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 progress progress-bordered">
+                                            <div class="progress-bar progress-bar-success" style="width: 55%">
+                                                <span> 12 </span>
+                                            </div>
+                                            <div class="progress-bar progress-bar-warning" style="width: 10%">
+                                                <span> 2 </span>
+                                            </div>
+                                            <div class="progress-bar progress-bar-danger" style="width: 35%">
+                                                <span> 7 </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="network" class="tab-pane padding-5 animated fadeInUp">
+                                    <div class="row">
+                                    
+                                    </div>
+                                </div>
+                                <div id="other" class="tab-pane  animated fadeInUp">
+                                    <div class="row">
+                                        <div class="col-lg-6 chart-container">
+                                            @Html.Partial("_OtherChargesTable")
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div id="bandwidth" class="tab-pane padding-10 animated fadeInUp">
+                                    <div class="databox-sparkline bg-themeprimary">
+                                        <span id="dashboard-bandwidth-chart" data-sparkline="compositeline" data-height="250px" data-width="100%" data-linecolor="#fff" data-secondlinecolor="#eee"
+                                              data-fillcolor="rgba(255,255,255,.1)" data-secondfillcolor="rgba(255,255,255,.25)"
+                                              data-spotradius="0"
+                                              data-spotcolor="#fafafa" data-minspotcolor="#fafafa" data-maxspotcolor="#ffce55"
+                                              data-highlightspotcolor="#fff" data-highlightlinecolor="#fff"
+                                              data-linewidth="2" data-secondlinewidth="2"
+                                              data-composite="500, 400, 100, 450, 300, 200, 100, 200">
+                                        </span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*<div id=" horizonal-chart" class="chart chart-lg"></div>*@
 <div class="row">
     <div class="col-xs-12 col-md-12 col-lg-12">
         <div class="widget">
@@ -121,32 +251,337 @@
     </div>
 </div>
 
-@section PageScripts{
-    <script src="assets/js/beyond.min.js"></script>
+<div class="row">
+    <div class="col-xs-12 col-md-12 col-lg-12">
+        <div class="widget">
+            <div class="widget-header ">
+                <span class="widget-caption">Bar Chart</span>
+                <div class="widget-buttons">
+                    <a href="#" data-toggle="maximize">
+                        <i class="fa fa-expand"></i>
+                    </a>
+                    <a href="#" data-toggle="collapse">
+                        <i class="fa fa-minus"></i>
+                    </a>
+                    <a href="#" data-toggle="dispose">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="widget-body">
 
-    <!--Page Related Scripts-->
-    <script src="/assets/js/charts/morris/raphael-2.0.2.min.js"></script>
-    <script src="/assets/js/charts/morris/morris.js"></script>
-    <script src="/assets/js/charts/morris/morris-init.js"></script>
+                <div id="bar-chart" class="chart chart-lg"></div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="horizontal-space"></div>
+<div class="row">
+    <div class="col-xs-12 col-md-12 col-lg-12">
+        <div class="widget">
+            <div class="widget-header">
+                <span class="widget-caption">Selectable & Zoomable & Trackable Line Chart</span>
+                <div class="widget-buttons">
+                    <a href="#" data-toggle="maximize">
+                        <i class="fa fa-expand"></i>
+                    </a>
+                    <a href="#" data-toggle="collapse">
+                        <i class="fa fa-minus"></i>
+                    </a>
+                    <a href="#" data-toggle="dispose">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="widget-body">
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div id="selectable-chart" class="chart chart-lg"></div>
+
+                    </div>
+                    <!--<div class="row">
+                        <div class="col-sm-12">
+                            <div class="col-sm-12 col-md-6">
+                                <button class="btn btn-default" id="setSelection">Select year 1994</button>
+                                <button class="btn btn-default" id="clearSelection">Clear selection</button>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <div class="pull-right">
+                                   <label><input id="zoom" type="checkbox" />Zoom to selection</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="horizontal-space"></div>
+<div class="row">
+    <div class="col-xs-12 col-md-12 col-lg-12">
+        <div class="widget">
+            <div class="widget-header ">
+                <span class="widget-caption">Real-Time Chart</span>
+                <div class="widget-buttons">
+                    <a href="#" data-toggle="maximize">
+                        <i class="fa fa-expand"></i>
+                    </a>
+                    <a href="#" data-toggle="collapse">
+                        <i class="fa fa-minus"></i>
+                    </a>
+                    <a href="#" data-toggle="dispose">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="widget-body">
+
+                <div id="realtime-chart" class="chart chart-lg"></div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="horizontal-space"></div>
+<div class="row">
+    <div class="col-xs-12 col-md-12 col-lg-12">
+        <div class="widget">
+            <div class="widget-header ">
+                <span class="widget-caption">Stacked Chart</span>
+                <div class="widget-buttons">
+                    <a href="#" data-toggle="maximize">
+                        <i class="fa fa-expand"></i>
+                    </a>
+                    <a href="#" data-toggle="collapse">
+                        <i class="fa fa-minus"></i>
+                    </a>
+                    <a href="#" data-toggle="dispose">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="widget-body">
+                <div id="stacked-chart" class="chart chart-lg"></div>
+                <div class="btn-toolbar">
+                    <div class="btn-group stackControls">
+                        <input type="button" class="btn btn-default" value="With stacking">
+                        <input type="button" class="btn btn-default" value="Without stacking">
+                    </div>
+                    <div class="vertical-space">
+                    </div>
+                    <div class="btn-group graphControls pull-right">
+                        <input type="button" class="btn btn-default" value="Bars">
+                        <input type="button" class="btn btn-default" value="Lines">
+                        <input type="button" class="btn btn-default" value="Lines with steps">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="horizontal-space"></div>
+<div class="row">
+    <div class="col-xs-12 col-md-12 col-lg-12">
+        <div class="widget">
+            <div class="widget-header bordered-bottom border-lightred">
+                <span class="widget-caption">Visitor Chart with Preview</span>
+                <div class="widget-buttons">
+                    <a href="#" data-toggle="maximize">
+                        <i class="fa fa-expand"></i>
+                    </a>
+                    <a href="#" data-toggle="collapse">
+                        <i class="fa fa-minus"></i>
+                    </a>
+                    <a href="#" data-toggle="dispose">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="widget-body">
+                <div id="visitors-chart" class="chart"></div>
+                <div class="well">
+                    <div id="visitors-chart-overview" class="chart chart-sm"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="horizontal-space"></div>
+<div class="row">
+    <div class="col-xs-12 col-md-12 col-lg-12">
+        <div class="widget">
+            <div class="widget-header ">
+                <span class="widget-caption">Chart with Annotations</span>
+                <div class="widget-buttons">
+                    <a href="#" data-toggle="maximize">
+                        <i class="fa fa-expand"></i>
+                    </a>
+                    <a href="#" data-toggle="collapse">
+                        <i class="fa fa-minus"></i>
+                    </a>
+                    <a href="#" data-toggle="dispose">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="widget-body">
+
+                <div id="annotation-chart" class="chart chart-xl"></div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="horizontal-space"></div>
+<div class="row">
+    <div class="col-xs-12 col-md-6">
+        <div class="widget">
+            <div class="widget-header ">
+                <span class="widget-caption" id="title">Pie Chart</span>
+                <div class="widget-buttons">
+                    <a href="#" data-toggle="maximize">
+                        <i class="fa fa-expand"></i>
+                    </a>
+                    <a href="#" data-toggle="collapse">
+                        <i class="fa fa-minus"></i>
+                    </a>
+                    <a href="#" data-toggle="dispose">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="widget-body">
+                <div class="row">
+                    <div class="col-xs-12 col-md-3">
+                        <div class="btn-toolbar pull-left">
+                            <div class="btn-group-vertical">
+                                <button id="example-1" class="btn btn-default btn-sm">Default Options</button>
+                                <button id="example-2" class="btn btn-default btn-sm">Without Legend</button>
+                                <button id="example-3" class="btn btn-default btn-sm">Label Formatter</button>
+                                <button id="example-4" class="btn btn-default btn-sm">Label Radius</button>
+                                <button id="example-5" class="btn btn-default btn-sm">Label Styles #1</button>
+                                <button id="example-6" class="btn btn-default btn-sm">Label Styles #2</button>
+                                <button id="example-7" class="btn btn-default btn-sm">Hidden Labels</button>
+                                <button id="example-8" class="btn btn-default btn-sm">Combined Slice</button>
+                                <button id="example-9" class="btn btn-default btn-sm">Rectangular Pie</button>
+                                <button id="example-10" class="btn btn-default btn-sm">Tilted Pie</button>
+                                <button id="example-11" class="btn btn-default btn-sm">Donut Hole</button>
+                                <button id="example-12" class="btn btn-default btn-sm">Interactivity</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-xs-12 col-md-9">
+                        <div id="pie-chart" class="chart chart"></div>
+                        <!--<p id="description"></p>-->
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-md-6">
+        <div class="widget">
+            <div class="widget-header ">
+                <span class="widget-caption" id="title">Horizonal Chart</span>
+                <div class="widget-buttons">
+                    <a href="#" data-toggle="maximize">
+                        <i class="fa fa-expand"></i>
+                    </a>
+                    <a href="#" data-toggle="collapse">
+                        <i class="fa fa-minus"></i>
+                    </a>
+                    <a href="#" data-toggle="dispose">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="widget-body">
+
+                <div id="horizonal-chart" class="chart chart-lg"></div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="widget-body">
+        <div class="chart chart-lg" ui-options="[{" data":[[3,0],[6,1],[5,2],[2,3],[8,4]],"bars":{"show":true,"horizontal":true}}],{"bars":{"fillcolor":{"colors":[{"opacity":0.8},{"opacity":1}]},"barwidth":0.5,"linewidth":1,"borderwidth":0},"colors":["#2dc3e8"],"yaxis":{"ticks":[[0,"yes"],[1,"no"],[2,"maybe"],[3,"sometimes"],[4,"never"]]},"grid":{"show":true,"hoverable":true,"clickable":true,"tickcolor":"#eee","borderwidth":0,"bordercolor":"#eee"}}" ui-jq="plot" style="padding: 0px; position: relative;">
+            <canvas class="flot-base" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 581px; height: 250px;" width="633" height="272"></canvas>
+            <div class="flot-text" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; font-size: smaller; color: rgb(84, 84, 84);">
+                <div class="flot-x-axis flot-x1-axis xAxis x1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;">
+                    <div class="flot-tick-label tickLabel" style="position: absolute; max-width: 64px; top: 236px; left: 54px; text-align: center;">0</div>
+                    <div class="flot-tick-label tickLabel" style="position: absolute; max-width: 64px; top: 236px; left: 119px; text-align: center;">1</div>
+                    <div class="flot-tick-label tickLabel" style="position: absolute; max-width: 64px; top: 236px; left: 183px; text-align: center;">2</div>
+                    <div class="flot-tick-label tickLabel" style="position: absolute; max-width: 64px; top: 236px; left: 248px; text-align: center;">3</div>
+                    <div class="flot-tick-label tickLabel" style="position: absolute; max-width: 64px; top: 236px; left: 312px; text-align: center;">4</div>
+                    <div class="flot-tick-label tickLabel" style="position: absolute; max-width: 64px; top: 236px; left: 377px; text-align: center;">5</div>
+                    <div class="flot-tick-label tickLabel" style="position: absolute; max-width: 64px; top: 236px; left: 441px; text-align: center;">6</div>
+                    <div class="flot-tick-label tickLabel" style="position: absolute; max-width: 64px; top: 236px; left: 506px; text-align: center;">7</div>
+                    <div class="flot-tick-label tickLabel" style="position: absolute; max-width: 64px; top: 236px; left: 570px; text-align: center;">8</div>
+                </div>
+                <div class="flot-y-axis flot-y1-axis yAxis y1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;">
+                    <div class="flot-tick-label tickLabel" style="position: absolute; top: 224px; left: 36px; text-align: right;">Yes</div>
+                    <div class="flot-tick-label tickLabel" style="position: absolute; top: 175px; left: 38px; text-align: right;">No</div>
+                    <div class="flot-tick-label tickLabel" style="position: absolute; top: 127px; left: 21px; text-align: right;">Maybe</div>
+                    <div class="flot-tick-label tickLabel" style="position: absolute; top: 78px; left: 0px; text-align: right;">Sometimes</div>
+                    <div class="flot-tick-label tickLabel" style="position: absolute; top: 30px; left: 24px; text-align: right;">Never</div>
+                </div>
+            </div>
+            <canvas class="flot-overlay" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 581px; height: 250px;" width="633" height="272"></canvas>
+        </div>
+    </div>
+</div>
+
+@section PageScripts{
+    @*<script src="~/Scripts/charts/flot/jquery.flot.js"></script>
+        <script src="~/Scripts/charts/flot/jquery.flot.orderBars.js"></script>
+        <script src="~/Scripts/charts/flot/flot-init.js"></script>
+        <script src="~/Scripts/charts/flot/jquery.flot.resize.min.js"></script>
+        <script src="~/Scripts/charts/flot/jquery.flot.stack.js"></script>
+        <script src="~/Scripts/charts/flot/jquery.flot.time.js"></script>*@
+
+    <script src="~/Scripts/charts/flot/jquery.flot.js"></script>
+    <script src="~/Scripts/charts/flot/jquery.flot.orderBars.js"></script>
+    <script src="~/Scripts/charts/flot/jquery.flot.tooltip.js"></script>
+    <script src="~/Scripts/charts/flot/jquery.flot.resize.js"></script>
+    <script src="~/Scripts/charts/flot/jquery.flot.selection.js"></script>
+    <script src="~/Scripts/charts/flot/jquery.flot.crosshair.js"></script>
+    <script src="~/Scripts/charts/flot/jquery.flot.stack.js"></script>
+    <script src="~/Scripts/charts/flot/jquery.flot.time.js"></script>
+    <script src="~/Scripts/charts/flot/jquery.flot.pie.js"></script>
+    <script src="~/Scripts/charts/flot/flot-init.js"></script>
+<script src="~/Scripts/angular-animate.js"></script>
+<script src="~/Scripts/angular-cookies.js"></script>
+
+<script src="~/Scripts/angular-resource.js"></script>
+<script src="~/Scripts/angular-sanitize.js"></script>
+<script src="~/Scripts/angular-ui-utils/angular-ui-utils.js"></script>
+
 
     <script type="text/javascript">
-    $(window).bind("load", function () {
+        $(window).bind("load", function () {
 
-        /*Sets Themed Colors Based on Themes*/
-        themeprimary = getThemeColorFromCss('themeprimary');
-        themesecondary = getThemeColorFromCss('themesecondary');
-        themethirdcolor = getThemeColorFromCss('themethirdcolor');
-        themefourthcolor = getThemeColorFromCss('themefourthcolor');
-        themefifthcolor = getThemeColorFromCss('themefifthcolor');
+            /*Sets Themed Colors Based on Themes*/
+            themeprimary = getThemeColorFromCss('themeprimary');
+            themesecondary = getThemeColorFromCss('themesecondary');
+            themethirdcolor = getThemeColorFromCss('themethirdcolor');
+            themefourthcolor = getThemeColorFromCss('themefourthcolor');
+            themefifthcolor = getThemeColorFromCss('themefifthcolor');
 
-        InitiateAreaChart.init();
-        InitiateBarChart.init();
-        InitiateDonutChart.init();
-        InitiateLineChart.init();
-        InitiateLineChart2.init();
-    });
+            InitiateFlotBarChart.init();
+            InitiateFlotSelectableChart.init();
+            InitiateRealTimeChart.init();
+            InitiateStackedChart.init();
+            InitiateVisitorChart.init();
+            InitiateAnnotationChart.init();
+            InitiatePieChart.init();
+            InitiateHorizonalChart.init();
+        });
     </script>
-
 }
 
 

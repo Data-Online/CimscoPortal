@@ -9,6 +9,9 @@ using System.Web.Mvc;
 using AutoMapper.QueryableExtensions;
 
 using Microsoft.AspNet.Identity;
+using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Auth;
 
 
 namespace CimscoPortal.Controllers
@@ -17,6 +20,31 @@ namespace CimscoPortal.Controllers
     public class PortalController : CimscoPortalController
     {
 
+        Dictionary<string, CloudBlockBlob> dicBBlob = new Dictionary<string, CloudBlockBlob>();
+        Dictionary<string, CloudPageBlob> dicPBlob = new Dictionary<string, CloudPageBlob>();
+        Dictionary<string, List<string>> dicSelectedBlob = new Dictionary<string, List<string>>();
+        List<string> lstContainer = new List<string>();
+
+        CloudStorageAccount csa_storageAccount;
+
+
+        public CloudStorageAccount Csa_storageAccount
+        {
+            get
+            {
+                if (csa_storageAccount == null)
+                {
+                    string strAccount = "cimsco";
+                    string strKey = "rblKAeB7iHoOf4zCbZL15TBLTpSP3kOwDCN2L8nHzrkY/+rRH/lwpW3Qu1FSpLwIjKFPbBT+SgOGffIQZKYH1w==";
+
+                    StorageCredentials credential = new StorageCredentials(strAccount, strKey);
+                    csa_storageAccount = new CloudStorageAccount(credential, true);
+                }
+                return csa_storageAccount;
+            }
+        }
+
+
         private IPortalService _portalService;
         //private string _userId;
        // private readonly ICurrentUser _currentUser;
@@ -24,6 +52,9 @@ namespace CimscoPortal.Controllers
         //private readonly CimscoPortalEntities _context;
 
         //        public PortalController(CimscoPortalEntities context)
+
+
+
         public PortalController(IPortalService portalService)//, ICurrentUser currentUser)
         {
             this._portalService = portalService;
@@ -41,6 +72,18 @@ namespace CimscoPortal.Controllers
             var userId = User.Identity.GetUserId();
             var zz = User.IsInRole("Admin");
             return View();            
+        }
+
+        public ActionResult SiteOverview(int? id)
+        {
+            // int categoryId = 2;
+            //var zz = _portalService.GetAlertsFor(categoryId);
+
+            var user = User.Identity.Name;
+            var userId = User.Identity.GetUserId();
+            var zz = User.IsInRole("Admin");
+            ViewBag.siteId = id ?? 0;
+            return View();
         }
 
         public ActionResult SiteSummary(string id)
