@@ -33,19 +33,35 @@ namespace CimscoPortal.Services
             this._repository = repository;
         }
 
-        public object ConfirmUserAccess(string p)
+        public UserAccessModel CheckUserAccess(string userName)
         {
-            return true;
+            UserAccessModel _userAccess = new UserAccessModel();
+
+            _userAccess.ValidSites = GetValidSiteIdListForUser(userName);
+            _userAccess.ViewInvoices = true;
+
+            return _userAccess;
         }
 
         public CommonInfoViewModel GetCommonData(string userId)
         {
-            CommonInfoViewModel _commonData = new CommonInfoViewModel();
-            _commonData = _repository.AspNetUsers.Where(s => s.UserName == userId).Project().To<CommonInfoViewModel>().FirstOrDefault();
+            //CommonInfoViewModel _commonData = new CommonInfoViewModel();
+            CommonInfoViewModel _commonData = _repository.AspNetUsers.Where(s => s.UserName == userId).Project().To<CommonInfoViewModel>().FirstOrDefault();
             // Raise error if nothing returned - there should be available data for any logged in user
+            if (_commonData == null)
+            {
+                LogMessage();
+            }
+            else
+            { 
+                _commonData.UsefulInfo = new UsefulInfo { Temperature = "10", WeatherIcon = "wi wi-cloudy" };
+            }
+            return _commonData ?? new CommonInfoViewModel();
+        }
 
-            _commonData.UsefulInfo = new UsefulInfo { Temperature = "10", WeatherIcon = "wi wi-cloudy" };
-            return _commonData;
+        private void LogMessage()
+        {
+           
         }
 
         public IEnumerable<MessageViewModel> GetNavbarDataFor(string userName)
@@ -83,7 +99,7 @@ namespace CimscoPortal.Services
 
         public IEnumerable<InvoiceOverviewViewModel> GetInvoiceOverviewForSite(int siteId)
         {
-            return InvoiceOverviewForSite(siteId); //_invoices;
+            return InvoiceOverviewForSite(siteId);
         }
 
         public IEnumerable<InvoiceOverviewViewModel> GetInvoiceOverviewForSite(int siteId, int invoiceId)
@@ -450,6 +466,11 @@ namespace CimscoPortal.Services
         #endregion
         #region private methods
 
+        private List<int> GetValidSiteIdListForUser(string userName)
+        {
+            return GetSiteHierarchy(userName).SiteData.Select(a => a.SiteId).ToList();
+        }
+
         private static void CollateInvoiceDataBySiteId(InvoiceTallyViewModel invoiceTally, IQueryable<Data.Models.InvoiceSummary> siteData, DateTime firstDate)
         {
             var _approvedInvoiceCountBySiteId = (from p in siteData
@@ -553,6 +574,8 @@ namespace CimscoPortal.Services
 
         private List<InvoiceDetail> InvoiceDetailForSite(int siteId)
         {
+            var zz = _repository.InvoiceSummaries.Where(s => s.SiteId == siteId)
+                .OrderBy(o => o.InvoiceDate).Project().To<InvoiceDetail>().ToList();
             return _repository.InvoiceSummaries.Where(s => s.SiteId == siteId)
                 .OrderBy(o => o.InvoiceDate).Project().To<InvoiceDetail>().ToList();
         }

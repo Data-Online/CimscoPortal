@@ -21,7 +21,7 @@ namespace CimscoPortal.Controllers.Api
             this._portalService = portalService;
         }
 
-        public int ZZTest(int test)
+        public int ZZTest()
         {
             var user = User.Identity.Name;
             var userId = User.Identity.GetUserId();
@@ -79,8 +79,12 @@ namespace CimscoPortal.Controllers.Api
         [Route("invoiceOverviewFor/{siteId}")]
         public HttpResponseMessage GetInvoiceOverview(HttpRequestMessage request, int siteId)
         {
-            var data = _portalService.GetInvoiceOverviewForSite(siteId);
-            return request.CreateResponse<InvoiceOverviewViewModel[]>(HttpStatusCode.OK, data.ToArray());
+            if (GetCurrentUserAccess().ValidSites.Contains(siteId))
+            { 
+                var data = _portalService.GetInvoiceOverviewForSite(siteId);
+                return request.CreateResponse<InvoiceOverviewViewModel[]>(HttpStatusCode.OK, data.ToArray());
+            }
+            return request.CreateResponse(HttpStatusCode.Forbidden);            
         }
 
         [HttpGet]
@@ -147,14 +151,15 @@ namespace CimscoPortal.Controllers.Api
         #endregion
 
 
-        public object CheckUserAccess(string UserName)
+        public UserAccessModel GetCurrentUserAccess()
         {
-            var user = User.Identity.Name;
-            var userId = User.Identity.GetUserId();
+            var _user = User.Identity.Name;
 
-            _portalService.ConfirmUserAccess(user);
+            UserAccessModel UserAccessModel = new UserAccessModel();
 
-            return true;
+            UserAccessModel = _portalService.CheckUserAccess(_user);
+
+            return UserAccessModel;
         }
     }
 }

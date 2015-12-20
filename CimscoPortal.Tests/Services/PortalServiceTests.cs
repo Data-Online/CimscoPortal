@@ -54,7 +54,8 @@ namespace CimscoPortal.Tests.Services
             var _result = _portalService.GetCommonData("nulluser");
 
             // Assert
-            Assert.AreEqual(_result.eMail, "");
+            Assert.IsNull(_result.eMail);
+            //Assert.IsNull(_result);
             Assert.IsInstanceOfType(_result, typeof(CommonInfoViewModel));
         }
 
@@ -140,7 +141,7 @@ namespace CimscoPortal.Tests.Services
             _repository.Setup(x => x.InvoiceSummaries).Returns(MockDataSet(FakeInvoices()));
 
             // Act
-           var _result = _portalService.GetInvoiceDetailForSite(1);
+            var _result = _portalService.GetInvoiceDetailForSite(1);
 
             // Assert
             Assert.IsNotNull(_result);
@@ -256,15 +257,18 @@ namespace CimscoPortal.Tests.Services
         private static List<Data.Models.AspNetUser> TestUsers()
         {
             var _customer = new List<Data.Models.Customer> { new Data.Models.Customer { CustomerName = "Test Customer" } };
+            var _emptyCustomerList = new List<Data.Models.Customer>();
             var _group = new List<Data.Models.Group> { new Data.Models.Group { GroupName = "Test Group" } };
+            var _emptyGroupList = new List<Data.Models.Group>();
 
             return new List<Data.Models.AspNetUser> 
             {
-            new Data.Models.AspNetUser { Email ="test1@test.com", UserName="testuser1"},
-            new Data.Models.AspNetUser { Email ="test2@test.com", UserName="testuser2"},
-            new Data.Models.AspNetUser { Email ="customeruser@test.com", UserName="testuser3", Customers = _customer},
-            new Data.Models.AspNetUser { Email ="groupuser@test.com", UserName="testuser4", Groups = _group},                    
-            new Data.Models.AspNetUser { Email ="nocustomer@test.com", UserName="testuser5", Customers = new List<Data.Models.Customer>() }                    
+                new Data.Models.AspNetUser { Email ="test1@test.com", UserName="testuser1"},
+                new Data.Models.AspNetUser { Email ="test2@test.com", UserName="testuser2"},
+                new Data.Models.AspNetUser { Email ="customeruser@test.com", UserName="testuser3", Customers = _customer},
+                new Data.Models.AspNetUser { Email ="groupuser@test.com", UserName="testuser4", Groups = _group},                    
+                new Data.Models.AspNetUser { Email ="nocustomer@test.com", UserName="testuser5", Customers = _emptyCustomerList },       
+                new Data.Models.AspNetUser { Email ="nogroup@test.com", UserName="testuser6", Groups = _emptyGroupList }                    
             };
         }
 

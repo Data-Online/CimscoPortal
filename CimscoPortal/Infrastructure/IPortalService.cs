@@ -20,6 +20,7 @@ namespace CimscoPortal.Infrastructure
         IEnumerable<InvoiceOverviewViewModel> GetInvoiceOverviewForSite(int siteId, int invoiceId);
         InvoiceOverviewViewModel ApproveInvoice(int invoiceId, string userId);
 
+        UserAccessModel CheckUserAccess(string userName);
         // <--
 
         //System.Collections.Generic.List<CimscoPortal.Models.AlertViewModel> GetAlertsFor(int category);
@@ -31,10 +32,6 @@ namespace CimscoPortal.Infrastructure
         
 
         CimscoPortal.Models.InvoiceDetailViewModel GetCurrentMonth_(int _energyPointId);
-
-        object ConfirmUserAccess(string p);
-
-        
 
         System.Threading.Tasks.Task<List<CimscoPortal.Data.Models.AspNetUser>> GetUserByGroupOrCompany(string id);
 

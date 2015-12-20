@@ -47,26 +47,46 @@ namespace CimscoPortal.Tests.Controllers
         }
 
         [TestMethod]
-        public void VerifyIdentityAndAccess_PreventsAccessToNonLinkedCompany()
+        public void GetCurrentUserAccess_ReturnsUserAccessModel()
         {
-            // Arrange
             IPortalService _portalService;
             PortalApiController _controller;
             MockContext2(out _portalService, out _controller);
-            Mock.Arrange(() => _controller.ControllerContext.RequestContext.Principal.Identity.Name).Returns("testuser");
-            Mock.Arrange(() => _controller.ControllerContext.RequestContext.Principal.IsInRole("test")).Returns(true);
-            Mock.Arrange(() => _controller.ControllerContext.RequestContext.Principal.Identity.IsAuthenticated).Returns(true);
 
-            Mock.Arrange(() => _portalService.ConfirmUserAccess("testuser")).Returns(true);
+           // UserAccessModel _userAccessModel = new UserAccessModel();
+
+            var _result = _controller.GetCurrentUserAccess();
+
+            Assert.IsInstanceOfType(_result, typeof(UserAccessModel));
+
+          //  Assert.AreEqual(_result, _userAccessModel);
+        }
+
+        [TestMethod]
+        public void GetCurrentUserAccess_ReturnsUserAccessModelForGivenUser()
+        {
+            // Arrange
+            bool _approvedUser = true;
+
+            IPortalService _portalService;
+            PortalApiController _controller;
+            MockContext2(out _portalService, out _controller);
+            UserAccessModel _validationDetails = SetupUserAccess(_approvedUser);
+
+            Mock.Arrange(() => _controller.ControllerContext.RequestContext.Principal.Identity.Name).Returns("testuser");
+            Mock.Arrange(() => _controller.ControllerContext.RequestContext.Principal.Identity.IsAuthenticated).Returns(true);
+            Mock.Arrange(() => _portalService.CheckUserAccess("testuser")).Returns(_validationDetails);
 
             // Act
-            var result = _controller.CheckUserAccess("testuser");
+            UserAccessModel _result = _controller.GetCurrentUserAccess();
 
             // Assert
-            Assert.AreEqual(result, true);
+            Assert.AreEqual(_result.ViewInvoices, true);
+            Assert.AreEqual(_result.ValidSites.Count, 3);
 
         }
 
+        #region TestUserMethods
         [TestMethod]
         public void Test_User_1()
         {
@@ -107,14 +127,26 @@ namespace CimscoPortal.Tests.Controllers
 
             // Act
             int zztest = 0;
-            zztest = _controller.ZZTest(1);
+            zztest = _controller.ZZTest();
 
             // Assert
             Assert.AreEqual(zztest, 1);
         }
-
+        #endregion
 
         #region private functions
+
+        private static UserAccessModel SetupUserAccess(bool approvedUser)
+        {
+            UserAccessModel _validationDetails = new UserAccessModel();
+            if (approvedUser)
+            {
+                _validationDetails.ViewInvoices = true;
+                _validationDetails.ValidSites = new List<int>(new int[] { 1, 2, 3 });
+            }
+            return _validationDetails;
+        }
+
         //private static void CreateCustomerHierachyData(out CustomerHierarchyViewModel _testData, out string _jsonData)
         //{
         //    _testData = new CustomerHierarchyViewModel()
@@ -213,3 +245,26 @@ namespace CimscoPortal.Tests.Controllers
         #endregion
     }
 }
+
+
+
+//[TestMethod]
+//public void VerifyIdentityAndAccess_PreventsAccessToNonLinkedCompany()
+//{
+//    // Arrange
+//    IPortalService _portalService;
+//    PortalApiController _controller;
+//    MockContext2(out _portalService, out _controller);
+//    Mock.Arrange(() => _controller.ControllerContext.RequestContext.Principal.Identity.Name).Returns("testuser");
+//    Mock.Arrange(() => _controller.ControllerContext.RequestContext.Principal.IsInRole("test")).Returns(true);
+//    Mock.Arrange(() => _controller.ControllerContext.RequestContext.Principal.Identity.IsAuthenticated).Returns(true);
+
+//    Mock.Arrange(() => _portalService.ConfirmUserAccess("testuser")).Returns(true);
+
+//    // Act
+//    var result = _controller.CheckUserAccess("testuser");
+
+//    // Assert
+//    Assert.AreEqual(result, true);
+
+//}
