@@ -40,6 +40,7 @@ namespace CimscoPortal.Models
         public DateTime InvoiceDueDate { get; set; }
         public bool Approved { get; set; }
         public bool Verified { get; set; }
+        public bool Missing { get; set; }
         public DateTime ApprovedDate { get; set; }
         public string ApproversName { get; set; }
         public decimal InvoiceTotal { get; set; }
@@ -48,6 +49,7 @@ namespace CimscoPortal.Models
         public string InvoiceNumber { get; set; }
         public int SiteId { get; set; }
         public int InvoiceId { get; set; }
+        public bool InvoicePdf { get; set; }
     }
 
     public class InvoiceDetail

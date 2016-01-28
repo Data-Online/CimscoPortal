@@ -66,7 +66,9 @@ namespace CimscoPortal.Data.Migrations
         protected override void Seed(CimscoPortal.Data.Models.CimscoPortalContext context)
         {
 
-            var SeedData = false; //.Configuration.ConfigurationSettings.GetConfig("SeedData");// ConfigurationManager.AppSettings["AccountName"];
+            var SeedData = true; 
+            
+            //.Configuration.ConfigurationSettings.GetConfig("SeedData");// ConfigurationManager.AppSettings["AccountName"];
             //  This method will be called after migrating to the latest version.
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
@@ -83,23 +85,23 @@ namespace CimscoPortal.Data.Migrations
 
             //RemoveGroups(context);
             //RemoveCustomers(context);
-            context.Database.ExecuteSqlCommand("delete from [Sites]");
-            context.Database.ExecuteSqlCommand("delete from [Groups]");
-            context.Database.ExecuteSqlCommand("delete from [Customers]");
-            context.Database.ExecuteSqlCommand("delete from [InvoiceSummaries]");
-            context.Database.ExecuteSqlCommand("delete from [EnergyPoints]");
-            context.SaveChanges();
+            //context.Database.ExecuteSqlCommand("delete from [Sites]");
+            //context.Database.ExecuteSqlCommand("delete from [Groups]");
+            //context.Database.ExecuteSqlCommand("delete from [Customers]");
+            //context.Database.ExecuteSqlCommand("delete from [InvoiceSummaries]");
+            //context.Database.ExecuteSqlCommand("delete from [EnergyPoints]");
+            //context.SaveChanges();
 
             // Actual invoice data from data entry
             context.Database.ExecuteSqlCommand("exec [dbo].[SeedInvoiceSummaries]");
-            context.SaveChanges();
+            //context.SaveChanges();
 
             // Create any not already in source data
-            CreateSites(context, _sampleSites);
-            CreateGroupsAndCustomers(context, _sampleCustomers, _sampleGroups);
-            context.SaveChanges();
+            //CreateSites(context, _sampleSites);
+            //CreateGroupsAndCustomers(context, _sampleCustomers, _sampleGroups);
+            //context.SaveChanges();
 
-            LinkSitesToCustomersFromSource(context);
+           // LinkSitesToCustomersFromSource(context);
 
             LinkUsersCustomer("Masterton Supermarkets Ltd", new string[] { "masterton@cimsco.co.nz", "masterton2@cimsco.co.nz" }, context);
             //LinkUsersCustomer("Intercontinental Group", new string[] { "masterton@cimsco.co.nz" }, context);
@@ -107,7 +109,7 @@ namespace CimscoPortal.Data.Migrations
 
             LinkUsersGroup("Foodstuffs North Island", new string[] { "foodstuffs@cimsco.co.nz", "foodstuffs2@cimsco.co.nz" }, context);
 
-            LinkUsersCustomer("Holiday Inn", new string[] { "holiday1@cimsco.co.nz", "holiday2@cimsco.co.nz" }, context);
+            //LinkUsersCustomer("Holiday Inn", new string[] { "holiday1@cimsco.co.nz", "holiday2@cimsco.co.nz" }, context);
 
             context.SaveChanges();
 
@@ -553,6 +555,9 @@ namespace CimscoPortal.Data.Migrations
                             NBD1216R = 8.5200M,
                             NBD1620R = 10.2800M,
                             NBD2024R = 8.8000M,
+
+                            BDL0004 = 7507.8000M,
+                            BDQ0004 = 395.6620M
 
                             //LossRate = 0.028M
                         },

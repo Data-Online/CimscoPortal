@@ -18,4 +18,24 @@ namespace CimscoPortal.Extensions
             return args.Contains(obj);
         }
     }
+
+    public static class DateExtensions
+    {
+        public static DateTime EndOfTheMonth(this DateTime date)
+        {
+            var endOfTheMonth = new DateTime(date.Year, date.Month, 1)
+                .AddMonths(1)
+                .AddDays(-1);
+
+            return endOfTheMonth;
+        }
+
+        public static DateTime EndOfLastMonth(this DateTime date)
+        {
+            var endOfLastMonth = new DateTime(date.Year, date.Month, 1)
+                .AddDays(-1);
+
+            return endOfLastMonth;
+        }
+    }
 }

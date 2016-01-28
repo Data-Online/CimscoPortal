@@ -26,8 +26,8 @@ namespace CimscoPortal.Data.Models.Mapping
                 .Map(m =>
                     {
                         m.ToTable("GroupUserLink");
-                        m.MapLeftKey("UserId");
-                        m.MapRightKey("GroupId");
+                        m.MapLeftKey("GroupId");
+                        m.MapRightKey("UserId");
                     });
         }
     }

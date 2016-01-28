@@ -1,0 +1,110 @@
+﻿<div id="analysis" class="tab-pane animated fadeInUp no-padding-bottom" style="padding:20px 20px 0 20px;">
+    <div class="row">
+        <div class="col-lg-4">
+            <label data-toggle="tooltip" title="Sort by Total Value">
+                <span ng-click="order('billTotal')" class="btn-sm btn-labeled btn-palegreen">
+                    <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='billTotal'"></i>Total Value
+                </span>
+            </label>
+            <label data-toggle="tooltip" title="Sort by Site Name">
+                <span ng-click="order('site')" class="btn-sm btn-labeled btn-palegreen">
+                    <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='site'"></i>Site
+                </span>
+            </label>
+        </div>
+        <div class="col-lg-8" ng-init="options={};options.selected=true">
+            <span>Energy Charges</span>
+            <label ng-hide="false">
+                <input class="checkbox-slider toggle colored-blue" ng-model="showValue" type="checkbox" ng-init="showValue=options.selected">
+                <span class="text"></span>
+            </label>
+            <span>Total kWh</span>
+            <label ng-hide="false">
+                <input class="checkbox-slider toggle colored-warning" ng-model="showKwh" type="checkbox" ng-init="showKwh=options.selected">
+                <span class="text"></span>
+            </label>
+            <span>Units per sqM</span>
+            <label ng-hide="false">
+                <input class="checkbox-slider toggle colored-palegreen" ng-model="showUsqm" type="checkbox" ng-init="showUsqm=options.selected">
+                <span class="text"></span>
+            </label>
+            <span>Cost per sqM</span>
+            <label ng-hide="false">
+                <input class="checkbox-slider toggle colored-magenta" ng-model="showCsqm" type="checkbox" ng-init="showCsqm=options.selected">
+                <span class="text"></span>
+            </label>
+        </div>
+        <div ng-repeat="invoice in invoiceDetail |orderBy:predicate:reverse">
+            <div class="row">
+                <div class="col-lg-12">
+                    <b><span>{{invoice.site}} <i>({{invoice.invCount}} invoices on file, total value of {{invoice.billTotal | currency:$}})</i></span></b>
+                </div>
+            </div>
+            <div class="row" ng-show="showValue">
+                <div class="col-lg-3">
+                    <div class="col-lg-4">
+                    </div>
+                    <div class="col-lg-8">
+                        <span>Energy Charges</span>
+                    </div>
+                </div>
+                <div class="col-lg-9 progress-compact progress-bordered">
+                    <div ng-repeat="values in invoice.power">
+                        <div class="progress-bar progress-bar-{{invTheme[$index+1].theme}}" style="width: {{values.percent}}%">
+                            <span ng-show="values.percent>10"> {{values.reading | currency:$}} </span>
+                            <span ng-show="values.percent<=10">&nbsp;</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" ng-show="showKwh">
+                <div class="col-lg-3">
+                    <div class="col-lg-4">
+                    </div>
+                    <div class="col-lg-8">
+                        <span>Total kWh</span>
+                    </div>
+                </div>
+                <div class="col-lg-9 progress-compact progress-bordered">
+                    <div ng-repeat="values in invoice.kWh">
+                        <div class="progress-bar progress-bar-{{invTheme[$index+1].theme}}" style="width: {{values.percent}}%">
+                            <span> {{values.reading | number:0}} </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" ng-show="showUsqm">
+                <div class="col-lg-3">
+                    <div class="col-lg-4">
+                    </div>
+                    <div class="col-lg-8">
+                        <span>Units per sqM</span>
+                    </div>
+                </div>
+                <div class="col-lg-9 progress-compact progress-bordered">
+                    <div ng-repeat="values in invoice.upsqm">
+                        <div class="progress-bar progress-bar-{{invTheme[$index+1]}}" style="width: {{values.percent}}%">
+                            <span> {{values.units}} {{values.reading | number:2}}  </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" ng-show="showCsqm">
+                <div class="col-lg-3">
+                    <div class="col-lg-4">
+                    </div>
+                    <div class="col-lg-8">
+                        <span>Cost per sqM</span>
+                    </div>
+                </div>
+                <div class="col-lg-9 progress-compact progress-bordered">
+                    <div ng-repeat="values in invoice.cpsqm">
+                        <div class="progress-bar progress-bar-{{invTheme[$index+1]}}" style="width: {{values.percent}}%">
+                            <span> {{values.reading | currency:$}} </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity.Infrastructure.Annotations;
 using System.Data.Entity.ModelConfiguration;
 
 namespace CimscoPortal.Data.Models.Mapping
@@ -38,6 +40,10 @@ namespace CimscoPortal.Data.Models.Mapping
             this.Property(t => t.ApprovedById)
                 .HasMaxLength(128);
 
+            this.Property(t => t.InvoiceId)
+                .HasColumnAnnotation(IndexAnnotation.AnnotationName,
+                                new IndexAnnotation(new IndexAttribute("IX_InvoiceId", 1) { IsUnique = true }));
+
             // Table & Column Mappings
             this.ToTable("InvoiceSummaries");
             this.Property(t => t.InvoiceId).HasColumnName("InvoiceId");
@@ -59,11 +65,11 @@ namespace CimscoPortal.Data.Models.Mapping
             this.Property(t => t.TotalEnergyCharges).HasColumnName("TotalEnergyCharges");
             this.Property(t => t.ConnectionNumber).HasColumnName("ConnectionNumber");
             this.Property(t => t.SiteName).HasColumnName("SiteName");
-           // this.Property(t => t.EnergyPointId).HasColumnName("EnergyPointId");
+            // this.Property(t => t.EnergyPointId).HasColumnName("EnergyPointId");
             this.Property(t => t.InvoiceSummaryId).HasColumnName("InvoiceSummaryId");
             this.Property(t => t.ApprovedDate).HasColumnName("ApprovedDate");
             this.Property(t => t.EnergyPointId).HasColumnName("EnergyPointId");
-           // this.Property(t => t.UserId).HasColumnName("ApprovedById");
+            // this.Property(t => t.UserId).HasColumnName("ApprovedById");
             this.Property(t => t.SupplierId).HasColumnName("SupplierId");
             this.Property(t => t.KwhTotal).HasColumnName("KwhTotal");
 

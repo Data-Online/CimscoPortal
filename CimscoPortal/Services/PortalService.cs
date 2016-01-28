@@ -53,7 +53,7 @@ namespace CimscoPortal.Services
                 LogMessage();
             }
             else
-            { 
+            {
                 _commonData.UsefulInfo = new UsefulInfo { Temperature = "10", WeatherIcon = "wi wi-cloudy" };
             }
             return _commonData ?? new CommonInfoViewModel();
@@ -61,7 +61,7 @@ namespace CimscoPortal.Services
 
         private void LogMessage()
         {
-           
+
         }
 
         public IEnumerable<MessageViewModel> GetNavbarDataFor(string userName)
@@ -99,6 +99,7 @@ namespace CimscoPortal.Services
 
         public IEnumerable<InvoiceOverviewViewModel> GetInvoiceOverviewForSite(int siteId)
         {
+            // SiteOverview
             return InvoiceOverviewForSite(siteId);
         }
 
@@ -109,8 +110,32 @@ namespace CimscoPortal.Services
 
         private IEnumerable<InvoiceOverviewViewModel> InvoiceOverviewForSite(int siteId)
         {
-            return _repository.InvoiceSummaries.Where(s => s.SiteId == siteId)
-                  .OrderBy(o => o.InvoiceDate).Project().To<InvoiceOverviewViewModel>().ToList();
+            var _result = _repository.InvoiceSummaries.Where(s => s.SiteId == siteId)
+                  .OrderByDescending(o => o.InvoiceDate).Project().To<InvoiceOverviewViewModel>().ToList();
+            CheckPdfSourceFileExists(_result);
+           // PopulateMissingInvoices(_result);
+
+            return _result;
+        }
+
+        private void PopulateMissingInvoices(List<InvoiceOverviewViewModel> result)
+        {
+            var _missingInvoices = new List<DateTime>();
+            
+            DateTime _latestInvoiceDate = DateTime.Now.EndOfLastMonth(); 
+            foreach (var _invoice in result )
+            {
+                if (!(_invoice.InvoiceDate.EndOfTheMonth() == _latestInvoiceDate))
+                {
+                    _missingInvoices.Add(_latestInvoiceDate);
+                }
+                _latestInvoiceDate = _latestInvoiceDate.EndOfLastMonth();
+            }
+            foreach (var _date in _missingInvoices )
+            {
+                var _data = new InvoiceOverviewViewModel() { InvoiceDate = _date, Missing = true };
+                result.Add(_data);
+            }
         }
 
         private IEnumerable<InvoiceOverviewViewModel> InvoiceOverviewForSite(int siteId, int invoiceId)
@@ -143,7 +168,7 @@ namespace CimscoPortal.Services
             foreach (var _site in _siteHierachy.SiteData)
             {
                 _invoicesDue = new List<InvoiceDetail>(GetInvoicesForSite(_site.SiteId, !approved));
-                checkInvoiceFileExists(_invoicesDue);
+                CheckInvoiceFileExists(_invoicesDue);
                 _invoiceDataForUser = new InvoiceDataForCompany() { InvoiceHistory = GetInvoiceHistory(_invoiceHistoryMonths, _site.SiteId, _index), Year = 2014, InvoicesDue = _invoicesDue };
                 // Year is not used at the moment, but may be helpful on graph?
                 _model.SummaryData.Add(_invoiceDataForUser);
@@ -511,14 +536,14 @@ namespace CimscoPortal.Services
                                          siteId = g.Key,
                                          calculatedLosses = (from f in g select f.EnergyCharge.BDL0004 / f.EnergyCharge.BDQ0004).FirstOrDefault()
                                      }).ToList();
-            
+
             foreach (var _entry in invoiceTally.InvoiceTallies)
             {
                 var _matchingResultForApproved = _approvedInvoiceCountBySiteId.FirstOrDefault(s => s.siteId == _entry.SiteId);
                 var _matchingResultForTotal = _invoioceCountAndDates.FirstOrDefault(s => s.siteId == _entry.SiteId);
                 var _matchingResultForLosses = _calculatedLosses.FirstOrDefault(s => s.siteId == _entry.SiteId);
                 var _match = invoiceTally.InvoiceTallies.Where(s => s.SiteId == _entry.SiteId).FirstOrDefault();
-                
+
                 if (_matchingResultForTotal != null)
                 {
                     if (_matchingResultForApproved != null)
@@ -528,7 +553,7 @@ namespace CimscoPortal.Services
                     _match.PendingInvoices = _matchingResultForTotal.count - _match.ApprovedInvoices;
                     _match.FirstInvoiceDate = _matchingResultForTotal.firstInvoiceOnFileDate;
                     _match.LatestInvoiceDate = _matchingResultForTotal.latestInvoiceDate;
-                    _match.CalculatedLossRate = Math.Round(_matchingResultForLosses.calculatedLosses,3);
+                    _match.CalculatedLossRate = Math.Round(_matchingResultForLosses.calculatedLosses, 3);
                     //_match.MissingInvoices = Math.Max(MonthsFromGivenDate(_matchingResultForTotal.firstInvoiceOnFileDate) - _match.TotalInvoicesOnFile, 0);
                 };
                 _match.MissingInvoices = Math.Max(MonthsFromGivenDate(firstDate) - _match.TotalInvoicesOnFile, 0);
@@ -538,7 +563,7 @@ namespace CimscoPortal.Services
                 _data.SiteId = _entry.SiteId;
                 var _matchingInvoiceData = _invoiceTotals.FirstOrDefault(s => s.siteId == _entry.SiteId);
                 if (_matchingInvoiceData != null)
-                {             
+                {
                     _data.InvoiceValue = _matchingInvoiceData.invoiceValue;
                     _data.EnergyCharge = _matchingInvoiceData.energyCharge;
                     _data.TotalKwh = _matchingInvoiceData.totalKwh;
@@ -552,7 +577,7 @@ namespace CimscoPortal.Services
         {
             var now = DateTime.Now;
             int _monthsInPreviousYears = Math.Max(((now.Year - date.Year) * 12) - date.Month + 1, 0);
-            int _monthsInThisYear = Math.Max(now.Month - date.Month,0);
+            int _monthsInThisYear = Math.Max(now.Month - date.Month, 0);
             return (_monthsInPreviousYears + _monthsInThisYear);
         }
 
@@ -574,8 +599,6 @@ namespace CimscoPortal.Services
 
         private List<InvoiceDetail> InvoiceDetailForSite(int siteId)
         {
-            var zz = _repository.InvoiceSummaries.Where(s => s.SiteId == siteId)
-                .OrderBy(o => o.InvoiceDate).Project().To<InvoiceDetail>().ToList();
             return _repository.InvoiceSummaries.Where(s => s.SiteId == siteId)
                 .OrderBy(o => o.InvoiceDate).Project().To<InvoiceDetail>().ToList();
         }
@@ -628,13 +651,42 @@ namespace CimscoPortal.Services
             return _commonData;
         }
 
-        private void checkInvoiceFileExists(List<InvoiceDetail> _invoicesDue)
+        private void CheckPdfSourceFileExists(List<InvoiceOverviewViewModel> invoiceList)
+        {
+            System.Net.HttpWebResponse response = null;
+            System.Net.HttpWebRequest request;
+            string _sourcePdf;
+            foreach (var _invoice in invoiceList)
+            {
+                _sourcePdf = _azurePDFsource + "/" + _invoice.SiteId.ToString().PadLeft(6, '0') + "/" + _invoice.InvoiceId.ToString().PadLeft(8, '0') + ".pdf";
+                request = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(_sourcePdf);
+                request.Method = "Head";
+                try
+                {
+                    response = (System.Net.HttpWebResponse)request.GetResponse();
+                }
+                catch
+                {
+                    _invoice.InvoicePdf = false;
+                }
+                finally
+                {
+                    if (response != null)
+                    {
+                        _invoice.InvoicePdf = true;
+                        response.Close();
+                    }
+                }
+            }
+        }
+
+        private void CheckInvoiceFileExists(List<InvoiceDetail> invoicesDue)
         {
             // This process needs to be moved to invoice manmagement module, settting "exists" flag there
             System.Net.HttpWebResponse response = null;
             System.Net.HttpWebRequest request;
             string _sourcePdf;
-            foreach (var _invoice in _invoicesDue)
+            foreach (var _invoice in invoicesDue)
             {
                 _sourcePdf = _azurePDFsource + "/" + _invoice.SiteId.ToString().PadLeft(6, '0') + "/" + _invoice.InvoiceId.ToString().PadLeft(8, '0') + ".pdf";
                 request = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(_sourcePdf);

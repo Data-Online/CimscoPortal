@@ -8,7 +8,7 @@ namespace CimscoPortal.Data.Models
     {
 
         public InvoiceSummary() { }
-
+        [Index("IX_InvoiceId", 1, IsUnique = true)]
         public int InvoiceId { get; set; }
         public System.DateTime InvoiceDate { get; set; }
         public System.DateTime InvoiceDueDate { get; set; }

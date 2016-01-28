@@ -19,11 +19,11 @@
             for (index = 0, len = data.invoiceTallies.length; index < len; ++index)
             {
                // maxEnergyCharge = maxEnergyCharge * data.invoiceTallies[index].calculatedLossRate;
-
                 tallyArray.push({
                     "site": data.invoiceTallies[index].siteName,
                     "siteId": data.invoiceTallies[index].siteId,
                     "firstInvoiceDate": data.invoiceTallies[index].firstInvoiceDate,
+                    "totalInvoicesOnFile": data.invoiceTallies[index].totalInvoicesOnFile,
                     "data": [
                         { "percent": (data.invoiceTallies[index].approvedInvoices / maxTotalInvoices * 100), "noOfInv": data.invoiceTallies[index].approvedInvoices },
                         { "percent": (data.invoiceTallies[index].pendingInvoices / maxTotalInvoices * 100), "noOfInv": data.invoiceTallies[index].pendingInvoices },
@@ -50,7 +50,8 @@
                 });
               //  console.log("energy charge = " + data.invoiceCosts[index].energyCharge + " max charge = " + maxEnergyCharge + " loss rate = " + data.invoiceTallies[index].calculatedLossRate);
             };
-           // console.log(sumArray);
+            // console.log(sumArray);
+            //console.log(tallyArray);
             $scope.invDistn = tallyArray;
             $scope.invoiceDetail = sumArray;
             $scope.tabTableHeader = data.groupCompanyName

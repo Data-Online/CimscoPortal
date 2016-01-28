@@ -21,24 +21,30 @@
             </label>
         </span>
     </div>
-    <div class="col-lg-6" ng-init="options={};options.selected=true">
+    <div class="col-lg-6" ng-init="options={};options.selected=true; options.all=true">
         <span>Show invoice types:</span>
         <span class="checkbox col-lg-4">
+            <label>
+                <input class="colored-success" ng-model="selectItems.showAll" type="checkbox" ng-init="selectItems.showAll=options.all">
+                <span class="text">All</span>
+            </label>
+        </span>
+        <span class="checkbox col-lg-4" >
             <label>
                 <input class="colored-success" ng-model="selectItems.showApproved" type="checkbox" ng-init="selectItems.showApproved=options.selected">
                 <span class="text">Approved</span>
             </label>
         </span>
-        <span class="checkbox col-lg-4">
+        <span class="checkbox col-lg-4" >
             <label>
-                <input class="colored-success" ng-model="selectItems.showUnapproved" type="checkbox" ng-init="selectItems.showUnapproved=options.selected">
-                <span class="text">Unapproved</span>
+                <input class="colored-success" ng-model="selectItems.showMissing" type="checkbox" ng-init="selectItems.showMissing=options.selected">
+                <span class="text">Missing</span>
             </label>
         </span>
-        <span class="checkbox col-lg-4">
+        <span class="checkbox col-lg-4" >
             <label>
-                <input class="colored-success" ng-model="selectItems.showVerified" type="checkbox" ng-init="selectItems.showVerified=options.selected">
-                <span class="text">Verified</span>
+                <input class="colored-success" ng-model="selectItems.showToApprove" type="checkbox" ng-init="selectItems.showToApprove=options.selected">
+                <span class="text">To Be Approved</span>
             </label>
         </span>
     </div>

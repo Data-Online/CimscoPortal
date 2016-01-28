@@ -1523,6 +1523,10 @@
     <Content Include="Views\Portal\_SiteListB.cshtml" />
     <Content Include="Views\Portal\SiteOverview.cshtml" />
     <Content Include="Views\Portal\SiteOverview - Copy.cshtml" />
+    <Content Include="Views\Portal\CompanyOverviewPartials\_Approvals.cshtml" />
+    <Content Include="Views\Portal\CompanyOverviewPartials\_Other1.cshtml" />
+    <Content Include="Views\Portal\CompanyOverviewPartials\_Other2.cshtml" />
+    <Content Include="Views\Portal\CompanyOverviewPartials\_Analysis.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />
@@ -1531,7 +1535,6 @@
     <Folder Include="Domain\" />
     <Folder Include="fonts\" />
     <Folder Include="Views\CimscoPortal\" />
-    <Folder Include="Views\Portal\PageElementPartials\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
