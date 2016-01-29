@@ -7,6 +7,8 @@ namespace CimscoPortal.Data.Migrations
     using System.Linq;
     using System.Configuration;
 
+    
+
     internal sealed class Configuration : DbMigrationsConfiguration<CimscoPortal.Data.Models.CimscoPortalContext>
     {
 
@@ -27,35 +29,35 @@ namespace CimscoPortal.Data.Migrations
         //private string[] _sampleCustomers = new string[] { "Test Customer 1", "Test Customer 2", "Test Customer 3" };
         //private string[] _sampleSites = new string[] { "Site 1", "Site 2", "Site 3", "Site 4", "Site 5", "Site 6" };
         //private string[] _sampleGroups = new string[] { "Test Group 1", "Test Group 2", "Test Group 3", "Test Group 4" };
-        private string[] _sampleSites = new string[] { 
-            "Pak 'n Save Upper Hutt",
-            "Pak 'n Save Upper Hutt Fuel Site..",
-            "HP Lane St Data Center",
-            "Mega Mitre 10 Petone",
-            "Intercontinental Wellington",
-            "Pak .n Save Upper Hutt Bulk warehouse",
-            "Mega Mitre 10 Porirua",
-            "Mega Retail Park Upper Hutt",
-            "Mega Mitre 10 Upper Hutt", 
-            "Mitre 10 Mega - Nelson",
-            "Holiday Inn"
-        };
-        private string[] _sampleCustomers = new string[] {
-            "Customer not set", 
-            "Field Nelson Holdings Ltd & Nelson Mega Ltd",
-            "Hewlett-Packard NZ",
-            "Intercontinental Group",
-            "Masterton Supermarkets Ltd",
-            "Nees Hardware Ltd",
-            "Holiday Inn"
-        };
+        //private string[] _sampleSites = new string[] { 
+        //    "Pak 'n Save Upper Hutt",
+        //    "Pak 'n Save Upper Hutt Fuel Site..",
+        //    "HP Lane St Data Center",
+        //    "Mega Mitre 10 Petone",
+        //    "Intercontinental Wellington",
+        //    "Pak .n Save Upper Hutt Bulk warehouse",
+        //    "Mega Mitre 10 Porirua",
+        //    "Mega Retail Park Upper Hutt",
+        //    "Mega Mitre 10 Upper Hutt", 
+        //    "Mitre 10 Mega - Nelson",
+        //    "Holiday Inn"
+        //};
+        //private string[] _sampleCustomers = new string[] {
+        //    "Customer not set", 
+        //    "Field Nelson Holdings Ltd & Nelson Mega Ltd",
+        //    "Hewlett-Packard NZ",
+        //    "Intercontinental Group",
+        //    "Masterton Supermarkets Ltd",
+        //    "Nees Hardware Ltd",
+        //    "Holiday Inn"
+        //};
 
-        private string[] _sampleGroups = new string[] { 
-            "Foodstuffs North Island",
-            "Foodstuffs South Island",
-            "Group not set",
-            "Mitre 10 New Zealand"
-        };
+        //private string[] _sampleGroups = new string[] { 
+        //    "Foodstuffs North Island",
+        //    "Foodstuffs South Island",
+        //    "Group not set",
+        //    "Mitre 10 New Zealand"
+        //};
 
         public Configuration()
         {
@@ -93,9 +95,11 @@ namespace CimscoPortal.Data.Migrations
             //context.SaveChanges();
 
             // Actual invoice data from data entry
-            context.Database.ExecuteSqlCommand("exec [dbo].[SeedInvoiceSummaries]");
+            context.Database.ExecuteSqlCommand(_SQL.emptyTables);
+            context.Database.ExecuteSqlCommand(_SQL.seedMasterData);
+            //context.Database.ExecuteSqlCommand("exec [dbo].[SeedInvoiceSummaries]");
             //context.SaveChanges();
-
+           
             // Create any not already in source data
             //CreateSites(context, _sampleSites);
             //CreateGroupsAndCustomers(context, _sampleCustomers, _sampleGroups);
@@ -112,6 +116,7 @@ namespace CimscoPortal.Data.Migrations
             //LinkUsersCustomer("Holiday Inn", new string[] { "holiday1@cimsco.co.nz", "holiday2@cimsco.co.nz" }, context);
 
             context.SaveChanges();
+
 
             if (SeedData)
             {
@@ -179,47 +184,47 @@ namespace CimscoPortal.Data.Migrations
             }
         }
 
-        private void RemoveGroups(CimscoPortal.Data.Models.CimscoPortalContext context)
-        {
-            IQueryable<Models.Site> _sitesToRemove;
-            Group _groupToRemove;
-            foreach (string _groupName in _sampleGroups)
-            {
-                _sitesToRemove = context.Sites.Where(s => s.Group.GroupName == _groupName);
+        //private void RemoveGroups(CimscoPortal.Data.Models.CimscoPortalContext context)
+        //{
+        //    IQueryable<Models.Site> _sitesToRemove;
+        //    Group _groupToRemove;
+        //    foreach (string _groupName in _sampleGroups)
+        //    {
+        //        _sitesToRemove = context.Sites.Where(s => s.Group.GroupName == _groupName);
 
-                foreach (var _site in _sitesToRemove)
-                {
-                    context.Sites.Remove(_site);
-                }
-                _groupToRemove = context.Groups.Where(s => s.GroupName == _groupName).FirstOrDefault();
-                if (_groupToRemove != null)
-                {
-                    context.Groups.Remove(_groupToRemove);
-                }
-            }
-        }
+        //        foreach (var _site in _sitesToRemove)
+        //        {
+        //            context.Sites.Remove(_site);
+        //        }
+        //        _groupToRemove = context.Groups.Where(s => s.GroupName == _groupName).FirstOrDefault();
+        //        if (_groupToRemove != null)
+        //        {
+        //            context.Groups.Remove(_groupToRemove);
+        //        }
+        //    }
+        //}
 
-        private void RemoveCustomers(CimscoPortal.Data.Models.CimscoPortalContext context)
-        {
-            IQueryable<Models.Site> _sitesToRemove;
-            //string[] _targetSites = { _sampleCustomers[0] }; //"Test Customer 1", "Test Customer 2" };
-            CimscoPortal.Data.Models.Customer _customerToRemove;
-            foreach (string _customerName in _sampleCustomers)
-            {
-                _sitesToRemove = context.Sites.Where(s => s.Customer.CustomerName == _customerName);
+        //private void RemoveCustomers(CimscoPortal.Data.Models.CimscoPortalContext context)
+        //{
+        //    IQueryable<Models.Site> _sitesToRemove;
+        //    //string[] _targetSites = { _sampleCustomers[0] }; //"Test Customer 1", "Test Customer 2" };
+        //    CimscoPortal.Data.Models.Customer _customerToRemove;
+        //    foreach (string _customerName in _sampleCustomers)
+        //    {
+        //        _sitesToRemove = context.Sites.Where(s => s.Customer.CustomerName == _customerName);
 
-                foreach (var _site in _sitesToRemove)
-                {
-                    context.Sites.Remove(_site);
-                }
-                _customerToRemove = context.Customers.Where(s => s.CustomerName == _customerName).FirstOrDefault();
-                if (_customerToRemove != null)
-                {
-                    context.Customers.Remove(_customerToRemove);
-                }
-            }
-            //return _sitesToRemove;
-        }
+        //        foreach (var _site in _sitesToRemove)
+        //        {
+        //            context.Sites.Remove(_site);
+        //        }
+        //        _customerToRemove = context.Customers.Where(s => s.CustomerName == _customerName).FirstOrDefault();
+        //        if (_customerToRemove != null)
+        //        {
+        //            context.Customers.Remove(_customerToRemove);
+        //        }
+        //    }
+        //    //return _sitesToRemove;
+        //}
 
         private static void CreateContacts(CimscoPortal.Data.Models.CimscoPortalContext context)
         {
@@ -319,27 +324,27 @@ namespace CimscoPortal.Data.Migrations
             }
         }
 
-        private void LinkUsersToCustomers(CimscoPortal.Data.Models.CimscoPortalContext context)
-        {
-            string _targetCustomer;
-            string[] _targets;
+        //private void LinkUsersToCustomers(CimscoPortal.Data.Models.CimscoPortalContext context)
+        //{
+        //    string _targetCustomer;
+        //    string[] _targets;
 
-            _targetCustomer = _sampleCustomers[0];
-            _targets = new string[] { _sampleUsers[0], _sampleUsers[1] };
-            LinkUsersCustomer(_targetCustomer, _targets, context);
+        //    _targetCustomer = _sampleCustomers[0];
+        //    _targets = new string[] { _sampleUsers[0], _sampleUsers[1] };
+        //    LinkUsersCustomer(_targetCustomer, _targets, context);
 
-            _targetCustomer = _sampleCustomers[1];
-            _targets = new string[] { _sampleUsers[2] };
-            LinkUsersCustomer(_targetCustomer, _targets, context);
+        //    _targetCustomer = _sampleCustomers[1];
+        //    _targets = new string[] { _sampleUsers[2] };
+        //    LinkUsersCustomer(_targetCustomer, _targets, context);
 
-            _targetCustomer = "Masterton Supermarkets Ltd";
-            _targets = new string[] { _sampleUsers[3] };
-            LinkUsersCustomer(_targetCustomer, _targets, context);
+        //    _targetCustomer = "Masterton Supermarkets Ltd";
+        //    _targets = new string[] { _sampleUsers[3] };
+        //    LinkUsersCustomer(_targetCustomer, _targets, context);
 
-            _targetCustomer = "Intercontinental Group";
-            _targets = new string[] { _sampleUsers[4] };
-            LinkUsersCustomer(_targetCustomer, _targets, context);
-        }
+        //    _targetCustomer = "Intercontinental Group";
+        //    _targets = new string[] { _sampleUsers[4] };
+        //    LinkUsersCustomer(_targetCustomer, _targets, context);
+        //}
 
         private void LinkUsersCustomer(string targetCustomer, string[] targetUsers, CimscoPortal.Data.Models.CimscoPortalContext context)
         {
@@ -744,5 +749,106 @@ namespace CimscoPortal.Data.Migrations
 
     }
         #endregion
+    class _SQL
+    {
+        public const string emptyTables =
+            "delete from [dbo].[EnergyPoints];" +
+            "delete from [dbo].[Sites];" +
+            "delete from [dbo].[Customers]" +
+            "delete from [dbo].[Groups]" +
+            "delete from [dbo].[InvoiceSummaries]" +
+            "delete from [dbo].[EnergySuppliers]";
+        public const string seedMasterData =
+            "SET IDENTITY_INSERT [dbo].[Customers] ON; " +
 
+
+"INSERT [dbo].[Customers] ([CustomerId], [CustomerName], [AddressId], [Contact_ContactId]) VALUES (1, N'Customer not set', NULL, NULL); " +
+
+"INSERT [dbo].[Customers] ([CustomerId], [CustomerName], [AddressId], [Contact_ContactId]) VALUES (2, N'Nelson + Holdings Ltd & Nelson Mega Ltd', NULL, NULL); " +
+
+"INSERT [dbo].[Customers] ([CustomerId], [CustomerName], [AddressId], [Contact_ContactId]) VALUES (3, N'Hewlett-Packard NZ', NULL, NULL); " +
+
+"INSERT [dbo].[Customers] ([CustomerId], [CustomerName], [AddressId], [Contact_ContactId]) VALUES (4, N'Intercontinental Group', NULL, NULL); " +
+
+"INSERT [dbo].[Customers] ([CustomerId], [CustomerName], [AddressId], [Contact_ContactId]) VALUES (5, N'Masterton Supermarkets Ltd', NULL, NULL); " +
+
+"INSERT [dbo].[Customers] ([CustomerId], [CustomerName], [AddressId], [Contact_ContactId]) VALUES (6, N'Nees Hardware Ltd', NULL, NULL); " +
+
+"SET IDENTITY_INSERT [dbo].[Customers] OFF; " +
+
+"SET IDENTITY_INSERT [dbo].[Groups] ON; " +
+
+
+"INSERT [dbo].[Groups] ([GroupId], [GroupName], [AddressId], [Contact_ContactId]) VALUES (1, N'Foodstuffs North Island', NULL, NULL); " +
+
+"INSERT [dbo].[Groups] ([GroupId], [GroupName], [AddressId], [Contact_ContactId]) VALUES (2, N'Foodstuffs South Island', NULL, NULL); " +
+
+"INSERT [dbo].[Groups] ([GroupId], [GroupName], [AddressId], [Contact_ContactId]) VALUES (3, N'Group not set', NULL, NULL); " +
+
+"INSERT [dbo].[Groups] ([GroupId], [GroupName], [AddressId], [Contact_ContactId]) VALUES (4, N'Mitre 10 New Zealand', NULL, NULL); " +
+
+"SET IDENTITY_INSERT [dbo].[Groups] OFF; " +
+
+"SET IDENTITY_INSERT [dbo].[Sites] ON; " +
+
+
+"INSERT [dbo].[Sites] ([SiteId], [SiteName], [GroupId], [CustomerId], [SiteArea]) VALUES (1, N'Site not set', NULL, 1, CAST(0 AS Decimal(18, 0))); " +
+
+"INSERT [dbo].[Sites] ([SiteId], [SiteName], [GroupId], [CustomerId], [SiteArea]) VALUES (2, N'Pak ''n Save Upper Hutt', NULL, 5, CAST(0 AS Decimal(18, 0))); " +
+
+"INSERT [dbo].[Sites] ([SiteId], [SiteName], [GroupId], [CustomerId], [SiteArea]) VALUES (3, N'Pak ''n Save Upper Hutt Fuel Site..', NULL, 5, CAST(0 AS Decimal(18, 0))); " +
+
+"INSERT [dbo].[Sites] ([SiteId], [SiteName], [GroupId], [CustomerId], [SiteArea]) VALUES (4, N'HP Lane St Data Center', NULL, 1, CAST(0 AS Decimal(18, 0))); " +
+
+"INSERT [dbo].[Sites] ([SiteId], [SiteName], [GroupId], [CustomerId], [SiteArea]) VALUES (5, N'Mega Mitre 10 Petone', NULL, 6, CAST(0 AS Decimal(18, 0))); " +
+
+"INSERT [dbo].[Sites] ([SiteId], [SiteName], [GroupId], [CustomerId], [SiteArea]) VALUES (6, N'Intercontinental Wellington', NULL, 4, CAST(0 AS Decimal(18, 0))); " +
+
+"INSERT [dbo].[Sites] ([SiteId], [SiteName], [GroupId], [CustomerId], [SiteArea]) VALUES (7, N'Pak .n Save Upper Hutt Bulk warehouse', NULL, 5, CAST(0 AS Decimal(18, 0))); " +
+
+"INSERT [dbo].[Sites] ([SiteId], [SiteName], [GroupId], [CustomerId], [SiteArea]) VALUES (8, N'Mega Mitre 10 Porirua', NULL, 6, CAST(0 AS Decimal(18, 0))); " +
+
+"INSERT [dbo].[Sites] ([SiteId], [SiteName], [GroupId], [CustomerId], [SiteArea]) VALUES (9, N'Mega Retail Park Upper Hutt', NULL, 6, CAST(0 AS Decimal(18, 0))); " +
+
+"INSERT [dbo].[Sites] ([SiteId], [SiteName], [GroupId], [CustomerId], [SiteArea]) VALUES (10, N'Mega Mitre 10 Upper Hutt', NULL, 6, CAST(0 AS Decimal(18, 0))); " +
+
+"INSERT [dbo].[Sites] ([SiteId], [SiteName], [GroupId], [CustomerId], [SiteArea]) VALUES (11, N'Mitre 10 Mega - Nelson', NULL, 2, CAST(0 AS Decimal(18, 0))); " +
+
+"INSERT [dbo].[Sites] ([SiteId], [SiteName], [GroupId], [CustomerId], [SiteArea]) VALUES (12, N'Holiday Inn', NULL, 1, CAST(0 AS Decimal(18, 0))); " +
+
+"SET IDENTITY_INSERT [dbo].[Sites] OFF; " +
+
+"SET IDENTITY_INSERT [dbo].[EnergyPoints] ON; " +
+
+
+"INSERT [dbo].[EnergyPoints] ([EnergyPointId], [EnergyPointNumber]) VALUES (4, N'0000103216TR397'); " +
+
+"INSERT [dbo].[EnergyPoints] ([EnergyPointId], [EnergyPointNumber]) VALUES (6, N'1001132585UN-F10'); " +
+
+"INSERT [dbo].[EnergyPoints] ([EnergyPointId], [EnergyPointNumber]) VALUES (8, N'0001452560UN-B21'); " +
+
+"INSERT [dbo].[EnergyPoints] ([EnergyPointId], [EnergyPointNumber]) VALUES (12, N'0000189491TRC74'); " +
+
+"INSERT [dbo].[EnergyPoints] ([EnergyPointId], [EnergyPointNumber]) VALUES (14, N'1001127474UN587'); " +
+
+"SET IDENTITY_INSERT [dbo].[EnergyPoints] OFF; " +
+
+
+"SET IDENTITY_INSERT [dbo].[EnergySuppliers] ON; " +
+
+"INSERT [dbo].[EnergySuppliers] ([SupplierId], [SupplierName]) VALUES (1, N'Supplier not set'); " +
+
+"INSERT [dbo].[EnergySuppliers] ([SupplierId], [SupplierName]) VALUES (2, N'Meridian Energy Ltd'); " +
+
+"INSERT [dbo].[EnergySuppliers] ([SupplierId], [SupplierName]) VALUES (3, N'Contact Energy'); " +
+
+"INSERT [dbo].[EnergySuppliers] ([SupplierId], [SupplierName]) VALUES (4, N'Genesis Energy Ltd'); " +
+
+"INSERT [dbo].[EnergySuppliers] ([SupplierId], [SupplierName]) VALUES (5, N'Mercury Energy'); " +
+
+"SET IDENTITY_INSERT [dbo].[EnergySuppliers] OFF";
+
+
+        public string total { get; set; }
+    }
 }
