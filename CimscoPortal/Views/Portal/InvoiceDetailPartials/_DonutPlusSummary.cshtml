@@ -1,0 +1,108 @@
+﻿<div class="databox databox-xxlg databox-vertical databox-shadowed bg-white radius-bordered" style="height:410px;">
+    <div class="databox-top bg-blue">
+        <div class="databox-row row-2 no-padding">
+            <div class="databox-cell cell-2 text-align-center no-padding padding-top-5  hidden-xs">
+                @*<span class="databox-number white tootip-info" tooltip="Info Tooltip" tooltip-placement="top">
+                        {{invoiceDetail.percentageChange | number:2}} %
+                        <i class="fa {{invoiceDetail.arrow}} no-margin"></i>
+                        <a href="javascript:void(0);" class="btn btn-default" data-container="body" data-titleclass="bordered-purple" data-class="dark" data-toggle="popover-hover" data-placement="right" data-title="Hover" data-content="Sed posuere consectetur est at lobortis. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum.." data-original-title="" title="">
+                            Popover on Hover
+                        </a>
+                    </span>*@
+
+                <span class="databox-number white tootip-info" data-container="body" data-titleclass="bordered-blue" data-class="dark" data-toggle="popover-hover" data-placement="right" 
+                      data-title="Change" data-content="Percentage increase / decrease in invoice total compared with last month" data-original-title="" title="">
+                    {{invoiceDetail.percentageChange | number:2}} %
+                    <i class="fa {{invoiceDetail.arrow}} no-margin"></i>
+                </span>
+
+            </div>
+            <div class="databox-cell cell-4 no-padding padding-top-5 text-align-left">
+                <span class="databox-number white">Invoice No {{invoiceDetail.invoiceNumber}}&nbsp;<i class="fa {{invoiceDetail.invoiceIcon}} no-margin"></i></span>
+
+            </div>
+            <div class="databox-cell cell-6 text-align-right no-padding padding-5  padding-right-30">
+                <span class="databox-number white">{{invoiceDetail.invoiceDate | date:'MMMM d, y'}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="databox databox-xxlg databox-vertical databox-shadowed bg-white radius-bordered">
+        <div class="databox-top">
+        </div>
+        <div class="databox-row row-8">
+            <div class="databox-cell cell-4 text-center  no-padding">
+                <div id="{{doPageElement}}" class="chart extended-databox"></div>
+            </div>
+            <div class="databox-cell cell-4 text-center no-padding-left padding-bottom-30">
+
+                <div class="databox-row row-2  bordered-ivory padding-15">
+                    <span class="badge badge-blue badge-empty pull-left margin-5"></span>
+                    <span class="databox-number darkgray pull-left no-margin hidden-xs">{{invoiceDetail.energyChargesLabel}}</span>
+                    <span class="databox-number darkgray pull-right no-margin uppercase">{{invoiceDetail.energyChargesTotal | currency:$}}</span>
+                </div>
+                <div class="databox-row row-2  bordered-ivory padding-15">
+                    <span class="badge badge-orange badge-empty pull-left margin-5 padding-top-5"></span>
+                    <span class="databox-number darkgray pull-left no-margin hidden-xs">{{invoiceDetail.networkChargesLabel}}</span>
+                    <span class="databox-number darkgray pull-right no-margin uppercase">{{invoiceDetail.networkChargesTotal | currency:$}}</span>
+                </div>
+                <div class="databox-row row-2  bordered-ivory padding-15">
+                    <span class="badge badge-yellow badge-empty pull-left margin-5"></span>
+                    <span class="databox-number darkgray pull-left no-margin hidden-xs">{{invoiceDetail.miscChargesLabel}}</span>
+                    <span class="databox-number darkgray pull-right no-margin uppercase">{{invoiceDetail.miscChargesTotal | currency:$}}</span>
+                </div>
+                <div class="databox-row row-2  padding-15">
+                    <span class="badge badge-empty pull-left margin-5 hide-element"></span>
+                    <span class="databox-number darkgray pull-left no-margin hidden-xs">GST</span>
+                    <span class="databox-number darkgray pull-right no-margin uppercase">{{invoiceDetail.gstTotal | currency:$}}</span>
+                </div>
+                <div class="databox-row row-2">
+                </div>
+
+                <div class="databox-row row-4">
+
+                    <div class="databox-cell cell-6 text-left">
+                        <div class="databox-text darkgray">due date</div>
+                        <div class="databox-number darkgray">{{invoiceDetail.invoiceDueDate | date:mediumDate}}</div>
+                    </div>
+                    <div class="databox-cell cell-6 text-right">
+                        <div class="databox-text darkgray hidden-xs">bill total</div>
+                        <div class="databox-number darkgray">{{invoiceDetail.invoiceTotal | currency:$ }}</div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="databox-cell cell-4 text-center padding-15 padding-bottom-30">
+                <div class="databox-row row-1">
+                </div>
+                <div class="databox-row row-4" ng-show="invoiceDetail.approved">
+
+                    <div class="databox-cell cell-12 text-left padding-15">
+                        <div class="databox-text storm-cloud">approval date</div>
+                        <div class="databox-number sonic-silver">{{invoiceDetail.approvedDate | date:'MMM d, y'}}</div>
+
+                    </div>
+                    <div class="databox-cell cell-12 text-left padding-15">
+                        <div class="databox-text storm-cloud hidden-xs">approved by</div>
+                        <div class="databox-number sonic-silver">{{invoiceDetail.approversName}}</div>
+                    </div>
+                </div>
+
+                <div class=" databox-row row-4 padding-10 padding-left-5 text-align-left" ng-show="!invoiceDetail.approved">
+                    <div class="databox-cell cell-12">
+                        @*<label>
+                            <input type="checkbox" ng-model="invoiceDetail.approved" ng-click="approveInvoice(invoiceDetail.approved, invoiceDetail.invoiceId)">
+                            <span class="text">Approved</span>
+                        </label>*@
+                        <span ng-show="!invoiceDetail.approved" ng-click="approveInvoice(invoiceDetail.approved, invoiceDetail.invoiceId)"
+                              class="btn btn-info pull-right">
+                            Approve
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        @*<div class="databox-bottom">
+            </div>*@
+    </div>
+</div>

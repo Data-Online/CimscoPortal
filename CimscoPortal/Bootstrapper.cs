@@ -39,7 +39,7 @@ namespace CimscoPortal
         public static void RegisterTypes(IUnityContainer container)
         {
             container.RegisterType<IPortalService, PortalService>();
-            container.RegisterType<ICimscoPortalEntities, CimscoPortalEntities>();
+           // container.RegisterType<ICimscoPortalEntities, CimscoPortalEntities>();
             container.RegisterType<ICimscoPortalContext, CimscoPortalContext>(new PerRequestLifetimeManager());
             //container.RegisterType<AutoMapper.IMappingEngine, AutoMapper.MappingEngine>();
             container.RegisterType<IMappingService, MappingService>();

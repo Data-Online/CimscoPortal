@@ -55,7 +55,7 @@
         <div class="well bordered-left bordered-themeprimary" style="margin-bottom:2px;padding:10px;">
             <b>{{inv.invoiceNumber}} </b><span>{{inv.invoiceId}}</span>
             <span ng-show="inv.approved">
-                <span class="databox-text pull-right">{{inv.approversName}} on <b>{{inv.approvedDate |  date:mediumDate}}</b></span>
+                <span class="databox-text pull-right">{{inv.approversName}} on <b>{{inv.approvedDate | date:mediumDate}}</b></span>
             </span>
         </div>
         <div class="databox databox-lg radius-bordered databox-shadowed" ng-style=setOpacity(inv.invoiceNumber)>
@@ -88,26 +88,12 @@
                         </div>
                     </div>
                     <div class="col-lg-4 nopadding item-right" style="padding-right: 10px; padding-left: 0">
-                        @*<span class="darkgray databox-text pull-right">Inv no: <b>{{inv.invoiceNumber}}</b></span>
-                            <span class="darkgray databox-text pull-right">Approved: <b>{{inv.approvedDate |  date:mediumDate}}</b></span>*@
-                        @*<span ng-show="inv.verified" class="btn-xs btn-labeled btn-maroon pull-right">
-                                <i class="btn-label glyphicon glyphicon-ok"></i>
-                                Verified
-                            </span>*@
-                        <span ng-show="inv.verified" class="btn-xs  btn-maroon pull-right">
+                         <span ng-show="inv.verified" class="btn-xs  btn-maroon pull-right">
                             <i class="fa fa-eye"></i>
                         </span>
-                        @*<span ng-show="inv.approved" class="btn-xs btn-labeled btn-palegreen pull-right">
-                                <i class="btn-label glyphicon glyphicon-ok"></i>
-                                Approved<i class="fa fa-eye"></i>
-                            </span>*@
                         <span data-toggle="tooltip" title="Sort by Invoice Total" ng-show="inv.approved" class="btn-xs btn-palegreen pull-right">
                             <i class="fa fa-check"></i>
                         </span>
-                        @*<span ng-show="!inv.approved" ng-click="approveInv(inv.approved, inv.invoiceId, $index)"
-                                  class="btn-sm btn-labeled btn-info pull-right" value="Approve">
-                                Approve
-                            </span>*@
                         <span ng-show="!inv.approved" ng-click="approveInv(inv.approved, inv.invoiceId)"
                               class="btn btn-info pull-right">
                             Approve

@@ -49,6 +49,14 @@ namespace CimscoPortal.Controllers.Api
                             _portalService.GetCommonData(User.Identity.Name));
         }
 
+        [HttpGet]
+        [Route("userdata")]
+        public HttpResponseMessage GetUserSettings(HttpRequestMessage request)
+        {
+            return request.CreateResponse<UserSettingsViewModel>(HttpStatusCode.OK,
+                            _portalService.GetUserSettingsFor(User.Identity.Name));
+        }
+
         //[HttpGet]
         //[Route("companyhierarchy")]
         //public HttpResponseMessage GetCompanyData(HttpRequestMessage request)
@@ -76,6 +84,15 @@ namespace CimscoPortal.Controllers.Api
         }
 
         [HttpGet]
+        [Route("sitehistorydatafor/{invoiceId}")]
+        public HttpResponseMessage GetSiteHistoricalData(HttpRequestMessage request, int invoiceId)
+        {
+            var data = _portalService.GetHistoricalDataForSite(invoiceId);
+            return request.CreateResponse<MonthlyConsumptionViewModal[]>(HttpStatusCode.OK, data.ToArray());
+        }
+
+        
+        [HttpGet]
         [Route("invoiceOverviewFor/{siteId}")]
         public HttpResponseMessage GetInvoiceOverview(HttpRequestMessage request, int siteId)
         {
@@ -88,11 +105,15 @@ namespace CimscoPortal.Controllers.Api
         }
 
         [HttpGet]
-        [Route("invoiceOverviewFor/{siteId}/{invoiceId}")]
-        public HttpResponseMessage GetInvoiceOverview(HttpRequestMessage request, int siteId, int invoiceId)
+        [Route("invoiceOverviewFor/{siteId}/{monthsToDisplay}")]
+        public HttpResponseMessage GetInvoiceOverview(HttpRequestMessage request, int siteId, int monthsToDisplay)
         {
-            var data = _portalService.GetInvoiceOverviewForSite(siteId, invoiceId);
-            return request.CreateResponse<InvoiceOverviewViewModel[]>(HttpStatusCode.OK, data.ToArray());
+            if (GetCurrentUserAccess().ValidSites.Contains(siteId))
+            {
+                var data = _portalService.GetInvoiceOverviewForSite(siteId, monthsToDisplay);
+                return request.CreateResponse<InvoiceOverviewViewModel[]>(HttpStatusCode.OK, data.ToArray());
+            }
+            return request.CreateResponse(HttpStatusCode.Forbidden);
         }
 
         [HttpGet]
@@ -120,20 +141,20 @@ namespace CimscoPortal.Controllers.Api
             return request.CreateResponse<StackedBarChartViewModel>(HttpStatusCode.OK, data);
         }
 
-        [HttpGet]
-        [Route("invoicedetailfor/{invoiceId}")]
-        public HttpResponseMessage GetInvoiceDetailData(HttpRequestMessage request, int invoiceId)
-        {
-            var data = _portalService.GetCurrentMonth_(invoiceId);
-            return request.CreateResponse<InvoiceDetailViewModel>(HttpStatusCode.OK, data);
-        }
+        //[HttpGet]
+        //[Route("invoicedetailfor/{invoiceId}")]
+        //public HttpResponseMessage GetInvoiceDetailData(HttpRequestMessage request, int invoiceId)
+        //{
+        //    var data = _portalService.GetCurrentMonth_(invoiceId);
+        //    return request.CreateResponse<InvoiceDetailViewModel>(HttpStatusCode.OK, data);
+        //}
 
         [HttpGet]
-        [Route("invoicedetailfor_/{invoiceId}")]
-        public HttpResponseMessage GetCurrentMonth(HttpRequestMessage request, int invoiceId)   // Rename ?
+        [Route("invoicedetailfor/{invoiceId}")]
+        public HttpResponseMessage GetInvoiceDetail(HttpRequestMessage request, int invoiceId)   // Rename ?
         {
-            var data = _portalService.GetCurrentMonth(invoiceId);
-            return request.CreateResponse<InvoiceDetailViewModel_>(HttpStatusCode.OK, data);
+            var data = _portalService.GetInvoiceDetail(invoiceId);
+            return request.CreateResponse<InvoiceDetailViewModel>(HttpStatusCode.OK, data);
         }
 
         [System.Web.Mvc.ValidateAntiForgeryToken]
@@ -141,7 +162,8 @@ namespace CimscoPortal.Controllers.Api
         [Route("invoiceApproval/{invoiceId}")]
         public HttpResponseMessage SetInvoiceApproved(HttpRequestMessage request, int invoiceId)
         {
-            var _data = _portalService.ApproveInvoice(invoiceId, User.Identity.Name);
+            var _rootUrl = System.Web.HttpContext.Current.Request.Url.Host + ":" + System.Web.HttpContext.Current.Request.Url.Port;
+            var _data = _portalService.ApproveInvoice(invoiceId, User.Identity.Name, _rootUrl);
             if (_data.Approved)
                 return request.CreateResponse<InvoiceOverviewViewModel>(HttpStatusCode.OK, _data);
             else

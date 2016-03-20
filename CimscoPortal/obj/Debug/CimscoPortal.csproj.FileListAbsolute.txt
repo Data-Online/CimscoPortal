@@ -130,6 +130,9 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\MvcSiteMapPro
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\MvcSiteMapProvider.WebActivator.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Newtonsoft.Json.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Owin.dll
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\SendGrid.dll
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\SendGrid.SmtpApi.dll
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\SendGridMail.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Net.Http.Formatting.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Spatial.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.Cors.dll

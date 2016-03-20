@@ -8,7 +8,7 @@
     <div class="row">
         <div class="col-lg-6 col-sm-6 col-xs-12">
             <div class="widget">
-                <div class="widget-header bordered-bottom bordered-blue">
+                <div class="widget-header  bordered-blue">
                     <span class="widget-caption">Company Details</span>
                     <div class="widget-buttons">
                         <a href="" widget-config></a>
@@ -28,7 +28,7 @@
         </div>
         <div class="col-lg-6 col-sm-6 col-xs-12">
             <div class="widget">
-                <div class="widget-header bordered-bottom bordered-blue">
+                <div class="widget-header  bordered-blue">
                     <span class="widget-caption">Summary Data</span>
                     <div class="widget-buttons">
                         <a href="" widget-config></a>
@@ -56,7 +56,7 @@
                                 {{tabTableHeader}}
                             </div>
                         </div>
-                        <div class="widget-header bordered-bottom bordered-themeprimary">
+                        <div class="widget-header  bordered-themeprimary">
                             <span ng-repeat="_month in monthSpanOptions" data-ng-click="reviseMonths(_month)" class="widget-caption" ng-class="{'themeprimary' : monthSpan==_month}" style=" padding-left:5px; padding-right:5px">
                                 <i class="widget-icon fa fa-calendar"></i>
                                 {{_month}} months
@@ -268,6 +268,7 @@
         <script src="~/App_/common/directives/angular-flot.js"></script>
         <script src="~/App_/common/directives/widget.js"></script>
         <script src="~/App_/core/App.js"></script>
+        <script src="~/App_/core/userDataSource.data.js"></script>
         <script src="~/App_/core/siteOverview.data.js"></script>
         <script src="~/App_/core/siteOverview.ctrl.js"></script>
         <script src="~/App_/core/customFilters.js"></script>

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CimscoPortal.Data.Models;
+using CimscoPortal.Extensions;
 using CimscoPortal.Models;
 using System;
 
@@ -68,9 +69,9 @@ namespace CimscoPortal.App_Start
                 .ForMember(m => m.Other,
                                 opt => opt.MapFrom(i => i.MiscChargesTotal))
                 .ForMember(m => m.Month,
-                                opt => opt.MapFrom(i => i.InvoiceDate.ToString()))
-                .ForMember(m => m._month,
-                                opt => opt.MapFrom(i => i.InvoiceDate))
+                                opt => opt.Ignore()) //.MapFrom(i => i.InvoiceDate.ToString()))
+                //.ForMember(m => m.InvoiceDate,
+                //                opt => opt.MapFrom(i => i.InvoiceDate))
                                 ;
 
             //Mapper.CreateMap<InvoiceSummary, DonutChartViewModel>()
@@ -116,7 +117,7 @@ namespace CimscoPortal.App_Start
             //    .ForMember(m => m.UserInfo.FullName, opt => opt.MapFrom(i => i.;
 
 
-            Mapper.CreateMap<InvoiceSummary, InvoiceDetailViewModel>();
+            //Mapper.CreateMap<InvoiceSummary, InvoiceDetailViewModel_zz>();
             Mapper.CreateMap<InvoiceSummary, InvoiceOverviewViewModel>()
                 .ForMember(m => m.ApproversName, opt => opt.MapFrom(i => (i.UserId.FirstName + " " + i.UserId.LastName) == " " ?
                                                         (i.UserId.UserName) : (i.UserId.FirstName + " " + i.UserId.LastName)))
@@ -127,9 +128,32 @@ namespace CimscoPortal.App_Start
                 .ForMember(m => m.InvoiceTallies, opt => opt.MapFrom(i => i.SiteData))
                 .ForMember(m => m.GroupCompanyName, opt => opt.Ignore());
 
+            Mapper.CreateMap<InvoiceSummary, MonthlyConsumptionViewModal>()
+                .ForMember(m => m.ConsumptionBusinessDay, opt => opt.MapFrom(r => ((r.EnergyCharge.BD0004R == 0 ? 0 : r.EnergyCharge.BD0004 / r.EnergyCharge.BD0004R))
+                                                                                         + ((r.EnergyCharge.BD0408R == 0 ? 0 : r.EnergyCharge.BD0408 / r.EnergyCharge.BD0408R))
+                                                                                         + ((r.EnergyCharge.BD0812R == 0 ? 0 : r.EnergyCharge.BD0812 / r.EnergyCharge.BD0812R))
+                                                                                         + ((r.EnergyCharge.BD1216R == 0 ? 0 : r.EnergyCharge.BD1216 / r.EnergyCharge.BD1216R))
+                                                                                         + ((r.EnergyCharge.BD1620R == 0 ? 0 : r.EnergyCharge.BD1620 / r.EnergyCharge.BD1620R))
+                                                                                         + ((r.EnergyCharge.BD2024R == 0 ? 0 : r.EnergyCharge.BD2024 / r.EnergyCharge.BD2024R))))
+                .ForMember(m => m.ConsumptionNonBusinessDay, opt => opt.MapFrom(r => ((r.EnergyCharge.NBD0004R == 0 ? 0 : r.EnergyCharge.NBD0004 / r.EnergyCharge.NBD0004R))
+                                                                                         + ((r.EnergyCharge.NBD0408R == 0 ? 0 : r.EnergyCharge.NBD0408 / r.EnergyCharge.NBD0408R))
+                                                                                         + ((r.EnergyCharge.NBD0812R == 0 ? 0 : r.EnergyCharge.NBD0812 / r.EnergyCharge.NBD0812R))
+                                                                                         + ((r.EnergyCharge.NBD1216R == 0 ? 0 : r.EnergyCharge.NBD1216 / r.EnergyCharge.NBD1216R))
+                                                                                         + ((r.EnergyCharge.NBD1620R == 0 ? 0 : r.EnergyCharge.NBD1620 / r.EnergyCharge.NBD1620R))
+                                                                                         + ((r.EnergyCharge.NBD2024R == 0 ? 0 : r.EnergyCharge.NBD2024 / r.EnergyCharge.NBD2024R))))
+                .ForMember(m => m.CostBusinessDay, opt => opt.MapFrom(r => (r.EnergyCharge.BD0004 + r.EnergyCharge.BD0408 +
+                                                                                         r.EnergyCharge.BD0812 + r.EnergyCharge.BD1216 +
+                                                                                         r.EnergyCharge.BD1620 + r.EnergyCharge.BD2024)))
+                .ForMember(m => m.CostNonBusinessDay, opt => opt.MapFrom(r => (r.EnergyCharge.NBD0004 + r.EnergyCharge.NBD0408 +
+                                                                                         r.EnergyCharge.NBD0812 + r.EnergyCharge.NBD1216 +
+                                                                                         r.EnergyCharge.NBD1620 + r.EnergyCharge.NBD2024)));
+
+
+            Mapper.CreateMap<EnergyData, AddMonthData>(MemberList.Source)
+                .ForMember(m => m.monthCount, opt => opt.Ignore());
         }
 
-
+       
     }
 }
 

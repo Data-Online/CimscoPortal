@@ -13,6 +13,11 @@ using System.Globalization;
 using CimscoPortal.Data.Models;
 using CimscoPortal.Extensions;
 
+using System.Net;
+using System.Net.Mail;
+using SendGrid;
+using System.Web.Mvc;
+
 namespace CimscoPortal.Services
 {
     class PortalService : IPortalService
@@ -38,6 +43,7 @@ namespace CimscoPortal.Services
             UserAccessModel _userAccess = new UserAccessModel();
 
             _userAccess.ValidSites = GetValidSiteIdListForUser(userName);
+            _userAccess.CanApproveInvoices = CheckAuthorizedToApproveInvoice(userName);
             _userAccess.ViewInvoices = true;
 
             return _userAccess;
@@ -68,6 +74,11 @@ namespace CimscoPortal.Services
         {
             return _repository.PortalMessages.Where(i => i.User.Email == userName)
                                             .Project().To<MessageViewModel>();
+        }
+
+        public UserSettingsViewModel GetUserSettingsFor(string userName)
+        {
+            return new UserSettingsViewModel { MonthSpan = 12 };
         }
 
         public SiteHierarchyViewModel GetSiteHierarchy(string userId)
@@ -103,27 +114,66 @@ namespace CimscoPortal.Services
             return InvoiceOverviewForSite(siteId);
         }
 
-        public IEnumerable<InvoiceOverviewViewModel> GetInvoiceOverviewForSite(int siteId, int invoiceId)
+        public IEnumerable<InvoiceOverviewViewModel> GetInvoiceOverviewForSite(int siteId, int monthsToDisplay)
         {
-            return InvoiceOverviewForSite(siteId, invoiceId); //_invoices;
+            return InvoiceOverviewForSite(siteId, monthsToDisplay); //_invoices;
+        }
+
+        public IEnumerable<MonthlyConsumptionViewModal> GetHistoricalDataForSite(int invoiceId)
+        {
+            int _siteId = SiteIdFromInvoiceId(invoiceId);
+            return HistoricalConsumption(_siteId, 12);
+        }
+
+        private int SiteIdFromInvoiceId(int invoiceId)
+        {
+            return _repository.InvoiceSummaries.Where(r => r.InvoiceId == invoiceId).Select(s => s.SiteId).FirstOrDefault();
         }
 
         private IEnumerable<InvoiceOverviewViewModel> InvoiceOverviewForSite(int siteId)
         {
             var _result = _repository.InvoiceSummaries.Where(s => s.SiteId == siteId)
                   .OrderByDescending(o => o.InvoiceDate).Project().To<InvoiceOverviewViewModel>().ToList();
-            CheckPdfSourceFileExists(_result);
-           // PopulateMissingInvoices(_result);
+            CheckPdfSourceFileExists(_result); // Only need to do this once? --> Move to Manage module
+            // PopulateMissingInvoices(_result);
 
             return _result;
         }
 
+        private IEnumerable<InvoiceOverviewViewModel> InvoiceOverviewForSite(int siteId, int monthsToDisplay)
+        {
+            DateTime _fromDate = DateTime.Now.AddMonths(Math.Max(monthsToDisplay, 1) * -1).StartOfThisMonth();
+            var _result = _repository.InvoiceSummaries.Where(s => s.SiteId == siteId && s.InvoiceDate > _fromDate)
+                  .OrderByDescending(o => o.InvoiceDate).Project().To<InvoiceOverviewViewModel>().ToList();
+            CheckPdfSourceFileExists(_result); // Only need to do this once? --> Move to Manage module
+            // PopulateMissingInvoices(_result);
+
+            return _result;
+        }
+
+        // Rename this - updates data for a single invoice when approval triggered
+        private InvoiceOverviewViewModel InvoiceOverviewForSite_(int invoiceId)
+        {
+            return _repository.InvoiceSummaries.Where(s => s.InvoiceId == invoiceId)
+                  .OrderBy(o => o.InvoiceDate).Project().To<InvoiceOverviewViewModel>().FirstOrDefault();
+        }
+
+        private List<MonthlyConsumptionViewModal> HistoricalConsumption(int siteId, int months)
+        {
+            var _date = DateTime.Now.AddMonths(months * -1);
+            // get consumption data for last year for site
+            return _repository.InvoiceSummaries.Where(o => o.InvoiceDate > _date && o.SiteId == siteId).Project().To<MonthlyConsumptionViewModal>().ToList();
+        }
+
         private void PopulateMissingInvoices(List<InvoiceOverviewViewModel> result)
         {
+            //List<AddMonthData> _missingMonths = FindMissingMonths(_monthsToDisplay,
+            //    AutoMapper.Mapper.Map<List<EnergyData>, List<AddMonthData>>(_dataListOrderedByInvoiceDate));
+
             var _missingInvoices = new List<DateTime>();
-            
-            DateTime _latestInvoiceDate = DateTime.Now.EndOfLastMonth(); 
-            foreach (var _invoice in result )
+
+            DateTime _latestInvoiceDate = DateTime.Now.EndOfLastMonth();
+            foreach (var _invoice in result)
             {
                 if (!(_invoice.InvoiceDate.EndOfTheMonth() == _latestInvoiceDate))
                 {
@@ -131,25 +181,12 @@ namespace CimscoPortal.Services
                 }
                 _latestInvoiceDate = _latestInvoiceDate.EndOfLastMonth();
             }
-            foreach (var _date in _missingInvoices )
+            foreach (var _date in _missingInvoices)
             {
                 var _data = new InvoiceOverviewViewModel() { InvoiceDate = _date, Missing = true };
                 result.Add(_data);
             }
         }
-
-        private IEnumerable<InvoiceOverviewViewModel> InvoiceOverviewForSite(int siteId, int invoiceId)
-        {
-            return _repository.InvoiceSummaries.Where(s => s.SiteId == siteId & s.InvoiceId == invoiceId)
-                  .OrderBy(o => o.InvoiceDate).Project().To<InvoiceOverviewViewModel>().ToList();
-        }
-
-        private InvoiceOverviewViewModel InvoiceOverviewForSite_(int invoiceId)
-        {
-            return _repository.InvoiceSummaries.Where(s => s.InvoiceId == invoiceId)
-                  .OrderBy(o => o.InvoiceDate).Project().To<InvoiceOverviewViewModel>().FirstOrDefault();
-        }
-
 
         public SummaryViewModel GetSummaryDataFor(string userId)
         {
@@ -195,27 +232,124 @@ namespace CimscoPortal.Services
                                             .ToList();
         }
 
-        public InvoiceDetailViewModel_ GetCurrentMonth(int invoiceId)
+        public InvoiceDetailViewModel GetInvoiceDetail(int invoiceId)
         {
-            InvoiceDetailViewModel_ _result = new InvoiceDetailViewModel_();
+            // Read data from database
+            InvoiceDetailViewModel _result = new InvoiceDetailViewModel();
             InvoiceDetail _invoiceDetail = GetInvoiceById(invoiceId);
-
-            _invoiceDetail.ValidationError = (_invoiceDetail.InvoiceTotal != _invoiceDetail.EnergyChargesTotal + _invoiceDetail.MiscChargesTotal + _invoiceDetail.NetworkChargesTotal);
-
-            if (_invoiceDetail.LossRate == 0.0M) { _invoiceDetail.LossRate = 0.028M; }
-            //_result.EnergyCosts.EnergyCostSeries = ReturnTestEnergyDataModel();
-            _result.InvoiceDetail = _invoiceDetail;
             var _energyCharges = _repository.InvoiceSummaries.Where(a => a.InvoiceId == invoiceId).Select(b => b.EnergyCharge).FirstOrDefault();
             var _otherCharges = _repository.InvoiceSummaries.Where(a => a.InvoiceId == invoiceId).Select(b => b.OtherCharge).FirstOrDefault();
+            var _networkCharges = _repository.InvoiceSummaries.Where(a => a.InvoiceId == invoiceId).Select(b => b.NetworkCharge).FirstOrDefault();
+
+            // Normalise data for common presentation
+            SetDefaultLossRateWhenZero(_invoiceDetail);
+            SetDefaultEnergyChargesWhenFewerPeriods(_energyCharges);
+            EnergyDataModel _businessDayData = AssignBusnessDayData(_energyCharges);
+            EnergyDataModel _nonBusinessDayData = AssignNonBusinessDayData(_energyCharges);
+            
+            var _serviceCharges = new List<decimal> { _otherCharges.BDSVC, _otherCharges.BDSVCR };
+            var _levyCharges = new List<decimal> { _otherCharges.EALevy, _otherCharges.EALevyR };
+
+            List<EnergyDataModel> _energyDataModel = new List<EnergyDataModel>();
+            _energyDataModel.Add(_businessDayData);
+            _energyDataModel.Add(_nonBusinessDayData);
+
+            // Assign data to the view
+            _result.DonutChartData = AssignDataToDonutChart(_invoiceDetail); //_donutChartData;
+            _result.InvoiceDetail = _invoiceDetail;
+            _result.OtherCharges = AssignOtherChargesData(_otherCharges); ;// new List<decimal>() { _otherCharges.BDSVC, _otherCharges.NBDSVC, _otherCharges.EALevy, _invoiceDetail.MiscChargesTotal };
+            _result.NetworkCharges = AssignNetworkChargesData(_networkCharges);// new List<decimal>() { _networkCharges.VariableBD, _networkCharges.VariableNBD, _networkCharges.CapacityCharge, _networkCharges.DemandCharge, _networkCharges.FixedCharge };
+            //_result.InvoiceDetail.MiscChargesTotal = _invoiceDetail.EnergyChargesTotal - _businessDayData.TotalCost - _nonBusinessDayData.TotalCost + _invoiceDetail.MiscChargesTotal;
+           // _result.InvoiceDetail.EnergyChargesTotal = _businessDayData.TotalCost + _nonBusinessDayData.TotalCost;
+            _result.EnergyCosts = new EnergyCosts();
+            _result.EnergyCosts.EnergyCostSeries = _energyDataModel;
+            return _result;
+        }
+
+        private static List<DonutChartData> AssignDataToDonutChart(InvoiceDetail _invoiceDetail)
+        {
+            List<DonutChartData> _donutChartData = new List<DonutChartData> { 
+                                    new DonutChartData() { Value = PercentToDecimal2(_invoiceDetail.EnergyChargesTotal, _invoiceDetail.InvoiceTotal), Label = _invoiceDetail.EnergyChargesLabel },
+                                    new DonutChartData() { Value = PercentToDecimal2(_invoiceDetail.MiscChargesTotal,_invoiceDetail.InvoiceTotal) , Label = _invoiceDetail.MiscChargesLabel },
+                                    new DonutChartData() { Value = PercentToDecimal2(_invoiceDetail.NetworkChargesTotal,_invoiceDetail.InvoiceTotal) , Label = _invoiceDetail.NetworkChargesLabel }
+            };
+            return _donutChartData;
+        }
+
+        private static List<decimal> AssignNetworkChargesData(NetworkCharge _networkCharges)
+        {
+            return new List<decimal>() { _networkCharges.VariableBD, _networkCharges.VariableNBD, _networkCharges.CapacityCharge, _networkCharges.DemandCharge, _networkCharges.FixedCharge };
+        }
+
+        private static List<decimal> AssignOtherChargesData(OtherCharge _otherCharges)
+        {
+            return new List<decimal>() { _otherCharges.BDSVC, _otherCharges.NBDSVC, _otherCharges.EALevy, _otherCharges.AdminCharge };
+        }
+
+        # region GetInvoiceDetail tools
+        private static EnergyDataModel AssignNonBusinessDayData(EnergyCharge _energyCharges)
+        {
+
+            // REVISION ==>
+            var zz = new List<ChartData>() { 
+                new ChartData { Label = "Energy NBD0004", Value = _energyCharges.NBD0004 },
+                new ChartData { Label = "Energy NBD0408", Value = _energyCharges.NBD0408 },
+                new ChartData { Label = "Energy NBD0812", Value = _energyCharges.NBD0812 },
+                new ChartData { Label = "Energy NBD1216", Value = _energyCharges.NBD1216 },
+                new ChartData { Label = "Energy NBD1620", Value = _energyCharges.NBD1620 },
+                new ChartData { Label = "Energy NBD2024", Value = _energyCharges.NBD2024 } 
+
+            };
+
+            var zzz = new List<ChartData>() { 
+                new ChartData { Label = "Energy NBD0004R", Value = _energyCharges.NBD0004R },
+                new ChartData { Label = "Energy NBD0408R", Value = _energyCharges.NBD0408R },
+                new ChartData { Label = "Energy NBD0812R", Value = _energyCharges.NBD0812R },
+                new ChartData { Label = "Energy NBD1216R", Value = _energyCharges.NBD1216R },
+                new ChartData { Label = "Energy NBD1620R", Value = _energyCharges.NBD1620R },
+                new ChartData { Label = "Energy NBD2024R", Value = _energyCharges.NBD2024R } 
+            };
+
+            EnergyDataModel _nonBusinessDayData = new EnergyDataModel()
+            {
+                EnergyChargeByBracket = new List<decimal> { _energyCharges.NBD0004, _energyCharges.NBD0408, _energyCharges.NBD0812, 
+                                                            _energyCharges.NBD1216, _energyCharges.NBD1620, _energyCharges.NBD2024 },
+                EnergyRateByBracket = new List<decimal> { _energyCharges.NBD0004R, _energyCharges.NBD0408R, _energyCharges.NBD0812R, 
+                                                          _energyCharges.NBD1216R, _energyCharges.NBD1620R, _energyCharges.NBD2024R },
+                HeaderData = new HeaderData() { Header = "Non Business Days" }
+            };
+            return _nonBusinessDayData;
+        }
+
+        private static EnergyDataModel AssignBusnessDayData(EnergyCharge _energyCharges)
+        {
+            EnergyDataModel _businessDayData = new EnergyDataModel()
+            {
+                EnergyChargeByBracket = new List<decimal> { _energyCharges.BD0004, _energyCharges.BD0408, _energyCharges.BD0812, 
+                                                            _energyCharges.BD1216, _energyCharges.BD1620, _energyCharges.BD2024 },
+                EnergyRateByBracket = new List<decimal>   { _energyCharges.BD0004R, _energyCharges.BD0408R, _energyCharges.BD0812R, 
+                                                            _energyCharges.BD1216R, _energyCharges.BD1620R, _energyCharges.BD2024R },
+                HeaderData = new HeaderData() { Header = "Business Days" }
+            };
+            return _businessDayData;
+        }
+
+        private void SetDefaultLossRateWhenZero(InvoiceDetail _invoiceDetail)
+        {
+            if (_invoiceDetail.LossRate == 0.0M) { _invoiceDetail.LossRate = Decimal.Parse(GetConfigValue("DefaultLossRate")); }
+        }
+
+        private static void SetDefaultEnergyChargesWhenFewerPeriods(EnergyCharge _energyCharges)
+        {
             if (_energyCharges.BD0408 == 0.0M)
             {
                 // 0004 --> 0408
-                _energyCharges.BD0004 = (_energyCharges.BD0004 / 2.0M) + (_invoiceDetail.LossRate * (_energyCharges.BD0004 / 2.0M));
+                _energyCharges.BD0004 = (_energyCharges.BD0004 / 2.0M); 
                 _energyCharges.BD0408 = _energyCharges.BD0004;
                 _energyCharges.BD0408R = _energyCharges.BD0004R;
 
                 // 0812 --> 1216 --> etc
-                _energyCharges.BD0812 = (_energyCharges.BD0812 / 4.0M) + (_invoiceDetail.LossRate * (_energyCharges.BD0812 / 4.0M));
+                _energyCharges.BD0812 = (_energyCharges.BD0812 / 4.0M);
                 _energyCharges.BD1216 = _energyCharges.BD0812;
                 _energyCharges.BD1216R = _energyCharges.BD0812R;
                 _energyCharges.BD1620 = _energyCharges.BD0812;
@@ -223,11 +357,11 @@ namespace CimscoPortal.Services
                 _energyCharges.BD2024 = _energyCharges.BD0812;
                 _energyCharges.BD2024R = _energyCharges.BD0812R;
 
-                _energyCharges.NBD0004 = (_energyCharges.NBD0004 / 2.0M) + (_invoiceDetail.LossRate * (_energyCharges.NBD0004 / 2.0M));
+                _energyCharges.NBD0004 = (_energyCharges.NBD0004 / 2.0M); 
                 _energyCharges.NBD0408 = _energyCharges.NBD0004;
                 _energyCharges.NBD0408R = _energyCharges.NBD0004R;
 
-                _energyCharges.NBD0812 = (_energyCharges.NBD0812 / 4.0M) + (_invoiceDetail.LossRate * (_energyCharges.NBD0812 / 4.0M));
+                _energyCharges.NBD0812 = (_energyCharges.NBD0812 / 4.0M); 
                 _energyCharges.NBD1216 = _energyCharges.NBD0812;
                 _energyCharges.NBD1216R = _energyCharges.NBD0812R;
                 _energyCharges.NBD1620 = _energyCharges.NBD0812;
@@ -235,146 +369,191 @@ namespace CimscoPortal.Services
                 _energyCharges.NBD2024 = _energyCharges.NBD0812;
                 _energyCharges.NBD2024R = _energyCharges.NBD0812R;
             }
-
-
-            var _networkCharges = _repository.InvoiceSummaries.Where(a => a.InvoiceId == invoiceId).Select(b => b.NetworkCharge).FirstOrDefault();
-            // var _energyCharges = _energyCharges.FirstOrDefault();//.Select(a => a.BD0004 + a.BD0408).FirstOrDefault();
-            List<EnergyDataModel> _energyDataModel = new List<EnergyDataModel>();
-            EnergyDataModel _businessDayData = new EnergyDataModel()
-            {
-                EnergyChargeByBracket = new List<decimal> { _energyCharges.BD0004, _energyCharges.BD0408, _energyCharges.BD0812, _energyCharges.BD1216, _energyCharges.BD1620, _energyCharges.BD2024 },
-                EnergyRateByBracket = new List<decimal> { _energyCharges.BD0004R, _energyCharges.BD0408R, _energyCharges.BD0812R, _energyCharges.BD1216R, _energyCharges.BD1620R, _energyCharges.BD2024R },
-                HeaderData = new HeaderData() { Header = "Business Days" }
-            };
-
-            EnergyDataModel _nonBusinessDayData = new EnergyDataModel()
-            {
-                EnergyChargeByBracket = new List<decimal> { _energyCharges.NBD0004, _energyCharges.NBD0408, _energyCharges.NBD0812, _energyCharges.NBD1216, _energyCharges.NBD1620, _energyCharges.NBD2024 },
-                EnergyRateByBracket = new List<decimal> { _energyCharges.NBD0004R, _energyCharges.NBD0408R, _energyCharges.NBD0812R, _energyCharges.NBD1216R, _energyCharges.NBD1620R, _energyCharges.NBD2024R },
-                HeaderData = new HeaderData() { Header = "Non Business Days" }
-            };
-
-            _result.OtherCharges = new List<decimal>() { _otherCharges.BDSVC, _otherCharges.NBDSVC, _otherCharges.EALevy, _invoiceDetail.MiscChargesTotal };
-            _result.NetworkCharges = new List<decimal>() { _networkCharges.VariableBD, _networkCharges.VariableNBD, _networkCharges.CapacityCharge, _networkCharges.DemandCharge, _networkCharges.FixedCharge };
-
-            var _zzMiscCharges = _result.InvoiceDetail.MiscChargesTotal;
-            _result.InvoiceDetail.MiscChargesTotal = _result.InvoiceDetail.EnergyChargesTotal - _businessDayData.TotalCost - _nonBusinessDayData.TotalCost + _zzMiscCharges;
-            _result.InvoiceDetail.EnergyChargesTotal = _businessDayData.TotalCost + _nonBusinessDayData.TotalCost;
-
-            var _serviceCharges = new List<decimal> { _otherCharges.BDSVC, _otherCharges.BDSVCR };
-            var _levyCharges = new List<decimal> { _otherCharges.EALevy, _otherCharges.EALevyR };
-            // var _summaryData = new List<decimal> { _energyCharges.LossRate, _energyCharges.BDMeteredKwh, _energyCharges.BDLossCharge };
-
-            List<DonutChartData> _donutChartData = new List<DonutChartData> { 
-                                    new DonutChartData() { Value = PercentToDecimal2(_invoiceDetail.EnergyChargesTotal, _invoiceDetail.InvoiceTotal), Label = "Energy" },
-                                    new DonutChartData() { Value = PercentToDecimal2(_invoiceDetail.MiscChargesTotal,_invoiceDetail.InvoiceTotal) , Label = "Other" },
-                                    new DonutChartData() { Value = PercentToDecimal2(_invoiceDetail.NetworkChargesTotal,_invoiceDetail.InvoiceTotal) , Label = "Network" }
-            };
-
-
-            _result.DonutChartData = _donutChartData;
-
-            _energyDataModel.Add(_businessDayData);
-            _energyDataModel.Add(_nonBusinessDayData);
-
-            _result.EnergyCosts = new EnergyCosts();
-            _result.EnergyCosts.EnergyCostSeries = _energyDataModel;
-
-            return _result;
         }
+        #endregion
 
-        public InvoiceDetailViewModel GetCurrentMonth_(int _invoiceId)
-        {
-            //string _dateFormat = "m";
-            //GPA:  1. Region specific formats. 
-            //      2. 
-            //SiteHierarchyViewModel _siteHierarchy = _repository.Groups.Where(s => s.Users.Any(w => w.Id == _userRecordId)).Project().To<SiteHierarchyViewModel>().FirstOrDefault();
-            // InvoiceDetailViewModel _results = _repository.InvoiceSummaries.OrderByDescending(o => o.InvoiceDate).Where(r => r.InvoiceId == _invoiceId).Project().To<InvoiceDetailViewModel>().FirstOrDefault();
-            var test = GetCurrentMonth(_invoiceId);
-            IQueryable<DonutChartViewModel> q = from r in _repository.InvoiceSummaries.OrderByDescending(o => o.InvoiceDate)
-                                                //where (r.EnergyPointId == _energyPointId)
-                                                where (r.InvoiceId == _invoiceId)
-                                                select new DonutChartViewModel()
-                                                {
-                                                    DonutChartData = new List<DonutChartData> { 
-                                                        new DonutChartData() { Value = r.TotalEnergyCharges, Label = "Energy" },
-                                                        new DonutChartData() { Value = r.TotalMiscCharges, Label = "Other"},
-                                                        new DonutChartData() { Value = r.TotalNetworkCharges, Label = "Network"}
-                                                        },
-                                                    HeaderData = new HeaderData()
-                                                    {
-                                                        DataFor = "",
-                                                        Header = SqlFunctions.DateName("mm", r.InvoiceDate).ToUpper() + " " + SqlFunctions.DateName("YY", r.InvoiceDate).ToUpper()
-                                                    },
-                                                    SummaryData = new List<SummaryData> { new SummaryData() {   
-                                                                Title = "BILL TOTAL", 
-                                                                Detail = SqlFunctions.StringConvert(r.TotalEnergyCharges+r.TotalMiscCharges+r.TotalNetworkCharges) }, 
-                                                              new SummaryData() { 
-                                                                Title = "DUE DATE", 
-                                                                Detail = SqlFunctions.DateName("dd", r.InvoiceDate) + " " +  SqlFunctions.DateName("mm", r.InvoiceDate) + " "  + SqlFunctions.DateName("YY", r.InvoiceDate)},
-                                                              new SummaryData() { 
-                                                                Title = "APPROVED BY", 
-                                                                Detail = r.ApprovedById
-                                                                },
-                                                              new SummaryData() { 
-                                                                Title = "APPROVAL DATE", 
-                                                                Detail = r.ApprovedDate.ToString()
-                                                                }
-                                                    },
-                                                    ApprovalData = new ApprovalData()
-                                                    {
-                                                        ApprovalDate = r.ApprovedDate,
-                                                        ApproverName = r.ApprovedById
-                                                    }
-                                                };
+        //public InvoiceDetailViewModel GetCurrentMonth_(int _invoiceId)
+        //{
+        //    //string _dateFormat = "m";
+        //    //GPA:  1. Region specific formats. 
+        //    //      2. 
+        //    //SiteHierarchyViewModel _siteHierarchy = _repository.Groups.Where(s => s.Users.Any(w => w.Id == _userRecordId)).Project().To<SiteHierarchyViewModel>().FirstOrDefault();
+        //    // InvoiceDetailViewModel _results = _repository.InvoiceSummaries.OrderByDescending(o => o.InvoiceDate).Where(r => r.InvoiceId == _invoiceId).Project().To<InvoiceDetailViewModel>().FirstOrDefault();
+        //    var test = GetCurrentMonth(_invoiceId);
+        //    IQueryable<DonutChartViewModel> q = from r in _repository.InvoiceSummaries.OrderByDescending(o => o.InvoiceDate)
+        //                                        //where (r.EnergyPointId == _energyPointId)
+        //                                        where (r.InvoiceId == _invoiceId)
+        //                                        select new DonutChartViewModel()
+        //                                        {
+        //                                            DonutChartData = new List<DonutChartData> { 
+        //                                                new DonutChartData() { Value = r.TotalEnergyCharges, Label = "Energy" },
+        //                                                new DonutChartData() { Value = r.TotalMiscCharges, Label = "Other"},
+        //                                                new DonutChartData() { Value = r.TotalNetworkCharges, Label = "Network"}
+        //                                                },
+        //                                            HeaderData = new HeaderData()
+        //                                            {
+        //                                                DataFor = "",
+        //                                                Header = SqlFunctions.DateName("mm", r.InvoiceDate).ToUpper() + " " + SqlFunctions.DateName("YY", r.InvoiceDate).ToUpper()
+        //                                            },
+        //                                            SummaryData = new List<SummaryData> { new SummaryData() {   
+        //                                                        Title = "BILL TOTAL", 
+        //                                                        Detail = SqlFunctions.StringConvert(r.TotalEnergyCharges+r.TotalMiscCharges+r.TotalNetworkCharges) }, 
+        //                                                      new SummaryData() { 
+        //                                                        Title = "DUE DATE", 
+        //                                                        Detail = SqlFunctions.DateName("dd", r.InvoiceDate) + " " +  SqlFunctions.DateName("mm", r.InvoiceDate) + " "  + SqlFunctions.DateName("YY", r.InvoiceDate)},
+        //                                                      new SummaryData() { 
+        //                                                        Title = "APPROVED BY", 
+        //                                                        Detail = r.ApprovedById
+        //                                                        },
+        //                                                      new SummaryData() { 
+        //                                                        Title = "APPROVAL DATE", 
+        //                                                        Detail = r.ApprovedDate.ToString()
+        //                                                        }
+        //                                            },
+        //                                            ApprovalData = new ApprovalData()
+        //                                            {
+        //                                                ApprovalDate = r.ApprovedDate,
+        //                                                ApproverName = r.ApprovedById
+        //                                            }
+        //                                        };
 
-            var _result = q.FirstOrDefault();
-            _result.SummaryData[0].Detail = Convert.ToDecimal(_result.SummaryData[0].Detail).ToString("C");
+        //    var _result = q.FirstOrDefault();
+        //    _result.SummaryData[0].Detail = Convert.ToDecimal(_result.SummaryData[0].Detail).ToString("C");
 
-            ///
-            var model = ReturnTestEnergyDataModel();
-            ////
-            InvoiceDetailViewModel returnData = new InvoiceDetailViewModel();
+        //    ///
+        //    var model = ReturnTestEnergyDataModel();
+        //    ////
+        //    InvoiceDetailViewModel returnData = new InvoiceDetailViewModel();
 
-            returnData.ChartData = _result;
-            returnData.EnergyCostData = model;
+        //    returnData.ChartData = _result;
+        //    returnData.EnergyCostData = model;
 
-            return returnData;
+        //    return returnData;
 
-        }
+        //}
 
         public StackedBarChartViewModel GetHistoryByMonth(int _invoiceId)
         {
-            var _energyPointId = _repository.InvoiceSummaries.Where(s => s.InvoiceId == _invoiceId).FirstOrDefault().EnergyPoint.EnergyPointId;
-            var _result = new StackedBarChartViewModel();
-            DateTime _fromMonth = DateTime.Today.AddMonths(-13);
-            List<EnergyData> _data = _repository.InvoiceSummaries.Where(i => i.EnergyPoint.EnergyPointId == _energyPointId && i.InvoiceDate > _fromMonth).OrderBy(o => o.InvoiceDate)
-                                            .Project().To<EnergyData>()
-                                            .ToList();
+            int _monthsToDisplay = Convert.ToInt16(GetConfigValue("HistoryGraphMonths"));
+            DateTime _fromMonth = DateTime.Today.AddMonths(_monthsToDisplay * -1);
+
+
+            List<EnergyData> _dataListOrderedByInvoiceDate = EnergyDataForPeriod(_invoiceId, _fromMonth);
+            //List<AddMonthData> zzzz = AutoMapper.Mapper.Map<List<EnergyData>, List<AddMonthData>>(_dataListOrderedByInvoiceDate);
+
+            //List<AddMonthData> _missingMonths = FindMissingMonths(_monthsToDisplay, _fromMonth, _dataListOrderedByInvoiceDate);
+
+            List<AddMonthData> _missingMonths = FindMissingMonths(_monthsToDisplay,
+                AutoMapper.Mapper.Map<List<EnergyData>, List<AddMonthData>>(_dataListOrderedByInvoiceDate));
+
+
+            EnergyData _emptyMonth = new EnergyData();
+            foreach (var _newDate in _missingMonths)
+            {
+                _emptyMonth = new EnergyData();
+                _emptyMonth.InvoiceDate = _newDate.InvoiceDate;
+                _dataListOrderedByInvoiceDate.Insert(_newDate.monthCount, _emptyMonth);
+            }
+
+            if (_dataListOrderedByInvoiceDate.Last().TotalCharge > 0.0M)
+            {
+                _dataListOrderedByInvoiceDate.RemoveAt(0);
+            }
+            else
+            {
+                _dataListOrderedByInvoiceDate.RemoveAt(_monthsToDisplay);
+            }
+
             NumberFormatInfo nfi = new CultureInfo("en-US", false).NumberFormat;
             nfi.PercentDecimalDigits = 0;
-            decimal zz = _data.First().Energy;
-            decimal zzz = _data.ElementAtOrDefault(_data.Count() - 13).Energy;  // .Last().Energy;
-            decimal _percentageChange = (1 - (zz / zzz)); //.ToString("P", nfi);
+            decimal _firstTotal = _dataListOrderedByInvoiceDate.First().TotalCharge;
+            decimal _lastTotal = _dataListOrderedByInvoiceDate.Last().TotalCharge; //.ElementAtOrDefault(_dataListOrderedByInvoiceDate.Count() - _monthsToDisplay).TotalCharge;  // .Last().Energy;
+            decimal _percentageChange = (1 - (NumericExtensions.SafeDivision(_firstTotal, _lastTotal)));
+
             BarChartSummaryData _summaryData = new BarChartSummaryData()
             {
                 Title = "ELECTRICITY COSTS",
                 SubTitle = "Invoice History. " +
-                    _fromMonth.ToString("MMMM") + " " + _fromMonth.ToString("yyyy") + " to " +
-                    DateTime.Today.ToString("MMMM") + " " + DateTime.Today.ToString("yyyy"),
+                    _dataListOrderedByInvoiceDate.First().InvoiceDate.ToString("MMMM yyyy") +
+                    " to " +
+                    _dataListOrderedByInvoiceDate.Last().InvoiceDate.ToString("MMMM yyyy"),
+                //_fromMonth.ToString("MMMM") + " " + _fromMonth.ToString("yyyy") + " to " +
+                //DateTime.Today.ToString("MMMM") + " " + DateTime.Today.ToString("yyyy"),
                 PercentChange = _percentageChange
             };
 
+            var _result = new StackedBarChartViewModel();
             _result.BarChartSummaryData = _summaryData;
-            _data.RemoveAt(12);
-            _result.MonthlyData = _data;
-
-            for (int i = 0; i < _result.MonthlyData.Count(); i++)
-            {
-                _result.MonthlyData[i].Month = _result.MonthlyData[i]._month.ToString("MMM");
-            }
+            _result.MonthlyData = _dataListOrderedByInvoiceDate;
             return _result;
-            //return new StackedBarChartViewModel();
+        }
+
+        private List<EnergyData> EnergyDataForPeriod(int _invoiceId, DateTime _fromMonth)
+        {
+            var _energyPointId = _repository.InvoiceSummaries.Where(s => s.InvoiceId == _invoiceId).FirstOrDefault().EnergyPoint.EnergyPointId;
+            List<EnergyData> _dataListOrderedByInvoiceDate = _repository.InvoiceSummaries
+                .Where(i => i.EnergyPoint.EnergyPointId == _energyPointId && i.InvoiceDate > _fromMonth)
+                .OrderBy(o => o.InvoiceDate)
+                .Project().To<EnergyData>()
+                .ToList();
+            return _dataListOrderedByInvoiceDate;
+        }
+
+        private static List<AddMonthData> FindMissingMonths(int _monthsToDisplay, DateTime _fromMonth, List<EnergyData> _dataListOrderedByInvoiceDate)
+        {
+            // Fill any blanks
+            DateTime _expectThisDate;
+            int _monthCount = 0;
+            List<AddMonthData> _missingMonths = new List<AddMonthData>();
+
+            foreach (var _nextDateFromInputList in _dataListOrderedByInvoiceDate)
+            {
+                _expectThisDate = _fromMonth.AddMonths(_monthCount);
+
+                while (_expectThisDate.StartOfThisMonth() != _nextDateFromInputList.InvoiceDate.StartOfThisMonth())
+                {
+                    _missingMonths.Add(new AddMonthData { monthCount = _monthCount, InvoiceDate = _expectThisDate });
+                    _monthCount++;
+                    _expectThisDate = _fromMonth.AddMonths(_monthCount);
+                }
+                _monthCount++;
+            }
+
+            while (_monthCount <= _monthsToDisplay)
+            {
+                _missingMonths.Add(new AddMonthData { monthCount = _monthCount, InvoiceDate = _fromMonth.AddMonths(_monthCount) });
+                _monthCount++;
+            }
+            return _missingMonths;
+        }
+
+        private static List<AddMonthData> FindMissingMonths(int _monthsToDisplay, List<AddMonthData> _dateList)
+        {
+            // Fill any blanks
+            DateTime _expectThisDate;
+            DateTime _fromMonth = DateTime.Today.AddMonths(_monthsToDisplay * -1);
+            int _monthCount = 0;
+            List<AddMonthData> _missingMonths = new List<AddMonthData>();
+
+            foreach (var _nextDateFromInputList in _dateList)
+            {
+                _expectThisDate = _fromMonth.AddMonths(_monthCount);
+
+                while (_expectThisDate.StartOfThisMonth() != _nextDateFromInputList.InvoiceDate.StartOfThisMonth())
+                {
+                    _missingMonths.Add(new AddMonthData { monthCount = _monthCount, InvoiceDate = _expectThisDate });
+                    _monthCount++;
+                    _expectThisDate = _fromMonth.AddMonths(_monthCount);
+                }
+                _monthCount++;
+            }
+
+            while (_monthCount <= _monthsToDisplay)
+            {
+                _missingMonths.Add(new AddMonthData { monthCount = _monthCount, InvoiceDate = _fromMonth.AddMonths(_monthCount) });
+                _monthCount++;
+            }
+            return _missingMonths;
         }
 
         public void UpdateUser(EditUserViewModel model)
@@ -390,7 +569,6 @@ namespace CimscoPortal.Services
                 db.Entry(item).State = EntityState.Modified;
                 db.SaveChanges();
             }
-
         }
 
         public AspNetUser GetUserByID(string id)
@@ -463,26 +641,36 @@ namespace CimscoPortal.Services
         #region update methods
 
 
-        public InvoiceOverviewViewModel ApproveInvoice(int invoiceId, string userId)
+        public InvoiceOverviewViewModel ApproveInvoice(int invoiceId, string userId, string rootUrl)
         {
-            InvoiceOverviewViewModel _result = new InvoiceOverviewViewModel();
-            CimscoPortal.Data.Models.InvoiceSummary _invoice = new CimscoPortal.Data.Models.InvoiceSummary();
-            try
-            {
-                _invoice = _repository.InvoiceSummaries.Where(s => s.InvoiceId == invoiceId).FirstOrDefault();// .Find(invoiceId);
-                _invoice.Approved = true;
-                _invoice.ApprovedById = GetUserRecordId(userId);
-                _invoice.ApprovedDate = DateTime.Today;
-                //  _repository.Update
-                _repository.Update(_invoice);
-                _repository.Commit();
+            // Does user have authority to approve?
+            // Should not get to this point, as button should not be available. But include test to be sure.
 
-                _result = InvoiceOverviewForSite_(invoiceId);
-            }
-            catch (Exception)
+            UserAccessModel _access = CheckUserAccess(userId);
+            InvoiceOverviewViewModel _result = new InvoiceOverviewViewModel();
+            if (_access.CanApproveInvoices)
             {
-                return _result;
-                //throw;
+                CimscoPortal.Data.Models.InvoiceSummary _invoice = new CimscoPortal.Data.Models.InvoiceSummary();
+                try
+                {
+                    _invoice = _repository.InvoiceSummaries.Where(s => s.InvoiceId == invoiceId).FirstOrDefault();// .Find(invoiceId);
+                    _invoice.Approved = true;
+                    _invoice.ApprovedById = GetUserRecordId(userId);
+                    _invoice.ApprovedDate = DateTime.Today;
+                    //  _repository.Update
+                    _repository.Update(_invoice);
+                    _repository.Commit();
+
+                    _result = InvoiceOverviewForSite_(invoiceId);
+                }
+                catch (Exception)
+                {
+                    return _result;
+                    //throw;
+                }
+
+                // Approval users for site in question.
+                SendApprovalMail(invoiceId, rootUrl);
             }
             return _result;
         }
@@ -490,6 +678,283 @@ namespace CimscoPortal.Services
 
         #endregion
         #region private methods
+
+        private bool CheckAuthorizedToApproveInvoice(string userName)
+        {
+            //string[] stringSeparators = new string[] {";"};
+            string[] _approvalRoles = GetConfigValue("CanApproveRoles")
+                                        .Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
+            var _canApprove = _repository.AspNetUsers.Where(s => s.UserName == userName).FirstOrDefault()
+                                            .AspNetRoles.Select(a => a.Name).ToList();
+
+            foreach (string _role in _canApprove)
+            {
+                if (_canApprove.Contains(_role)) { return true; }
+            }
+            //& s.AspNetRoles.ToList().Contains('Approval')).FirstOrDefault();
+            return false;
+        }
+
+        #region Email approval methods
+        private bool SendApprovalMail(int invoiceId, string rootUrl)
+        {
+            // Create the email object first, then add the properties.
+            string _sendGridApiKey = GetConfigValue("SendGridApi");
+            string _sourceEmail = GetConfigValue("SourceEmail");
+            string _logoImage = GetConfigValue("CimscoTextSml");
+            string _rootForPdf = GetConfigValue("PdfFileSourceRoot");
+
+            try
+            {
+                var myMessage = new SendGridMessage();
+
+                // Add the message properties.
+                myMessage.From = new MailAddress(_sourceEmail);
+                List<String> _recipients = new List<string>();
+                string _customerGroupName = "";
+                string _siteName = "";
+                _recipients = GetApprovalContactEmailsForInvoice(invoiceId, ref _customerGroupName, ref _siteName);
+                myMessage.AddTo(_recipients);
+
+                InvoiceDetail _invoiceDetail = new InvoiceDetail();
+                _invoiceDetail = GetInvoiceById(invoiceId);
+
+                myMessage.Subject = "Invoice " + _invoiceDetail.InvoiceNumber + " has been approved for payment";
+                var _urlHelper = new UrlHelper(System.Web.HttpContext.Current.Request.RequestContext);
+                var _linkToInvoiceDetail = "http://" + rootUrl + _urlHelper.Action("InvoiceDetail", "Portal", new { id = invoiceId });
+
+                CreateApprovalMailMessage(myMessage, _invoiceDetail, _logoImage, _rootForPdf, _linkToInvoiceDetail,
+                                            _customerGroupName, _siteName);
+
+                // Create a Web transport, using API Key
+                var transportWeb = new Web(_sendGridApiKey);
+
+                // Send the email.
+                transportWeb.DeliverAsync(myMessage);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static void CreateApprovalMailMessage(SendGridMessage myMessage, InvoiceDetail invoiceDetail, string logoImage,
+            string rootForPdf, string linkToInvoiceDetail, string customerGroupName, string siteName)
+        {
+            System.Text.StringBuilder _sb;
+            bool _formatAsText;
+            int _columnPercentWidth = 50;
+
+            // HTML
+
+            _formatAsText = false;
+            _sb = BuildMailMessage(invoiceDetail, logoImage, rootForPdf, linkToInvoiceDetail, _columnPercentWidth,
+                customerGroupName, siteName, _formatAsText);
+            myMessage.Html = _sb.ToString();
+
+            // TEXT
+            _formatAsText = true;
+            _sb = BuildMailMessage(invoiceDetail, logoImage, rootForPdf, linkToInvoiceDetail, _columnPercentWidth,
+                customerGroupName, siteName, _formatAsText);
+
+            myMessage.Text = _sb.ToString();
+        }
+
+        #region Message construction methods
+        private static StringBuilder BuildMailMessage(InvoiceDetail invoiceDetail, string logoImage, string rootForPdf, string linkToInvoiceDetail,
+            int _columnPercentWidth, string customerGroupName, string siteName, bool formatAsText)
+        {
+            System.Text.StringBuilder sb;
+            sb = new StringBuilder();
+            MessageHeader(sb, formatAsText);
+            MessageTitles(sb, customerGroupName, siteName, formatAsText);
+            MessageLineEntries(invoiceDetail, sb, _columnPercentWidth, formatAsText);
+            MessageLinks(sb, invoiceDetail, rootForPdf, linkToInvoiceDetail, formatAsText);
+            MessageFooter(sb, logoImage, formatAsText);
+            return sb;
+        }
+
+        private static void MessageFooter(System.Text.StringBuilder sb, string logoImage, bool text)
+        {
+            if (text)
+            {
+                sb.Append("\nwww.cimsco.co.nz");
+            }
+            else
+            {
+                sb.Append("<p><img alt='CimscoLogo'")
+                        .Append("src='").Append(logoImage).Append("'></img>")
+                        .Append("</br></p>");
+                sb.Append("<p><a href=\"http://www.cimsco.co.nz\">www.cimsco.co.nz</a></p>");
+                sb.Append("</body></html>");
+            }
+        }
+
+        private static void MessageLinks(System.Text.StringBuilder sb, InvoiceDetail invoiceDetail, string rootForPdf, string linkToInvoiceDetail, bool text)
+        {
+            if (!text)
+            {
+                sb.Append("</br>");
+                sb.Append("<p><a href=\"" + linkToInvoiceDetail + "\">Click here to view this invoice online</a></p>")
+                    .Append("</br>");
+                if (invoiceDetail.OnFile)
+                {
+                    sb.Append("<p><a href='")
+                        .Append(ConstructInvoicePdfPath(invoiceDetail.SiteId, invoiceDetail.InvoiceId, rootForPdf))
+                        .Append("'>Click here to download a copy of this invoice</a></p>");
+                }
+                else
+                {
+                    sb.Append("<p>Note: A scanned version of this invoice is not currently on file.</p>");
+                }
+                sb.Append("</br></br>");
+            }
+        }
+
+        private static void MessageTitles(System.Text.StringBuilder sb, string customerGroupName, string siteName, bool text)
+        {
+            if (text)
+            {
+                sb.Append(customerGroupName + "\n");
+                sb.Append("Site : " + siteName + "\n");
+                sb.Append("\nInvoice Details\n");
+            }
+            else
+            {
+                sb.Append("<b>" + customerGroupName + "</b>").Append("<br/></br>");
+                sb.Append("<b>Site : </b>" + siteName).Append("</br>");
+                sb.Append("<p><b>Invoice Detals</b></p>").Append("<br/>");
+            }
+        }
+
+        private static void MessageLineEntries(InvoiceDetail invoiceDetail, System.Text.StringBuilder sb, int columnWidth, bool text)
+        {
+            string _lineEntry;
+
+            if (!text)
+            {
+                sb.Append("<table cellpadding=\"0\" cellspacing=\"0\" width=\"500px\">");
+            }
+            _lineEntry = ConstructEmailLineEntry("Amount Due", string.Format(new CultureInfo("en-NZ", false), "{0:C}", invoiceDetail.InvoiceTotal), columnWidth, text);
+            sb.Append(_lineEntry);
+            _lineEntry = ConstructEmailLineEntry("Invoice Number", invoiceDetail.InvoiceNumber, columnWidth, text);
+            sb.Append(_lineEntry);
+            _lineEntry = ConstructEmailLineEntry("Invoice Date", invoiceDetail.InvoiceDate.ToLongDateString(), columnWidth, text);
+            sb.Append(_lineEntry);
+            _lineEntry = ConstructEmailLineEntry("Invoice Due Date", invoiceDetail.InvoiceDueDate.ToLongDateString(), columnWidth, text);
+            sb.Append(_lineEntry);
+            if (!text)
+            {
+                sb.Append("</table>");
+            }
+        }
+
+        private static void MessageHeader(System.Text.StringBuilder sb, bool text)
+        {
+            if (!text)
+            {
+                sb.Append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
+                sb.Append("<html xmlns=\"http://www.w3.org/1999/xhtml\">");
+                sb.Append("<head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><title>Invoice Approval</title>");
+                sb.Append("<style type=\"text/css\">tab1 { padding-left: 4em; }</style>");
+                sb.Append("<body>");
+            }
+        }
+
+        private static string ConstructEmailLineEntry(string title, string value, int width, bool text)
+        {
+            string _style = "style='font-family:Helvetica, Arial, sans-serif;font-size:14px;color:#000;vertical-align:top;width:" + width + "%;padding-left:15px'";
+            string _result;
+            string _tabs = "\t\t";
+            if (text)
+            {
+                if (title.Length > 15)
+                { _tabs = "\t"; }
+                _result = String.Format("\t{0}{2}{1}\n", title, value, _tabs);
+            }
+            else
+            {
+                _result = String.Format("<tr><td {2}>{0}</td><td {2}><i>{1}</i></td></tr>",
+                                        title, value, _style);
+            }
+            return _result;
+        }
+        #endregion
+
+        private List<string> GetApprovalContactEmailsForInvoice(int invoiceId, ref string customerGroupName, ref string siteName)
+        {
+
+            List<String> _recipients = new List<String>();
+
+            try
+            {
+                RegexUtilities util = new RegexUtilities();
+                var _canApproveList = Enumerable.Empty<string>()
+                        .Select(r => new { Email = "", UserName = "" });
+
+                int _siteId = _repository.InvoiceSummaries.Where(s => s.InvoiceId == invoiceId).Select(x => x.SiteId).FirstOrDefault();
+                int? _groupId = _repository.Sites.Where(s => s.SiteId == _siteId).Select(x => x.GroupId).FirstOrDefault();
+                int? _customerId = _repository.Sites.Where(s => s.SiteId == _siteId).Select(x => x.CustomerId).FirstOrDefault();
+                siteName = _repository.Sites.Where(s => s.SiteId == _siteId).Select(x => x.SiteName).FirstOrDefault();
+
+                if (_groupId != null)
+                {
+                    _canApproveList = (from role in _repository.AspNetRoles
+                                       where role.Name == "Contact for Invoice Payment"
+                                       from users in role.AspNetUsers
+                                       from customers in users.Groups
+                                       where customers.GroupId == _groupId
+                                       select new { users.Email, users.UserName }).ToList();
+                    customerGroupName = _repository.Groups.Where(s => s.GroupId == _groupId).Select(x => x.GroupName).FirstOrDefault();
+                }
+                else if (_customerId != null)
+                {
+                    _canApproveList = (from role in _repository.AspNetRoles
+                                       where role.Name == "Contact for Invoice Payment"
+                                       from users in role.AspNetUsers
+                                       from customers in users.Customers
+                                       where customers.CustomerId == _customerId
+                                       select new { users.Email, users.UserName }).ToList();
+                    customerGroupName = _repository.Customers.Where(s => s.CustomerId == _customerId).Select(x => x.CustomerName).FirstOrDefault();
+                }
+                else
+                {
+                    // No user name found
+                }
+                foreach (var _contact in _canApproveList)
+                {
+                    if (util.IsValidEmail((string)_contact.Email))
+                    {
+                        _recipients.Add((string)_contact.Email);
+                    }
+                    else if (util.IsValidEmail((string)_contact.UserName))
+                    {
+                        _recipients.Add((string)_contact.UserName);
+                    }
+                }
+            }
+            catch { }
+#if DEBUG
+            _recipients = new List<String>();
+
+            string _testEmails = GetConfigValue("TestEmails");
+
+            foreach (var _contact in _testEmails.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                _recipients.Add((string)_contact);
+            }
+
+#endif
+            return _recipients;
+        }
+        #endregion
+
+        private string GetConfigValue(string key)
+        {
+            return _repository.SystemConfiguration.Where(s => s.Key == key).Select(f => f.Values).FirstOrDefault();
+        }
 
         private List<int> GetValidSiteIdListForUser(string userName)
         {
@@ -575,10 +1040,13 @@ namespace CimscoPortal.Services
 
         private static int MonthsFromGivenDate(DateTime date)
         {
-            var now = DateTime.Now;
-            int _monthsInPreviousYears = Math.Max(((now.Year - date.Year) * 12) - date.Month + 1, 0);
-            int _monthsInThisYear = Math.Max(now.Month - date.Month, 0);
-            return (_monthsInPreviousYears + _monthsInThisYear);
+            var _now = DateTime.Now;
+            return ((_now.Year - date.Year) * 12) + _now.Month - date.Month;
+
+            //int _years = _now.Year - date.Year;
+            //int _monthsInPreviousYears = Math.Max((_years * 12) - date.Month + 1, 0);
+            //int _monthsInThisYear = Math.Max(_now.Month, 0);
+            //return (_monthsInPreviousYears + _monthsInThisYear);
         }
 
         private string GetUserCompanyOrGroup(string userId)
@@ -655,10 +1123,12 @@ namespace CimscoPortal.Services
         {
             System.Net.HttpWebResponse response = null;
             System.Net.HttpWebRequest request;
+            string _azurePDFsource = GetConfigValue("PdfFileSourceRoot");
+
             string _sourcePdf;
             foreach (var _invoice in invoiceList)
             {
-                _sourcePdf = _azurePDFsource + "/" + _invoice.SiteId.ToString().PadLeft(6, '0') + "/" + _invoice.InvoiceId.ToString().PadLeft(8, '0') + ".pdf";
+                _sourcePdf = ConstructInvoicePdfPath(_invoice.SiteId, _invoice.InvoiceId, _azurePDFsource);
                 request = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(_sourcePdf);
                 request.Method = "Head";
                 try
@@ -678,6 +1148,11 @@ namespace CimscoPortal.Services
                     }
                 }
             }
+        }
+
+        private static string ConstructInvoicePdfPath(int siteId, int invoiceId, string azurePDFsource)
+        {
+            return azurePDFsource + "/" + siteId.ToString().PadLeft(6, '0') + "/" + invoiceId.ToString().PadLeft(8, '0') + ".pdf";
         }
 
         private void CheckInvoiceFileExists(List<InvoiceDetail> invoicesDue)

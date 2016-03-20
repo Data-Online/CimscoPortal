@@ -1,12 +1,12 @@
 ﻿(function () {
-    var monthSpan = 12;
+    //var monthSpan = 12;
     var module = angular.module("app");
 
-    var siteOverview = function ($scope, $timeout, $filter, soDataSource, sharedProperties) {
+    var siteOverview = function ($scope, $timeout, $filter, soDataSource, userDataSource) {
 
         var siteId = 0;//sharedProperties.getSiteId();
         //console.log("Site id = " + siteId);
-        $scope.monthSpanOptions = [3, 6, 12, 24];
+       // $scope.monthSpanOptions = [3, 6, 12, 24];
 
         $scope.order = function (predicate) {
             if ($scope.predicate != predicate) { $scope.sortArrow = "fa-long-arrow-down" };
@@ -22,7 +22,17 @@
 
         var onRepo = function (data) {
             console.log('Get data call');
+            $scope.monthSpan = monthSpan;
             $scope.invoiceData = data;
+        };
+
+        var onUserData = function (data) {
+            $scope.monthSpanOptions = data.monthSpanOptions;
+            $scope.monthSpan = data.monthSpan;
+            monthSpan = data.monthSpan;
+
+            soDataSource.getSiteInvoiceData(siteId, monthSpan)
+                .then(onRepo, onError);
         };
 
         var onError = function (reason) {
@@ -42,10 +52,13 @@
         $scope.reviseMonths = function (newMonthSpan) {
             console.log('revise data...' + newMonthSpan);
             monthSpan = newMonthSpan;
-            coDataSource.getInvoiceTally(monthSpan)
+            soDataSource.getSiteInvoiceData(siteId, monthSpan)
                 .then(onRepo, onError);
         };
-
+        
+        userDataSource.getUserData()
+                .then(onUserData, onError);
+        
         $scope.setSiteId = function (_siteId) {
             console.log("Set site Id to" + _siteId);
             siteId = _siteId;
@@ -54,12 +67,12 @@
         //soDataSource.getInvoiceData(siteId, $scope.invoiceData[index].invoiceId)
         //       .then(function success(data) { return updateInvoice(data, index) }, onError);
 
-        var _delayedCall = function () {
-            soDataSource.getSiteInvoiceData(siteId)
-                .then(onRepo, onError)
-        };
+        //var _delayedCall = function () {
+        //    soDataSource.getSiteInvoiceData(siteId, monthSpan)
+        //        .then(onRepo, onError)
+        //};
 
-        $timeout(_delayedCall, 500);
+        //$timeout(_delayedCall, 500);
 
         $scope.tabTableHeader = 'Invoice Details';
 
@@ -80,7 +93,7 @@
             var style = 'databox-stat radius-bordered';
             //console.log(num);
             if (num <= -999) {
-                style = style + ' bg-ivory';
+                style = style + ' hide-element';
             }
             else if (num > 0) {
                 style = style + ' bg-warning';

@@ -1,9 +1,9 @@
 ﻿(function () {
-    var monthSpan = 12;
+    //var monthSpan = 12;
     var module = angular.module("app");
 
-    var companyOverview = function ($scope, coDataSource, sharedProperties) {
-        $scope.monthSpanOptions = [3, 6, 12, 24];
+    var companyOverview = function ($scope, coDataSource, userDataSource) {
+       // $scope.monthSpanOptions = [3, 6, 12, 24];
 
         var onRepo = function (data) {
             var index;
@@ -59,6 +59,15 @@
             console.log('change month span... ' + monthSpan);
         };
 
+        var onUserData = function (data) {
+            $scope.monthSpanOptions = data.monthSpanOptions;
+            $scope.monthSpan = data.monthSpan;
+            monthSpan = data.monthSpan;
+
+            coDataSource.getInvoiceTally(monthSpan)
+                .then(onRepo, onError);
+        };
+
         var getMaxKwh = function(list)
         {
             var max = 0;
@@ -110,8 +119,8 @@
                 .then(onRepo, onError);
         };
 
-        coDataSource.getInvoiceTally(monthSpan)
-            .then(onRepo, onError);
+        userDataSource.getUserData()
+            .then(onUserData, onError);
 
         $scope.tabTableHeader = 'Site Details';
 

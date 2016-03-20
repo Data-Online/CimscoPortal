@@ -6,15 +6,21 @@ using System.Threading.Tasks;
 
 namespace CimscoPortal.Models
 {
-    public class DonutChartViewModel
-    {
-        public List<DonutChartData> DonutChartData { get; set; }
-        public List<SummaryData> SummaryData { get; set; }
-        public ApprovalData ApprovalData { get; set; }
-        public HeaderData HeaderData { get; set; }
-    }
+    //public class DonutChartViewModel
+    //{
+    //    public List<DonutChartData> DonutChartData { get; set; }
+    //    public List<SummaryData> SummaryData { get; set; }
+    //    public ApprovalData ApprovalData { get; set; }
+    //    public HeaderData HeaderData { get; set; }
+    //}
 
     public class DonutChartData
+    {
+        public string Label { get; set; }
+        public decimal Value { get; set; }
+    }
+
+    public class ChartData
     {
         public string Label { get; set; }
         public decimal Value { get; set; }

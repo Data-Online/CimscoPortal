@@ -15,6 +15,10 @@ namespace CimscoPortal.Data
         System.Data.Entity.DbSet<CimscoPortal.Data.Models.MessageFormat> MessageFormats { get; set; }
         System.Data.Entity.DbSet<CimscoPortal.Data.Models.MessageType> MessageTypes { get; set; }
         System.Data.Entity.DbSet<CimscoPortal.Data.Models.PortalMessage> PortalMessages { get; set; }
+        System.Data.Entity.DbSet<CimscoPortal.Data.Models.SystemConfiguration> SystemConfiguration { get; set; }
+        System.Data.Entity.DbSet<CimscoPortal.Data.Models.City> Cities { get; set; }
+        System.Data.Entity.DbSet<CimscoPortal.Data.Models.Site> Sites { get; set; }
+
         System.Data.Entity.DbSet<CimscoPortal.Data.Models.sysdiagram> sysdiagrams { get; set; }
 
         void Commit();

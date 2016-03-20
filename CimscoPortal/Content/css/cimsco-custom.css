@@ -6,3 +6,7 @@
     height: 190px;
 }
 
+.hide-element {
+    visibility: hidden;
+}
+

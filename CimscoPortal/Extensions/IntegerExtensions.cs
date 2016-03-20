@@ -13,6 +13,11 @@ namespace CimscoPortal.Extensions
             return ((int)Math.Round(i / 10.0)) * 10;
         }
 
+        //public static int RoundOff_(this Decimal i)
+        //{
+        //    return ((int)Math.Round(i / 10.0)) * 10;
+        //}
+
         public static bool In<T>(this T obj, params T[] args)
         {
             return args.Contains(obj);
@@ -37,5 +42,29 @@ namespace CimscoPortal.Extensions
 
             return endOfLastMonth;
         }
+
+        public static DateTime StartOfThisMonth(this DateTime date)
+        {
+            var startOfThisMonth = new DateTime(date.Year, date.Month, 1);
+
+            return startOfThisMonth;
+        }
     }
+
+    public static class NumericExtensions
+    {
+        static public decimal SafeDivision(this decimal Numerator, decimal Denominator)
+        {
+            return (Denominator == 0) ? 0 : Numerator / Denominator;
+        }
+    }
+
+    //public static class StringExtensions
+    //{
+    //    public static string[] ToStringArray(this string values)
+    //    {
+
+    //        return new string[] { "test", "test2" };
+    //    }
+    //}
 }

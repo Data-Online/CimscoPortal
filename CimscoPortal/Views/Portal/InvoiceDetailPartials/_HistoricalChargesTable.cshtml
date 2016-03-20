@@ -1,0 +1,19 @@
+﻿<div class="databox databox-xxlg radius-bordered databox-shadowed databox-vertical databox-graded">
+    <div class="databox-top -2 bordered-orange bg-ivory">
+        <div class="col-lg-8 col-sm-8 col-xs-8 text-align-left">
+            <span class="databox-text carbon">{{summaryData.title}}</span>
+            <span class="databox-text carbon no-margin">{{summaryData.subTitle}}</span>
+        </div>
+        <div class="col-lg-4 col-sm-4 col-xs-4 text-align-right">
+            <div class="databox-stat {{summaryData.arrowColour}} radius-bordered">
+                <div class="stat-text">{{summaryData.percentChange | percentage:1}}</div>
+                <i class="stat-icon fa {{summaryData.arrow}}"></i>
+            </div>
+        </div>
+    </div>
+    <div class="databox-bottom">
+        <div height=" 300px" style="width: 100%; display: block;" class="chart chart-lg padding-40">
+            <flot dataset="SelectableChartData" options="SelectableChartOptions"></flot>
+        </div>
+    </div>
+</div>

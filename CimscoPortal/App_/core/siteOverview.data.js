@@ -2,9 +2,9 @@
 
     var soDataSource = function ($http) {
 
-        var getSiteInvoiceData = function (siteId) {
-            console.log("Getting data for Site ID = " + siteId);
-            var dataApi = "/api/invoiceOverviewFor/"+siteId;
+        var getSiteInvoiceData = function (siteId, mounthsToDisplay) {
+            console.log("Getting data for Site ID = " + siteId + " for " + mounthsToDisplay + " months");
+            var dataApi = "/api/invoiceOverviewFor/"+siteId+"/" + mounthsToDisplay;
             return $http.get(dataApi)
                         .then(function (response) {
                             return response.data;

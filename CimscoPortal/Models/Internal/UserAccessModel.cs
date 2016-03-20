@@ -9,5 +9,6 @@ namespace CimscoPortal.Models
     {
         public bool ViewInvoices { get; set; }
         public List<int> ValidSites { get; set; }
+        public bool CanApproveInvoices { get; set; }
     }
 }

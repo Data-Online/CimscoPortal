@@ -7,10 +7,15 @@ namespace CimscoPortal.Data.Migrations
     using System.Linq;
     using System.Configuration;
 
-    
+
 
     internal sealed class Configuration : DbMigrationsConfiguration<CimscoPortal.Data.Models.CimscoPortalContext>
     {
+        public Configuration()
+        {
+            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationDataLossAllowed = true;
+        }
 
         private string[] _sampleUsers = new string[] { 
             "user1@cimsco.co.nz", 
@@ -24,7 +29,7 @@ namespace CimscoPortal.Data.Migrations
             "holiday1@cimsco.co.nz",
             "holiday2@cimsco.co.nz"
         };
-        // ==> Ref at AccountController.cs: This is where these accounts are created
+        // ==>**** Ref at AccountController.cs: This is where these accounts are created
 
         //private string[] _sampleCustomers = new string[] { "Test Customer 1", "Test Customer 2", "Test Customer 3" };
         //private string[] _sampleSites = new string[] { "Site 1", "Site 2", "Site 3", "Site 4", "Site 5", "Site 6" };
@@ -59,17 +64,14 @@ namespace CimscoPortal.Data.Migrations
         //    "Mitre 10 New Zealand"
         //};
 
-        public Configuration()
-        {
-            AutomaticMigrationsEnabled = true;
-            AutomaticMigrationDataLossAllowed = true;
-        }
+
 
         protected override void Seed(CimscoPortal.Data.Models.CimscoPortalContext context)
         {
+            var SeedData = false;
+            var ResetData = false;
 
-            var SeedData = true; 
-            
+
             //.Configuration.ConfigurationSettings.GetConfig("SeedData");// ConfigurationManager.AppSettings["AccountName"];
             //  This method will be called after migrating to the latest version.
 
@@ -95,28 +97,46 @@ namespace CimscoPortal.Data.Migrations
             //context.SaveChanges();
 
             // Actual invoice data from data entry
-            context.Database.ExecuteSqlCommand(_SQL.emptyTables);
-            context.Database.ExecuteSqlCommand(_SQL.seedMasterData);
-            //context.Database.ExecuteSqlCommand("exec [dbo].[SeedInvoiceSummaries]");
-            //context.SaveChanges();
-           
-            // Create any not already in source data
-            //CreateSites(context, _sampleSites);
-            //CreateGroupsAndCustomers(context, _sampleCustomers, _sampleGroups);
-            //context.SaveChanges();
+            if (ResetData)
+            {
+                context.Database.ExecuteSqlCommand(_SQL.emptyTables);
+                context.Database.ExecuteSqlCommand(_SQL.seedMasterData);
+                //context.Database.ExecuteSqlCommand("exec [dbo].[SeedInvoiceSummaries]");
+                //context.SaveChanges();
 
-           // LinkSitesToCustomersFromSource(context);
+                //// Master data
+                context.SystemConfiguration.AddOrUpdate(
+                    cd => cd.Key,
+                    new CimscoPortal.Data.Models.SystemConfiguration { Values = "Administrator; Invoice Approval", Key = "CanApproveRoles" },
+                    new CimscoPortal.Data.Models.SystemConfiguration { Values = "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", Key = "SendGridApi" },
+                    new CimscoPortal.Data.Models.SystemConfiguration { Values = "admin@cimsco.co.nz", Key = "SourceEmail" },
+                    //                new CimscoPortal.Data.Models.SystemConfiguration { Values = @"Graeme <graeme@dataonline.co.nz>; Graeme2 <atkinsongraeme@gmail.com>; Leo Fouhy <leo_fouhy@paradise.net.nz>", Key = "TestEmails" },
+                    new CimscoPortal.Data.Models.SystemConfiguration { Values = @"Graeme <graeme@dataonline.co.nz>; Graeme2 <atkinsongraeme@gmail.com>", Key = "TestEmails" },
+                    new CimscoPortal.Data.Models.SystemConfiguration { Values = @"https://cimsco.blob.core.windows.net/images/Cimsco-logo-sml.png", Key = "CimscoTextSml" },
+                    new CimscoPortal.Data.Models.SystemConfiguration { Values = @"https://cimsco.blob.core.windows.net", Key = "PdfFileSourceRoot" },
+                    new CimscoPortal.Data.Models.SystemConfiguration { Values = "13", Key = "HistoryGraphMonths" },
+                    new CimscoPortal.Data.Models.SystemConfiguration { Values = "0.028", Key = "DefaultLossRate" }
+                    );
+                //
 
-            LinkUsersCustomer("Masterton Supermarkets Ltd", new string[] { "masterton@cimsco.co.nz", "masterton2@cimsco.co.nz" }, context);
-            //LinkUsersCustomer("Intercontinental Group", new string[] { "masterton@cimsco.co.nz" }, context);
-            LinkUsersCustomer("Nees Hardware Ltd", new string[] { "mitre10@cimsco.co.nz" }, context);
+                // Create any not already in source data
+                //CreateSites(context, _sampleSites);
+                //CreateGroupsAndCustomers(context, _sampleCustomers, _sampleGroups);
+                //context.SaveChanges();
 
-            LinkUsersGroup("Foodstuffs North Island", new string[] { "foodstuffs@cimsco.co.nz", "foodstuffs2@cimsco.co.nz" }, context);
+                // LinkSitesToCustomersFromSource(context);
 
-            //LinkUsersCustomer("Holiday Inn", new string[] { "holiday1@cimsco.co.nz", "holiday2@cimsco.co.nz" }, context);
+                LinkUsersCustomer("Masterton Supermarkets Ltd", new string[] { "masterton@cimsco.co.nz", "masterton2@cimsco.co.nz" }, context);
+                //LinkUsersCustomer("Intercontinental Group", new string[] { "masterton@cimsco.co.nz" }, context);
+                LinkUsersCustomer("Nees Hardware Ltd", new string[] { "mitre10@cimsco.co.nz" }, context);
 
-            context.SaveChanges();
+                LinkUsersGroup("Foodstuffs North Island", new string[] { "foodstuffs@cimsco.co.nz", "foodstuffs2@cimsco.co.nz" }, context);
 
+                //LinkUsersCustomer("Holiday Inn", new string[] { "holiday1@cimsco.co.nz", "holiday2@cimsco.co.nz" }, context);
+
+                context.SaveChanges();
+
+            }
 
             if (SeedData)
             {
@@ -133,19 +153,21 @@ namespace CimscoPortal.Data.Migrations
                 context.SaveChanges();
             }
 
-            CalculatePercentageChange(context);
-            context.SaveChanges();
+            if (ResetData)
+            {
+                CalculatePercentageChange(context);
+                context.SaveChanges();
 
-            CreateTestMessages(context);
-            CreateContacts(context);
-            CreateCities(context);
+                CreateTestMessages(context);
+                CreateContacts(context);
+                CreateCities(context);
 
-            ApplyNames(context);
+                ApplyNames(context);
 
-            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Pac n Save', [LastName] = 'Admin', [CompanyLogo] = 'PakNSave.jpg' where [eMail] = 'masterton@cimsco.co.nz'");
-            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Cimsco', [LastName] = 'Admin', [CompanyLogo] = 'uhf_ic_logo.png' where [eMail] = 'admin@cimsco.co.nz'");
-            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Mitre10', [LastName] = 'Admin', [CompanyLogo] = 'mitre10.png' where [eMail] = 'mitre10@cimsco.co.nz'");
-
+                context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Pac n Save', [LastName] = 'Admin', [CompanyLogo] = 'PakNSave.jpg' where [eMail] = 'masterton@cimsco.co.nz'");
+                context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Cimsco', [LastName] = 'Admin', [CompanyLogo] = 'uhf_ic_logo.png' where [eMail] = 'admin@cimsco.co.nz'");
+                context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Mitre10', [LastName] = 'Admin', [CompanyLogo] = 'mitre10.png' where [eMail] = 'mitre10@cimsco.co.nz'");
+            }
         }
 
         #region Private methods
@@ -757,7 +779,8 @@ namespace CimscoPortal.Data.Migrations
             "delete from [dbo].[Customers]" +
             "delete from [dbo].[Groups]" +
             "delete from [dbo].[InvoiceSummaries]" +
-            "delete from [dbo].[EnergySuppliers]";
+            "delete from [dbo].[EnergySuppliers]" +
+            "delete from [dbo].[SystemConfiguration]";
         public const string seedMasterData =
             "SET IDENTITY_INSERT [dbo].[Customers] ON; " +
 

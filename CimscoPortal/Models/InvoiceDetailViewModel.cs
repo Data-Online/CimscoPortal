@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace CimscoPortal.Models
 {
-    public class InvoiceDetailViewModel
-    {
-        public DonutChartViewModel ChartData { get; set; }
-        public List<EnergyDataModel> EnergyCostData { get; set; }
-    }
+    //public class InvoiceDetailViewModel_zz
+    //{
+    //    public DonutChartViewModel ChartData { get; set; }
+    //    public List<EnergyDataModel> EnergyCostData { get; set; }
+    //}
 
-    public class InvoiceDetailViewModel_
+    public class InvoiceDetailViewModel
     {
         public List<DonutChartData> DonutChartData { get; set; }
         //public List<EnergyDataModel> EnergyCostData { get; set; }

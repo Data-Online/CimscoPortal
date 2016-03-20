@@ -16,7 +16,7 @@ using CimscoPortal.Data.Models;
 
 namespace CimscoPortal.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Administrator")]
     public class UserAdminController : Controller
     {
         public UserAdminController()
@@ -81,7 +81,7 @@ namespace CimscoPortal.Controllers
 
         //
         // GET: /Users/Create
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Administrator")]
         public async Task<ActionResult> Create()
         {
             //Get the list of Roles
@@ -128,7 +128,7 @@ namespace CimscoPortal.Controllers
 
         //
         // GET: /Users/Edit/1
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Administrator")]
         public async Task<ActionResult> Edit(string id)
         {
             if (id == null)
@@ -201,7 +201,7 @@ namespace CimscoPortal.Controllers
 
         //
         // GET: /Users/Delete/5
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Administrator")]
         public async Task<ActionResult> Delete(string id)
         {
             if (id == null)

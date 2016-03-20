@@ -115,6 +115,7 @@ namespace CimscoPortal.Controllers
             //var zz = _portalService.GetAlertsFor(categoryId);
             return View();
         }
+
         public JsonResult GetNavbarData(string id)
         {
             int customerId = 1;
@@ -134,32 +135,32 @@ namespace CimscoPortal.Controllers
             return JsonSuccess(model);
         }
 
-        public JsonResult DonutChartData(string id)
-        {
-            //DonutChartViewModel model = new DonutChartViewModel()
-            //{
-            //    DonutChartData = new List<DonutChartData>
-            //    {
-            //        new DonutChartData() {Label="Energy", Value=10968.34M},
-            //        new DonutChartData() {Label="Line", Value=3540.45M},
-            //        new DonutChartData() {Label="Other", Value=234.89M}
-            //    },
-            //    SummaryData = new List<SummaryData>
-            //    {
-            //        new SummaryData { Title="BILL TOTAL", Detail="$10,892.01"},
-            //        new SummaryData { Title="DUE DATE", Detail="2 Feb 2015"},
-            //    },
-            //    HeaderData = new HeaderData
-            //    {
-            //        Header = "SEPTEMBER 2015",
-            //        DataFor = id
-            //    },
-            //};
-            var userId = User.Identity.GetUserId();
-            DonutChartViewModel model = new DonutChartViewModel();//_portalService.GetCurrentMonth(2);
-            model.HeaderData.DataFor = "MonthlySummary";
-            return JsonSuccess(model);
-        }
+        ////public JsonResult DonutChartData(string id)
+        ////{
+        ////    //DonutChartViewModel model = new DonutChartViewModel()
+        ////    //{
+        ////    //    DonutChartData = new List<DonutChartData>
+        ////    //    {
+        ////    //        new DonutChartData() {Label="Energy", Value=10968.34M},
+        ////    //        new DonutChartData() {Label="Line", Value=3540.45M},
+        ////    //        new DonutChartData() {Label="Other", Value=234.89M}
+        ////    //    },
+        ////    //    SummaryData = new List<SummaryData>
+        ////    //    {
+        ////    //        new SummaryData { Title="BILL TOTAL", Detail="$10,892.01"},
+        ////    //        new SummaryData { Title="DUE DATE", Detail="2 Feb 2015"},
+        ////    //    },
+        ////    //    HeaderData = new HeaderData
+        ////    //    {
+        ////    //        Header = "SEPTEMBER 2015",
+        ////    //        DataFor = id
+        ////    //    },
+        ////    //};
+        ////    var userId = User.Identity.GetUserId();
+        ////    DonutChartViewModel model = new DonutChartViewModel();//_portalService.GetCurrentMonth(2);
+        ////    model.HeaderData.DataFor = "MonthlySummary";
+        ////    return JsonSuccess(model);
+        ////}
 
         public JsonResult GetMonthlyEnergySummary(string id)
         {

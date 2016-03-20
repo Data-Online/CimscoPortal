@@ -446,7 +446,7 @@ namespace CimscoPortal.Controllers
             var roleManager = HttpContext.GetOwinContext().Get<ApplicationRoleManager>();
             const string name = "admin@cimsco.co.nz";
             const string password = "C1msc0@";
-            const string roleName = "Admin";
+            const string roleName = "Administrator";
 
             //Create Role Admin if it does not exist
             var role = await roleManager.FindByNameAsync(roleName);
@@ -475,7 +475,7 @@ namespace CimscoPortal.Controllers
         private bool CreateRoles()
         {
             var roleManager = HttpContext.GetOwinContext().Get<ApplicationRoleManager>();
-            string[] _rolesToAdd = { "Admin", "Approval" };
+            string[] _rolesToAdd = { "Administrator", "Contact for Invoice Payment", "Invoice Approval" };
             var _role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
             foreach (string _roleName in _rolesToAdd)
             {
@@ -497,7 +497,7 @@ namespace CimscoPortal.Controllers
         {
             string name = "admin@cimsco.co.nz";
             const string password = "C1msc0@";
-            const string roleName = "Admin";
+            const string roleName = "Administrator";
 
             try
             {

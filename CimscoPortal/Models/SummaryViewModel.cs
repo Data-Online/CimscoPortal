@@ -61,6 +61,7 @@ namespace CimscoPortal.Models
         public decimal NetworkChargesTotal { get; set; }
         public decimal EnergyChargesTotal { get; set; }
         public decimal PercentageChange { get; set; }
+        public decimal GstTotal { get; set; }
         public int InvoiceId { get; set; }
         public string InvoiceNumber { get; set; }
         public bool Approved { get; set; }
@@ -69,9 +70,13 @@ namespace CimscoPortal.Models
         public decimal LossRate { get; set; }
         public decimal BDLossCharge { get; set; }
         public decimal BDMeteredKwh { get; set; }
-        public bool ValidationError { get; set; }
+        public bool ValidationError { get { return InvoiceTotal != (MiscChargesTotal + NetworkChargesTotal + EnergyChargesTotal); } }
         public int SiteId { get; set; }
         public bool InvoicePdf { get; set; }
+        public bool OnFile { get; private set; }
+        public string MiscChargesLabel { get { return "Other"; } }
+        public string NetworkChargesLabel { get { return "Delivery"; } }
+        public string EnergyChargesLabel { get { return "Energy"; } }
        // public string PdfSourceLocation { get; set; }
     }
 

@@ -21,11 +21,12 @@ namespace CimscoPortal.Models
 
     public class EnergyData
     {
-        public string Month { get; set; }
-        public DateTime _month { get; set; }
+        public string Month { get { return InvoiceDate.ToString("MMM");} }
+        public DateTime InvoiceDate { get; set; }
         public decimal Energy { get; set; }
         public decimal Line { get; set; }
         public decimal Other { get; set; }
+        public decimal TotalCharge { get { return Energy + Line + Other; } }
     }
 
     public class StackedBarChartViewModelB //: IEnumerable<EnergyData>

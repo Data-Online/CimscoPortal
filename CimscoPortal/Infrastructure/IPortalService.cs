@@ -13,14 +13,15 @@ namespace CimscoPortal.Infrastructure
         CimscoPortal.Models.SummaryViewModel GetSummaryDataFor(string userId);
         IEnumerable<CimscoPortal.Models.InvoiceDetail> GetInvoiceDetailForSite(int contactId);
         CimscoPortal.Models.CommonInfoViewModel GetCommonData(string userId);
-        CimscoPortal.Models.InvoiceDetailViewModel_ GetCurrentMonth(int _invoiceId);
+        CimscoPortal.Models.InvoiceDetailViewModel GetInvoiceDetail(int _invoiceId);
         IEnumerable<CimscoPortal.Models.MessageViewModel> GetNavbarDataFor(string pageElement);
         InvoiceTallyViewModel GetInvoiceTally(string userId, int monthSpan);
         IEnumerable<InvoiceOverviewViewModel> GetInvoiceOverviewForSite(int siteId);
-        IEnumerable<InvoiceOverviewViewModel> GetInvoiceOverviewForSite(int siteId, int invoiceId);
-        InvoiceOverviewViewModel ApproveInvoice(int invoiceId, string userId);
-
+        IEnumerable<InvoiceOverviewViewModel> GetInvoiceOverviewForSite(int siteId, int monthsToDisplay);
+        InvoiceOverviewViewModel ApproveInvoice(int invoiceId, string userId, string urlRoot);
+        IEnumerable<MonthlyConsumptionViewModal> GetHistoricalDataForSite(int siteId);
         UserAccessModel CheckUserAccess(string userName);
+        UserSettingsViewModel GetUserSettingsFor(string userName);
         // <--
 
         //System.Collections.Generic.List<CimscoPortal.Models.AlertViewModel> GetAlertsFor(int category);
@@ -31,7 +32,7 @@ namespace CimscoPortal.Infrastructure
 
         
 
-        CimscoPortal.Models.InvoiceDetailViewModel GetCurrentMonth_(int _energyPointId);
+        //CimscoPortal.Models.InvoiceDetailViewModel GetCurrentMonth_(int _energyPointId);
 
         System.Threading.Tasks.Task<List<CimscoPortal.Data.Models.AspNetUser>> GetUserByGroupOrCompany(string id);
 
