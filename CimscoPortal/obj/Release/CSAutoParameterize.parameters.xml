@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <parameters>
-  <parameter name="CimscoPortalContext-Web.config Connection String" description="CimscoPortalContext Connection String used in web.config by the application to access the database." defaultValue="Data Source=DEVELOP02\SQLSERVER2012;Initial Catalog=CimscoPortalZ;Integrated Security=True;MultipleActiveResultSets=True" tags="SqlConnectionString">
+  <parameter name="CimscoPortalContext-Web.config Connection String" description="CimscoPortalContext Connection String used in web.config by the application to access the database." defaultValue="Data Source=DEVELOP02\SQLSERVER2012;Initial Catalog=CimscoPortal;Integrated Security=True;MultipleActiveResultSets=True" tags="SqlConnectionString">
     <parameterEntry kind="XmlFile" scope="P:\\Projects\\Cloud_Development\\GitHub\\CimscoPortal\\CimscoPortal\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='CimscoPortalContext']/@connectionString" />
   </parameter>
 </parameters>

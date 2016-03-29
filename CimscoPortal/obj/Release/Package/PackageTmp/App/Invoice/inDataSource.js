@@ -11,13 +11,13 @@
         };
 
 
-        var getInvDetail = function (invoiceId) {
-            var dataApi = "/api/invoicedetailfor/" + invoiceId;
-            return $http.get(dataApi)
-                        .then(function (response) {
-                            return response.data;
-                        });
-        };
+        //var getInvDetail = function (invoiceId) {
+        //    var dataApi = "/api/invoicedetailfor/" + invoiceId;
+        //    return $http.get(dataApi)
+        //                .then(function (response) {
+        //                    return response.data;
+        //                });
+        //};
 
         var getInvDetail_ = function (invoiceId) {
             var dataApi = "/api/invoicedetailfor_/" + invoiceId;
@@ -61,7 +61,7 @@
         
         return {
             getInvSummary: getInvSummary,
-            getInvDetail: getInvDetail,
+          //  getInvDetail: getInvDetail,
             getInvDetail_: getInvDetail_,
             getCompanyTree: getCompanyTree,
             getSiteTree: getSiteTree,

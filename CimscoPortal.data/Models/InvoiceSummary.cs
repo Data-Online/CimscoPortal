@@ -43,6 +43,7 @@ namespace CimscoPortal.Data.Models
         public System.DateTime PeriodStart { get; set; }
         public System.DateTime PeriodEnd { get; set; }
         public int SupplierId { get; set; }
+       // public bool zztest { get; set; }
 
 
         [ForeignKey("SupplierId")]

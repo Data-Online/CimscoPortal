@@ -63,6 +63,10 @@
     <Compile Include="Migrations\201602030834345_Configuration.Designer.cs">
       <DependentUpon>201602030834345_Configuration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201603202301413_AzureUpdate.cs" />
+    <Compile Include="Migrations\201603202301413_AzureUpdate.Designer.cs">
+      <DependentUpon>201603202301413_AzureUpdate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\AspNetRole.cs" />
@@ -131,6 +135,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602030834345_Configuration.resx">
       <DependentUpon>201602030834345_Configuration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603202301413_AzureUpdate.resx">
+      <DependentUpon>201603202301413_AzureUpdate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

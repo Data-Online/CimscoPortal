@@ -140,3 +140,6 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\ko\System.Spa
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\ru\System.Spatial.resources.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\zh-Hans\System.Spatial.resources.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\zh-Hant\System.Spatial.resources.dll
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\SendGrid.dll
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\SendGrid.SmtpApi.dll
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\SendGridMail.dll
