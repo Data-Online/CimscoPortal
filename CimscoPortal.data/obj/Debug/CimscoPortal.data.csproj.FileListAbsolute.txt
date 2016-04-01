@@ -25,5 +25,4 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Debug\Ci
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.data.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.data.pdb
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.Data.Migrations.SystemConfiguration.resources
-P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.Data.csprojResolveAssemblyReference.cache
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.Data.Migrations.AzureUpdate.resources

@@ -3,8 +3,119 @@
     ViewBag.Description = "Company Dashboard";
     Layout = "~/Views/Shared/_Default.cshtml";
 }
+<style type="text/css">
+    i.widget-icon.fa.fa-calendar {
+        color: black;
+        margin: 0 auto;
+        line-height: 20px;
+    }
+
+    .table {
+        margin-bottom: 10px !important;
+    }
+
+    .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+        border-top: 0px !important;
+    }
+
+    .keys {
+        width: auto !important;
+    }
+
+    @@media only screen and (max-width: 800px) {
+        /*.text {
+            white-space: nowrap !important;
+        }*/
+
+        .keys {
+            padding: 17px 0 19px !important;
+            width: 33.33%;
+        }
+
+        .responsive-td {
+            width: 45% !important;
+        }
+
+        #no-more-tables table,
+        #no-more-tables thead,
+        #no-more-tables tbody,
+        #no-more-tables th,
+        #no-more-tables td,
+        #no-more-tables tr {
+            display: block;
+        }
+
+        #no-more-tables table {
+            padding: 0px;
+        }
+
+        /* Hide table headers (but not display: none;, for accessibility) */
+        #no-more-tables thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+
+        #no-more-tables tr {
+            border: 1px solid #ccc;
+        }
+
+        #no-more-tables td {
+            /* Behave like a "row" */
+            border: none;
+            border-bottom: 1px solid #eee;
+            position: relative;
+            padding-left: 50%;
+            white-space: normal;
+            text-align: left;
+        }
+
+        #no-more-tables #tblTransactions td, #no-more-tables #tblconfirmbooking td {
+            padding-left: 55% !important;
+        }
+
+        #no-more-tables td:before {
+            /* Now like a table header */
+            position: absolute;
+            /* Top/left values mimic padding */
+            top: 6px;
+            left: 6px;
+            width: 45%;
+            padding-right: 10px;
+            white-space: nowrap;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        /*
+        Label the data
+        */
+        #no-more-tables td:before {
+            content: attr(data-title);
+        }
 
 
+        #no-more-tables .radio-inline {
+            margin-left: 0px !important;
+        }
+
+        #no-more-tables .radio-list {
+            margin-left: 0px !important;
+        }
+
+        #lasttrappoinment td {
+            border: none !important;
+        }
+
+        #no-more-tables .btn {
+            margin-bottom: 5px;
+        }
+
+        .col-lg-3.col-xs-3.col-sm-3.margin-top-20 {
+            margin-top: 20px;
+        }
+    }
+</style>
 @*<div data-ng-app="companyOverview" data-ng-controller="companyOverviewViewModel">*@
 <div data-ng-app="app" data-ng-controller="companyOverview">
     <div class="row">
@@ -45,11 +156,10 @@
             </div>
         </div>
     </div>
-    <div class="row">
+    @*<div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="row">
                 <div class="col-xs-12">
-
                     <div class="dashboard-box">
                         <div class="box-header">
                             <div class="deadline">
@@ -57,42 +167,100 @@
                             </div>
                         </div>
                         <div class="widget-header  bordered-themeprimary">
-                            <span ng-repeat="_month in monthSpanOptions" data-ng-click="reviseMonths(_month)" class="widget-caption" ng-class="{'themeprimary' : monthSpan==_month}" 
+                            <span ng-repeat="_month in monthSpanOptions" data-ng-click="reviseMonths(_month)" class="widget-caption" ng-class="{'themeprimary' : monthSpan==_month}"
                                   style=" padding-left:5px; padding-right:5px">
                                 <i class="widget-icon fa fa-calendar"></i>
                                 {{_month}} months
                             </span>
                         </div>
-                        <div class="box-tabbs">
-                            <div class="tabbable">
-                                <ul class="nav nav-tabs tabs-flat  nav-justified" id="myTab11">
-                                    <li class="active">
-                                        <a data-toggle="tab" href="#approvals">
-                                            Approvals
-                                        </a>
-                                    </li>
-                                    <li ng-show="false">
-                                        <a data-toggle="tab" href="#other1">
-                                            Invoice Value
-                                        </a>
-                                        </ling-show>
-                                    <li ng-show="false">
-                                        <a data-toggle="tab" href="#other2">
-                                            Consumption
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a data-toggle="tab" href="#analysis">
-                                            Totals and Analysis
-                                        </a>
-                                    </li>
-                                </ul>
-                                <div class="tab-content tabs-flat no-padding">
+                        @*<div class="box-tabbs">
+                                <div class="tabbable">
+                                    <ul class="nav nav-tabs tabs-flat  nav-justified" id="myTab11">
+                                        <li class="active">
+                                            <a data-toggle="tab" href="#approvals">
+                                                Approvals
+                                            </a>
+                                        </li>
+                                        <li ng-show="false">
+                                            <a data-toggle="tab" href="#other1">
+                                                Invoice Value
+                                            </a>
+                                            </ling-show>
+                                        <li ng-show="false">
+                                            <a data-toggle="tab" href="#other2">
+                                                Consumption
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a data-toggle="tab" href="#analysis">
+                                                Totals and Analysis
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content tabs-flat no-padding">
+                                        @Html.Partial("CompanyOverviewPartials/_Approvals")
+                                        @Html.Partial("CompanyOverviewPartials/_Other1")
+                                        @Html.Partial("CompanyOverviewPartials/_Other2")
+                                        @Html.Partial("CompanyOverviewPartials/_Analysis")
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>*@
+    <div class="row">
+        <div class="col-md-12">
+            <div class="widget">
+                <div class="widget-header bg-themeprimary">
+                    <i class="widget-icon fa fa-compress"></i>
+                    <span class="widget-caption"><strong> {{tabTableHeader}}</strong></span>
+                    <div class="widget-buttons">
+                        <div class="btn-group">
+                            <a href="javascript:void(0);" class="btn btn-default btn-sm">Filter</a>
+                            <a href="javascript:void(0);" data-toggle="dropdown" class="btn btn-primary  btn-sm dropdown-toggle " aria-expanded="false"><i class="fa fa-angle-down"></i></a>
+                            <ul class="dropdown-menu">
+                                <li ng-repeat="_month in monthSpanOptions " data-ng-click="reviseMonths(_month)" class="widget-caption" ng-class="{'themeprimary' : monthSpan==_month}">
+                                    <a href="javascript:void(0);"><i class="widget-icon fa fa-calendar"></i>&nbsp;&nbsp;{{_month}} months</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget-body">
+                    <div class="box-tabbs">
+                        <div class="tabbable">
+                            <ul class="nav nav-tabs tabs-flat  nav-justified" id="myTab11">
+                                <li class="active">
+                                    <a data-toggle="tab" href="#approvals">
+                                        Approvals
+                                    </a>
+                                </li>
+                                <li ng-show="false">
+                                    <a data-toggle="tab" href="#other1">
+                                        Invoice Value
+                                    </a>
+                                    </ling-show>
+                                <li ng-show="false">
+                                    <a data-toggle="tab" href="#other2">
+                                        Consumption
+                                    </a>
+                                </li>
+                                <li>
+                                    <a data-toggle="tab" href="#analysis">
+                                        Totals and Analysis
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content tabs-flat no-padding">
+                                <div id="approvals" class="tab-pane animated fadeInUp no-padding-bottom active" style="padding:20px 20px 0 20px;">
                                     @Html.Partial("CompanyOverviewPartials/_Approvals")
+                                </div>
 
-                                    @Html.Partial("CompanyOverviewPartials/_Other1")
-                                    @Html.Partial("CompanyOverviewPartials/_Other2")
-
+                                @Html.Partial("CompanyOverviewPartials/_Other1")
+                                @Html.Partial("CompanyOverviewPartials/_Other2")
+                                <div id="analysis" class="tab-pane animated fadeInUp no-padding-bottom" style="padding:20px 20px 0 20px;">
                                     @Html.Partial("CompanyOverviewPartials/_Analysis")
                                 </div>
                             </div>
@@ -102,9 +270,20 @@
             </div>
         </div>
     </div>
-    <div class="row"></div>
+</div>
+@*<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <pattern id="smallGrid" width="8" height="8" patternUnits="userSpaceOnUse">
+                <path d="M 8 0 L 0 0 0 8" fill="none" stroke="gray" stroke-width="0.5" />
+            </pattern>
+            <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+                <rect width="80" height="80" fill="url(#smallGrid)" />
+                <path d="M 80 0 L 0 0 0 80" fill="none" stroke="gray" stroke-width="1" />
+            </pattern>
+        </defs>
 
-    @*<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100%" height="100%" fill="url(#grid)" />
+    </svg>*@@*<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
         <defs>
             <pattern id="smallGrid" width="8" height="8" patternUnits="userSpaceOnUse">
                 <path d="M 8 0 L 0 0 0 8" fill="none" stroke="gray" stroke-width="0.5" />
@@ -117,41 +296,41 @@
 
         <rect width="100%" height="100%" fill="url(#grid)" />
     </svg>*@
-
-
     @section PageScripts{
-
-                                                @*<script src="~/Scripts/charts/flot/jquery.flot.crosshair.js"></script>*@
-                                                @*<script src="~/Scripts/charts/flot/jquery.flot.selection.js"></script>*@
+        @*<script src="~/Scripts/charts/flot/jquery.flot.crosshair.js"></script>*@
+        <script src="~/Scripts/charts/flot/jquery.flot.crosshair.js"></script>
+        @*<script src="~/Scripts/charts/flot/jquery.flot.selection.js"></script>*@
+        <script src="~/Scripts/charts/flot/jquery.flot.selection.js"></script>
         <script src="~/Scripts/charts/flot/jquery.flot.min.js"></script>
         <script src="~/Scripts/charts/flot/jquery.flot.resize.js"></script>
         <script src="~/Scripts/charts/flot/jquery.flot.axislabels.js"></script>
         <script src="~/Scripts/charts/flot/jquery.flot.tooltip.js"></script>
         <script src="~/Scripts/charts/flot/angular-flot.js"></script>
 
-
-                                                @*<script src="~/App/CompanyOverview/App.js"></script>
-                                                    <script src="~/App/CompanyOverview/coDataSource.js"></script>
-                                                    <script src="~/App/CompanyOverview/ViewModels/CompanyOverviewViewModel.js"></script>
-                                                    <script src="~/App/Directives/widget.js"></script>*@
-
+        @*<script src="~/App/CompanyOverview/App.js"></script>
+            <script src="~/App/CompanyOverview/coDataSource.js"></script>
+            <script src="~/App/CompanyOverview/ViewModels/CompanyOverviewViewModel.js"></script>
+            <script src="~/App/Directives/widget.js"></script>*@
+        <script src="~/App/CompanyOverview/App.js"></script>
+        <script src="~/App/CompanyOverview/coDataSource.js"></script>
+        <script src="~/App/CompanyOverview/ViewModels/CompanyOverviewViewModel.js"></script>
+        <script src="~/App/Directives/widget.js"></script>
         <script src="~/App_/core/App.js"></script>
         <script src="~/App_/core/userDataSource.data.js"></script>
         <script src="~/App_/core/companyOverview.data.js"></script>
         <script src="~/App_/core/companyOverview.ctrl.js"></script>
         <script src="~/App_/common/directives/widget.js"></script>
         <script src="~/App_/core/customFilters.js"></script>
-                                                @*<script src="~/Scripts/angular-ui-utils/angular-ui-utils.js"></script>*@
-
-                                                    }
-
-                                                    <style>
-                                                                                            .progress-compact {
-                                                                                                /*background-color: #f5f5f5;
+        @*<script src="~/Scripts/angular-ui-utils/angular-ui-utils.js"></script>*@
+        <script src="~/Scripts/angular-ui-utils/angular-ui-utils.js"></script>
+    }
+    <style>
+        .progress-compact {
+            /*background-color: #f5f5f5;
                                                         border-radius: 4px;
                                                         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
                                                         height: 20px;*/
-                                                                                                margin-bottom: 5px;
-                                                                                                overflow: hidden;
-                                                                                            }
-                                                    </style>
+            margin-bottom: 5px;
+            overflow: hidden;
+        }
+    </style>

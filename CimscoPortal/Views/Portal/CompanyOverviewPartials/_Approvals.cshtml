@@ -1,49 +1,94 @@
 ﻿
-<div id="approvals" class="tab-pane animated fadeInUp no-padding-bottom active" style="padding:20px 20px 0 20px;">
-    <div class="row">
-        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
-            Key:
-        </div>
-        <div class="col-lg-8">
-            <div ng-repeat="key in invTheme">
-                <div class="progress-bar progress-bar-{{key.theme}}" style="width: 10%">
-                    <span> {{key.text}} </span>
-                </div>
+
+<div class="row">
+    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+        <h3 style="margin-top:0px!important;"><strong> Key:</strong></h3>
+    </div>
+    <div class="col-lg-10 col-xs-12 col-sm-12">
+        <div ng-repeat="key in invTheme" class="justified">
+            <div class="progress-bar progress-bar-{{key.theme}} justified keys" style="width: 33.33%;padding:8px!important;">
+                <span> {{key.text}} </span>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
-            <div class="col-lg-4">
-                <span>First Invoice on File</span>
-            </div>
-            <div class="col-lg-8">
-                <span>Site Name</span>
-            </div>
+</div>
+<hr class="wide">
+@*<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
+        <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 text-center">
+            <span>First Invoice on File</span>
         </div>
-        <div class="col-lg-8">
-            Invoice Totals
+        <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 text-center">
+            <span>Site Name</span>
         </div>
     </div>
-    <div class="row" ng-repeat="siteSummary in invDistn">
-        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
-            <div class="col-lg-6">
-                <span ng-show="siteSummary.totalInvoicesOnFile>0">{{siteSummary.firstInvoiceDate | date:mediumDate}}</span>
-                <span ng-show="siteSummary.totalInvoicesOnFile==0"><i>No Invoices on File</i></span>
-            </div>
-            <div class="col-lg-6">
-                @{ var url = Url.Action("SiteOverview", "Portal", new { id = "{{siteSummary.siteId}}" });
-                 url = HttpUtility.UrlDecode(url);
-                }
-                <a ng-href="@url">{{siteSummary.site}}</a>
+    <div class="col-lg-8 col-md-8 col-xs-4 col-sm-4 text-center">
+        <span> Invoice Totals</span>
+    </div>
+</div>
+<div class="row" ng-repeat="siteSummary in invDistn">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <div class=" col-lg-6 col-md-6 col-xs-6 col-sm-6 text-center">
+            <span ng-show="siteSummary.totalInvoicesOnFile>0">{{siteSummary.firstInvoiceDate | date:mediumDate}}</span>
+            <span ng-show="siteSummary.totalInvoicesOnFile==0"><i>No Invoices on File</i></span>
+        </div>
+        <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 text-center">
+            @{ var url = Url.Action("SiteOverview", "Portal", new { id = "{{siteSummary.siteId}}" });
+             url = HttpUtility.UrlDecode(url);
+            }
+            <a ng-href="@url">{{siteSummary.site}}</a>
+        </div>
+    </div>
+    <div class="col-lg-8 col-md-8 col-xs-8 col-sm-8 text-center">
+        <div ng-repeat="line in siteSummary.data">
+            <div class="progress-bar progress-bar-{{invTheme[$index].theme}}" style="width: {{line.percent}}%">
+                <span> {{line.noOfInv}} </span>
             </div>
         </div>
-        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 progress progress-bordered">
-            <div ng-repeat="line in siteSummary.data">
-                <div class="progress-bar progress-bar-{{invTheme[$index].theme}}" style="width: {{line.percent}}%">
-                    <span> {{line.noOfInv}} </span>
-                </div>
-            </div>
+    </div>
+</div>*@
+<div class="row">
+    <div class="col-md-12">
+        <div id="no-more-tables">
+            <table class="col-sm-12 table table-hover cf no-border">
+                <thead class="cf">
+                    <tr>
+                        <th class="text-left" width="15%">
+                            First Invoice
+                        </th>
+                        <th class="text-left" width="25%">
+                            Site Name
+                        </th>
+                        <th class="text-left">
+                            Invoice Totals
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="siteSummary in invDistn">
+                        <td data-title="First Invoice" class="text-left">
+                            <span ng-show="siteSummary.totalInvoicesOnFile>0">{{siteSummary.firstInvoiceDate | date:mediumDate}}</span>
+                            <span ng-show="siteSummary.totalInvoicesOnFile==0"><i>No Invoices on File</i></span>
+                        </td>
+                        <td data-title="Site Name" class=" text-left">
+                            @{ var url1 = Url.Action("SiteOverview", "Portal", new { id = "{{siteSummary.siteId}}" });
+                             url1 = HttpUtility.UrlDecode(url1);
+                            }
+                            <a ng-href="@url1">{{siteSummary.site}}</a>
+
+                        </td>
+                        <td data-title="Invoice Totals" class="text-left">
+                            <span ng-repeat="line in siteSummary.data">
+                                <span class="progress-bar progress-bar-{{invTheme[$index].theme}}" style="width: {{line.percent}}%">
+                                    <span> {{line.noOfInv}} </span>
+                                </span>
+                            </span>
+                            <div class="clerfix visible-xs visible-sm">&nbsp;</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="clear:both"> </div>
         </div>
     </div>
 </div>

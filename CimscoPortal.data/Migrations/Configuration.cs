@@ -35,7 +35,12 @@ namespace CimscoPortal.Data.Migrations
         protected override void Seed(CimscoPortal.Data.Models.CimscoPortalContext context)
         {
             var SeedWithTestInvoices = false;
-            var DeleteAllData_and_ReCreateMasterData = true;
+            var DeleteAllData_and_ReCreateMasterData = false;
+
+            var ProdTestLegacyFunctionsActive = true;   // Users, links to customers/groups/sites etc
+                                                        // Would not normally have both set to true.
+                                                        // I.e. false, true when in prod testing to ensure data not yet managed correctly
+                                                        // is linked and available.
 
             //.Configuration.ConfigurationSettings.GetConfig("SeedData");// 
             //var zz = ConfigurationManager.AppSettings["AccountName"];
@@ -51,7 +56,16 @@ namespace CimscoPortal.Data.Migrations
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
-           
+
+            if (ProdTestLegacyFunctionsActive)
+            {
+                CreateCities(context);
+                // Essential Master Data
+                PopulateConfigurationTable(context);
+                ManageTestUserData(context);
+                context.SaveChanges();
+            }
+
             if (DeleteAllData_and_ReCreateMasterData)
             {
                 context.Database.ExecuteSqlCommand(_SQL.emptyTables);

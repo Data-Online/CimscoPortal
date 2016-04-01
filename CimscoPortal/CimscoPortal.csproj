@@ -1490,7 +1490,7 @@
     <Content Include="Views\Portal\_SparklineComposite.cshtml" />
     <Content Include="Views\Portal\InvoiceOverview.cshtml" />
     <Content Include="Views\Portal\_SiteList.cshtml" />
-    <Content Include="Views\Portal\_InvoiceList.cshtml" />
+    <Content Include="Views\Portal\SiteOverviewPartials\_InvoiceList.cshtml" />
     <Content Include="Views\Portal\_SparklineBar.cshtml" />
     <Content Include="Views\Portal\InvoiceDetailPartials\_DonutPlusSummary.cshtml" />
     <Content Include="Views\Portal\_OtherChargesTable.cshtml" />
@@ -1504,6 +1504,8 @@
     <Content Include="Views\Portal\InvoiceDetailPartials\_HistoricalChargesTable.cshtml" />
     <Content Include="Views\Portal\InvoiceDetail_.cshtml" />
     <Content Include="Views\Portal\InvoiceDetailPartials\_NetworkChargesTable.cshtml" />
+    <Content Include="Views\Portal\SiteOverviewPartials\_Consumption.cshtml" />
+    <Content Include="Views\Portal\SiteOverviewPartials\_InvoiceValue.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />
