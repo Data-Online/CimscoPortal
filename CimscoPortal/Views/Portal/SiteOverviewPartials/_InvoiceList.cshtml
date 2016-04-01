@@ -1,25 +1,31 @@
 ﻿
 <div class="row col-lg-12">
     <div class="col-lg-6">
-        <span>
-            <form class="form-inline">
-                Search:
-                <input ng-model="query" type="text"
-                       placeholder="Invoice number" autofocus>
-            </form>
-        </span>
-        <span>
-            <label data-toggle="tooltip" title="Sort by Invoice Date">
-                <span ng-click="order('invoiceDate')" class="btn-sm btn-labeled btn-palegreen">
-                    <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='invoiceDate'"></i>Invoice Date
-                </span>
-            </label>
-            <label data-toggle="tooltip" title="Sort by Invoice Total">
-                <span ng-click="order('invoiceTotal')" class="btn-sm btn-labeled btn-palegreen">
-                    <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='invoiceTotal'"></i>Invoice Total
-                </span>
-            </label>
-        </span>
+        <div class="row">
+            <div class="col-md-12 col-xs-12 col-sm-12 text-left">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label>Search:</label>
+                        <input ng-model="query" type="text"
+                               placeholder="Invoice number" autofocus class="form-control">
+                    </div>
+                </form>
+            </div>
+            <div class="clearfix"> &nbsp;</div>
+            <div class="col-md-12 col-xs-12 col-sm-12 text-left">
+                <label data-toggle="tooltip" title="Sort by Invoice Date">
+                    <span ng-click="order('invoiceDate')" class="btn-sm btn-labeled btn-palegreen">
+                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='invoiceDate'"></i>Invoice Date
+                    </span>
+                </label>
+                <label data-toggle="tooltip" title="Sort by Invoice Total">
+                    <span ng-click="order('invoiceTotal')" class="btn-sm btn-labeled btn-palegreen">
+                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='invoiceTotal'"></i>Invoice Total
+                    </span>
+                </label>
+            </div>
+            <div class="clearfix"> &nbsp;</div>
+        </div>
     </div>
     <div class="col-lg-6" ng-init="options={};options.selected=true; options.all=true">
         <span>Show invoice types:</span>
@@ -29,19 +35,19 @@
                 <span class="text">All</span>
             </label>
         </span>
-        <span class="checkbox col-lg-4" >
+        <span class="checkbox col-lg-4">
             <label>
                 <input class="colored-success" ng-model="selectItems.showApproved" type="checkbox" ng-init="selectItems.showApproved=options.selected">
                 <span class="text">Approved</span>
             </label>
         </span>
-        <span class="checkbox col-lg-4" >
+        <span class="checkbox col-lg-4">
             <label>
                 <input class="colored-success" ng-model="selectItems.showMissing" type="checkbox" ng-init="selectItems.showMissing=options.selected">
                 <span class="text">Missing</span>
             </label>
         </span>
-        <span class="checkbox col-lg-4" >
+        <span class="checkbox col-lg-4">
             <label>
                 <input class="colored-success" ng-model="selectItems.showToApprove" type="checkbox" ng-init="selectItems.showToApprove=options.selected">
                 <span class="text">To Be Approved</span>
@@ -49,6 +55,7 @@
         </span>
     </div>
 </div>
+<hr class="wide" />
 @*<span class="sortorder" ng-show="predicate === 'orderDate'" ng-class="{reverse:reverse}"></span>*@
 <div class="row">
     <div ng-repeat="inv in invoiceData | filter: { invoiceNumber:query } |invType:selectItems |orderBy:predicate:reverse" class="col-lg-4 col-md-6">
@@ -88,7 +95,7 @@
                         </div>
                     </div>
                     <div class="col-lg-4 nopadding item-right" style="padding-right: 10px; padding-left: 0">
-                         <span ng-show="inv.verified" class="btn-xs  btn-maroon pull-right">
+                        <span ng-show="inv.verified" class="btn-xs  btn-maroon pull-right">
                             <i class="fa fa-eye"></i>
                         </span>
                         <span data-toggle="tooltip" title="Sort by Invoice Total" ng-show="inv.approved" class="btn-xs btn-palegreen pull-right">

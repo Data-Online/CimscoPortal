@@ -1,5 +1,24 @@
 ﻿
 <div class="row">
+    <div class="col-lg-3 col-xs-12 col-sm-6 visible-lg visible-md hidden-xs hidden-sm">
+        <div class="margin-top-10 visible-xs hidden-lg hidden-md"></div>
+        <div class="row">
+            <div class="col-xs-6 col-sm-6">
+                <label data-toggle="tooltip" title="Sort by Total Value"  data-placement="auto" class="tooltip-palegreen">
+                    <span ng-click="order('billTotal')" class="btn-sm btn-labeled btn-palegreen tooltip-palegreen">
+                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='billTotal'"></i>Total Value
+                    </span>
+                </label>
+            </div>
+            <div class="col-xs-6 col-sm-6">
+                <label data-toggle="tooltip" title="Sort by Site Name" data-placement="auto" class="tooltip-palegreen">
+                    <span ng-click="order('site')" class="btn-sm btn-labeled btn-palegreen ">
+                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='site'"></i>Site
+                    </span>
+                </label>
+            </div>
+        </div>
+    </div>
     <div class="col-lg-9 col-xs-12 col-sm-6" ng-init="options={};options.selected=true">
         <div class="row">
             <div class="col-md-3 col-xs-12 col-sm-3">
@@ -34,18 +53,19 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-3 col-xs-12 col-sm-6 margin-top-10">
+    <div class="col-lg-3 col-xs-12 col-sm-6 hidden-lg hidden-md visible-xs visible-sm">
+        <div class="margin-top-10 visible-xs hidden-lg hidden-md"></div>
         <div class="row">
-            <div class="col-xs-6 col-dm-6">
-                <label data-toggle="tooltip" title="Sort by Total Value">
-                    <span ng-click="order('billTotal')" class="btn-sm btn-labeled btn-palegreen">
+            <div class="col-xs-6 col-sm-6">
+                <label data-toggle="tooltip" title="Sort by Total Value"  data-placement="auto" class="tooltip-palegreen">
+                    <span ng-click="order('billTotal')" class="btn-sm btn-labeled btn-palegreen tooltip-palegreen">
                         <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='billTotal'"></i>Total Value
                     </span>
                 </label>
             </div>
-            <div class="col-xs-6 col-dm-6">
-                <label data-toggle="tooltip" title="Sort by Site Name">
-                    <span ng-click="order('site')" class="btn-sm btn-labeled btn-palegreen">
+            <div class="col-xs-6 col-sm-6">
+                <label data-toggle="tooltip" title="Sort by Site Name" data-placement="auto" class="tooltip-palegreen">
+                    <span ng-click="order('site')" class="btn-sm btn-labeled btn-palegreen ">
                         <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='site'"></i>Site
                     </span>
                 </label>
