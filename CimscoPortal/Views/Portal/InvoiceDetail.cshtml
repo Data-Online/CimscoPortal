@@ -3,86 +3,103 @@
     ViewBag.Description = "Cimsco Dashboard";
     Layout = "~/Views/Shared/_Default.cshtml";
 }
+<style>
 
+</style>
 <div data-ng-app="app" data-ng-controller="app.core.invoiceDetail" data-ng-init="init(@ViewBag.InvoiceId)">
 
     <div class="row">
-        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             @Html.Partial("InvoiceDetailPartials/_DonutPlusSummary")
         </div>
     </div>
 
 
 
-    <div class="row">
-        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="dashboard-box">
-                        <div class="box-header">
-                            <div class="deadline">
-                                Bill Details
+    @*<div class="row">
+            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="dashboard-box">
+                            <div class="box-header">
+                                <div class="deadline">
+                                    Bill Details
+                                </div>
                             </div>
+
                         </div>
-                        <div class="box-tabbs">
-                            <div class="tabbable">
-                                <ul class="nav nav-tabs tabs-flat  nav-justified" id="myTab11">
-                                    <li class="active">
-                                        <a data-toggle="tab" href="#energy">
-                                            Energy Charges
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a data-toggle="tab" href="#network">
-                                            Network Charges
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a data-toggle="tab" href="#other">
-                                            Other Charges
-                                        </a>
-                                    </li>
+                    </div>
+                </div>
+            </div>
 
-                                    <li>
-                                        <a data-toggle="tab" id="contacttab" href="#historical">
-                                            Historical
-                                        </a>
-                                    </li>
-                                </ul>
-                                <div class="tab-content tabs-flat no-padding">
-                                    <div id="network" class="tab-pane padding-5 animated fadeInUp">
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                @*@Html.Partial("_SparklineBar")*@
-                                                @Html.Partial("InvoiceDetailPartials/_NetworkChargesTable")
-                                                <span data-display="sparklineBar"></span>
-                                            </div>
+
+
+        </div>*@
+    <div class="row">
+        <div class="col-md-12">
+            <div class="widget flat radius-bordered">
+                <div class="widget-header bg-themeprimary">
+                    <span class="widget-caption">Bill Details</span>
+                </div>
+                <div class="widget-body">
+                    <div class="box-tabbs">
+                        <div class="tabbable">
+                            <ul class="nav nav-tabs tabs-flat  nav-justified" id="myTab11">
+                                <li class="active">
+                                    <a data-toggle="tab" href="#energy">
+                                        Energy Charges
+                                    </a>
+                                </li>
+                                <li>
+                                    <a data-toggle="tab" href="#network">
+                                        Network Charges
+                                    </a>
+                                </li>
+                                <li>
+                                    <a data-toggle="tab" href="#other">
+                                        Other Charges
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a data-toggle="tab" id="contacttab" href="#historical">
+                                        Historical
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content tabs-flat no-padding">
+                                <div id="network" class="tab-pane padding-5 animated fadeInUp">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            @*@Html.Partial("_SparklineBar")*@
+                                            @Html.Partial("InvoiceDetailPartials/_NetworkChargesTable")
+                                            <span data-display="sparklineBar"></span>
                                         </div>
                                     </div>
-                                    <div id="other" class="tab-pane  animated fadeInUp">
-                                        <div class="row">
-                                            <div class="col-lg-6 chart-container">
-                                                @Html.Partial("_OtherChargesTable")
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-                                    <div id="historical" class="tab-pane padding-10 animated fadeInUp">
-                                        <div class="row">
-                                            <div height=" 300px" style="width: 100%; display: block;" class="chart chart-lg padding-40">
-                                                <flot dataset="SelectableChartData" options="SelectableChartOptions"></flot>
-                                            </div>
-                                            @Html.Partial("InvoiceDetailPartials/_HistoricalChargesTable")
+                                </div>
+                                <div id="other" class="tab-pane  animated fadeInUp">
+                                    <div class="row">
+                                        <div class="col-lg-12 chart-container">
+                                            @Html.Partial("_OtherChargesTable")
                                         </div>
                                     </div>
 
-                                    <div id="energy" class="tab-pane animated fadeInUp no-padding-bottom active" style="padding:20px 20px 0 20px;">
-                                        <div class="row">
-                                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" data-ng-repeat="nrgData in slModel.energyCostSeries">
-                                                @Html.Partial("_SparklineComposite")
-                                                <span data-display="sparklineComposite"></span>
-                                            </div>
+                                </div>
+
+                                <div id="historical" class="tab-pane padding-10 animated fadeInUp">
+                                    <div class="row">
+                                        <div height=" 300px" style="width: 100%; display: block;" class="chart chart-lg padding-40">
+                                            <flot dataset="SelectableChartData" options="SelectableChartOptions"></flot>
+                                        </div>
+                                        @Html.Partial("InvoiceDetailPartials/_HistoricalChargesTable")
+                                    </div>
+                                </div>
+
+                                <div id="energy" class="tab-pane animated fadeInUp no-padding-bottom active" style="padding:20px 20px 0 20px;">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" data-ng-repeat="nrgData in slModel.energyCostSeries">
+                                            @Html.Partial("_SparklineComposite")
+                                            <span data-display="sparklineComposite"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -126,6 +143,16 @@
                 white-space: nowrap;
                 margin: 0.1em 0;
             }
+
+    #_DonutSummary .databox-row.row-3 {
+        height: 16% !important;
+        margin-bottom: 2px !important;
+    }
+    @@media only screen and (max-width: 768px) {
+    .databox-cell.cell-4.text-align-center.bg-sky {
+        padding: 13px !important;
+    }
+    }
 </style>
 
 @section PageScripts{

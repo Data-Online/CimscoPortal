@@ -1,9 +1,9 @@
 ﻿<div class="databox databox-xlg radius-bordered databox-shadowed databox-graded databox-vertical" style="height:230px;">
-    <div class="databox-top bg-blue">
+    @*<div class="databox-top bg-themeprimary">
         <span class="databox-header">{{nrgData.headerData.header}}</span>
-    </div>
-
-    <div class="databox-row bg-palegreen">
+    </div>*@
+    <h6 class="row-title before-orange">{{nrgData.headerData.header}}</h6>
+    <div class="databox-row bg-white">
         <div style="margin: 0 0 4px;max-height: 1px;min-height: 1px;overflow: hidden;"></div>
         <div id="{{$index + 1}}SlineComposite" class="databox-sparkline no-margin cp-graph-element">
             <span data-sparkline="compositebar" data-height="100px" data-width="100%"
@@ -21,7 +21,23 @@
             </span>
         </div>
     </div>
-    <div class="databox-bottom no-padding">
+    <div class="databox-bottom no-padding bordered-thick bordered-orange">
+        <div class="databox-row">
+            <div class="databox-cell cell-4 no-padding text-align-center bordered-right bordered-platinum">
+                <span class="databox-number lightcarbon no-margin">${{nrgData.totalCost | number:2}}</span>
+                <span class="databox-text sonic-silver  no-margin">Total energy charge</span>
+            </div>
+            <div class="databox-cell cell-4 no-padding text-align-center bordered-right bordered-platinum">
+                <span class="databox-number lightcarbon no-margin">{{nrgData.maxRate | number:2}}c</span>
+                <span class="databox-text sonic-silver no-margin">Max cents per KWh</span>
+            </div>
+            <div class="databox-cell cell-4 no-padding text-align-center">
+                <span class="databox-number lightcarbon no-margin">${{nrgData.totalCost * slModel.lossRate  | number:2}} ({{slModel.lossRate | number:4}}%)</span>
+                <span class="databox-text sonic-silver no-margin">Plus losses</span>
+            </div>
+        </div>
+    </div>
+    @*<div class="databox-bottom no-padding">
         <div class="databox-row">
             <div class="databox-cell cell-6 text-align-left">
                 <span class="databox-text">Total energy charge</span>
@@ -37,5 +53,5 @@
                 <span class="databox-text">Plus losses of ${{nrgData.totalCost * slModel.lossRate  | number:2}} ({{slModel.lossRate | number:4}}%)</span>
             </div>
         </div>
-    </div>
+    </div>*@
 </div>

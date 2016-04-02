@@ -1,69 +1,132 @@
-﻿<div class="databox databox-xlg radius-bordered databox-shadowed databox-graded databox-vertical">
+﻿@*<div class="databox databox-xlg radius-bordered databox-shadowed databox-graded databox-vertical">
     <div class="databox-row bg-blue">
         @*<span class="databox-header">Other Charges</span>*@
-    </div>
-    <div class="databox-row">
-            <div class="databox-cell cell-12">
-                <div class="databox-row row-2 bordered-ivory padding-15">
-                    <span class="databox-text pull-left no-margin hidden-xs">Variable Charge (Business Day)</span>
-                    <span class="databox-number pull-right no-margin uppercase">{{networkCharges[0] | currency:$}}</span>
-                </div>
-                <div class="databox-row row-2 bordered-ivory padding-15">
-                    <span class="databox-text pull-left no-margin hidden-xs">Variable Charge (Non Business Day)</span>
-                    <span class="databox-number pull-right no-margin uppercase">{{networkCharges[1] | currency:$}}</span>
-                </div>
-                <div class="databox-row row-2 bordered-ivory padding-15">
-                    <span class="databox-text pull-left no-margin hidden-xs">Capacity Charge</span>
-                    <span class="databox-number pull-right no-margin uppercase">{{networkCharges[2] | currency:$}}</span>
-                </div>
-                <div class="databox-row row-2 bordered-ivory padding-15">
-                    <span class="databox-text pull-left no-margin hidden-xs">Demand Charge</span>
-                    <span class="databox-number pull-right no-margin uppercase">{{networkCharges[3] | currency:$}}</span>
-                </div>
-                <div class="databox-row row-2 bordered-ivory padding-15">
-                    <span class="databox-text pull-left no-margin hidden-xs">Fixed Charge</span>
-                    <span class="databox-number pull-right no-margin uppercase">{{networkCharges[4] | currency:$}}</span>
-                </div>
-                <div class="databox-row row-2 bordered-ivory padding-15">
-                    <span class="databox-text pull-left no-margin uppercase hidden-xs">Total</span>
-                    <span class="databox-number pull-right no-margin uppercase">{{ncTotal | currency:$}}</span>
-                </div>
+@*</div>*@
+@*<div class="databox-row">
+        <div class="databox-cell cell-12">
+            <div class="databox-row row-2 bordered-ivory padding-15">
+                <span class="databox-text pull-left no-margin hidden-xs">Variable Charge (Business Day)</span>
+                <span class="databox-number pull-right no-margin uppercase">{{networkCharges[0] | currency:$}}</span>
+            </div>
+            <div class="databox-row row-2 bordered-ivory padding-15">
+                <span class="databox-text pull-left no-margin hidden-xs">Variable Charge (Non Business Day)</span>
+                <span class="databox-number pull-right no-margin uppercase">{{networkCharges[1] | currency:$}}</span>
+            </div>
+            <div class="databox-row row-2 bordered-ivory padding-15">
+                <span class="databox-text pull-left no-margin hidden-xs">Capacity Charge</span>
+                <span class="databox-number pull-right no-margin uppercase">{{networkCharges[2] | currency:$}}</span>
+            </div>
+            <div class="databox-row row-2 bordered-ivory padding-15">
+                <span class="databox-text pull-left no-margin hidden-xs">Demand Charge</span>
+                <span class="databox-number pull-right no-margin uppercase">{{networkCharges[3] | currency:$}}</span>
+            </div>
+            <div class="databox-row row-2 bordered-ivory padding-15">
+                <span class="databox-text pull-left no-margin hidden-xs">Fixed Charge</span>
+                <span class="databox-number pull-right no-margin uppercase">{{networkCharges[4] | currency:$}}</span>
+            </div>
+            <div class="databox-row row-2 bordered-ivory padding-15">
+                <span class="databox-text pull-left no-margin uppercase hidden-xs">Total</span>
+                <span class="databox-number pull-right no-margin uppercase">{{ncTotal | currency:$}}</span>
             </div>
         </div>
+    </div>*@
 
 
-    @*<div class="row">
-        <div class="col-lg-12 col-sm-12 col-xs-12">
-            <div class="databox databox-xlg databox-halved databox-shadowed databox-vertical no-margin-bottom">
-                <div class="databox-bottom bg-white no-padding">
-                    <div class="databox-row row-12">
-                        <div class="databox-row row-6 no-padding">
-                            <div class="databox-cell cell-2 no-padding text-align-center bordered-right bordered-platinum">
-                                <span class="databox-text sonic-silver  no-margin">Variable Charge </br>(Business Day)</span>
-                                <span class="databox-number lightcarbon no-margin">{{networkCharges[0] | currency:$}}</span>
-                            </div>
-                            <div class="databox-cell cell-2 no-padding text-align-center bordered-right bordered-platinum">
-                                <span class="databox-text sonic-silver no-margin">Variable Charge </br>(Non Business Day)</span>
-                                <span class="databox-number lightcarbon no-margin">{{networkCharges[1] | currency:$}}</span>
-                            </div>
-                            <div class="databox-cell cell-2 no-padding text-align-center">
-                                <span class="databox-text sonic-silver no-margin">Capacity Charge</span>
-                                <span class="databox-number lightcarbon no-margin">{{networkCharges[2] | currency:$}}</span>
-                            </div>
-                            <div class="databox-cell cell-2 no-padding text-align-center">
-                                <span class="databox-text sonic-silver no-margin">Demand Charge</span>
-                                <span class="databox-number lightcarbon no-margin">{{networkCharges[3] | currency:$}}</span>
-                            </div>
-                            <div class="databox-cell cell-2 no-padding text-align-center">
-                                <span class="databox-text sonic-silver no-margin">Fixed Charge</span>
-                                <span class="databox-number lightcarbon no-margin">{{networkCharges[4] | currency:$}}</span>
-                            </div>
+@*<div class="row">
+                <div class="col-lg-12 col-sm-12 col-xs-12">
+                    <div class="databox databox-xlg databox-halved databox-shadowed databox-vertical no-margin-bottom">
+                        <div class="databox-bottom bg-white no-padding">
+                            <div class="databox-row row-12">
+                                <div class="databox-row row-6 no-padding">
+                                    <div class="databox-cell cell-2 no-padding text-align-center bordered-right bordered-platinum">
+                                        <span class="databox-text sonic-silver  no-margin">Variable Charge </br>(Business Day)</span>
+                                        <span class="databox-number lightcarbon no-margin">{{networkCharges[0] | currency:$}}</span>
+                                    </div>
+                                    <div class="databox-cell cell-2 no-padding text-align-center bordered-right bordered-platinum">
+                                        <span class="databox-text sonic-silver no-margin">Variable Charge </br>(Non Business Day)</span>
+                                        <span class="databox-number lightcarbon no-margin">{{networkCharges[1] | currency:$}}</span>
+                                    </div>
+                                    <div class="databox-cell cell-2 no-padding text-align-center">
+                                        <span class="databox-text sonic-silver no-margin">Capacity Charge</span>
+                                        <span class="databox-number lightcarbon no-margin">{{networkCharges[2] | currency:$}}</span>
+                                    </div>
+                                    <div class="databox-cell cell-2 no-padding text-align-center">
+                                        <span class="databox-text sonic-silver no-margin">Demand Charge</span>
+                                        <span class="databox-number lightcarbon no-margin">{{networkCharges[3] | currency:$}}</span>
+                                    </div>
+                                    <div class="databox-cell cell-2 no-padding text-align-center">
+                                        <span class="databox-text sonic-silver no-margin">Fixed Charge</span>
+                                        <span class="databox-number lightcarbon no-margin">{{networkCharges[4] | currency:$}}</span>
+                                    </div>
 
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
     </div>*@
-</div>
 
+<div class="table-responsive margin-top-5">
+    <table class="table table-hover">
+        <thead>
+            <tr class="bg-themeprimary">
+                <th colspan="2" class="text-center bg-themeprimary" style="color:white!important">
+                    Network Charges
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    Variable Charge (Business Day)
+                </td>
+                <td>
+                    {{networkCharges[0] | currency:$}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Variable Charge (Non Business Day)
+                </td>
+                <td>
+                    {{networkCharges[1] | currency:$}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Capacity Charge
+                </td>
+                <td>
+                    {{networkCharges[2] | currency:$}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Demand Charge
+                </td>
+                <td>
+                    {{networkCharges[3] | currency:$}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Fixed Charge
+                </td>
+                <td>
+                    {{networkCharges[4] | currency:$}}
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td>
+                    <b>Total</b>
+                </td>
+                <td>
+                    <b> {{ncTotal | currency:$}}</b>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
