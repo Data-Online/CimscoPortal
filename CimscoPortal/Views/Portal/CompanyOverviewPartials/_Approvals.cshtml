@@ -1,57 +1,72 @@
 ﻿
 
-<div class="row">
+@*<div class="row">
     <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
         <h3 style="margin-top:0px!important;"><strong> Key:</strong></h3>
     </div>
     <div class="col-lg-10 col-xs-12 col-sm-12">
+
         <div ng-repeat="key in invTheme" class="float-left">
             <div class="progress-bar progress-bar-{{key.theme}} justified keys" style="width: 33.33%;padding:8px!important;">
                 <span> {{key.text}} </span>
             </div>
-           
         </div>
     </div>
-</div>
-@*<div class="labels-container text-right">
-    @*<h4><b>Keys</b></h4>
-    <div ng-repeat="key in invTheme" style="width:100%!important;"><label class="label label-{{key.theme}} keys" style="width:83px;">&nbsp;<b>{{key.text}}</b> </label></div>
 </div>*@
-<hr  class="wide"/>
-@*<div class="row">
-    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
-        <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 text-center">
-            <span>First Invoice on File</span>
-        </div>
-        <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 text-center">
-            <span>Site Name</span>
-        </div>
+<div class="row">
+    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+        <h5 class="row-title before-darkorange">
+            <i class="fa fa-tags darkorange"></i>Keys
+        </h5>
     </div>
-    <div class="col-lg-8 col-md-8 col-xs-4 col-sm-4 text-center">
-        <span> Invoice Totals</span>
-    </div>
-</div>
-<div class="row" ng-repeat="siteSummary in invDistn">
-    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
-        <div class=" col-lg-6 col-md-6 col-xs-6 col-sm-6 text-center">
-            <span ng-show="siteSummary.totalInvoicesOnFile>0">{{siteSummary.firstInvoiceDate | date:mediumDate}}</span>
-            <span ng-show="siteSummary.totalInvoicesOnFile==0"><i>No Invoices on File</i></span>
-        </div>
-        <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 text-center">
-            @{ var url = Url.Action("SiteOverview", "Portal", new { id = "{{siteSummary.siteId}}" });
-             url = HttpUtility.UrlDecode(url);
-            }
-            <a ng-href="@url">{{siteSummary.site}}</a>
-        </div>
-    </div>
-    <div class="col-lg-8 col-md-8 col-xs-8 col-sm-8 text-center">
-        <div ng-repeat="line in siteSummary.data">
-            <div class="progress-bar progress-bar-{{invTheme[$index].theme}}" style="width: {{line.percent}}%">
-                <span> {{line.noOfInv}} </span>
+    <div class="col-lg-10 col-xs-12 col-sm-12 margin-top-10">
+        <div ng-repeat="key in invTheme" class="float-left">
+            <div class="progress-bar progress-bar-{{key.theme}} justified keys" style="width: 33.33%;padding:8px!important;">
+                <span> {{key.text}} </span>
             </div>
         </div>
     </div>
-</div>*@
+</div>
+
+@*<div class="labels-container text-right">
+        @*<h4><b>Keys</b></h4>
+        <div ng-repeat="key in invTheme" style="width:100%!important;"><label class="label label-{{key.theme}} keys" style="width:83px;">&nbsp;<b>{{key.text}}</b> </label></div>
+    </div>*@
+<hr class="wide" />
+@*<div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
+            <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 text-center">
+                <span>First Invoice on File</span>
+            </div>
+            <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 text-center">
+                <span>Site Name</span>
+            </div>
+        </div>
+        <div class="col-lg-8 col-md-8 col-xs-4 col-sm-4 text-center">
+            <span> Invoice Totals</span>
+        </div>
+    </div>
+    <div class="row" ng-repeat="siteSummary in invDistn">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+            <div class=" col-lg-6 col-md-6 col-xs-6 col-sm-6 text-center">
+                <span ng-show="siteSummary.totalInvoicesOnFile>0">{{siteSummary.firstInvoiceDate | date:mediumDate}}</span>
+                <span ng-show="siteSummary.totalInvoicesOnFile==0"><i>No Invoices on File</i></span>
+            </div>
+            <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 text-center">
+                @{ var url = Url.Action("SiteOverview", "Portal", new { id = "{{siteSummary.siteId}}" });
+                 url = HttpUtility.UrlDecode(url);
+                }
+                <a ng-href="@url">{{siteSummary.site}}</a>
+            </div>
+        </div>
+        <div class="col-lg-8 col-md-8 col-xs-8 col-sm-8 text-center">
+            <div ng-repeat="line in siteSummary.data">
+                <div class="progress-bar progress-bar-{{invTheme[$index].theme}}" style="width: {{line.percent}}%">
+                    <span> {{line.noOfInv}} </span>
+                </div>
+            </div>
+        </div>
+    </div>*@
 <div class="row">
     <div class="col-md-12">
         <div id="no-more-tables">

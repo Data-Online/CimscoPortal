@@ -1,12 +1,10 @@
 ﻿<div class="databox databox-xxlg databox-vertical databox-shadowed bg-white radius-bordered" style="height:auto;">
     <div class="databox-row">
         <div class="databox-cell cell-4 text-align-center bg-sky">
-            <span class="databox-number">{{invoiceDetail.invoiceNumber}}</span>
-            <span class="databox-text">Invoice No &nbsp;<i class="fa {{invoiceDetail.invoiceIcon}} no-margin"></i></span>
+            <span class="databox-number">{{invoiceDetail.invoiceNumber}} &nbsp;<i class="fa {{invoiceDetail.invoiceIcon}} no-margin"></i></span>
         </div>
         <div class="databox-cell cell-4 text-align-center bg-azure">
             <span class="databox-number">{{invoiceDetail.invoiceDate | date:'MMMM d, y'}}</span>
-            <span class="databox-text">Date</span>
         </div>
         <div class="databox-cell cell-4 text-align-center bg-sky">
             <span class="databox-number white tootip-info" data-container="body" data-titleclass="bordered-blue" data-class="dark" data-toggle="popover-hover" data-placement="auto"
@@ -14,7 +12,6 @@
                 {{invoiceDetail.percentageChange | number:2}} %
                 <i class="fa {{invoiceDetail.arrow}} no-margin"></i>
             </span>
-            <span class="databox-text">&nbsp;</span>
         </div>
     </div>
     <div class="databox databox-xxlg databox-vertical databox-shadowed bg-white radius-bordered" style="height:auto!important;">

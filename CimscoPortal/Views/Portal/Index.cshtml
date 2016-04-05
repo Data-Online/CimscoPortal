@@ -3,119 +3,7 @@
     ViewBag.Description = "Company Dashboard";
     Layout = "~/Views/Shared/_Default.cshtml";
 }
-<style type="text/css">
-    i.widget-icon.fa.fa-calendar {
-        color: black;
-        margin: 0 auto;
-        line-height: 20px;
-    }
 
-    .table {
-        margin-bottom: 10px !important;
-    }
-
-    .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
-        border-top: 0px !important;
-    }
-
-    .keys {
-        width: auto !important;
-    }
-
-    @@media only screen and (max-width: 768px) {
-        /*.text {
-            white-space: nowrap !important;
-        }*/
-
-        .keys {
-            padding: 17px 0 19px !important;
-            width: 33.33%;
-        }
-
-        .responsive-td {
-            width: 45% !important;
-        }
-
-        #no-more-tables table,
-        #no-more-tables thead,
-        #no-more-tables tbody,
-        #no-more-tables th,
-        #no-more-tables td,
-        #no-more-tables tr {
-            display: block;
-        }
-
-        #no-more-tables table {
-            padding: 0px;
-        }
-
-        /* Hide table headers (but not display: none;, for accessibility) */
-        #no-more-tables thead tr {
-            position: absolute;
-            top: -9999px;
-            left: -9999px;
-        }
-
-        #no-more-tables tr {
-            border: 1px solid #ccc;
-        }
-
-        #no-more-tables td {
-            /* Behave like a "row" */
-            border: none;
-            border-bottom: 1px solid #eee;
-            position: relative;
-            padding-left: 50%;
-            white-space: normal;
-            text-align: left;
-        }
-
-        #no-more-tables #tblTransactions td, #no-more-tables #tblconfirmbooking td {
-            padding-left: 55% !important;
-        }
-
-        #no-more-tables td:before {
-            /* Now like a table header */
-            position: absolute;
-            /* Top/left values mimic padding */
-            top: 6px;
-            left: 6px;
-            width: 45%;
-            padding-right: 10px;
-            white-space: nowrap;
-            text-align: left;
-            font-weight: bold;
-        }
-
-        /*
-        Label the data
-        */
-        #no-more-tables td:before {
-            content: attr(data-title);
-        }
-
-
-        #no-more-tables .radio-inline {
-            margin-left: 0px !important;
-        }
-
-        #no-more-tables .radio-list {
-            margin-left: 0px !important;
-        }
-
-        #lasttrappoinment td {
-            border: none !important;
-        }
-
-        #no-more-tables .btn {
-            margin-bottom: 5px;
-        }
-
-        .col-lg-3.col-xs-3.col-sm-3.margin-top-20 {
-            margin-top: 20px;
-        }
-    }
-</style>
 @*<div data-ng-app="companyOverview" data-ng-controller="companyOverviewViewModel">*@
 <div data-ng-app="app" data-ng-controller="companyOverview">
     <div class="row">
@@ -325,6 +213,7 @@
         <script src="~/Scripts/angular-ui-utils/angular-ui-utils.js"></script>
     }
     <style>
+       
         .progress-compact {
             /*background-color: #f5f5f5;
                                                         border-radius: 4px;
