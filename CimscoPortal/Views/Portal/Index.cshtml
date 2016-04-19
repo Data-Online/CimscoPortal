@@ -7,12 +7,12 @@
 @*<div data-ng-app="companyOverview" data-ng-controller="companyOverviewViewModel">*@
 <div data-ng-app="app" data-ng-controller="companyOverview">
     <div class="row">
-        <div class="col-lg-6 col-sm-6 col-xs-12">
+        <div class="col-lg-6 col-sm-6 col-xs-12" ng-show="customerList.length>0">
             <div class="widget">
                 <div class="widget-header  bordered-blue">
-                    <span class="widget-caption">Company Details</span>
+                    <span class="widget-caption">{{groupCompanyDetail.groupName}}</span>
                     <div class="widget-buttons">
-                        <a href="" widget-config></a>
+                        @*<a href="" widget-config></a>*@
                         <a href="" widget-maximize></a>
                         <a href="" widget-collapse></a>
                         <a href="" widget-dispose></a>
@@ -20,7 +20,9 @@
                 </div>
                 <div class="widget-body">
                     <div>
-                        Company Details and address
+                        <li style="list-style-type:none" ng-repeat="customer in customerList" data-ng-click="changeCompany(customer.customerId)" class="widget-caption" ng-class="{'themeprimary' : monthSpan==_month}">
+                            <i class="widget-icon fa fa-institution"></i>&nbsp;&nbsp;<a href="javascript:void(0);">{{customer.customerName}}</a>
+                        </li>
                     </div>
                 </div>
             </div>
@@ -28,9 +30,9 @@
         <div class="col-lg-6 col-sm-6 col-xs-12">
             <div class="widget">
                 <div class="widget-header  bordered-blue">
-                    <span class="widget-caption">Summary Data</span>
+                    <span class="widget-caption">Company Details</span>
                     <div class="widget-buttons">
-                        <a href="" widget-config></a>
+                        @*<a href="" widget-config></a>*@
                         <a href="" widget-maximize></a>
                         <a href="" widget-collapse></a>
                         <a href="" widget-dispose></a>
@@ -38,75 +40,84 @@
                 </div>
                 <div class="widget-body">
                     <div>
-                        Summary data
+                        <span><b>{{groupCompanyDetail.groupCompanyName}}</b></span><br />
+                        <span>{{groupCompanyDetail.address1}}</span><br />
+                        <span>{{groupCompanyDetail.address2}}</span><br />
+                        <span>{{groupCompanyDetail.address3}}</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     @*<div class="row">
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="dashboard-box">
-                        <div class="box-header">
-                            <div class="deadline">
-                                {{tabTableHeader}}
-                            </div>
-                        </div>
-                        <div class="widget-header  bordered-themeprimary">
-                            <span ng-repeat="_month in monthSpanOptions" data-ng-click="reviseMonths(_month)" class="widget-caption" ng-class="{'themeprimary' : monthSpan==_month}"
-                                  style=" padding-left:5px; padding-right:5px">
-                                <i class="widget-icon fa fa-calendar"></i>
-                                {{_month}} months
-                            </span>
-                        </div>
-                        @*<div class="box-tabbs">
-                                <div class="tabbable">
-                                    <ul class="nav nav-tabs tabs-flat  nav-justified" id="myTab11">
-                                        <li class="active">
-                                            <a data-toggle="tab" href="#approvals">
-                                                Approvals
-                                            </a>
-                                        </li>
-                                        <li ng-show="false">
-                                            <a data-toggle="tab" href="#other1">
-                                                Invoice Value
-                                            </a>
-                                            </ling-show>
-                                        <li ng-show="false">
-                                            <a data-toggle="tab" href="#other2">
-                                                Consumption
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a data-toggle="tab" href="#analysis">
-                                                Totals and Analysis
-                                            </a>
-                                        </li>
-                                    </ul>
-                                    <div class="tab-content tabs-flat no-padding">
-                                        @Html.Partial("CompanyOverviewPartials/_Approvals")
-                                        @Html.Partial("CompanyOverviewPartials/_Other1")
-                                        @Html.Partial("CompanyOverviewPartials/_Other2")
-                                        @Html.Partial("CompanyOverviewPartials/_Analysis")
-                                    </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="dashboard-box">
+                            <div class="box-header">
+                                <div class="deadline">
+                                    {{tabTableHeader}}
                                 </div>
                             </div>
+                            <div class="widget-header  bordered-themeprimary">
+                                <span ng-repeat="_month in monthSpanOptions" data-ng-click="reviseMonths(_month)" class="widget-caption" ng-class="{'themeprimary' : monthSpan==_month}"
+                                      style=" padding-left:5px; padding-right:5px">
+                                    <i class="widget-icon fa fa-calendar"></i>
+                                    {{_month}} months
+                                </span>
+                            </div>
+                            @*<div class="box-tabbs">
+                                    <div class="tabbable">
+                                        <ul class="nav nav-tabs tabs-flat  nav-justified" id="myTab11">
+                                            <li class="active">
+                                                <a data-toggle="tab" href="#approvals">
+                                                    Approvals
+                                                </a>
+                                            </li>
+                                            <li ng-show="false">
+                                                <a data-toggle="tab" href="#other1">
+                                                    Invoice Value
+                                                </a>
+                                                </ling-show>
+                                            <li ng-show="false">
+                                                <a data-toggle="tab" href="#other2">
+                                                    Consumption
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a data-toggle="tab" href="#analysis">
+                                                    Totals and Analysis
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content tabs-flat no-padding">
+                                            @Html.Partial("CompanyOverviewPartials/_Approvals")
+                                            @Html.Partial("CompanyOverviewPartials/_Other1")
+                                            @Html.Partial("CompanyOverviewPartials/_Other2")
+                                            @Html.Partial("CompanyOverviewPartials/_Analysis")
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>*@
+        </div>*@
     <div class="row">
         <div class="col-md-12">
             <div class="widget">
                 <div class="widget-header bg-themeprimary">
-                    <i class="widget-icon fa fa-compress"></i>
-                    <span class="widget-caption"><strong> {{tabTableHeader}}</strong></span>
+                    @*<i class="widget-icon fa fa-compress"></i>*@
+                    <span class="widget-caption">
+                        <strong> {{groupCompanyDetail.groupCompanyName}}</strong> - <ng-pluralize
+                            count="invDistn.length" 
+                        when="{'1': '{} Site,',
+                               'other': '{} Sites,'}">
+                        </ng-pluralize>
+                    showing {{monthSpan}} months of data</span>
                     <div class="widget-buttons">
                         <div class="btn-group">
-                            <a href="javascript:void(0);" class="btn btn-default btn-sm">Filter</a>
+                            <a href="javascript:void(0);" class="btn btn-default btn-sm">Select Months</a>
                             <a href="javascript:void(0);" data-toggle="dropdown" class="btn btn-primary  btn-sm dropdown-toggle " aria-expanded="false"><i class="fa fa-angle-down"></i></a>
                             <ul class="dropdown-menu">
                                 <li ng-repeat="_month in monthSpanOptions " data-ng-click="reviseMonths(_month)" class="widget-caption" ng-class="{'themeprimary' : monthSpan==_month}">
@@ -213,7 +224,6 @@
         <script src="~/Scripts/angular-ui-utils/angular-ui-utils.js"></script>
     }
     <style>
-       
         .progress-compact {
             /*background-color: #f5f5f5;
                                                         border-radius: 4px;

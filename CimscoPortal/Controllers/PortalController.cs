@@ -74,6 +74,17 @@ namespace CimscoPortal.Controllers
             return View();            
         }
 
+        public ActionResult Dashboard()
+        {
+            // int categoryId = 2;
+            //var zz = _portalService.GetAlertsFor(categoryId);
+
+            var user = User.Identity.Name;
+            var userId = User.Identity.GetUserId();
+            var zz = User.IsInRole("Admin");
+            return View("Index");
+        }
+
         public ActionResult SiteOverview(int? id)
         {
             // int categoryId = 2;

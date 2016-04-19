@@ -67,6 +67,7 @@ namespace CimscoPortal.Controllers.Api
         //    return request.CreateResponse<CustomerHierarchyViewModel>(HttpStatusCode.OK, _portalService.GetCompanyHierarchy(userId));
         //}
 
+        // --> GPA ** This is only used in tests - logic now in Service layer. Move tests to there.
         [HttpGet]
         [Route("sitehierarchy")]
         public HttpResponseMessage GetSiteHierarchy(HttpRequestMessage request)
@@ -129,7 +130,15 @@ namespace CimscoPortal.Controllers.Api
         [Route("invoicetally/{monthSpan}")]
         public HttpResponseMessage GetInvoiceTally(HttpRequestMessage request, int monthSpan)
         {
-            var data = _portalService.GetInvoiceTally(User.Identity.Name, monthSpan);
+            var data = _portalService.GetInvoiceTally(User.Identity.Name, monthSpan, null);
+            return request.CreateResponse<InvoiceTallyViewModel>(HttpStatusCode.OK, data);
+        }
+
+        [HttpGet]
+        [Route("invoicetally/{monthSpan}/{customerId}")]
+        public HttpResponseMessage GetInvoiceTally(HttpRequestMessage request, int monthSpan, int customerId)
+        {
+            var data = _portalService.GetInvoiceTally(User.Identity.Name, monthSpan, customerId);
             return request.CreateResponse<InvoiceTallyViewModel>(HttpStatusCode.OK, data);
         }
 

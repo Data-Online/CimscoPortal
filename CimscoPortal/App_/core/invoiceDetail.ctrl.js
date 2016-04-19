@@ -259,6 +259,40 @@
             };
         };
 
+        $scope.randomStacked = function () {
+            var values = [];
+            var ztest = [22, 45, 47]; // low, this, max
+            var units = (ztest[2] - ztest[0] )/ 100;
+            values[0] = ((ztest[1] - ztest[0]) / units) - 1;
+            values[1] = 2.0;
+            values[2] = 100 - values[0] - values[1];
+            //var values = [91, 2, 7];
+
+            $scope.stacked = [];
+            var types = ['info','success', 'info']; //, 'warning', 'danger'];
+            values.forEach(setValues);
+            
+            //for (var i = 0, n = Math.floor((Math.random() * 4) + 1) ; i < n; i++) {
+            //    var index = Math.floor((Math.random() * 4));
+            //    $scope.stacked.push({
+            //        value: Math.floor((Math.random() * 30) + 1),
+            //        type: types[index]
+            //    });
+            //}
+            function setValues(value, index)
+            {
+                console.log(index);
+                $scope.stacked.push({
+                    value: value,
+                    type: types[index]
+                });
+            }
+            console.log("Stack values:");
+            console.log($scope.stacked);
+        };
+
+        $scope.randomStacked();
+
     ////    $scope.SelectableChartData = [
     ////{
     ////    //color: $rootScope.settings.color.themeprimary,

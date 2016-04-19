@@ -6,6 +6,7 @@
 <style>
 
 </style>
+
 <div data-ng-app="app" data-ng-controller="app.core.invoiceDetail" data-ng-init="init(@ViewBag.InvoiceId)">
 
     <div class="row">
@@ -115,6 +116,16 @@
             @Html.Partial("_YearToDateGraph")
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-lg-9 col-sm-12 col-xs-12">
+            <hr class="wide" />
+            <h3>Stacked <button class="btn btn-sm btn-primary" type="button" ng-click="randomStacked()">Randomize</button></h3>
+            <progress><bar ng-repeat="bar in stacked track by $index" value="bar.value" type="{{bar.type}}"><span ng-hide="bar.value < 5">{{bar.value}}%</span></bar></progress>
+        </div>
+    </div>
+
+
 </div>
 
 <style>
@@ -143,7 +154,6 @@
                 white-space: nowrap;
                 margin: 0.1em 0;
             }
-
 </style>
 
 @section PageScripts{

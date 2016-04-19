@@ -84,19 +84,64 @@ namespace CimscoPortal.Services
         public SiteHierarchyViewModel GetSiteHierarchy(string userId)
         {
             // Group level
+            //      --> Customer
+            //      --> Customer
             // Customer level
+            //      --> Site
+            //      --> Site
             // Site level
-            switch (GetUserCompanyOrGroup(userId))
+
+            SiteHierarchyViewModel _result = new SiteHierarchyViewModel();
+            _result.UserLevel = GetUserCompanyOrGroup(userId);
+            switch (_result.UserLevel)
             {
                 case "Customer":
-                    return _repository.Customers.Where(s => s.Users.Any(w => w.Email == userId)).Project().To<SiteHierarchyViewModel>().FirstOrDefault();
+                    _result = _repository.Customers.Where(s => s.Users.Any(w => w.Email == userId)).Project().To<SiteHierarchyViewModel>().FirstOrDefault();
+                    break;
                 case "Group":
-                    return _repository.Groups.Where(s => s.Users.Any(w => w.Email == userId)).Project().To<SiteHierarchyViewModel>().FirstOrDefault();
+                    _result = _repository.Groups.Where(s => s.Users.Any(w => w.Email == userId)).Project().To<SiteHierarchyViewModel>().FirstOrDefault();
+                    break;
                 default:
                     // Raise error
-                    return new SiteHierarchyViewModel();
+                    break;
             }
+
+            return _result;
         }
+
+        public SiteHierarchyViewModel GetSiteHierarchy(string userId, bool customerDataOnly, int? customerId)
+        {
+            // Group level
+            //      --> Customer
+            //      --> Customer
+            // Customer level
+            //      --> Site
+            //      --> Site
+            // Site level
+
+            SiteHierarchyViewModel _result = new SiteHierarchyViewModel();
+            var _userLevel = GetUserCompanyOrGroup(userId);
+            switch (_userLevel)
+            {
+                case "Customer":
+                    _result = _repository.Customers.Where(s => s.Users.Any(w => w.Email == userId)).Project().To<SiteHierarchyViewModel>().FirstOrDefault();
+                    break;
+                case "Group":
+                    int _firstOrDefaultCustomer = customerId ?? (int)_repository.Sites.Where(s => s.GroupId == _repository.Groups.Where(t => t.Users.Any(w => w.Email == userId))
+                                                            .Select(w => w.GroupId).FirstOrDefault())
+                                                            .Select(x => x.CustomerId).FirstOrDefault();
+                    _result = _repository.Customers.Where(s => s.CustomerId == _firstOrDefaultCustomer).Project().To<SiteHierarchyViewModel>().FirstOrDefault();
+                    _result.GroupName = _repository.Groups.Where(s => s.Users.Any(w => w.Email == userId)).FirstOrDefault().GroupName;
+                    //_result = _repository.Groups.Where(s => s.Users.Any(w => w.Email == userId)).Project().To<SiteHierarchyViewModel>().FirstOrDefault();
+                    break;
+                default:
+                    // Raise error
+                    break;
+            }
+            _result.UserLevel = _userLevel;
+            return _result;
+        }
+
 
         public IEnumerable<InvoiceDetail> GetInvoiceDetailForSite(int siteId)
         {
@@ -246,7 +291,7 @@ namespace CimscoPortal.Services
             SetDefaultEnergyChargesWhenFewerPeriods(_energyCharges);
             EnergyDataModel _businessDayData = AssignBusnessDayData(_energyCharges);
             EnergyDataModel _nonBusinessDayData = AssignNonBusinessDayData(_energyCharges);
-            
+
             var _serviceCharges = new List<decimal> { _otherCharges.BDSVC, _otherCharges.BDSVCR };
             var _levyCharges = new List<decimal> { _otherCharges.EALevy, _otherCharges.EALevyR };
 
@@ -260,7 +305,7 @@ namespace CimscoPortal.Services
             _result.OtherCharges = AssignOtherChargesData(_otherCharges); ;// new List<decimal>() { _otherCharges.BDSVC, _otherCharges.NBDSVC, _otherCharges.EALevy, _invoiceDetail.MiscChargesTotal };
             _result.NetworkCharges = AssignNetworkChargesData(_networkCharges);// new List<decimal>() { _networkCharges.VariableBD, _networkCharges.VariableNBD, _networkCharges.CapacityCharge, _networkCharges.DemandCharge, _networkCharges.FixedCharge };
             //_result.InvoiceDetail.MiscChargesTotal = _invoiceDetail.EnergyChargesTotal - _businessDayData.TotalCost - _nonBusinessDayData.TotalCost + _invoiceDetail.MiscChargesTotal;
-           // _result.InvoiceDetail.EnergyChargesTotal = _businessDayData.TotalCost + _nonBusinessDayData.TotalCost;
+            // _result.InvoiceDetail.EnergyChargesTotal = _businessDayData.TotalCost + _nonBusinessDayData.TotalCost;
             _result.EnergyCosts = new EnergyCosts();
             _result.EnergyCosts.EnergyCostSeries = _energyDataModel;
             return _result;
@@ -344,7 +389,7 @@ namespace CimscoPortal.Services
             if (_energyCharges.BD0408 == 0.0M)
             {
                 // 0004 --> 0408
-                _energyCharges.BD0004 = (_energyCharges.BD0004 / 2.0M); 
+                _energyCharges.BD0004 = (_energyCharges.BD0004 / 2.0M);
                 _energyCharges.BD0408 = _energyCharges.BD0004;
                 _energyCharges.BD0408R = _energyCharges.BD0004R;
 
@@ -357,11 +402,11 @@ namespace CimscoPortal.Services
                 _energyCharges.BD2024 = _energyCharges.BD0812;
                 _energyCharges.BD2024R = _energyCharges.BD0812R;
 
-                _energyCharges.NBD0004 = (_energyCharges.NBD0004 / 2.0M); 
+                _energyCharges.NBD0004 = (_energyCharges.NBD0004 / 2.0M);
                 _energyCharges.NBD0408 = _energyCharges.NBD0004;
                 _energyCharges.NBD0408R = _energyCharges.NBD0004R;
 
-                _energyCharges.NBD0812 = (_energyCharges.NBD0812 / 4.0M); 
+                _energyCharges.NBD0812 = (_energyCharges.NBD0812 / 4.0M);
                 _energyCharges.NBD1216 = _energyCharges.NBD0812;
                 _energyCharges.NBD1216R = _energyCharges.NBD0812R;
                 _energyCharges.NBD1620 = _energyCharges.NBD0812;
@@ -608,25 +653,43 @@ namespace CimscoPortal.Services
             }
         }
 
-        public InvoiceTallyViewModel GetInvoiceTally(string userId, int monthSpan)
+        public InvoiceTallyViewModel GetInvoiceTally(string userId, int monthSpan, int? customerId)
         {
             if (!monthSpan.In(3, 6, 12, 24)) { monthSpan = 12; }
 
             DateTime _firstDate = GetFirstDateForSelect(monthSpan);
 
             InvoiceTallyViewModel _invoiceTally = new InvoiceTallyViewModel();
-            SiteHierarchyViewModel _siteListForUser = GetSiteHierarchy(userId);
+            SiteHierarchyViewModel _siteListForUser = GetSiteHierarchy(userId, true, customerId); // GPA --> Pass last selected customer saved against account
             var _siteIdList = _siteListForUser.SiteData.Select(s => s.SiteId);
             var _siteData = _repository.InvoiceSummaries.Where(s => _siteIdList.Contains(s.SiteId) & s.InvoiceDate > _firstDate);
 
+            if (_siteListForUser.UserLevel == "Group")
+            {
+                _invoiceTally.CustomerList = GetCustomerListForGroup((int)_siteListForUser.SiteData.Select(s => s.GroupId).FirstOrDefault());
+               // var _customerListForGroup = GetCustomerListForGroup((int)_siteListForUser.SiteData.Select(s => s.GroupId).FirstOrDefault());
+            }
             AutoMapper.Mapper.Map(_siteListForUser, _invoiceTally);
             _invoiceTally.InvoiceCosts = new List<InvoiceCosts>();
 
             CollateInvoiceDataBySiteId(_invoiceTally, _siteData, _firstDate);
-            _invoiceTally.GroupCompanyName = _siteListForUser.HeaderName;
+
+            //_invoiceTally.GroupCompanyDetail.GroupCompanyName = _siteListForUser.GroupCompanyName;
             _invoiceTally.MonthsOfData = monthSpan;
 
             return _invoiceTally;
+        }
+
+        private List<CustomerHeader> GetCustomerListForGroup(int groupId)
+        {
+            var _result = (from p in _repository.Sites
+                           where p.GroupId == groupId
+                           select new CustomerHeader()
+                                                {
+                                                    CustomerId = p.CustomerId,
+                                                    CustomerName = p.Customer.CustomerName
+                                                }).Distinct().ToList();
+            return _result;
         }
 
         private static DateTime GetFirstDateForSelect(int monthSpan)
@@ -1049,6 +1112,7 @@ namespace CimscoPortal.Services
             //return (_monthsInPreviousYears + _monthsInThisYear);
         }
 
+        // GPA --> duplicate
         private string GetUserCompanyOrGroup(string userId)
         {
             if (_repository.AspNetUsers.Where(s => s.Email == userId).FirstOrDefault().Groups.Any())

@@ -5,13 +5,14 @@
 <ul class="breadcrumb">
     @foreach (var node in Model)
     {
-        <li class="@(node != Model.Last() ? "active" : null)">
-
+        <li class="@(node != Model.Last() | node.Action == "Dashboard" ? "active" : null)">
+            @*Request.Url.Segments[2] == "Dashboard"*@
             @if (node != Model.Last())
             {
                 if (node == Model.First())
                 {
-                    <i class="fa fa-home"></i>
+                    @*<i class="fa fa-home"></i>*@
+                    <i class="menu-icon @node.ImageUrl.Remove(0,1)"></i>
                 }
                 <a href="@Url.Action(node.Action, node.Controller)">
                     @node.Title
@@ -19,8 +20,26 @@
             }
             else
             {
-                @node.Title
+                if (node == Model.First())
+                {
+                    <i class="menu-icon @node.ImageUrl.Remove(0,1)"></i>
+                }
+                if (node.Action == "Dashboard")
+                {
+                    <a href="@Url.Action(node.Action, node.Controller)">
+                        @node.Title
+                    </a>
+                }
+                else
+                {
+                    @node.Title
+                }
             }
         </li>
     }
 </ul>
+<style>
+    .breadcrumb .menu-icon {
+        font-size: 16px;
+    }
+</style>

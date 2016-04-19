@@ -20,7 +20,8 @@ namespace CimscoPortal.Data.Migrations
 
         private string[] _sampleUsers = new string[] { 
             "user1@cimsco.co.nz", 
-            "mitre10@cimsco.co.nz", 
+            "mitre10@cimsco.co.nz",
+            "mitre10_2@cimsco.co.nz",
             "intercontinental@cimsco.co.nz", 
             "masterton@cimsco.co.nz", 
             "admin@cimsco.co.nz",
@@ -128,6 +129,8 @@ namespace CimscoPortal.Data.Migrations
             LinkUsersCustomer("Nees Hardware Ltd", new string[] { "mitre10@cimsco.co.nz" }, context);
 
             LinkUsersGroup("Foodstuffs North Island", new string[] { "foodstuffs@cimsco.co.nz", "foodstuffs2@cimsco.co.nz" }, context);
+            LinkUsersGroup("Mitre 10 New Zealand", new string[] { "mitre10_2@cimsco.co.nz" }, context);
+            
 
         }
 

@@ -520,6 +520,7 @@ namespace CimscoPortal.Controllers
                 string[] _sampleUsers = new string[] { 
                         "user1@cimsco.co.nz", 
                         "mitre10@cimsco.co.nz", 
+                        "mitre10_2@cimsco.co.nz",
                         "intercontinental@cimsco.co.nz", 
                         "masterton@cimsco.co.nz", 
                         "admin@cimsco.co.nz",

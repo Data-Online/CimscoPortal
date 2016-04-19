@@ -131,7 +131,7 @@ namespace CimscoPortal.Tests.Services
             var _result = _portalService.GetSiteHierarchy("nocustomer@test.com");
 
             // Assert 
-            Assert.IsNull(_result.HeaderName);
+            Assert.IsNull(_result.GroupCompanyName);
         }
 
         [TestMethod]

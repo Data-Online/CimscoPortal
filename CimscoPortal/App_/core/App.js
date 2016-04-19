@@ -1,5 +1,5 @@
 ﻿(function () {
-    var app = angular.module("app", ["ngAnimate", "angular-flot", "widget", "customFilters"]);
+    var app = angular.module("app", ["ngAnimate", "angular-flot", "widget", "customFilters", "ui.bootstrap"]);
 
     //app.service('sharedProperties', function () {
     //    var property = '0';

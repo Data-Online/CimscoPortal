@@ -3,12 +3,13 @@
             xmlns="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0"
             xsi:schemaLocation="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0 MvcSiteMapSchema.xsd">
 
-  <mvcSiteMapNode title="Dashboard" controller="Portal" action="Index" imageUrl="glyphicon glyphicon-home" description="Company Overview" visibility="Condition1">
+  <mvcSiteMapNode title="Dashboard" controller="Portal" action="Dashboard" imageUrl="glyphicon glyphicon-home" description="Company Overview" visibility="Condition1" >
     <!--<mvcSiteMapNode title="Databoxes" controller="Home" action="Databoxes" imageUrl="glyphicon glyphicon-tasks" description="beyond containers"/>-->
     <!--<mvcSiteMapNode title="Invoice Overview" controller="Portal" action="InvoiceOverview" imageUrl="glyphicon glyphicon-signal" description="cimsco portal" visibility="AllUsers"/>-->
-    <mvcSiteMapNode title="Invoice Detail" controller="Portal" action="InvoiceDetail" preservedRouteParameters="id" imageUrl="glyphicon glyphicon-signal" description="cimsco portal" visibility="Hidden"/>
+    <mvcSiteMapNode title="Site Overview" action="SiteOverview" preservedRouteParameters="id" imageUrl="glyphicon glyphicon-signal" clickable="true" description="Invoices on File" visibility="Hidden" />
+    <mvcSiteMapNode title="Invoice Detail" action="InvoiceDetail" preservedRouteParameters="id" imageUrl="glyphicon glyphicon-signal" description="Invoice Analsys" visibility="Hidden"/>
     <mvcSiteMapNode title="Administration" url="/0" imageUrl="fa fa-desktop" description="Administration Tasks" visibility="AdminOnly">
-      <mvcSiteMapNode title="Users" controller ="UserAdmin" action="Index" imageUrl="glyphicon glyphicon-user" clickable="false" description="Manage Users" visibility="AdminOnly" />
+      <mvcSiteMapNode title="Users" controller ="UserAdmin" action="Index" imageUrl="glyphicon glyphicon-user" clickable="true" description="Manage Users" visibility="AdminOnly" />
     </mvcSiteMapNode>
   </mvcSiteMapNode>
 

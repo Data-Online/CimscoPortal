@@ -7,16 +7,35 @@ namespace CimscoPortal.Models
 {
     public class InvoiceTallyViewModel
     {
-        public string GroupCompanyName { get; set; }
+        
         public int MonthsOfData { get; set; }
         public List<InvoiceTally> InvoiceTallies { get; set; }
         public List<InvoiceCosts> InvoiceCosts { get; set; }
+        public GroupCompanyDetail GroupCompanyDetail { get; set; }
+        public List<CustomerHeader> CustomerList { get; set; }    
+    }
+
+    public class CustomerHeader
+    {
+        public string CustomerName { get; set; }
+        public int CustomerId { get; set; }
+    }
+
+    public class GroupCompanyDetail
+    {
+        public string GroupName { get; set; }
+        public string GroupCompanyName { get; set; }
+        public string Address1 { get; set; }
+        public string Address2 { get; set; }
+        public string Address3 { get; set; }
     }
 
     public class InvoiceTally
     {
         public int SiteId { get; set; }
         public string SiteName { get; set; }
+        public Nullable<int> CustomerId { get; set; }
+        public Nullable<int> GroupId { get; set; }
         public int ApprovedInvoices { get; set; }
         public int PendingInvoices { get; set; }
         public int MissingInvoices { get; set; }

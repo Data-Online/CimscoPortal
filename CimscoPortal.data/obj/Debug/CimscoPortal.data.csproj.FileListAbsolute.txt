@@ -18,11 +18,12 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\bin\Debug\En
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\bin\Debug\EntityFramework.SqlServer.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\bin\Debug\EntityFramework.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\bin\Debug\EntityFramework.SqlServer.xml
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.Data.csprojResolveAssemblyReference.cache
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.Data.Migrations.Initial.resources
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.Data.Migrations.City.resources
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.Data.Migrations.Customer.resources
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.Data.Migrations.SystemConfiguration.resources
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.Data.Migrations.AzureUpdate.resources
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.Data.csproj.GenerateResource.Cache
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.data.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.data.pdb
-P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.Data.Migrations.SystemConfiguration.resources
-P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.Data.Migrations.AzureUpdate.resources

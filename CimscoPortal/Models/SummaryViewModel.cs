@@ -83,15 +83,21 @@ namespace CimscoPortal.Models
     public class SiteHierarchyViewModel
     {
         public List<SiteData> SiteData { get; set; }
-        public string HeaderName { get; set; }
+        public string UserLevel { get; set; }
+        public string GroupCompanyName { get; set; }
+        public string GroupName { get; set; }
+        public string Address1 { get; set; }
+        public string Address2 { get; set; }
+        public string Address3 { get; set; }
     }
 
     public class SiteData
     {
         public int SiteId { get; set; }
         public string SiteName { get; set; }
-        public int Index { get; set; }
+        public Nullable<int> CustomerId { get; set; }
+        public Nullable<int> GroupId { get; set; }
+   //     public int Index { get; set; }
     }
-
 
 }

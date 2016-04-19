@@ -14,6 +14,18 @@ namespace CimscoPortal.Data.Models.Mapping
             this.Property(t => t.CustomerName)
                 .HasMaxLength(80);
 
+            this.Property(t => t.Address1)
+                .HasMaxLength(50);
+
+            this.Property(t => t.Address2)
+                .HasMaxLength(50);
+
+            this.Property(t => t.Address3)
+                .HasMaxLength(50);
+
+            this.Property(t => t.PostCode)
+                .HasMaxLength(4);
+
             // Table & Column Mappings
             this.ToTable("Customers");
             this.Property(t => t.CustomerId).HasColumnName("CustomerId");

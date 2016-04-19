@@ -92,10 +92,10 @@ namespace CimscoPortal.App_Start
 
             Mapper.CreateMap<Site, SiteData>();
             Mapper.CreateMap<Group, SiteHierarchyViewModel>()
-                .ForMember(m => m.HeaderName, opt => opt.MapFrom(i => i.GroupName))
+                .ForMember(m => m.GroupCompanyName, opt => opt.MapFrom(i => i.GroupName))
                 .ForMember(m => m.SiteData, opt => opt.MapFrom(i => i.Sites));
             Mapper.CreateMap<Customer, SiteHierarchyViewModel>()
-                .ForMember(m => m.HeaderName, opt => opt.MapFrom(i => i.CustomerName))
+                .ForMember(m => m.GroupCompanyName, opt => opt.MapFrom(i => i.CustomerName))
                 .ForMember(m => m.SiteData, opt => opt.MapFrom(i => i.Sites));
 
 
@@ -124,9 +124,15 @@ namespace CimscoPortal.App_Start
                 .ForMember(m => m.ApprovedDate, opt => opt.NullSubstitute(DateTime.Parse("01-01-0001")));
 
             Mapper.CreateMap<SiteData, InvoiceTally>();
+            Mapper.CreateMap<SiteHierarchyViewModel, GroupCompanyDetail>();
             Mapper.CreateMap<SiteHierarchyViewModel, InvoiceTallyViewModel>()
                 .ForMember(m => m.InvoiceTallies, opt => opt.MapFrom(i => i.SiteData))
-                .ForMember(m => m.GroupCompanyName, opt => opt.Ignore());
+                .ForMember(m => m.GroupCompanyDetail, opt => opt.MapFrom(s => s))
+                //.ForMember(m => m.GroupCompanyDetail.GroupCompanyName, opt => opt.MapFrom(s => s.GroupCompanyName))
+                //.ForMember(m => m.GroupCompanyDetail.Address1, opt => opt.MapFrom(s => s.Address1))
+                //.ForMember(m => m.GroupCompanyDetail.Address2, opt => opt.MapFrom(s => s.Address2))
+                //.ForMember(m => m.GroupCompanyDetail.Address3, opt => opt.MapFrom(s => s.Address3))
+                ;
 
             Mapper.CreateMap<InvoiceSummary, MonthlyConsumptionViewModal>()
                 .ForMember(m => m.ConsumptionBusinessDay, opt => opt.MapFrom(r => ((r.EnergyCharge.BD0004R == 0 ? 0 : r.EnergyCharge.BD0004 / r.EnergyCharge.BD0004R))

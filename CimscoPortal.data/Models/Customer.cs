@@ -17,6 +17,12 @@ namespace CimscoPortal.Data.Models
         public int CustomerId { get; set; }
         public string CustomerName { get; set; }
         public Nullable<int> AddressId { get; set; }
+
+        public string Address1 { get; set; }
+        public string Address2 { get; set; }
+        public string Address3 { get; set; }
+        public string PostCode { get; set; }
+        public int CityId { get; set; }
         //public Nullable<int> GroupId { get; set; }
         //public virtual ICollection<PortalMessage> PortalMessages { get; set; }
         //public virtual ICollection<Contact> Contacts { get; set; }

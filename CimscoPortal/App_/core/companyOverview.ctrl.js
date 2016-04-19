@@ -54,17 +54,21 @@
             //console.log(tallyArray);
             $scope.invDistn = tallyArray;
             $scope.invoiceDetail = sumArray;
-            $scope.tabTableHeader = data.groupCompanyName
             $scope.monthSpan = monthSpan;
+            $scope.groupCompanyDetail = data.groupCompanyDetail;
+            $scope.customerList = data.customerList;
+            //console.log($scope.customerList);
             console.log('change month span... ' + monthSpan);
         };
 
         var onUserData = function (data) {
             $scope.monthSpanOptions = data.monthSpanOptions;
             $scope.monthSpan = data.monthSpan;
+            //$scope.companyId = data.companyId;
             monthSpan = data.monthSpan;
+            companyId = 0;
 
-            coDataSource.getInvoiceTally(monthSpan)
+            coDataSource.getInvoiceTally(monthSpan, companyId)
                 .then(onRepo, onError);
         };
 
@@ -115,7 +119,14 @@
         $scope.reviseMonths = function (newMonthSpan) {
             console.log('revise data...' + newMonthSpan);
             monthSpan = newMonthSpan;
-            coDataSource.getInvoiceTally(monthSpan)
+            coDataSource.getInvoiceTally(monthSpan, companyId)
+                .then(onRepo, onError);
+        };
+
+        $scope.changeCompany = function (newCompanyId) {
+            console.log('change company data...month span: ' + monthSpan + ' company Id: ' + newCompanyId);
+            companyId = newCompanyId;
+            coDataSource.getInvoiceTally(monthSpan, companyId)
                 .then(onRepo, onError);
         };
 

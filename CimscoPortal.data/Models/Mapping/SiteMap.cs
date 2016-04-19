@@ -22,11 +22,11 @@ namespace CimscoPortal.Data.Models.Mapping
             this.Property(t => t.CustomerId).HasColumnName("CustomerId");
 
             // Relationships
-            this.HasOptional(t => t.Group)
+            this.HasRequired(t => t.Group)
                 .WithMany(t => t.Sites)
                 .HasForeignKey(d => d.GroupId);
 
-            this.HasOptional(t => t.Customer)
+            this.HasRequired(t => t.Customer)
                 .WithMany(t => t.Sites)
                 .HasForeignKey(d => d.CustomerId);
 

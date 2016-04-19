@@ -155,6 +155,8 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\CimscoPortal.
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\AutoMapper.pdb
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\AutoMapper.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\AutoMapper.Net4.pdb
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\EntityFramework.xml
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\EntityFramework.SqlServer.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.Azure.KeyVault.Core.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.Data.Edm.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.Data.OData.xml
@@ -184,8 +186,6 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.We
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.WebPages.Deployment.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\System.Web.WebPages.Razor.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Antlr3.Runtime.pdb
-P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\EntityFramework.xml
-P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\EntityFramework.SqlServer.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.AspNet.Identity.Core.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.AspNet.Identity.Owin.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.AspNet.Identity.EntityFramework.xml
