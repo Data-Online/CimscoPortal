@@ -358,9 +358,18 @@
     <Content Include="App_Data\TestJsonData.txt" />
     <Content Include="App_\common\directives\angular-flot.js" />
     <Content Include="App_\common\directives\widget.js" />
+    <Content Include="App_\core\core.module.js" />
+    <Content Include="App_\external\widget.js" />
+    <Content Include="App_\messaging\messaging.module.js" />
+    <Content Include="App_\messaging\messaging.data.js" />
+    <Content Include="App_\messaging\messaging.ctrl.js" />
+    <Content Include="App_\core\sitesOverview.data.js" />
+    <Content Include="App_\core\sitesOverview.ctrl.js" />
+    <Content Include="App_\dashboard\dashboard.data.js" />
+    <Content Include="App_\dashboard\dashboard.ctrl.js" />
     <Content Include="App_\core\invoiceCommonFunctions.data.js" />
     <Content Include="App_\core\userDataSource.data.js" />
-    <Content Include="App_\core\App.js" />
+    <Content Include="App_\app.module.js" />
     <Content Include="App_\core\companyOverview.data.js" />
     <Content Include="App_\core\companyOverview.ctrl.js" />
     <Content Include="App_\core\customFilters.js" />
@@ -368,6 +377,7 @@
     <Content Include="App_\core\invoiceDetail.ctrl.js" />
     <Content Include="App_\core\siteOverview.ctrl.js" />
     <Content Include="App_\core\siteOverview.data.js" />
+    <Content Include="App_\dashboard\dashboard.module.js" />
     <Content Include="assets\fonts\BYekan.woff" />
     <Content Include="assets\fonts\fontawesome-webfont.eot" />
     <Content Include="assets\fonts\fontawesome-webfont.svg" />
@@ -528,8 +538,10 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\charts\chartjs\Chart.js" />
-    <Content Include="Scripts\charts\chartjs\Chart.min.js" />
+    <Content Include="Scripts\charts\chartjs\V2\Chart.js" />
+    <Content Include="Scripts\charts\chartjs\V2\Chart.min.js" />
     <Content Include="Scripts\charts\chartjs\chartjs-init.js" />
+    <Content Include="Scripts\charts\chartjs\tc-angular-chartjs.js" />
     <Content Include="Scripts\charts\easypiechart\easypiechart-init.js" />
     <Content Include="Scripts\charts\easypiechart\jquery.easypiechart.js" />
     <Content Include="Scripts\charts\easypiechart\jquery.easypiechart.min.js" />
@@ -1509,11 +1521,16 @@
     <Content Include="Views\Portal\InvoiceDetailPartials\_NetworkChargesTable.cshtml" />
     <Content Include="Views\Portal\SiteOverviewPartials\_Consumption.cshtml" />
     <Content Include="Views\Portal\SiteOverviewPartials\_InvoiceValue.cshtml" />
+    <Content Include="Views\Portal\Dashboard.cshtml" />
+    <Content Include="Views\Shared\_Default_.cshtml" />
+    <Content Include="Views\Portal\Index2_.cshtml" />
+    <Content Include="Views\Portal\SitesOverview.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />
     <Folder Include="App\Dashboard\Views\" />
     <Folder Include="App_\common\services\" />
+    <Folder Include="App_\widgets\" />
     <Folder Include="Domain\" />
     <Folder Include="fonts\" />
     <Folder Include="Views\CimscoPortal\" />

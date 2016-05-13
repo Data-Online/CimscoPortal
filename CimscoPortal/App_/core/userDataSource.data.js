@@ -16,7 +16,7 @@
         };
 
     };
-    var module = angular.module("app");
+    var module = angular.module("app.core");
     module.factory("userDataSource", userDataSource);
 
 }());

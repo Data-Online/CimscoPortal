@@ -1,28 +1,20 @@
 ﻿(function () {
-    var app = angular.module("app", ["ngAnimate", "angular-flot", "widget", "customFilters", "ui.bootstrap"]);
+    var app = angular.module("app", [
 
-    //app.service('sharedProperties', function () {
-    //    var property = '0';
+        "app.core",
+        "widget",
+
+        /* Specific To Company Overview area - move */
+        "customFilters",
         
-    //    return {
-    //        getSiteId: function () {
-    //            return property;
-    //        },
-    //        setSiteId: function (value) {
-    //            console.log("Set site Id" + value);
-    //            property = value;
-    //        }
-    //    };
-    //})
 
-    //app.factory('sharedFunctions', function () {
+        /* Feature areas*/
+       
+        "app.dashboard"
 
-    //    return {
-    //        foo: function ($scope) {
-    //            console.log($scope.monthSpanOptions);
-    //        }
-    //    }
-    //});
+    ]);
+
+
 
     app.factory('commonTools', function () {
         var root = {};

@@ -1,0 +1,128 @@
+﻿@{
+    ViewBag.Title = "Company Dashboard";
+    ViewBag.Description = "Company Dashboard";
+    Layout = "~/Views/Shared/_Default.cshtml";
+}
+
+<div data-ng-app="app.dashboard" data-ng-controller="app.dashboard.ctrl">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="widget">
+                <div class="widget-header bg-themeprimary">
+                    @*<i class="widget-icon fa fa-compress"></i>*@
+                    <span class="widget-caption">
+                        <strong> {{groupCompanyName}}</strong> -
+                        <ng-pluralize count="invDistn.length"
+                                      when="{'1': '{} Site,', 'other': '{} Sites,'}">
+                        </ng-pluralize>
+                        showing {{monthSpan}} months of data
+                    </span>
+                    <span class="checkbox col-lg-5">
+                        <label>
+                            <input class="colored-success" ng-click="togglePreviousYearsData($event)" type="checkbox">
+                            <span class="text">Compare With Previous Year</span>
+                        </label>
+                    </span>
+                    <div class="widget-buttons">
+                        <div class="btn-group">
+                            <a href="javascript:void(0);" data-toggle="dropdown" class="btn btn-default btn-sm">All Divisions</a>
+                            <a href="javascript:void(0);" data-toggle="dropdown" class="btn btn-primary  btn-sm dropdown-toggle " aria-expanded="false"><i class="fa fa-angle-down"></i></a>
+                            <ul class="dropdown-menu">
+                                <li ng-repeat="division in divisions" data-ng-click="reviseMonths(_month)" class="widget-caption" ng-class="{'themeprimary' : monthSpan==_month}">
+                                    <a href="javascript:void(0);">{{division}}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="widget-buttons">
+                        <div class="btn-group">
+                            <a href="javascript:void(0);" data-toggle="dropdown" class="btn btn-default btn-sm">All Site Categories</a>
+                            <a href="javascript:void(0);" data-toggle="dropdown" class="btn btn-primary  btn-sm dropdown-toggle " aria-expanded="false"><i class="fa fa-angle-down"></i></a>
+                            <ul class="dropdown-menu">
+                                <li ng-repeat="category in siteCategories " data-ng-click="reviseMonths(_month)" class="widget-caption" ng-class="{'themeprimary' : monthSpan==_month}">
+                                    <a href="javascript:void(0);">{{category}}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="widget-buttons">
+                        <div class="btn-group">
+                            <a href="javascript:void(0);" data-toggle="dropdown" class="btn btn-default btn-sm">Last 12 Months</a>
+                            <a href="javascript:void(0);" data-toggle="dropdown" class="btn btn-primary  btn-sm dropdown-toggle " aria-expanded="false"><i class="fa fa-angle-down"></i></a>
+                            <ul class="dropdown-menu">
+                                <li ng-repeat="_month in monthSpanOptions " data-ng-click="reviseMonths(_month)" class="widget-caption" ng-class="{'themeprimary' : monthSpan==_month}">
+                                    <a href="javascript:void(0);"><i class="widget-icon fa fa-calendar"></i>&nbsp;&nbsp;{{_month}} months</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="horizontal-space space-sm"></div>
+                <div class="row">
+                    <div class="col-xs-12 col-md-6">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <span class="widget-caption">Electricity Cost</span>
+
+                                <div class="widget-buttons">
+                                    <a href="" widget-collapse></a>
+                                    <a href="" widget-dispose></a>
+                                </div>
+                            </div>
+                            <div class="widget-body">
+                                <div class="chartcontainer" style="width: 100%;">
+                                    <canvas tc-chartjs-bar chart-options="barChartOptions" chart-data="barChartData" auto-legend></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <span class="widget-caption">Electricity Consumption</span>
+
+                                <div class="widget-buttons">
+                                    <a href="" widget-collapse></a>
+                                    <a href="" widget-dispose></a>
+                                </div>
+                            </div>
+                            <div class="widget-body">
+                                <div class="chartcontainer" style="width: 100%;">
+                                    <canvas tc-chartjs-bar chart-options="barChartOptions" chart-data="barChartData" auto-legend></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a class="btn btn-blue btn-lg icon-only white" href="javascript:void(0);">
+        <i class="fa fa-sitemap"></i>
+    </a>
+</div>
+
+@section PageScripts{
+
+    <!-- Dashboard -->
+
+    <script src="~/App_/dashboard/dashboard.data.js"></script>
+    <script src="~/App_/dashboard/dashboard.ctrl.js"></script>
+
+    <!--Specific to Elements on this page-->
+    <script src="~/Scripts/charts/chartjs/Chart.js"></script>
+
+    <script src="~/App_/core/customFilters.js"></script>
+
+
+
+
+    <script>
+        themeprimary = getThemeColorFromCss('themeprimary');
+        themesecondary = getThemeColorFromCss('themesecondary');
+        themethirdcolor = getThemeColorFromCss('themethirdcolor');
+        themefourthcolor = getThemeColorFromCss('themefourthcolor');
+        themefifthcolor = getThemeColorFromCss('themefifthcolor');
+    </script>
+}

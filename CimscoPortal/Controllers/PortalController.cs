@@ -62,6 +62,28 @@ namespace CimscoPortal.Controllers
           //  this._currentUser = currentUser;
         }
         
+        // TEST
+        public ActionResult Index2_()
+        {
+            // int categoryId = 2;
+            //var zz = _portalService.GetAlertsFor(categoryId);
+
+            var user = User.Identity.Name;
+            var userId = User.Identity.GetUserId();
+            var zz = User.IsInRole("Admin");
+            return View();
+        }
+        public ActionResult Index2()
+        {
+            // int categoryId = 2;
+            //var zz = _portalService.GetAlertsFor(categoryId);
+
+            var user = User.Identity.Name;
+            var userId = User.Identity.GetUserId();
+            var zz = User.IsInRole("Admin");
+            return View();
+        }
+
         // GET: Portal
         public ActionResult Index()
         {
@@ -71,7 +93,7 @@ namespace CimscoPortal.Controllers
             var user = User.Identity.Name;
             var userId = User.Identity.GetUserId();
             var zz = User.IsInRole("Admin");
-            return View();            
+            return View("Dashboard");            
         }
 
         public ActionResult Dashboard()
@@ -82,7 +104,18 @@ namespace CimscoPortal.Controllers
             var user = User.Identity.Name;
             var userId = User.Identity.GetUserId();
             var zz = User.IsInRole("Admin");
-            return View("Index");
+            return View();
+        }
+
+        public ActionResult SitesOverview()
+        {
+            // int categoryId = 2;
+            //var zz = _portalService.GetAlertsFor(categoryId);
+
+            var user = User.Identity.Name;
+            var userId = User.Identity.GetUserId();
+            var zz = User.IsInRole("Admin");
+            return View();
         }
 
         public ActionResult SiteOverview(int? id)

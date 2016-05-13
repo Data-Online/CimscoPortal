@@ -177,10 +177,10 @@
                     data: totalCost,
                     bars: {
                         show: true,
-                        align: "center",
+                        align: "right",
                         fill: true,
                         lineWidth: 1,
-                        barWidth: 0.5
+                        barWidth: 0.25
                     },
                     //lines: { show: false },
                     yaxis: 1
@@ -189,9 +189,16 @@
                     //color: $rootScope.settings.color.themefourthcolor,
                     label: "Consumption",
                     data: totalConsumption,
-                    lines: {
+                    //lines: {
+                    //    show: true,
+                    //    fill: false
+                    //},
+                    bars: {
                         show: true,
-                        fill: false
+                        align: "left",
+                        fill: true,
+                        lineWidth: 1,
+                        barWidth: 0.25
                     },
                     points: { show: true },
                     yaxis: 2

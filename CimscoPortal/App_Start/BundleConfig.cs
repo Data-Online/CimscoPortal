@@ -17,16 +17,27 @@ namespace CimscoPortal
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
-                        "~/Scripts/modernizr-*"));
+                        "~/Scripts/modernizr-*"
+                        ));
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                 "~/Scripts/bootstrap.min.js",
                 "~/Scripts/slimscroll/jquery.slimscroll.min.js"
                 ));
-                        //          "~/Scripts/respond.js"));
+            //          "~/Scripts/respond.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/angular").Include(
+                "~/Scripts/angular.js",
+                "~/Scripts/angular-animate.min.js",
+                "~/Scripts/angular-ui-bootstrap/ui-bootstrap.js",
+                "~/Scripts/charts/chartjs/tc-angular-chartjs.js",
+                "~/Scripts/charts/flot/angular-flot.js",
+                "~/Scripts/angular-ui-utils/angular-ui-utils.js"
+                ));
 
             bundles.Add(new StyleBundle("~/Content/css/bootstrap").Include(
-                "~/Content/css/bootstrap.min.css"));
+                "~/Content/css/bootstrap.min.css"
+                ));
 
             bundles.Add(new StyleBundle("~/Content/css/beyond").Include(
                 "~/Content/css/beyond.min.css",
@@ -35,16 +46,20 @@ namespace CimscoPortal
                 "~/Content/css/typicons.min.css",
                 "~/Content/css/weather-icons.min.css",
                 "~/Content/css/animate.min.css",
-                "~/Content/css/cimsco-custom.css"));
+                "~/Content/css/cimsco-custom.css"
+                ));
 
             bundles.Add(new ScriptBundle("~/bundles/skin").Include(
-                "~/Scripts/skins.min.js"));
+                "~/Scripts/skins.min.js"
+                ));
 
             bundles.Add(new ScriptBundle("~/bundles/beyond").Include(
-                "~/Scripts/beyond.min.js"));
+                "~/Scripts/beyond.min.js"
+                ));
 
             bundles.Add(new StyleBundle("~/css/bootstrap-rtl").Include(
-                "~/Content/css/bootstrap-rtl.min.css"));
+                "~/Content/css/bootstrap-rtl.min.css"
+                ));
 
             bundles.Add(new StyleBundle("~/css/beyond-rtl").Include(
                 "~/Content/css/beyond-rtl.min.css",
@@ -52,7 +67,9 @@ namespace CimscoPortal
                 "~/Content/css/font-awesome.min.css",
                 "~/Content/css/typicons.min.css",
                 "~/Content/css/weather-icons.min.css",
-                "~/Content/css/animate.min.css"));
+                "~/Content/css/animate.min.css"
+                ));
+
 
         }
     }
