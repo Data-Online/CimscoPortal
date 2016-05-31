@@ -38,6 +38,7 @@ namespace CimscoPortal.Services
             this._repository = repository;
         }
 
+        #region Common data and tools
         public UserAccessModel CheckUserAccess(string userName)
         {
             UserAccessModel _userAccess = new UserAccessModel();
@@ -53,6 +54,7 @@ namespace CimscoPortal.Services
         {
             //CommonInfoViewModel _commonData = new CommonInfoViewModel();
             CommonInfoViewModel _commonData = _repository.AspNetUsers.Where(s => s.UserName == userId).Project().To<CommonInfoViewModel>().FirstOrDefault();
+            _commonData.TopLevelName = GetUserLevel(userId).TopLevelName;
             // Raise error if nothing returned - there should be available data for any logged in user
             if (_commonData == null)
             {
@@ -80,7 +82,227 @@ namespace CimscoPortal.Services
         {
             return new UserSettingsViewModel { MonthSpan = 12 };
         }
+        #endregion
 
+        #region Dashboard data
+        // Summary of Costs and Consumption filtered by division(s) and site categories
+        // Need data on missing information also
+        public ByMonthViewModel GetTotalCostsByMonth(string userId, int monthSpan, int? customerId)
+        {
+            if (!monthSpan.In(3, 6, 12, 24)) { monthSpan = 12; }
+
+            //string TestFilter = "15:16;847";
+            List<int> _divisionFilter = new List<int> { 15, 16 };
+
+            DateTime _firstDate = GetFirstDateForSelect(monthSpan);
+            Random rnd = new Random();
+
+            List<string> _months = new List<string>();
+            List<int> _years = new List<int>();
+            List<decimal> _values = new List<decimal>();
+            List<decimal> _values12 = new List<decimal>();
+
+            for (int _month = 1; _month <= monthSpan; _month++)
+            {
+                _months.Add(_firstDate.ToString("MMMM"));
+                _years.Add(_firstDate.Year);
+                _values.Add(rnd.Next(3, 10) * 1043.123M);
+                _values12.Add(rnd.Next(3, 10) * 879.383M);
+                _firstDate = _firstDate.AddMonths(1);
+            }
+
+            var data = new ByMonthViewModel()
+            {
+                Months = _months,
+                Years = _years,
+                Values = _values,
+                Values12 = _values12
+            };
+
+            //var data = new ByMonthViewModel() { MonthlyData = new List<MonthlyData> 
+            //                                            {new MonthlyData() { Value = rnd.Next(3, 10)*1000.0M, Month = 2 } }, 
+            //                                    MonthsOfData = 6, 
+            //                                    PreviousYearMonthlyData = new List<MonthlyData> 
+            //                                            {new MonthlyData() { Value = 11.0M, Month = 2 } } };
+            return data;
+        }
+
+        //IQueryable<Site> SearchSites(params string[] keywords)
+        //{
+        //    var predicate = PredicateBuilder.False<Site>();
+
+        //    foreach (string keyword in keywords)
+        //    {
+        //        string temp = keyword;
+        //        predicate = predicate.Or(p => p.IndustryClassification.IndustryDescription.Contains(temp));
+        //    }
+        //    return _repository.Sites.Where(predicate);
+        //}
+
+        public ByMonthViewModel GetTotalConsumptionByMonth(string userId, int monthSpan)
+        {
+            if (!monthSpan.In(3, 6, 12, 24)) { monthSpan = 12; }
+
+            Dictionary<int, decimal> _monthTotals = new Dictionary<int, decimal>();
+            Dictionary<int, int> _totalMissingInvoices = new Dictionary<int, int>();
+
+            CurrentUserLevel _userLevel = GetUserLevel(userId);
+
+            string testParam = "827;a:b"; //15 16
+            string[] left = testParam.Split(';')[0].Split(':');
+            string[] right = testParam.Split(';')[1].Split(':');
+
+            var _industryClassificationId = new List<int>();
+            var _divisionId = new List<int>();
+
+            try
+            {
+                foreach (string index in left)
+                {
+                    _industryClassificationId.Add(Int32.Parse(index));
+                }
+            }
+            catch {}
+            try {
+                foreach (string index in right)
+                {
+                    _divisionId.Add(Int32.Parse(index));
+                }
+            }
+            catch { }
+
+            //List<int> _divisionFilter = new List<int> Int32.Parse(TestFilter.Split(":"));
+
+            IList<int> _allSitesInCurrentSelection;
+            int _state = 2;
+            switch (_state)
+            {
+                case 1:
+                    _allSitesInCurrentSelection = _repository.Sites.Where(s => s.Group.GroupName == _userLevel.TopLevelName)
+                            .Where(t => _industryClassificationId.Contains(t.IndustryClassification.IndustryId))
+                            .Select(t => t.SiteId).ToList();
+                    break;
+                case 2:
+                    _allSitesInCurrentSelection = _repository.Sites.Where(s => s.Group.GroupName == _userLevel.TopLevelName)
+                             .Where(t => _industryClassificationId.Contains(t.IndustryClassification.IndustryId))
+                             .Where(t => _divisionId.Contains(t.GroupDivision.DivisionId))
+                             .Select(t => t.SiteId).ToList();
+                    break;
+                default:
+                    _allSitesInCurrentSelection = _repository.Sites.Where(s => s.Group.GroupName == _userLevel.TopLevelName)
+                            .Select(t => t.SiteId).ToList();
+                    break;
+            }
+            //_allSitesInCurrentSelection = _repository.Sites.Where(s => s.Group.GroupName == _userLevel.TopLevelName)
+            //                .Where(t => t.IndustryClassification.IndustryDescription.Contains("Hardware and Building Supplies Retailing"))
+            //                .Select(t => t.SiteId).ToList();
+
+            foreach (int _siteId in _allSitesInCurrentSelection)
+            {
+                CollateInvoiceTotals_and_MissingInvoices_for_Site(monthSpan, _monthTotals, _totalMissingInvoices, _siteId);
+            }
+            DateTime _selectFromDate = GetFirstDateForSelect(monthSpan);
+            var _siteData = _repository.InvoiceSummaries.Where(s => _allSitesInCurrentSelection.Contains(s.SiteId) & s.InvoiceDate > _selectFromDate);
+            var _invoiceTotals = (from p in _siteData
+                                  group p by p.InvoiceDate.Month + p.InvoiceDate.Year into g
+                                  select new MonthlySummaryModel
+                                  {
+                                      InvoiceTotal = (from f in g select f.InvoiceTotal).Sum(),
+                                      EnergyTotal = (from f in g select f.KwhTotal).Sum(),
+                                      TotalInvoices = (from f in g select f).Count(),
+                                      InvoiceDate = (from f in g select f.InvoiceDate).FirstOrDefault()
+                                  }).ToDictionary(k => k.KeyInvoiceDate);
+
+            DateTime _loopDate = GetFirstDateForSelect(monthSpan);
+            while (_loopDate <= DateTime.Now.EndOfTheMonth())
+            {
+                if (!_invoiceTotals.ContainsKey(_loopDate.StartOfThisMonth())) 
+                {
+                    _invoiceTotals.Add(_loopDate.StartOfThisMonth(), new MonthlySummaryModel() { TotalInvoices = 0, InvoiceDate = _loopDate });
+                }
+                _loopDate = _loopDate.AddMonths(1);
+            }
+
+            DateTime _startDateForPrior12Months = _invoiceTotals.OrderBy(s => s.Key).Select(s => s.Key).First().AddMonths(-12);
+            DateTime _endDateForPrior12Months = _invoiceTotals.OrderBy(s => s.Key).Select(s => s.Key).Last().AddMonths(-12).EndOfTheMonth();
+
+            #region Create Test Data
+            Random rnd = new Random();
+
+            DateTime _firstDate = GetFirstDateForSelect(monthSpan);
+
+            List<string> _months = new List<string>();
+            List<int> _years = new List<int>();
+            List<decimal> _values = new List<decimal>();
+            List<decimal> _values12 = new List<decimal>();
+
+            for (int _month = 1; _month <= monthSpan; _month++)
+            {
+                _months.Add(_firstDate.ToString("MMMM"));
+                _years.Add(_firstDate.Year);
+                _values.Add(rnd.Next(3, 10) * 838.733M);
+                _values12.Add(rnd.Next(3, 10) * 1234.933M);
+                _firstDate = _firstDate.AddMonths(1);
+            }
+
+            var data = new ByMonthViewModel()
+            {
+                Months = _invoiceTotals.Where(w => w.Value.InvoiceDate >= GetFirstDateForSelect(monthSpan)).OrderBy(s => s.Key).Select(t => t.Value.MonthName).ToList(),//_months,
+                Years = _invoiceTotals.Where(w => w.Value.InvoiceDate >= GetFirstDateForSelect(monthSpan)).OrderBy(s => s.Key).Select(t => t.Value.Year).ToList(),//_years,
+                Values = _invoiceTotals.Where(w => w.Value.InvoiceDate >= GetFirstDateForSelect(monthSpan)).OrderBy(s => s.Key).Select(t => t.Value.InvoiceTotal).ToList(),//_values,
+                Values12 = _values12
+            };
+
+            #endregion
+
+            return data;
+        }
+
+        private void CollateInvoiceTotals_and_MissingInvoices_for_Site(int monthSpan, Dictionary<int, decimal> _monthTotals, Dictionary<int, int> _totalMissingInvoices, int _siteId)
+        {
+            DateTime _loopDate = GetFirstDateForSelect(monthSpan);
+            decimal _currentTotal;
+            var _invoiceListForSite = InvoiceOverviewForSite(_siteId, monthSpan);
+            for (int _month = 1; _month <= monthSpan; _month++)
+            {
+                InitializeIfEmpty(_monthTotals, _totalMissingInvoices, _month);
+                _currentTotal = _invoiceListForSite.Where(s => s.InvoiceDate.Month == _loopDate.Month & s.InvoiceDate.Year == _loopDate.Year)
+                                    .Select(t => t.InvoiceTotal).FirstOrDefault();
+                if (_currentTotal == 0.0M)
+                {
+                    _totalMissingInvoices[_month]++;
+                }
+                _monthTotals[_month] = _monthTotals[_month] + _currentTotal;
+                _loopDate = _loopDate.AddMonths(1);
+            }
+        }
+
+        private static void InitializeIfEmpty(Dictionary<int, decimal> _monthTotals, Dictionary<int, int> _totalMissingInvoices, int _month)
+        {
+            if (!_monthTotals.ContainsKey(_month)) { _monthTotals[_month] = 0.0M; }
+            if (!_totalMissingInvoices.ContainsKey(_month)) { _totalMissingInvoices[_month] = 0; }
+        }
+
+
+        public AvailableFiltersModel GetAllFilters(string userId)
+        {
+            CurrentUserLevel _userLevel = GetUserLevel(userId);
+            AvailableFiltersModel _model = new AvailableFiltersModel();
+            List<FilterItem> _allDivisions = new List<FilterItem>();
+
+            _model.Categories = _repository.Sites.Where(s => s.Group.GroupName == _userLevel.TopLevelName).Select(t => t.IndustryClassification).Distinct().Project().To<FilterItem>().ToList();
+            _model.Divisions = _repository.Sites.Where(s => s.Group.GroupName == _userLevel.TopLevelName).Select(t => t.GroupDivision).Distinct().Project().To<FilterItem>().ToList();
+            return _model;
+        }
+
+
+        //   SummaryData = new List<SummaryData> { new SummaryData() {   
+        //                                                        Title = "BILL TOTAL", 
+        //                                                        Detail = SqlFunctions.StringConvert(r.TotalEnergyCharges+r.TotalMiscCharges+r.TotalNetworkCharges) }, 
+
+
+        #endregion Dashboard data
+        // GPA ** THIS NEEDS TO BE REMOVED
         public SiteHierarchyViewModel GetSiteHierarchy(string userId)
         {
             // Group level
@@ -109,19 +331,22 @@ namespace CimscoPortal.Services
             return _result;
         }
 
+
         public SiteHierarchyViewModel GetSiteHierarchy(string userId, bool customerDataOnly, int? customerId)
         {
             // Group level
-            //      --> Customer
-            //      --> Customer
+            //      --> Site (owned by Company)
+            //      --> Site (owned by Company)
             // Customer level
             //      --> Site
             //      --> Site
             // Site level
 
             SiteHierarchyViewModel _result = new SiteHierarchyViewModel();
-            var _userLevel = GetUserCompanyOrGroup(userId);
-            switch (_userLevel)
+            //string _userLevel = GetUserCompanyOrGroup(userId);
+            //string[] _xz = GetUserCompanyOrGroupZ(userId);
+            CurrentUserLevel _userLevel = GetUserLevel(userId);
+            switch (_userLevel.UserLevel)
             {
                 case "Customer":
                     _result = _repository.Customers.Where(s => s.Users.Any(w => w.Email == userId)).Project().To<SiteHierarchyViewModel>().FirstOrDefault();
@@ -134,11 +359,16 @@ namespace CimscoPortal.Services
                     _result.GroupName = _repository.Groups.Where(s => s.Users.Any(w => w.Email == userId)).FirstOrDefault().GroupName;
                     //_result = _repository.Groups.Where(s => s.Users.Any(w => w.Email == userId)).Project().To<SiteHierarchyViewModel>().FirstOrDefault();
                     break;
+                case "Site":
+                    //                    _result.TopLevelName = _userLevel.TopLevelName;
+                    _result = _repository.Sites.Where(s => s.Users.Email == userId).Project().To<SiteHierarchyViewModel>().FirstOrDefault();
+                    _result.SiteData = _repository.Sites.Where(s => s.Users.Email == userId).Project().To<SiteData>().Take(1).ToList();
+                    break;
                 default:
                     // Raise error
                     break;
             }
-            _result.UserLevel = _userLevel;
+            _result.UserLevel = _userLevel.UserLevel;
             return _result;
         }
 
@@ -667,7 +897,7 @@ namespace CimscoPortal.Services
             if (_siteListForUser.UserLevel == "Group")
             {
                 _invoiceTally.CustomerList = GetCustomerListForGroup((int)_siteListForUser.SiteData.Select(s => s.GroupId).FirstOrDefault());
-               // var _customerListForGroup = GetCustomerListForGroup((int)_siteListForUser.SiteData.Select(s => s.GroupId).FirstOrDefault());
+                // var _customerListForGroup = GetCustomerListForGroup((int)_siteListForUser.SiteData.Select(s => s.GroupId).FirstOrDefault());
             }
             AutoMapper.Mapper.Map(_siteListForUser, _invoiceTally);
             _invoiceTally.InvoiceCosts = new List<InvoiceCosts>();
@@ -1021,7 +1251,7 @@ namespace CimscoPortal.Services
 
         private List<int> GetValidSiteIdListForUser(string userName)
         {
-            return GetSiteHierarchy(userName).SiteData.Select(a => a.SiteId).ToList();
+            return GetSiteHierarchy(userName, false, null).SiteData.Select(a => a.SiteId).ToList();
         }
 
         private static void CollateInvoiceDataBySiteId(InvoiceTallyViewModel invoiceTally, IQueryable<Data.Models.InvoiceSummary> siteData, DateTime firstDate)
@@ -1054,7 +1284,7 @@ namespace CimscoPortal.Services
                                       energyCharge = (from f in g select f.EnergyChargesTotal).Sum(),
                                       // energyLosses = (from f in g select f.).Sum(),
                                       totalKwh = (from f in g select f.KwhTotal).Sum(),
-                                      siteArea = (from f in g select f.Site.SiteArea).FirstOrDefault()
+                                      siteArea = (from f in g select f.Site.TotalFloorSpaceSqMeters).FirstOrDefault()
                                   }).ToList();
 
             var _calculatedLosses = (from p in siteData
@@ -1112,6 +1342,13 @@ namespace CimscoPortal.Services
             //return (_monthsInPreviousYears + _monthsInThisYear);
         }
 
+
+        private class CurrentUserLevel
+        {
+            public string UserLevel { get; set; }
+            public string TopLevelName { get; set; }
+        };
+
         // GPA --> duplicate
         private string GetUserCompanyOrGroup(string userId)
         {
@@ -1126,6 +1363,27 @@ namespace CimscoPortal.Services
             else
             {
                 return "";
+            }
+        }
+
+        private CurrentUserLevel GetUserLevel(string userId)
+        {
+            string _groupsName = _repository.AspNetUsers.Where(s => s.Email == userId).FirstOrDefault().Groups.Select(g => g.GroupName).FirstOrDefault();
+            string _customerName = _repository.AspNetUsers.Where(s => s.Email == userId).FirstOrDefault().Customers.Select(c => c.CustomerName).FirstOrDefault();
+
+
+            if (!String.IsNullOrEmpty(_groupsName))
+            {
+                return new CurrentUserLevel() { UserLevel = "Group", TopLevelName = _groupsName };
+            }
+            else if (!String.IsNullOrEmpty(_customerName))
+            {
+                return new CurrentUserLevel() { UserLevel = "Customer", TopLevelName = _customerName };
+            }
+            else
+            {
+                string _siteName = _repository.AspNetUsers.Where(s => s.Email == userId).FirstOrDefault().Site.SiteName;
+                return new CurrentUserLevel() { UserLevel = "Site", TopLevelName = _siteName };
             }
         }
 

@@ -12,6 +12,7 @@
 
         /* 3rd party graphs: Angular directives */
         "angular-flot",
-        "tc.chartjs"
+        "tc.chartjs",
+        "angularjs-dropdown-multiselect"
     ]);
 })();

@@ -19,6 +19,8 @@ namespace CimscoPortal.Data
         System.Data.Entity.DbSet<CimscoPortal.Data.Models.City> Cities { get; set; }
         System.Data.Entity.DbSet<CimscoPortal.Data.Models.Site> Sites { get; set; }
 
+        System.Data.Entity.DbSet<CimscoPortal.Data.Models.Division> Divisions { get; set; }
+
         System.Data.Entity.DbSet<CimscoPortal.Data.Models.sysdiagram> sysdiagrams { get; set; }
 
         void Commit();

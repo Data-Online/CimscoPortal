@@ -11,6 +11,7 @@ namespace CimscoPortal.Models
         public string FullName { get; set; }
         public string eMail { get; set; }
         public string CompanyLogo { get; set; }
+        public string TopLevelName { get; set; }
 
     }
 

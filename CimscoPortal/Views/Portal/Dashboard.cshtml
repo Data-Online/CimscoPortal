@@ -3,46 +3,59 @@
     ViewBag.Description = "Company Dashboard";
     Layout = "~/Views/Shared/_Default.cshtml";
 }
-
+<link href="~/App_/external/angular-ui-select/select.min.css" rel="stylesheet" />
 <div data-ng-app="app.dashboard" data-ng-controller="app.dashboard.ctrl">
+    <div class="row">
+        <div class="col-xs-12 col-md-12">
+            <div class="widget">
+                <div class="widget-header">
+                    <span class="widget-caption">Welcome Message</span>
+
+                    <div class="widget-buttons">
+                        <a href="" widget-collapse></a>
+                        <a href="" widget-dispose></a>
+                    </div>
+                </div>
+                <div class="widget-body">
+                    <div class="chartcontainer" style="width: 100%;">
+                        Welcome message goes here
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-12">
             <div class="widget">
                 <div class="widget-header bg-themeprimary">
                     @*<i class="widget-icon fa fa-compress"></i>*@
                     <span class="widget-caption">
-                        <strong> {{groupCompanyName}}</strong> -
+                        <strong> {{topLevelName}}</strong> -
                         <ng-pluralize count="invDistn.length"
                                       when="{'1': '{} Site,', 'other': '{} Sites,'}">
                         </ng-pluralize>
                         showing {{monthSpan}} months of data
                     </span>
-                    <span class="checkbox col-lg-5">
+                    <div class="widget-buttons">
                         <label>
                             <input class="colored-success" ng-click="togglePreviousYearsData($event)" type="checkbox">
-                            <span class="text">Compare With Previous Year</span>
+                            <span class="widget-caption text">Compare With Previous Year</span>
                         </label>
-                    </span>
+                    </div>
                     <div class="widget-buttons">
                         <div class="btn-group">
-                            <a href="javascript:void(0);" data-toggle="dropdown" class="btn btn-default btn-sm">All Divisions</a>
-                            <a href="javascript:void(0);" data-toggle="dropdown" class="btn btn-primary  btn-sm dropdown-toggle " aria-expanded="false"><i class="fa fa-angle-down"></i></a>
-                            <ul class="dropdown-menu">
-                                <li ng-repeat="division in divisions" data-ng-click="reviseMonths(_month)" class="widget-caption" ng-class="{'themeprimary' : monthSpan==_month}">
-                                    <a href="javascript:void(0);">{{division}}</a>
-                                </li>
-                            </ul>
+                            <div ng-if="divisionsModel">
+                                <div ng-dropdown-multiselect="" options="divisionsData" selected-model="divisionsModel" extra-settings="divisionsSettings" translation-texts="divisionsCustomTexts">
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="widget-buttons">
                         <div class="btn-group">
-                            <a href="javascript:void(0);" data-toggle="dropdown" class="btn btn-default btn-sm">All Site Categories</a>
-                            <a href="javascript:void(0);" data-toggle="dropdown" class="btn btn-primary  btn-sm dropdown-toggle " aria-expanded="false"><i class="fa fa-angle-down"></i></a>
-                            <ul class="dropdown-menu">
-                                <li ng-repeat="category in siteCategories " data-ng-click="reviseMonths(_month)" class="widget-caption" ng-class="{'themeprimary' : monthSpan==_month}">
-                                    <a href="javascript:void(0);">{{category}}</a>
-                                </li>
-                            </ul>
+                            <div ng-if="categoriesModel">
+                                <div ng-dropdown-multiselect="" options="categoriesData" selected-model="categoriesModel" extra-settings="categoriesSettings" translation-texts="categoriesCustomTexts">
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -70,9 +83,9 @@
                                     <a href="" widget-dispose></a>
                                 </div>
                             </div>
-                            <div class="widget-body">
+                            <div class="widget-body" style="padding-top:20px">
                                 <div class="chartcontainer" style="width: 100%;">
-                                    <canvas tc-chartjs-bar chart-options="barChartOptions" chart-data="barChartData" auto-legend></canvas>
+                                    <canvas tc-chartjs-bar chart-options="barChartOptions" chart-data="costsBarChart" auto-legend></canvas>
                                 </div>
                             </div>
                         </div>
@@ -87,9 +100,9 @@
                                     <a href="" widget-dispose></a>
                                 </div>
                             </div>
-                            <div class="widget-body">
+                            <div class="widget-body" style="padding-top:20px">
                                 <div class="chartcontainer" style="width: 100%;">
-                                    <canvas tc-chartjs-bar chart-options="barChartOptions" chart-data="barChartData" auto-legend></canvas>
+                                    <canvas tc-chartjs-bar chart-options="barChartOptions" chart-data="consBarChart" auto-legend></canvas>
                                 </div>
                             </div>
                         </div>
@@ -98,9 +111,6 @@
             </div>
         </div>
     </div>
-    <a class="btn btn-blue btn-lg icon-only white" href="javascript:void(0);">
-        <i class="fa fa-sitemap"></i>
-    </a>
 </div>
 
 @section PageScripts{
@@ -115,14 +125,6 @@
 
     <script src="~/App_/core/customFilters.js"></script>
 
+    <script src="~/Content/css/metro/MetroMenu.js"></script>
 
-
-
-    <script>
-        themeprimary = getThemeColorFromCss('themeprimary');
-        themesecondary = getThemeColorFromCss('themesecondary');
-        themethirdcolor = getThemeColorFromCss('themethirdcolor');
-        themefourthcolor = getThemeColorFromCss('themefourthcolor');
-        themefifthcolor = getThemeColorFromCss('themefifthcolor');
-    </script>
 }

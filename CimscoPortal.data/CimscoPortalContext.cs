@@ -50,6 +50,9 @@ namespace CimscoPortal.Data.Models
         public DbSet<LoginHistory> LoginHistorys { get; set; }
         public DbSet<CommonData> CommonData { get; set; }
         public DbSet<SystemConfiguration> SystemConfiguration { get; set; }
+
+        public DbSet<Division> Divisions { get; set; }
+
       //  public DbSet<UserDetail> UserDetails { get; set; }
         public DbSet<sysdiagram> sysdiagrams { get; set; }
 
@@ -78,6 +81,7 @@ namespace CimscoPortal.Data.Models
             modelBuilder.Configurations.Add(new OtherChargeMap());
             modelBuilder.Configurations.Add(new CommonDataMap());
             modelBuilder.Configurations.Add(new SystemConfigurationMap());
+            modelBuilder.Configurations.Add(new DivisionMap());
 
             modelBuilder.Configurations.Add(new LoginHistoryMap());
           //  modelBuilder.Configurations.Add(new UserDetailMap());

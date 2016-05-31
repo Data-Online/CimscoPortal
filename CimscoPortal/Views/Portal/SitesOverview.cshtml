@@ -40,7 +40,7 @@
                 </div>
                 <div class="widget-body">
                     <div>
-                        <span><b>{{groupCompanyDetail.groupCompanyName}}</b></span><br />
+                        <span><b>{{groupCompanyDetail.topLevelName}}</b></span><br />
                         <span>{{groupCompanyDetail.address1}}</span><br />
                         <span>{{groupCompanyDetail.address2}}</span><br />
                         <span>{{groupCompanyDetail.address3}}</span>
@@ -109,7 +109,7 @@
                 <div class="widget-header bg-themeprimary">
                     @*<i class="widget-icon fa fa-compress"></i>*@
                     <span class="widget-caption">
-                        <strong> {{groupCompanyDetail.groupCompanyName}}</strong> - <ng-pluralize
+                        <strong> {{groupCompanyDetail.topLevelName}}</strong> - <ng-pluralize
                             count="invDistn.length" 
                         when="{'1': '{} Site,',
                                'other': '{} Sites,'}">

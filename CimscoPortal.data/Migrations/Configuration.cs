@@ -22,6 +22,7 @@ namespace CimscoPortal.Data.Migrations
             "user1@cimsco.co.nz", 
             "mitre10@cimsco.co.nz",
             "mitre10_2@cimsco.co.nz",
+            "HP@cimsco.co.nz",
             "intercontinental@cimsco.co.nz", 
             "masterton@cimsco.co.nz", 
             "admin@cimsco.co.nz",
@@ -130,6 +131,8 @@ namespace CimscoPortal.Data.Migrations
 
             LinkUsersGroup("Foodstuffs North Island", new string[] { "foodstuffs@cimsco.co.nz", "foodstuffs2@cimsco.co.nz" }, context);
             LinkUsersGroup("Mitre 10 New Zealand", new string[] { "mitre10_2@cimsco.co.nz" }, context);
+
+            LinkUserSite("HP Lane St Data Center", "HP@cimsco.co.nz", context);
             
 
         }
@@ -376,6 +379,14 @@ namespace CimscoPortal.Data.Migrations
             }
         }
 
+        private void LinkUserSite(string targetSite, string targetUser, CimscoPortal.Data.Models.CimscoPortalContext context)
+        {
+            AspNetUser _userName;
+            _userName = context.AspNetUsers.Where(x => x.UserName == targetUser).FirstOrDefault();
+            CimscoPortal.Data.Models.Site _site = context.Sites.Where(x => x.SiteName== targetSite).First();
+            _site.Users = _userName;
+        }
+
         private void CreateSites(CimscoPortal.Data.Models.CimscoPortalContext context, string[] sampleSites)
         {
             // Sites
@@ -388,7 +399,7 @@ namespace CimscoPortal.Data.Migrations
                         new CimscoPortal.Data.Models.Site
                         {
                             SiteName = _entry,
-                            SiteArea = 1234.00M
+                            TotalFloorSpaceSqMeters = 1234
                         }
                     );
             }

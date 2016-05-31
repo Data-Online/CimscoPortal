@@ -521,6 +521,7 @@ namespace CimscoPortal.Controllers
                         "user1@cimsco.co.nz", 
                         "mitre10@cimsco.co.nz", 
                         "mitre10_2@cimsco.co.nz",
+                        "HP@cimsco.co.nz",
                         "intercontinental@cimsco.co.nz", 
                         "masterton@cimsco.co.nz", 
                         "admin@cimsco.co.nz",

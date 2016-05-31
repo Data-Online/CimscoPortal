@@ -24,7 +24,8 @@ namespace CimscoPortal.Models
     public class GroupCompanyDetail
     {
         public string GroupName { get; set; }
-        public string GroupCompanyName { get; set; }
+     //   public string GroupCompanyName { get; set; }
+        public string TopLevelName { get; set; }
         public string Address1 { get; set; }
         public string Address2 { get; set; }
         public string Address3 { get; set; }
@@ -53,9 +54,9 @@ namespace CimscoPortal.Models
         public Decimal InvoiceValue { get; set; }
         public Decimal EnergyCharge { get; set; }
         public Decimal TotalKwh { get; set; }
-        public Decimal SiteArea { get; set; }
-        public Decimal CostPerSqm { get { return EnergyCharge / Math.Max(SiteArea,1.0M); } }
-        public Decimal UnitsPerSqm { get { return TotalKwh / Math.Max(SiteArea, 1.0M); } }
+        public int? SiteArea { get; set; }
+        public Decimal CostPerSqm { get { return EnergyCharge / Math.Max((SiteArea ?? 0),1)*1.0M; } }
+        public Decimal UnitsPerSqm { get { return TotalKwh / Math.Max((SiteArea ?? 0), 1)*1.0M; } }
     }
 
     //public class InvoiceStats

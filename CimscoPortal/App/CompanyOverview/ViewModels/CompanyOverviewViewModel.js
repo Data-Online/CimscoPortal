@@ -52,7 +52,7 @@
            // console.log(sumArray);
             $scope.invDistn = tallyArray;
             $scope.invoiceDetail = sumArray;
-            $scope.tabTableHeader = data.groupCompanyName
+            $scope.tabTableHeader = data.topLevelName
             $scope.monthSpan = monthSpan;
             console.log('change month span... ' + monthSpan);
         };

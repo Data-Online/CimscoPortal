@@ -76,6 +76,10 @@
     <Compile Include="CimscoPortalContext.cs" />
     <Compile Include="Models\City.cs" />
     <Compile Include="Models\CommonData.cs" />
+    <Compile Include="Models\IndustryClassifications.cs" />
+    <Compile Include="Models\Division.cs" />
+    <Compile Include="Models\Mapping\IndustryClassificationMap.cs" />
+    <Compile Include="Models\Mapping\DivisionMap.cs" />
     <Compile Include="Models\SystemConfiguration.cs" />
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\Customer.cs" />

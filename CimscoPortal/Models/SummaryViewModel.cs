@@ -84,7 +84,8 @@ namespace CimscoPortal.Models
     {
         public List<SiteData> SiteData { get; set; }
         public string UserLevel { get; set; }
-        public string GroupCompanyName { get; set; }
+       // public string GroupCompanyName { get; set; }
+        public string TopLevelName { get; set; }    // Based on user assignment at Site, Group or Company level
         public string GroupName { get; set; }
         public string Address1 { get; set; }
         public string Address2 { get; set; }

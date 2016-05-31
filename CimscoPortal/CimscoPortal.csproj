@@ -59,6 +59,10 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="LinqKit, Version=1.1.3.1, Culture=neutral, PublicKeyToken=bc217f8844052a91, processorArchitecture=MSIL">
+      <HintPath>..\packages\LinqKit.1.1.3.1\lib\net45\LinqKit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Azure.KeyVault.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Azure.KeyVault.Core.1.0.0\lib\net40\Microsoft.Azure.KeyVault.Core.dll</HintPath>
       <Private>True</Private>
@@ -282,6 +286,8 @@
     <Compile Include="Controllers\Api\PortalApiController.cs" />
     <Compile Include="CustomConfig\UserRoles.cs" />
     <Compile Include="Extensions\RegexUtilities.cs" />
+    <Compile Include="Models\ByMonthViewModel.cs" />
+    <Compile Include="Models\MonthlySummaryModel.cs" />
     <Compile Include="Models\UserSettingsViewModel.cs" />
     <Compile Include="Models\PortalDataModels.cs" />
     <Compile Include="Models\Internal\UserAccessModel.cs" />
@@ -324,6 +330,7 @@
     <Compile Include="Infrastructure\IPortalService.cs" />
     <Compile Include="Models\CommonInfoViewModel.cs" />
     <Compile Include="Models\InvoiceCountsViewModel.cs" />
+    <Compile Include="Models\AvailableFiltersModel.cs" />
     <Compile Include="Services\PortalService.cs" />
     <Compile Include="SharedController.generated.cs">
       <DependentUpon>T4MVC.tt</DependentUpon>
@@ -359,6 +366,11 @@
     <Content Include="App_\common\directives\angular-flot.js" />
     <Content Include="App_\common\directives\widget.js" />
     <Content Include="App_\core\core.module.js" />
+    <Content Include="App_\core\skin.js" />
+    <Content Include="App_\external\angular-ui-select\select.css" />
+    <Content Include="App_\external\angular-ui-select\select.js" />
+    <Content Include="App_\external\angular-ui-select\select.min.css" />
+    <Content Include="App_\external\angular-ui-select\select.min.js" />
     <Content Include="App_\external\widget.js" />
     <Content Include="App_\messaging\messaging.module.js" />
     <Content Include="App_\messaging\messaging.data.js" />
@@ -1396,6 +1408,7 @@
     <Content Include="Scripts\jqueryval\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\knob\jquery.knob.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\multiselect\angularjs-dropdown-multiselect.js" />
     <Content Include="Scripts\nestable\jquery.nestable.min.js" />
     <Content Include="Scripts\npm.js" />
     <Content Include="Scripts\respond.js" />

@@ -36,5 +36,7 @@ namespace CimscoPortal.Data.Models
 
         public virtual ICollection<Group> Groups { get; set; }
         public virtual ICollection<Customer> Customers { get; set; }
+
+        public virtual Site Site { get; set; }
     }
 }

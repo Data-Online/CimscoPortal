@@ -48,7 +48,7 @@ namespace CimscoPortal.App_Start
                 .ForMember(m => m._timeStamp, opt => opt.MapFrom(i => i.TimeStamp))
                 // .ForMember(m => m._timeStamp, opt => opt.Ignore())
                     .ForMember(m => m.CategoryName, opt => opt.Ignore())
-                    //.ForMember(m => m.Subject, opt => opt.Ignore())
+                //.ForMember(m => m.Subject, opt => opt.Ignore())
                     .ForMember(m => m.Name, opt => opt.Ignore())
                 //  .ForMember(m => m.TimeStamp,  opt => opt.Ignore())
                 //.ForMember(m => m.TimeStamp, opt => opt.ResolveUsing<TimeStringResolver>());
@@ -58,13 +58,13 @@ namespace CimscoPortal.App_Start
             ////Mapper.CreateMap<CimscoPortal.Data.Models.Contact, CimscoPortal.Services.CompanyDataViewModel>()
             ////    .ForMember(m => m .GroupName, opt => opt.MapFrom(i => i.Groups.G))
 
-           // Mapper.AssertConfigurationIsValid();
+            // Mapper.AssertConfigurationIsValid();
 
             Mapper.CreateMap<InvoiceSummary, EnergyData>()
                 .ForMember(m => m.Energy,
                                 opt => opt.MapFrom(i => i.EnergyChargesTotal))
                 .ForMember(m => m.Line,
-                                //opt => opt.MapFrom(i => i.TotalNetworkCharges))
+                //opt => opt.MapFrom(i => i.TotalNetworkCharges))
                                 opt => opt.MapFrom(i => i.NetworkChargesTotal))
                 .ForMember(m => m.Other,
                                 opt => opt.MapFrom(i => i.MiscChargesTotal))
@@ -92,11 +92,17 @@ namespace CimscoPortal.App_Start
 
             Mapper.CreateMap<Site, SiteData>();
             Mapper.CreateMap<Group, SiteHierarchyViewModel>()
-                .ForMember(m => m.GroupCompanyName, opt => opt.MapFrom(i => i.GroupName))
+                // .ForMember(m => m.GroupCompanyName, opt => opt.MapFrom(i => i.GroupName))
+                .ForMember(m => m.TopLevelName, opt => opt.MapFrom(i => i.GroupName))
                 .ForMember(m => m.SiteData, opt => opt.MapFrom(i => i.Sites));
             Mapper.CreateMap<Customer, SiteHierarchyViewModel>()
-                .ForMember(m => m.GroupCompanyName, opt => opt.MapFrom(i => i.CustomerName))
+                // .ForMember(m => m.GroupCompanyName, opt => opt.MapFrom(i => i.CustomerName))
+                .ForMember(m => m.TopLevelName, opt => opt.MapFrom(i => i.CustomerName))
                 .ForMember(m => m.SiteData, opt => opt.MapFrom(i => i.Sites));
+            Mapper.CreateMap<Site, SiteHierarchyViewModel>()
+                .ForMember(m => m.TopLevelName, opt => opt.MapFrom(i => i.SiteName))
+                .ForMember(m => m.SiteData, opt => opt.Ignore());
+
 
 
             Mapper.CreateMap<InvoiceSummary, CompanyInvoiceViewModel>()
@@ -105,10 +111,10 @@ namespace CimscoPortal.App_Start
             Mapper.CreateMap<InvoiceSummary, InvoiceDetail>()
                 .ForMember(m => m.ApproversName, opt => opt.MapFrom(i => i.UserId.FirstName + " " + i.UserId.LastName))
                 .ForMember(m => m.ApprovedDate, opt => opt.NullSubstitute(DateTime.Parse("01-01-0001")))
-               // .ForMember(m => m.BDLossCharge, opt => opt.MapFrom(i => i.EnergyCharge.BDLossCharge))
-              // .ForMember(m => m.LossRate, opt => opt.MapFrom(i => (i.EnergyCharge.LossRate != null ? i.EnergyCharge.LossRate : 0.00M)))
-               //.ForMember(m => m.BDMeteredKwh, opt => opt.MapFrom(i => i.EnergyCharge.BDMeteredKwh))
-               //.ForMember(m => m.PdfSourceLocation, opt => opt.MapFrom(i => i.SiteId.ToString().ToString().PadRight(6,'0') + "/" + i.InvoiceId.ToString().ToString().PadRight(8,'0') + ".pdf"))
+                // .ForMember(m => m.BDLossCharge, opt => opt.MapFrom(i => i.EnergyCharge.BDLossCharge))
+                // .ForMember(m => m.LossRate, opt => opt.MapFrom(i => (i.EnergyCharge.LossRate != null ? i.EnergyCharge.LossRate : 0.00M)))
+                //.ForMember(m => m.BDMeteredKwh, opt => opt.MapFrom(i => i.EnergyCharge.BDMeteredKwh))
+                //.ForMember(m => m.PdfSourceLocation, opt => opt.MapFrom(i => i.SiteId.ToString().ToString().PadRight(6,'0') + "/" + i.InvoiceId.ToString().ToString().PadRight(8,'0') + ".pdf"))
                 ;
 
             Mapper.CreateMap<AspNetUser, CommonInfoViewModel>()
@@ -157,9 +163,21 @@ namespace CimscoPortal.App_Start
 
             Mapper.CreateMap<EnergyData, AddMonthData>(MemberList.Source)
                 .ForMember(m => m.monthCount, opt => opt.Ignore());
+
+            Mapper.CreateMap<Division, FilterItem>()
+                //  .ForMember(m => m.Index, opt => opt.Ignore())
+                .ForMember(m => m.Label, opt => opt.MapFrom(s => s.DivisionName))
+                .ForMember(m => m.Id, opt => opt.MapFrom(s => s.DivisionId))
+                ;
+
+            Mapper.CreateMap<IndustryClassification, FilterItem>()
+                //  .ForMember(m => m.Index, opt => opt.Ignore())
+                .ForMember(m => m.Label, opt => opt.MapFrom(s => s.IndustryDescription))
+                .ForMember(m => m.Id, opt => opt.MapFrom(s => s.IndustryId))
+                ;
         }
 
-       
+
     }
 }
 

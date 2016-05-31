@@ -57,6 +57,38 @@ namespace CimscoPortal.Controllers.Api
                             _portalService.GetUserSettingsFor(User.Identity.Name));
         }
 
+        [HttpGet]
+        [Route("Filters")]
+        public HttpResponseMessage GetAllFilters(HttpRequestMessage request)
+        {
+            return request.CreateResponse<AvailableFiltersModel>(HttpStatusCode.OK,
+                            _portalService.GetAllFilters(User.Identity.Name));
+        }
+
+        [HttpGet]
+        [Route("TotalCostsByMonth/{monthSpan}/{customerId}")]
+        public HttpResponseMessage GetTotalCostsByMonth(HttpRequestMessage request, int monthSpan, int customerId)
+        {
+            var data = _portalService.GetTotalCostsByMonth(User.Identity.Name, monthSpan, customerId);
+            return request.CreateResponse<ByMonthViewModel>(HttpStatusCode.OK, data);
+        }
+
+        [HttpGet]
+        [Route("TotalCostsByMonth/{monthSpan}")]
+        public HttpResponseMessage GetTotalCostsByMonth(HttpRequestMessage request, int monthSpan)
+        {
+            var data = _portalService.GetTotalCostsByMonth(User.Identity.Name, monthSpan, null);
+            return request.CreateResponse<ByMonthViewModel>(HttpStatusCode.OK, data);
+        }
+
+        [HttpGet]
+        [Route("TotalConsumptionByMonth/{monthSpan}")]
+        public HttpResponseMessage GetTotalConsumptionByMonth(HttpRequestMessage request, int monthSpan)
+        {
+            var data = _portalService.GetTotalConsumptionByMonth(User.Identity.Name, monthSpan);
+            return request.CreateResponse<ByMonthViewModel>(HttpStatusCode.OK, data);
+        }
+
         //[HttpGet]
         //[Route("companyhierarchy")]
         //public HttpResponseMessage GetCompanyData(HttpRequestMessage request)
