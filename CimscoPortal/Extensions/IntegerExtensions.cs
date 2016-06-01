@@ -22,6 +22,22 @@ namespace CimscoPortal.Extensions
         {
             return args.Contains(obj);
         }
+
+        public static List<int> IntegersFromString(this string input, char delim)
+        {
+            string[] _stringValues = input.Split(delim);
+            List<int> _result = new List<int>();
+            try
+            {
+                foreach (string _value in _stringValues)
+                {
+                    _result.Add(Int32.Parse(_value));
+                }
+            }
+            catch { }
+
+            return _result;
+        }
     }
 
     public static class DateExtensions

@@ -12,6 +12,12 @@ namespace CimscoPortal.Models
     //    public List<EnergyDataModel> EnergyCostData { get; set; }
     //}
 
+    public class DashboardViewData
+    {
+        public ByMonthViewModel Cost { get; set; }
+        public ByMonthViewModel Consumption { get; set; }
+    }
+
     public class ByMonthViewModel
     {
         public int MonthsOfData { get; set; }

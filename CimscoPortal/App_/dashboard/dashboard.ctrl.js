@@ -3,7 +3,10 @@
 
     angular
         .module("app.dashboard")
-        .constant("graphElements", { "costsDataElement": "costsBarChart", "consDataElement": "consBarChart" })
+        .constant("graphElements", {
+            "costsDataElement": "costsBarChart",
+            "consDataElement": "consBarChart"
+        })
         .controller("app.dashboard.ctrl", dashboard);
 
     dashboard.$inject = ['$scope', '$parse', '$interval', 'dbDataSource', 'userDataSource', 'graphElements'];
@@ -34,11 +37,12 @@
 
             // $scope.topLevelName = data.topLevelName;
             var companyId = 0;
-            dbDataSource.getTotalCostsByMonth(data.monthSpan, companyId)
-                .then(function success(data) { return onGraphData(data, graphElements.costsDataElement, 0) }, onError);
+            //dbDataSource.getTotalCostsByMonth(data.monthSpan, companyId)
+            //    .then(function success(data) { return onGraphData(data, graphElements.costsDataElement, 0) }, onError);
 
             dbDataSource.getTotalConsumptionByMonth(data.monthSpan)
-                .then(function success(data) { return onGraphData(data, graphElements.consDataElement, 1) }, onError);
+                .then(plotAllGraphs, onError);
+//            .then(function success(data) {return onGraphData(data.cost, graphElements.consDataElement, 1) }, onError);
 
             dbDataSource.getAllFilters()
                 .then(onFiltersOk, onError);
@@ -50,6 +54,11 @@
             createMultiDropdown('categories', data.categories, true);
         };
 
+        var plotAllGraphs = function (data) {
+            onGraphData(data.consumption, graphElements.costsDataElement, 0);
+            onGraphData(data.cost, graphElements.consDataElement, 1);
+        };
+
         function onGraphData(data, target, index) {
             // console.log("Graph data " + (index + 1));
 
@@ -58,9 +67,9 @@
                 years: data.years,
                 months: data.months
             };
-
-            currentData[index] = assignData(data.values, themeprimary, "current");
-            prior12Data[index] = assignData(data.values12, themesecondary, "minus12");
+            var unit = ["$", "KWh"];
+            currentData[index] = assignData(data.values, themeprimary, "current"+":"+unit[index]);
+            prior12Data[index] = assignData(data.values12, themesecondary, "minus12"+":"+unit[index]);
             refreshData(false, currentData[index], prior12Data[index], target);
         }
 
@@ -179,7 +188,7 @@
 
         };
 
-        console.log('Categories : ' + categories);
+        //console.log('Categories : ' + categories);
 
 //        createMultiDropdown('divisions', divisions, true);
 //        createMultiDropdown('categories', categories, true);
@@ -210,7 +219,11 @@
                 _counter = 20;
             };
             console.log(data);
-
+            var _returnIds = "";
+            angular.forEach(data, function (value, key) {
+                _returnIds += value.id;
+            });
+            console.log('Return values ' + _returnIds)
         };
 
     };
@@ -224,15 +237,29 @@
 
     function singleTooltip(v, yearArray) {
         //console.log(v);
-        return v.label + ' ' + yearFromArray(v, yearArray) + ' : ' + '$' + v.value.toFixed(2);
-    }
-    function multiTooltip(v, yearArray) {
-        var _yearNumber = yearFromArray(v, yearArray);
-        //console.log(_yearNumber);
-        if (v.datasetLabel != 'current') {
+        var unit = v.datasetLabel.split(":").pop();
+        if (v.datasetLabel.split(":", 1) != 'current') {
             _yearNumber = _yearNumber - 1;
         }
-        return (_yearNumber + ' : ' + '$' + v.value.toFixed(2));
+        if (unit == "$")
+            var _format = v.label + ' ' + yearFromArray(v, yearArray) + ' : ' + unit + v.value.toFixed(2);
+        else
+            var _format = v.label + ' ' + yearFromArray(v, yearArray) + ' : ' + v.value.toFixed(2) + ' ' + unit;
+        return (_format);
+       // return v.label + ' ' + yearFromArray(v, yearArray) + ' : ' + '$' + v.value.toFixed(2);
+    }
+
+    function multiTooltip(v, yearArray) {
+        var _yearNumber = yearFromArray(v, yearArray);
+        var unit = v.datasetLabel.split(":").pop();
+        if (v.datasetLabel.split(":",1) != 'current') {
+            _yearNumber = _yearNumber - 1;
+        }
+        if (unit == "$")
+            var _format = _yearNumber + ' : ' + unit + v.value.toFixed(2);
+        else
+            var _format = _yearNumber + ' : ' + v.value.toFixed(2) + ' ' + unit
+        return (_format);
     }
 
 })();

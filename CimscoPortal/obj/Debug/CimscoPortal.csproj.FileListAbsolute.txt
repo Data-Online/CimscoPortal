@@ -91,6 +91,8 @@ F:\Project\CimscoPortal\CimscoPortal\bin\Microsoft.Owin.Security.MicrosoftAccoun
 F:\Project\CimscoPortal\CimscoPortal\obj\Debug\CimscoPortal.csprojResolveAssemblyReference.cache
 F:\Project\CimscoPortal\CimscoPortal\obj\Debug\CimscoPortal.dll
 F:\Project\CimscoPortal\CimscoPortal\obj\Debug\CimscoPortal.pdb
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\EntityFramework.dll
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\obj\Debug\CimscoPortal.csprojResolveAssemblyReference.cache
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\AutoMapper.Net4.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\AutoMapper.Unity.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\CimscoPortal.dll.config
@@ -100,8 +102,8 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Antlr3.Runtim
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\AutoMapper.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\BeyondThemes.Bootstrap.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\CimscoPortal.data.dll
-P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\EntityFramework.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\EntityFramework.SqlServer.dll
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\LinqKit.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.AspNet.Identity.Core.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.AspNet.Identity.EntityFramework.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.AspNet.Identity.Owin.dll
@@ -157,6 +159,8 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\AutoMapper.xm
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\AutoMapper.Net4.pdb
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\EntityFramework.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\EntityFramework.SqlServer.xml
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\LinqKit.pdb
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\LinqKit.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.Azure.KeyVault.Core.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.Data.Edm.xml
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.Data.OData.xml
@@ -233,9 +237,5 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\ko\System.Spa
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\ru\System.Spatial.resources.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\zh-Hans\System.Spatial.resources.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\zh-Hant\System.Spatial.resources.dll
-P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\obj\Debug\CimscoPortal.csprojResolveAssemblyReference.cache
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\obj\Debug\CimscoPortal.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\obj\Debug\CimscoPortal.pdb
-P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\LinqKit.dll
-P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\LinqKit.pdb
-P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\LinqKit.xml

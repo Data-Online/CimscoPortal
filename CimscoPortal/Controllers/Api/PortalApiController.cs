@@ -70,7 +70,7 @@ namespace CimscoPortal.Controllers.Api
         public HttpResponseMessage GetTotalCostsByMonth(HttpRequestMessage request, int monthSpan, int customerId)
         {
             var data = _portalService.GetTotalCostsByMonth(User.Identity.Name, monthSpan, customerId);
-            return request.CreateResponse<ByMonthViewModel>(HttpStatusCode.OK, data);
+            return request.CreateResponse<DashboardViewData>(HttpStatusCode.OK, data);
         }
 
         [HttpGet]
@@ -78,7 +78,7 @@ namespace CimscoPortal.Controllers.Api
         public HttpResponseMessage GetTotalCostsByMonth(HttpRequestMessage request, int monthSpan)
         {
             var data = _portalService.GetTotalCostsByMonth(User.Identity.Name, monthSpan, null);
-            return request.CreateResponse<ByMonthViewModel>(HttpStatusCode.OK, data);
+            return request.CreateResponse<DashboardViewData>(HttpStatusCode.OK, data);
         }
 
         [HttpGet]
@@ -86,7 +86,7 @@ namespace CimscoPortal.Controllers.Api
         public HttpResponseMessage GetTotalConsumptionByMonth(HttpRequestMessage request, int monthSpan)
         {
             var data = _portalService.GetTotalConsumptionByMonth(User.Identity.Name, monthSpan);
-            return request.CreateResponse<ByMonthViewModel>(HttpStatusCode.OK, data);
+            return request.CreateResponse<DashboardViewData>(HttpStatusCode.OK, data);
         }
 
         //[HttpGet]
