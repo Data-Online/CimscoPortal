@@ -143,3 +143,6 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\zh-Hant\Syste
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\SendGrid.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\SendGrid.SmtpApi.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\SendGridMail.dll
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\LinqKit.dll
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\LinqKit.pdb
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\LinqKit.xml

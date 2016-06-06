@@ -3,25 +3,27 @@
 
     angular
         .module("app.dashboard")
-        .constant("graphElements", {
+        .constant("dbConstants", {
             "costsDataElement": "costsBarChart",
-            "consDataElement": "consBarChart"
+            "consDataElement": "consBarChart",
+            "filterSelectDelay": "15"
+            //,"filters": ["divisions", "categories"]
         })
         .controller("app.dashboard.ctrl", dashboard);
 
-    dashboard.$inject = ['$scope', '$parse', '$interval', 'dbDataSource', 'userDataSource', 'graphElements'];
-    function dashboard($scope, $parse, $interval, dbDataSource, userDataSource, graphElements) {
+    dashboard.$inject = ['$scope', '$parse', '$interval', 'dbDataSource', 'userDataSource', 'dbConstants'];
+    function dashboard($scope, $parse, $interval, dbDataSource, userDataSource, dbConstants) {
 
-        $scope.topLevelName = '4 Sites';
+        
 
         var divisions = [];
-                    //[{ id: 1, label: 'MEGA Stores' },
-                    //   { id: 2, label: 'Mitre 10 Stores' }];
+        //[{ id: 1, label: 'MEGA Stores' },
+        //   { id: 2, label: 'Mitre 10 Stores' }];
         var categories = [];
-            //[{ id: 1, label: 'Hardware and Building Supplies Retailing' },
-            //           { id: 2, label: 'Another A' },
-            //           { id: 3, label: 'Another B' }];
-
+        //[{ id: 1, label: 'Hardware and Building Supplies Retailing' },
+        //           { id: 2, label: 'Another A' },
+        //           { id: 3, label: 'Another B' }];
+        //var monthSpan;
 
         var yearArray = {};
         var currentData = [];
@@ -32,48 +34,53 @@
 
         function onUserData(data) {
             $scope.monthSpanOptions = data.monthSpanOptions;
+            //monthSpan = data.monthSpan;
             $scope.monthSpan = data.monthSpan;
-            //console.log(data.monthSpanOptions + " " + data.monthSpan);
+            console.log('User Data ' + data.monthSpanOptions + " " + data.monthSpan);
 
             // $scope.topLevelName = data.topLevelName;
             var companyId = 0;
             //dbDataSource.getTotalCostsByMonth(data.monthSpan, companyId)
-            //    .then(function success(data) { return onGraphData(data, graphElements.costsDataElement, 0) }, onError);
+            //    .then(function success(data) { return onGraphData(data, dbConstants.costsDataElement, 0) }, onError);
 
-            dbDataSource.getTotalConsumptionByMonth(data.monthSpan)
-                .then(plotAllGraphs, onError);
-//            .then(function success(data) {return onGraphData(data.cost, graphElements.consDataElement, 1) }, onError);
+            //dbDataSource.getTotalCostAndConsumption(data.monthSpan, "null")
+            //    .then(plotAllGraphs, onError);
+            //            .then(function success(data) {return onGraphData(data.cost, dbConstants.consDataElement, 1) }, onError);
 
             dbDataSource.getAllFilters()
                 .then(onFiltersOk, onError);
         };
 
         var onFiltersOk = function (data) {
-//            console.log('Divisions : ' + divisions);
+            //            console.log('Divisions : ' + divisions);
             createMultiDropdown('divisions', data.divisions, true);
             createMultiDropdown('categories', data.categories, true);
         };
 
         var plotAllGraphs = function (data) {
-            onGraphData(data.consumption, graphElements.costsDataElement, 0);
-            onGraphData(data.cost, graphElements.consDataElement, 1);
+           // console.log('got data .. ');
+            $scope.loading = false;
+            $scope.totalSites = data.totalSites;
+            onGraphData(data.consumption, dbConstants.costsDataElement, 0);
+            onGraphData(data.cost, dbConstants.consDataElement, 1);            
         };
 
         function onGraphData(data, target, index) {
-            // console.log("Graph data " + (index + 1));
-
             // Assign data to graph and display
             yearArray = {
                 years: data.years,
-                months: data.months
+                months: data.months,
+                invoices: data.totalInvoices,
+                invoices12: data.totalInvoices12
             };
             var unit = ["$", "KWh"];
-            currentData[index] = assignData(data.values, themeprimary, "current"+":"+unit[index]);
-            prior12Data[index] = assignData(data.values12, themesecondary, "minus12"+":"+unit[index]);
-            refreshData(false, currentData[index], prior12Data[index], target);
+            currentData[index] = assignData(data.values, themeprimary, "current" + ":" + unit[index]);
+            prior12Data[index] = assignData(data.values12, themesecondary, "minus12" + ":" + unit[index]);
+            refreshData($scope.showPrevious12, currentData[index], prior12Data[index], target);
         }
 
         function onError(reason) {
+            $scope.loading = false;
             console.log('Error reading user data');
             $scope.reason = reason;
         };
@@ -92,8 +99,16 @@
 
         $scope.togglePreviousYearsData = function ($event) {
             var checkbox = $event.target;
-            refreshData(checkbox.checked, currentData[0], prior12Data[0], graphElements.costsDataElement);
-            refreshData(checkbox.checked, currentData[1], prior12Data[1], graphElements.consDataElement);
+            refreshData(checkbox.checked, currentData[0], prior12Data[0], dbConstants.costsDataElement);
+            refreshData(checkbox.checked, currentData[1], prior12Data[1], dbConstants.consDataElement);
+        };
+
+        $scope.reviseMonths = function (newMonthSpan) {
+            // console.log('revise data...' + newMonthSpan);
+            $scope.loading = true;
+            $scope.monthSpan = newMonthSpan;
+            dbDataSource.getTotalCostAndConsumption($scope.monthSpan, getReturnIds())
+                .then(plotAllGraphs, onError);
         };
 
         function refreshData(showPreviousYear, firstDataset, secondDataset, target) {
@@ -151,7 +166,7 @@
             legendTemplate: ' '
         };
 
-        
+
 
 
         // Multi selects
@@ -169,7 +184,7 @@
             getter.assign($scope, customTexts);
             if (createWatch) {
                 $scope.$watch(baseName + 'Model', function (data) {
-                    filterData(data);
+                    filterData(data, baseName);
                 }, true);
             };
 
@@ -190,40 +205,48 @@
 
         //console.log('Categories : ' + categories);
 
-//        createMultiDropdown('divisions', divisions, true);
-//        createMultiDropdown('categories', categories, true);
+        //        createMultiDropdown('divisions', divisions, true);
+        //        createMultiDropdown('categories', categories, true);
 
-        var filterData = function (data) {
+        var filterData = function (data, baseName) {
+            console.log('start delay for data ' + baseName);
+            //console.log($scope.divisionsModel);
             startDelay(data);
-            //console.log('trigger');
-           // console.log(data);
         };
 
         var stop;
-        var _counter = 20;
+        var _counter = dbConstants.filterSelectDelay;//20;
         var startDelay = function (data) {
-            if (angular.isDefined(stop)) { _counter = 20; return; }
+            if (angular.isDefined(stop)) { _counter = dbConstants.filterSelectDelay; return; }
             stop = $interval(function () {
                 if (_counter > 0) {
                     _counter--;
-                    //console.log(_counter);
                 }
                 else { stopCounter(data); }
-            },100)
+            }, 100)
         }
         var stopCounter = function (data) {
-           // console.log('stopping counter...');
             if (angular.isDefined(stop)) {
                 $interval.cancel(stop);
                 stop = undefined;
-                _counter = 20;
+                _counter = dbConstants.filterSelectDelay;//20;
             };
-            console.log(data);
-            var _returnIds = "";
-            angular.forEach(data, function (value, key) {
-                _returnIds += value.id;
+            //console.log('Return values ' + getReturnIds() + ' checkbox = ' + $scope.showPrevious12);
+            $scope.loading = true;
+            dbDataSource.getTotalCostAndConsumption($scope.monthSpan, getReturnIds())
+                .then(plotAllGraphs, onError);
+        };
+
+        var getReturnIds = function () {
+            var _returnIds = "_";
+            angular.forEach($scope.categoriesModel, function (value, key) {
+                _returnIds += value.id + "-";
             });
-            console.log('Return values ' + _returnIds)
+            _returnIds += "_";
+            angular.forEach($scope.divisionsModel, function (value, key) {
+                _returnIds += value.id + "-";
+            });
+            return _returnIds;
         };
 
     };
@@ -234,32 +257,56 @@
     var yearFromArray = function (v, yearArray) {
         return yearArray.years[yearArray.months.indexOf(v.label)];
     }
+    var totalInvoicesFromArray = function (v, yearArray, whichYear) {
+        if (whichYear == 12) {
+            return yearArray.invoices12[yearArray.months.indexOf(v.label)];
+        }
+        else {
+            return yearArray.invoices[yearArray.months.indexOf(v.label)];
+        }
+    }
+
+ 
 
     function singleTooltip(v, yearArray) {
         //console.log(v);
         var unit = v.datasetLabel.split(":").pop();
         if (v.datasetLabel.split(":", 1) != 'current') {
             _yearNumber = _yearNumber - 1;
+            var _invNumber = totalInvoicesFromArray(v, yearArray, 12);
+        }
+        else {
+            var _invNumber = totalInvoicesFromArray(v, yearArray);
         }
         if (unit == "$")
-            var _format = v.label + ' ' + yearFromArray(v, yearArray) + ' : ' + unit + v.value.toFixed(2);
+            var _format = v.label + ' ' + yearFromArray(v, yearArray) + ' : ' + unit + numberWithCommas(v.value) + ' (' + _invNumber + ' invoices)';
         else
-            var _format = v.label + ' ' + yearFromArray(v, yearArray) + ' : ' + v.value.toFixed(2) + ' ' + unit;
+            var _format = v.label + ' ' + yearFromArray(v, yearArray) + ' : ' + numberWithCommas(v.value) + ' ' + unit + ' (' + _invNumber + ' invoices)';
         return (_format);
-       // return v.label + ' ' + yearFromArray(v, yearArray) + ' : ' + '$' + v.value.toFixed(2);
+        // return v.label + ' ' + yearFromArray(v, yearArray) + ' : ' + '$' + v.value.toFixed(2);
     }
 
     function multiTooltip(v, yearArray) {
         var _yearNumber = yearFromArray(v, yearArray);
+        
+        console.log(_invNumber);
         var unit = v.datasetLabel.split(":").pop();
-        if (v.datasetLabel.split(":",1) != 'current') {
+        if (v.datasetLabel.split(":", 1) != 'current') {
             _yearNumber = _yearNumber - 1;
+            var _invNumber = totalInvoicesFromArray(v, yearArray, 12);
+        }
+        else {
+            var _invNumber = totalInvoicesFromArray(v, yearArray);
         }
         if (unit == "$")
-            var _format = _yearNumber + ' : ' + unit + v.value.toFixed(2);
+            var _format = _yearNumber + ' : ' + unit + numberWithCommas(v.value) + ' (' + _invNumber + ' invoices)';
         else
-            var _format = _yearNumber + ' : ' + v.value.toFixed(2) + ' ' + unit
+            var _format = _yearNumber + ' : ' + numberWithCommas(v.value) + ' ' + unit + ' (' + _invNumber + ' invoices)';
         return (_format);
+    }
+
+    function numberWithCommas(x) {
+        return x.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
 })();

@@ -54,7 +54,7 @@
             $scope.invoiceDetail = sumArray;
             $scope.tabTableHeader = data.topLevelName
             $scope.monthSpan = monthSpan;
-            console.log('change month span... ' + monthSpan);
+            console.log('change month spanZ... ' + monthSpan);
         };
 
         var getMaxKwh = function(list)

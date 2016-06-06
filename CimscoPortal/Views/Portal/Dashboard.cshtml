@@ -24,21 +24,25 @@
             </div>
         </div>
     </div>
+    
+    
     <div class="row">
         <div class="col-md-12">
             <div class="widget">
                 <div class="widget-header bg-themeprimary">
                     @*<i class="widget-icon fa fa-compress"></i>*@
                     <span class="widget-caption">
-                        <strong> {{topLevelName}}</strong> -
+                        <i ng-show="loading" class="fa fa-refresh fa-fw" ng-class="{'fa-spin' : loading}"></i>
+                        <span class="sr-only">Loading...</span>
+                        <strong> {{totalSites}} Sites</strong> -
                         <ng-pluralize count="invDistn.length"
                                       when="{'1': '{} Site,', 'other': '{} Sites,'}">
                         </ng-pluralize>
-                        showing {{monthSpan}} months of data
+                        showing {{monthSpan}} months of data                        
                     </span>
                     <div class="widget-buttons">
                         <label>
-                            <input class="colored-success" ng-click="togglePreviousYearsData($event)" type="checkbox">
+                            <input class="colored-success" ng-click="togglePreviousYearsData($event)" type="checkbox" ng-model="showPrevious12">
                             <span class="widget-caption text">Compare With Previous Year</span>
                         </label>
                     </div>
@@ -61,7 +65,7 @@
 
                     <div class="widget-buttons">
                         <div class="btn-group">
-                            <a href="javascript:void(0);" data-toggle="dropdown" class="btn btn-default btn-sm">Last 12 Months</a>
+                            <a href="javascript:void(0);" data-toggle="dropdown" class="btn btn-default btn-sm">Last {{monthSpan}} Months</a>
                             <a href="javascript:void(0);" data-toggle="dropdown" class="btn btn-primary  btn-sm dropdown-toggle " aria-expanded="false"><i class="fa fa-angle-down"></i></a>
                             <ul class="dropdown-menu">
                                 <li ng-repeat="_month in monthSpanOptions " data-ng-click="reviseMonths(_month)" class="widget-caption" ng-class="{'themeprimary' : monthSpan==_month}">

@@ -89,45 +89,45 @@ namespace CimscoPortal.Services
         #region Dashboard data
         // Summary of Costs and Consumption filtered by division(s) and site categories
         // Need data on missing information also
-        public DashboardViewData GetTotalCostsByMonth(string userId, int monthSpan, int? customerId)
-        {
-            if (!monthSpan.In(3, 6, 12, 24)) { monthSpan = 12; }
+        //public DashboardViewData GetTotalCostsByMonth(string userId, int monthSpan, int? customerId)
+        //{
+        //    if (!monthSpan.In(3, 6, 12, 24)) { monthSpan = 12; }
 
-            //string TestFilter = "15:16;847";
-            List<int> _divisionFilter = new List<int> { 15, 16 };
+        //    //string TestFilter = "15:16;847";
+        //    List<int> _divisionFilter = new List<int> { 15, 16 };
 
-            DateTime _firstDate = GetFirstDateForSelect(monthSpan);
-            Random rnd = new Random();
+        //    DateTime _firstDate = GetFirstDateForSelect(monthSpan);
+        //    Random rnd = new Random();
 
-            List<string> _months = new List<string>();
-            List<int> _years = new List<int>();
-            List<decimal> _values = new List<decimal>();
-            List<decimal> _values12 = new List<decimal>();
+        //    List<string> _months = new List<string>();
+        //    List<int> _years = new List<int>();
+        //    List<decimal> _values = new List<decimal>();
+        //    List<decimal> _values12 = new List<decimal>();
 
-            for (int _month = 1; _month <= monthSpan; _month++)
-            {
-                _months.Add(_firstDate.ToString("MMMM"));
-                _years.Add(_firstDate.Year);
-                _values.Add(rnd.Next(3, 10) * 1043.123M);
-                _values12.Add(rnd.Next(3, 10) * 879.383M);
-                _firstDate = _firstDate.AddMonths(1);
-            }
+        //    for (int _month = 1; _month <= monthSpan; _month++)
+        //    {
+        //        _months.Add(_firstDate.ToString("MMMM"));
+        //        _years.Add(_firstDate.Year);
+        //        _values.Add(rnd.Next(3, 10) * 1043.123M);
+        //        _values12.Add(rnd.Next(3, 10) * 879.383M);
+        //        _firstDate = _firstDate.AddMonths(1);
+        //    }
 
-            var data = new ByMonthViewModel()
-            {
-                Months = _months,
-                Years = _years,
-                Values = _values,
-                Values12 = _values12
-            };
+        //    var data = new ByMonthViewModel()
+        //    {
+        //        Months = _months,
+        //        Years = _years,
+        //        Values = _values,
+        //        Values12 = _values12
+        //    };
 
-            //var data = new ByMonthViewModel() { MonthlyData = new List<MonthlyData> 
-            //                                            {new MonthlyData() { Value = rnd.Next(3, 10)*1000.0M, Month = 2 } }, 
-            //                                    MonthsOfData = 6, 
-            //                                    PreviousYearMonthlyData = new List<MonthlyData> 
-            //                                            {new MonthlyData() { Value = 11.0M, Month = 2 } } };
-            return new DashboardViewData();//data;
-        }
+        //    //var data = new ByMonthViewModel() { MonthlyData = new List<MonthlyData> 
+        //    //                                            {new MonthlyData() { Value = rnd.Next(3, 10)*1000.0M, Month = 2 } }, 
+        //    //                                    MonthsOfData = 6, 
+        //    //                                    PreviousYearMonthlyData = new List<MonthlyData> 
+        //    //                                            {new MonthlyData() { Value = 11.0M, Month = 2 } } };
+        //    return new DashboardViewData();//data;
+        //}
 
         //IQueryable<Site> SearchSites(params string[] keywords)
         //{
@@ -143,10 +143,10 @@ namespace CimscoPortal.Services
 
 
 
-        public DashboardViewData GetTotalConsumptionByMonth(string userId, int monthSpan)
+        public DashboardViewData GetTotalCostsAndConsumption(string userId, int monthSpan, string filter)
         {
             bool createTest = false;
-            string testParam = "827;15:16"; //"827;15:16"
+            //string testParam = filter; // "827-_15-";// "827;15:16"; //"827;15:16"
             
             if (!monthSpan.In(3, 6, 12, 24)) { monthSpan = 12; }
             
@@ -156,7 +156,7 @@ namespace CimscoPortal.Services
             CurrentUserLevel _userLevel = GetUserLevel(userId);
 
             // Establish filters - if any
-            IQueryable<Site> _query = ConstructQueryFromPassedParameter(testParam);
+            IQueryable<Site> _query = ConstructQueryFromPassedParameter(filter);
 
             // Select the data
             IList<int> _allSitesInCurrentSelection = _query
@@ -179,7 +179,9 @@ namespace CimscoPortal.Services
                 Months = _invoiceTotals.OrderBy(s => s.Key).Select(t => t.Value.MonthName).ToList(),
                 Years = _invoiceTotals.OrderBy(s => s.Key).Select(t => t.Value.Year).ToList(),
                 Values = _invoiceTotals.OrderBy(s => s.Key).Select(t => t.Value.InvoiceTotal).ToList(),
-                Values12 = _invoiceTotals12.OrderBy(s => s.Key).Select(t => t.Value.InvoiceTotal).ToList()
+                Values12 = _invoiceTotals12.OrderBy(s => s.Key).Select(t => t.Value.InvoiceTotal).ToList(),
+                TotalInvoices = _invoiceTotals.OrderBy(s => s.Key).Select(t => t.Value.TotalInvoices).ToList(),
+                TotalInvoices12 = _invoiceTotals12.OrderBy(s => s.Key).Select(t => t.Value.TotalInvoices).ToList()
             };
 
             ByMonthViewModel _consumptionData = new ByMonthViewModel()
@@ -187,11 +189,14 @@ namespace CimscoPortal.Services
                 Months = _invoiceTotals.OrderBy(s => s.Key).Select(t => t.Value.MonthName).ToList(),
                 Years = _invoiceTotals.OrderBy(s => s.Key).Select(t => t.Value.Year).ToList(),
                 Values = _invoiceTotals.OrderBy(s => s.Key).Select(t => t.Value.EnergyTotal).ToList(),
-                Values12 = _invoiceTotals12.OrderBy(s => s.Key).Select(t => t.Value.EnergyTotal).ToList()
+                Values12 = _invoiceTotals12.OrderBy(s => s.Key).Select(t => t.Value.EnergyTotal).ToList(),
+                TotalInvoices = _invoiceTotals.OrderBy(s => s.Key).Select(t => t.Value.TotalInvoices).ToList(),
+                TotalInvoices12 = _invoiceTotals12.OrderBy(s => s.Key).Select(t => t.Value.TotalInvoices).ToList()
             };
 
             _model.Consumption = _consumptionData;
             _model.Cost = _costData;
+            _model.TotalSites = _allSitesInCurrentSelection.Count();
 
             #region Create Test Data
 
@@ -232,25 +237,36 @@ namespace CimscoPortal.Services
         private IQueryable<Site> SearchByIndustryClassification(List<int> keywords, IQueryable<Site> query)
         {
             //            IQueryable<Site> query = _repository.Sites;
-            query = query.Where(p => keywords.Contains(p.IndustryClassification.IndustryId));
+            if (keywords.Count() > 0)
+            {
+                query = query.Where(p => keywords.Contains(p.IndustryClassification.IndustryId));
+            }
             return query;
         }
 
         private IQueryable<Site> SearchByDivision(List<int> keywords, IQueryable<Site> query)
         {
-            //IQueryable<Site> query = _repository.Sites;
-            query = query.Where(p => keywords.Contains(p.GroupDivision.DivisionId));
+            if (keywords.Count() > 0)
+            {
+                query = query.Where(p => keywords.Contains(p.GroupDivision.DivisionId));
+            }
             return query;
         }
 
         private IQueryable<Site> ConstructQueryFromPassedParameter(string ParameterString)
         {
-            string _passedIndustryClassificationIds = ParameterString.Split(';')[0];
-            string _passedDivisionIds = ParameterString.Split(';')[1];
-            var _industryClassificationIds = _passedIndustryClassificationIds.IntegersFromString(':');
-            var _divisionIds = _passedDivisionIds.IntegersFromString(':');
-
             IQueryable<Site> _query = _repository.Sites;
+            List<int> _industryClassificationIds;
+            List<int> _divisionIds;
+            try
+            {
+                string _passedIndustryClassificationIds = ParameterString.Split('_')[1];
+                string _passedDivisionIds = ParameterString.Split('_')[2];
+                _industryClassificationIds = _passedIndustryClassificationIds.IntegersFromString('-');
+                _divisionIds = _passedDivisionIds.IntegersFromString('-');
+            }
+            catch { return _query; }
+
             _query = SearchByIndustryClassification(_industryClassificationIds, _query);
             _query = SearchByDivision(_divisionIds, _query);
             return _query;

@@ -58,7 +58,7 @@
             $scope.groupCompanyDetail = data.groupCompanyDetail;
             $scope.customerList = data.customerList;
             //console.log($scope.customerList);
-            console.log('change month span... ' + monthSpan);
+            console.log('change month span ... ' + monthSpan);
         };
 
         var onUserData = function (data) {

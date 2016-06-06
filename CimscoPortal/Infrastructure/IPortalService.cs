@@ -10,8 +10,8 @@ namespace CimscoPortal.Infrastructure
         // Refactor status -->
         //CimscoPortal.Models.CustomerHierarchyViewModel GetCompanyHierarchy(string userId);
 
-        DashboardViewData GetTotalCostsByMonth(string userId, int monthSpan, int? customerId);
-        DashboardViewData GetTotalConsumptionByMonth(string userId, int monthSpan);
+        //DashboardViewData GetTotalCostsByMonth(string userId, int monthSpan, int? customerId);
+        DashboardViewData GetTotalCostsAndConsumption(string userId, int monthSpan, string filter);
         AvailableFiltersModel GetAllFilters(string userId);
 
         CimscoPortal.Models.SiteHierarchyViewModel GetSiteHierarchy(string userId);

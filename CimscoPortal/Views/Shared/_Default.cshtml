@@ -152,6 +152,8 @@ Purchase: http://wrapbootstrap.com
 
     <!--Angular, including 3rd pary directives-->
     @Scripts.Render("~/bundles/angular")
+    <!-- Minification of this causes Angular error, $inject needed?-->
+    <script src="~/Scripts/charts/chartjs/tc-angular-chartjs.js"></script>
 
     <style>
         .btn-disable {

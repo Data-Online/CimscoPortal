@@ -20,6 +20,7 @@ namespace CimscoPortal.Data.Models.Mapping
             this.Property(t => t.DivisionName).HasColumnName("DivisionName");
             this.Property(t => t.GroupId).HasColumnName("GroupId");
 
+
         }
     }
 }

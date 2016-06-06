@@ -16,6 +16,7 @@ namespace CimscoPortal.Models
     {
         public ByMonthViewModel Cost { get; set; }
         public ByMonthViewModel Consumption { get; set; }
+        public int TotalSites { get; set; }
     }
 
     public class ByMonthViewModel
@@ -25,5 +26,7 @@ namespace CimscoPortal.Models
         public List<int> Years { get; set; }
         public List<decimal> Values { get; set; }
         public List<decimal> Values12 { get; set; }
+        public List<int> TotalInvoices { get; set; }
+        public List<int> TotalInvoices12 { get; set; }
     }
 }

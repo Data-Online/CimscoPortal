@@ -30,7 +30,7 @@ namespace CimscoPortal
                 "~/Scripts/angular.js",
                 "~/Scripts/angular-animate.min.js",
                 "~/Scripts/angular-ui-bootstrap/ui-bootstrap.js",
-                "~/Scripts/charts/chartjs/tc-angular-chartjs.js",
+               // "~/Scripts/charts/chartjs/tc-angular-chartjs.js",
                 "~/Scripts/charts/flot/angular-flot.js",
                 "~/Scripts/angular-ui-utils/angular-ui-utils.js"
                 ));

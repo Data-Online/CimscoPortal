@@ -2,20 +2,20 @@
 
     var dbDataSource = function ($http) {
 
-        var getTotalCostsByMonth = function (monthSpan, companyId) {
+        //var getTotalCostsByMonth = function (monthSpan, companyId) {
             
-            var dataApi = "/api/TotalCostsByMonth/" + monthSpan;
-            if (companyId > 0)
-                dataApi = dataApi + "/" + companyId;
-            return $http.get(dataApi)
-                        .then(function (response) {
-                            return response.data;
-                        });
-        };
+        //    var dataApi = "/api/TotalCostsByMonth/" + monthSpan;
+        //    if (companyId > 0)
+        //        dataApi = dataApi + "/" + companyId;
+        //    return $http.get(dataApi)
+        //                .then(function (response) {
+        //                    return response.data;
+        //                });
+        //};
 
-        var getTotalConsumptionByMonth = function (monthSpan) {
+        var getTotalCostAndConsumption = function (monthSpan, filter) {
 
-            var dataApi = "/api/TotalConsumptionByMonth/" + monthSpan;
+            var dataApi = "/api/TotalCostAndConsumption/" + monthSpan + "/" + filter;
             return $http.get(dataApi)
                         .then(function (response) {
                             return response.data;
@@ -32,8 +32,8 @@
         };
 
         return {
-            getTotalCostsByMonth: getTotalCostsByMonth,
-            getTotalConsumptionByMonth: getTotalConsumptionByMonth,
+            //getTotalCostsByMonth: getTotalCostsByMonth,
+            getTotalCostAndConsumption: getTotalCostAndConsumption,
             getAllFilters: getAllFilters
         };
 
