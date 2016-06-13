@@ -10,7 +10,8 @@
 
         /* Feature areas*/
        
-        "app.dashboard"
+        "app.dashboard",
+        "app.detailBySite"
 
     ]);
 

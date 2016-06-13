@@ -65,6 +65,14 @@ namespace CimscoPortal.Controllers.Api
                             _portalService.GetAllFilters(User.Identity.Name));
         }
 
+        [HttpGet]
+        [Route("WelcomeScreen")]
+        public HttpResponseMessage GetWelcomeScreen(HttpRequestMessage request)
+        {
+            return request.CreateResponse<TextViewModel>(HttpStatusCode.OK,
+                            _portalService.GetWelcomeScreen(User.Identity.Name));
+        }
+        
         //[HttpGet]
         //[Route("TotalCostsByMonth/{monthSpan}/{customerId}")]
         //public HttpResponseMessage GetTotalCostsByMonth(HttpRequestMessage request, int monthSpan, int customerId)

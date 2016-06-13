@@ -80,6 +80,7 @@
     <Compile Include="Models\Division.cs" />
     <Compile Include="Models\Mapping\IndustryClassificationMap.cs" />
     <Compile Include="Models\Mapping\DivisionMap.cs" />
+    <Compile Include="Models\Mapping\WelcomeMessageMap.cs" />
     <Compile Include="Models\SystemConfiguration.cs" />
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\Customer.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="Models\Site.cs" />
     <Compile Include="Models\sysdiagram.cs" />
     <Compile Include="Models\UserDetail.cs" />
+    <Compile Include="Models\WelcomeScreen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

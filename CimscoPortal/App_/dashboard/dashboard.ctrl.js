@@ -11,10 +11,12 @@
         })
         .controller("app.dashboard.ctrl", dashboard);
 
-    dashboard.$inject = ['$scope', '$parse', '$interval', 'dbDataSource', 'userDataSource', 'dbConstants'];
-    function dashboard($scope, $parse, $interval, dbDataSource, userDataSource, dbConstants) {
+    dashboard.$inject = ['$scope', '$parse', '$interval', 'dbDataSource', 'userDataSource', 'dbConstants', 'toaster'];
+    function dashboard($scope, $parse, $interval, dbDataSource, userDataSource, dbConstants, toaster) {
 
-        
+        $scope.pop = function () {
+            toaster.pop('success', "title", "text");
+        };
 
         var divisions = [];
         //[{ id: 1, label: 'MEGA Stores' },
@@ -31,6 +33,15 @@
 
         userDataSource.getUserData()
             .then(onUserData, onError);
+
+        dbDataSource.getWelcomeScreen()
+            .then(onWelcomeMessage, onError);
+
+        function onWelcomeMessage(data) {
+            $scope.welcomeHeader = data.header;
+            $scope.welcomeText = data.text;
+            console.log(data);
+        };
 
         function onUserData(data) {
             $scope.monthSpanOptions = data.monthSpanOptions;
@@ -58,11 +69,13 @@
         };
 
         var plotAllGraphs = function (data) {
-           // console.log('got data .. ');
+            // console.log('got data .. ');
+            toaster.pop('success', "Data loaded!", "Read data from database");
             $scope.loading = false;
-            $scope.totalSites = data.totalSites;
-            onGraphData(data.consumption, dbConstants.costsDataElement, 0);
-            onGraphData(data.cost, dbConstants.consDataElement, 1);            
+            
+            onGraphData(data.cost, dbConstants.costsDataElement, 0);
+            onGraphData(data.consumption, dbConstants.consDataElement, 1);
+            displayStats(data.invoiceStats);
         };
 
         function onGraphData(data, target, index) {
@@ -73,6 +86,7 @@
                 invoices: data.totalInvoices,
                 invoices12: data.totalInvoices12
             };
+            console.log(yearArray);
             var unit = ["$", "KWh"];
             currentData[index] = assignData(data.values, themeprimary, "current" + ":" + unit[index]);
             prior12Data[index] = assignData(data.values12, themesecondary, "minus12" + ":" + unit[index]);
@@ -81,6 +95,7 @@
 
         function onError(reason) {
             $scope.loading = false;
+            toaster.pop('error', "Data Load Error", "Unable to load data from database!");
             console.log('Error reading user data');
             $scope.reason = reason;
         };
@@ -166,9 +181,39 @@
             legendTemplate: ' '
         };
 
+        var displayStats = function (data) {
+            //console.log('Display stats...' + data.percentMissingInvoices);
+            $scope.totalSites = data.totalSites;
 
+            // Percentage missing invoices
+            $scope.missingPercent = data.percentMissingInvoices;
+            $scope.missingInvoices = data.totalMissingInvoices;
+            $scope.activeSites = data.totalActiveSites;
 
-
+            $scope.missingOptions = {
+                animate: {
+                    duration: 10,
+                    enabled: true
+                },
+                barColor: '#2C3E50',
+                scaleColor: false,
+                lineWidth: 5,
+                lineCap: 'circle',
+                size: 60
+            };
+            $scope.filedPercent = data.percentSitesWithData;
+            $scope.filedOptions = {
+                animate: {
+                    duration: 5,
+                    enabled: true
+                },
+                barColor: '#2C3E50',
+                scaleColor: false,
+                lineWidth: 5,
+                lineCap: 'circle',
+                size: 60
+            }
+        };
         // Multi selects
         var createMultiDropdown = function (baseName, selectionItemsList, createWatch) {
             // Create variables on scope
@@ -209,7 +254,7 @@
         //        createMultiDropdown('categories', categories, true);
 
         var filterData = function (data, baseName) {
-            console.log('start delay for data ' + baseName);
+            console.log('Start delay for data ' + baseName);
             //console.log($scope.divisionsModel);
             startDelay(data);
         };
@@ -255,17 +300,23 @@
         return this.charAt(0).toUpperCase() + this.slice(1);
     };
     var yearFromArray = function (v, yearArray) {
-        return yearArray.years[yearArray.months.indexOf(v.label)];
-    }
+        return yearArray.years[yearArray.months.indexOf(v.label) + GetOffSet(yearArray.length, v.x)];
+    };
     var totalInvoicesFromArray = function (v, yearArray, whichYear) {
         if (whichYear == 12) {
-            return yearArray.invoices12[yearArray.months.indexOf(v.label)];
+            return yearArray.invoices12[yearArray.months.indexOf(v.label) + GetOffSet(yearArray.length, v.x)];
         }
         else {
-            return yearArray.invoices[yearArray.months.indexOf(v.label)];
+            return yearArray.invoices[yearArray.months.indexOf(v.label) + GetOffSet(yearArray.length, v.x)];
         }
-    }
+    };
 
+    function GetOffSet(length, x) {
+        if (length > 12 && v.x > 400)
+            return 12
+        else
+            return 0
+    };
  
 
     function singleTooltip(v, yearArray) {
@@ -279,9 +330,9 @@
             var _invNumber = totalInvoicesFromArray(v, yearArray);
         }
         if (unit == "$")
-            var _format = v.label + ' ' + yearFromArray(v, yearArray) + ' : ' + unit + numberWithCommas(v.value) + ' (' + _invNumber + ' invoices)';
+            var _format = v.label + ' ' + yearFromArray(v, yearArray) + ' : ' + unit + numberWithCommas(v.value) + ' (' + _invNumber + ' invoice' + pluralise(_invNumber) + ')';
         else
-            var _format = v.label + ' ' + yearFromArray(v, yearArray) + ' : ' + numberWithCommas(v.value) + ' ' + unit + ' (' + _invNumber + ' invoices)';
+            var _format = v.label + ' ' + yearFromArray(v, yearArray) + ' : ' + numberWithCommas(v.value) + ' ' + unit + ' (' + _invNumber + ' invoice' + pluralise(_invNumber) + ')';
         return (_format);
         // return v.label + ' ' + yearFromArray(v, yearArray) + ' : ' + '$' + v.value.toFixed(2);
     }
@@ -289,7 +340,6 @@
     function multiTooltip(v, yearArray) {
         var _yearNumber = yearFromArray(v, yearArray);
         
-        console.log(_invNumber);
         var unit = v.datasetLabel.split(":").pop();
         if (v.datasetLabel.split(":", 1) != 'current') {
             _yearNumber = _yearNumber - 1;
@@ -299,11 +349,19 @@
             var _invNumber = totalInvoicesFromArray(v, yearArray);
         }
         if (unit == "$")
-            var _format = _yearNumber + ' : ' + unit + numberWithCommas(v.value) + ' (' + _invNumber + ' invoices)';
+            var _format = _yearNumber + ' : ' + unit + numberWithCommas(v.value) + ' (' + _invNumber + ' invoice' + pluralise(_invNumber) +')';
         else
-            var _format = _yearNumber + ' : ' + numberWithCommas(v.value) + ' ' + unit + ' (' + _invNumber + ' invoices)';
+            var _format = _yearNumber + ' : ' + numberWithCommas(v.value) + ' ' + unit + ' (' + _invNumber + ' invoice' + pluralise(_invNumber) + ')';
         return (_format);
     }
+
+    function pluralise(count) {
+        // Very simple at the moment
+        if (count.length >= 0)
+            return 's';
+        else
+            return '';
+    };
 
     function numberWithCommas(x) {
         return x.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");

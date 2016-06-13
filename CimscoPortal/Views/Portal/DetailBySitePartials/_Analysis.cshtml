@@ -1,0 +1,143 @@
+﻿
+<div class="row">
+    <div class="col-lg-3 col-xs-12 col-sm-6 visible-lg visible-md hidden-xs hidden-sm">
+        <div class="margin-top-10 visible-xs hidden-lg hidden-md"></div>
+        <div class="row">
+            <div class="col-xs-6 col-sm-6">
+                <label data-toggle="tooltip" title="Sort by Total Value" data-placement="auto" class="tooltip-palegreen">
+                    <span ng-click="order('billTotal')" class="btn-sm btn-labeled btn-palegreen tooltip-palegreen">
+                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='billTotal'"></i>Total Value
+                    </span>
+                </label>
+            </div>
+            <div class="col-xs-6 col-sm-6">
+                <label data-toggle="tooltip" title="Sort by Site Name" data-placement="auto" class="tooltip-palegreen">
+                    <span ng-click="order('site')" class="btn-sm btn-labeled btn-palegreen ">
+                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='site'"></i>Site
+                    </span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-9 col-xs-12 col-sm-6" ng-init="options={};options.selected=true">
+        <div class="row">
+            <div class="col-md-3 col-xs-12 col-sm-3">
+                <label ng-hide="false">
+                    <input class="checkbox-slider toggle colored-blue" ng-model="showValue" type="checkbox" ng-init="showValue=options.selected">
+                    <span class="text">&nbsp; Energy Charges</span>
+                </label>
+            </div>
+            <div class="visible-xs hidden-md hidden-sm clearfix">&nbsp;</div>
+            <div class="col-md-3 col-xs-12 col-sm-3">
+                <span></span>
+                <label ng-hide="false">
+                    <input class="checkbox-slider toggle colored-warning" ng-model="showKwh" type="checkbox" ng-init="showKwh=options.selected">
+                    <span class="text">&nbsp;Total kWh</span>
+                </label>
+            </div>
+            <div class="visible-xs hidden-md hidden-sm clearfix">&nbsp;</div>
+            <div class="col-md-3 col-xs-12 col-sm-3">
+                <span></span>
+                <label ng-hide="false">
+                    <input class="checkbox-slider toggle colored-palegreen" ng-model="showUsqm" type="checkbox" ng-init="showUsqm=options.selected">
+                    <span class="text">&nbsp;Units per sqM</span>
+                </label>
+            </div>
+            <div class="visible-xs hidden-md hidden-sm clearfix">&nbsp;</div>
+            <div class="col-md-3 col-xs-12 col-sm-3">
+                <span></span>
+                <label ng-hide="false">
+                    <input class="checkbox-slider toggle colored-magenta" ng-model="showCsqm" type="checkbox" ng-init="showCsqm=options.selected">
+                    <span class="text">&nbsp;Cost per sqM</span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-xs-12 col-sm-6 hidden-lg hidden-md visible-xs visible-sm">
+        <div class="margin-top-10 visible-xs hidden-lg hidden-md"></div>
+        <div class="row">
+            <div class="col-xs-6 col-sm-6">
+                <label data-toggle="tooltip" title="Sort by Total Value" data-placement="auto" class="tooltip-palegreen">
+                    <span ng-click="order('billTotal')" class="btn-sm btn-labeled btn-palegreen tooltip-palegreen">
+                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='billTotal'"></i>Total Value
+                    </span>
+                </label>
+            </div>
+            <div class="col-xs-6 col-sm-6">
+                <label data-toggle="tooltip" title="Sort by Site Name" data-placement="auto" class="tooltip-palegreen">
+                    <span ng-click="order('site')" class="btn-sm btn-labeled btn-palegreen ">
+                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='site'"></i>Site
+                    </span>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+<hr class="wide">
+<div ng-repeat="invoice in invoiceDetail |orderBy:predicate:reverse" id="analysisPortal">
+    <table class="table table-hover">
+        <tr class="well with-header" style="background-color:#f5f5f5!important;">
+
+            <th colspan="12">
+                <i class="stat-icon fa fa-ban" ng-show="invoice.invCount == 0"></i>
+                @{ var url1 = Url.Action("SiteOverview", "Portal", new { id = "{{invoice.siteId}}" });
+                 url1 = HttpUtility.UrlDecode(url1);
+                }
+                <a ng-href="@url1">
+                    <span style="font-size:large; color:GrayText">{{invoice.site}}</span>
+                </a>
+                <span> - Total charges : {{invoice.billTotal | currency:$}}</span>
+                <span>(from {{invoice.invCount}} invoices on file)</span>
+
+            </th>
+        </tr>
+        <tbody ng-show="invoice.invCount > 0">
+            <tr ng-show="showValue">
+                <td width="30%" class="responsive-td">
+                    <span>
+                        Energy Charges
+                    </span>
+                </td>
+                <td width="70%">
+                    <div ng-repeat="values in invoice.power">
+
+                        <div class="progress-bar progress-bar-{{invTheme[$index+1].theme}}" style="width: {{values.percent}}%">
+                            <span ng-show="values.percent>10"> {{values.reading | currency:$}} </span>
+                            <span ng-show="values.percent<=10">&nbsp;</span>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr ng-show="showKwh">
+                <td width="30%" class="responsive-td"><span>Total kWh</span></td>
+                <td width="70%">
+                    <div ng-repeat="values in invoice.kWh">
+                        <div class="progress-bar progress-bar-{{invTheme[$index+1].theme}}" style="width: {{values.percent}}%">
+                            <span> {{values.reading | number:0}} </span>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr ng-show="showUsqm">
+                <td width="30%" class="responsive-td"><span>Units per sqM</span></td>
+                <td width="70%">
+                    <div ng-repeat="values in invoice.upsqm">
+                        <div class="progress-bar progress-bar-{{invTheme[$index+1]}}" style="width: {{values.percent}}%">
+                            <span> {{values.units}} {{values.reading | number:2}}  </span>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr ng-show="showCsqm">
+                <td width="30%" class="responsive-td"><span>Cost per sqM</span></td>
+                <td width="70%">
+                    <div ng-repeat="values in invoice.cpsqm">
+                        <div class="progress-bar progress-bar-{{invTheme[$index+1]}}" style="width: {{values.percent}}%">
+                            <span> {{values.reading | currency:$}} </span>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -49,6 +49,7 @@ namespace CimscoPortal.Data.Models
         public DbSet<EnergyPoint> EnergyPoints { get; set; }
         public DbSet<LoginHistory> LoginHistorys { get; set; }
         public DbSet<CommonData> CommonData { get; set; }
+        public DbSet<WelcomeScreen> WelcomeScreen { get; set; }
         public DbSet<SystemConfiguration> SystemConfiguration { get; set; }
 
         public DbSet<Division> Divisions { get; set; }
@@ -82,6 +83,7 @@ namespace CimscoPortal.Data.Models
             modelBuilder.Configurations.Add(new CommonDataMap());
             modelBuilder.Configurations.Add(new SystemConfigurationMap());
             modelBuilder.Configurations.Add(new DivisionMap());
+            modelBuilder.Configurations.Add(new WelcomeScreenMap());
 
             modelBuilder.Configurations.Add(new LoginHistoryMap());
           //  modelBuilder.Configurations.Add(new UserDetailMap());

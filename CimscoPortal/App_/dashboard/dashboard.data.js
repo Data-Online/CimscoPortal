@@ -31,10 +31,20 @@
                         });
         };
 
+        var getWelcomeScreen = function () {
+
+            var dataApi = "/api/WelcomeScreen";
+            return $http.get(dataApi)
+                .then(function (response) {
+                    return response.data;
+                });
+        };
+
         return {
             //getTotalCostsByMonth: getTotalCostsByMonth,
             getTotalCostAndConsumption: getTotalCostAndConsumption,
-            getAllFilters: getAllFilters
+            getAllFilters: getAllFilters,
+            getWelcomeScreen: getWelcomeScreen
         };
 
     };

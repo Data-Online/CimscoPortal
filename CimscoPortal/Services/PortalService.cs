@@ -84,6 +84,24 @@ namespace CimscoPortal.Services
         {
             return new UserSettingsViewModel { MonthSpan = 12 };
         }
+
+        public TextViewModel GetWelcomeScreen(string userId)
+        {
+            // Very basic - Update needed to make more flexable.
+            var WelcomeScreenText = _repository.WelcomeScreen.Where(s => s.WelcomeId == 1).ToList()[0];
+            TextViewModel WelcomeText = new TextViewModel();
+            WelcomeText.Header = WelcomeScreenText.Initial;
+            WelcomeText.Text = new List<string>();
+            if (WelcomeScreenText.Line2.Trim().Length > 0)
+                WelcomeText.Text.Add(WelcomeScreenText.Line2);
+            if (WelcomeScreenText.Line3.Trim().Length > 0)
+                WelcomeText.Text.Add(WelcomeScreenText.Line3);
+            if (WelcomeScreenText.Line4.Trim().Length > 0)
+                WelcomeText.Text.Add(WelcomeScreenText.Line4);
+            if (WelcomeScreenText.Line5.Trim().Length > 0)    
+                WelcomeText.Text.Add(WelcomeScreenText.Line5);
+            return WelcomeText;
+        }
         #endregion
 
         #region Dashboard data
@@ -145,11 +163,11 @@ namespace CimscoPortal.Services
 
         public DashboardViewData GetTotalCostsAndConsumption(string userId, int monthSpan, string filter)
         {
-            bool createTest = false;
-            //string testParam = filter; // "827-_15-";// "827;15:16"; //"827;15:16"
-            
+            bool CreateTestData = false;
             if (!monthSpan.In(3, 6, 12, 24)) { monthSpan = 12; }
-            
+
+            DashboardViewData _model = new DashboardViewData();
+
             Dictionary<int, decimal> _monthTotals = new Dictionary<int, decimal>();
             Dictionary<int, int> _totalMissingInvoices = new Dictionary<int, int>();
 
@@ -159,24 +177,27 @@ namespace CimscoPortal.Services
             IQueryable<Site> _query = ConstructQueryFromPassedParameter(filter);
 
             // Select the data
-            IList<int> _allSitesInCurrentSelection = _query
-                            .Where(s => s.Group.GroupName == _userLevel.TopLevelName).Select(t => t.SiteId).ToList(); 
+            IList<int> _allSitesInCurrentSelection = AddQueryForGroupCustomerSite(_userLevel, _query).Select(t => t.SiteId).ToList();
 
             // Current date window
             DateTime _selectFromDate = GetFirstDateForSelect(monthSpan);
             DateTime _selectToDate = DateTime.Now.EndOfTheMonth();
-            Dictionary<DateTime, MonthlySummaryModel> _invoiceTotals = GetDataSummary(_allSitesInCurrentSelection, _selectFromDate, _selectToDate);
 
-            // Date window -12 months
-            DateTime _startDateForPrior12Months = _invoiceTotals.OrderBy(s => s.Key).Select(s => s.Key).First().AddMonths(-12);
-            DateTime _endDateForPrior12Months = _invoiceTotals.OrderBy(s => s.Key).Select(s => s.Key).Last().AddMonths(-12).EndOfTheMonth();
-            Dictionary<DateTime, MonthlySummaryModel> _invoiceTotals12 = GetDataSummary(_allSitesInCurrentSelection, _startDateForPrior12Months, _endDateForPrior12Months);
+            // Data for current (monthSpan) window
+            IQueryable<InvoiceSummary> _invoiceData = ConstructInvoiceQueryForDates(_allSitesInCurrentSelection, _selectFromDate, _selectToDate);
+            _model.InvoiceStats = CalculateStatisticsForFiledInvoices(monthSpan, _allSitesInCurrentSelection, _invoiceData);
+            Dictionary<DateTime, MonthlySummaryModel> _invoiceTotals = GetDataSummary(_invoiceData, _selectFromDate, _selectToDate);
 
+            // Data for prior -12 months
+            _invoiceData = ConstructInvoiceQueryForDates(_allSitesInCurrentSelection, _selectFromDate.AddYears(-1), _selectToDate.AddYears(-1));
+            Dictionary<DateTime, MonthlySummaryModel> _invoiceTotals12 = GetDataSummary(_invoiceData, _selectFromDate.AddYears(-1), _selectToDate.AddYears(-1));
+            
             /// Allocate data to view model and return this to the view
-            DashboardViewData _model = new DashboardViewData();
+           //DashboardViewData _model = new DashboardViewData();
+           // var zzz = _invoiceTotals.OrderBy(s => s.Key);
             ByMonthViewModel _costData = new ByMonthViewModel()
             {
-                Months = _invoiceTotals.OrderBy(s => s.Key).Select(t => t.Value.MonthName).ToList(),
+                Months = _invoiceTotals.OrderBy(s => s.Key).Select(t => t.Value.MonthName).ToList(), // + ' ' + Get2LetterYear(t.Value.Year)).ToList(),
                 Years = _invoiceTotals.OrderBy(s => s.Key).Select(t => t.Value.Year).ToList(),
                 Values = _invoiceTotals.OrderBy(s => s.Key).Select(t => t.Value.InvoiceTotal).ToList(),
                 Values12 = _invoiceTotals12.OrderBy(s => s.Key).Select(t => t.Value.InvoiceTotal).ToList(),
@@ -186,7 +207,7 @@ namespace CimscoPortal.Services
 
             ByMonthViewModel _consumptionData = new ByMonthViewModel()
             {
-                Months = _invoiceTotals.OrderBy(s => s.Key).Select(t => t.Value.MonthName).ToList(),
+                Months = _invoiceTotals.OrderBy(s => s.Key).Select(t => t.Value.MonthName).ToList(),// + ' ' + Get2LetterYear(t.Value.Year)).ToList(),
                 Years = _invoiceTotals.OrderBy(s => s.Key).Select(t => t.Value.Year).ToList(),
                 Values = _invoiceTotals.OrderBy(s => s.Key).Select(t => t.Value.EnergyTotal).ToList(),
                 Values12 = _invoiceTotals12.OrderBy(s => s.Key).Select(t => t.Value.EnergyTotal).ToList(),
@@ -196,11 +217,10 @@ namespace CimscoPortal.Services
 
             _model.Consumption = _consumptionData;
             _model.Cost = _costData;
-            _model.TotalSites = _allSitesInCurrentSelection.Count();
 
             #region Create Test Data
 
-            if (createTest)
+            if (CreateTestData)
             {
                 Random rnd = new Random();
 
@@ -233,7 +253,74 @@ namespace CimscoPortal.Services
             return _model;
         }
 
+        private string Get2LetterYear(int fourLetterYear)
+        {
+            return fourLetterYear.ToString().Substring(2, 2);
+        }
+
+        private static InvoiceStatsViewModel CalculateStatisticsForFiledInvoices(int MonthSpan, IList<int> AllSitesInCurrentSelection, IQueryable<InvoiceSummary> InvoiceData)
+        {
+            var _data = new InvoiceStatsViewModel();
+            var TotalPotenialSitesInPeriod = InvoiceData.Select(s => s.SiteId).Distinct().Count();
+            var TotalPotentialInvoices = TotalPotenialSitesInPeriod * MonthSpan;
+            var TotalInvoicesOnFileForPeriod = InvoiceData.Count();
+
+            string _percentageMissingInvoices = (decimal.Round(
+                NumericExtensions.SafeDivision((TotalInvoicesOnFileForPeriod * 100.0M), (TotalPotentialInvoices * 1.0M)), 0, MidpointRounding.AwayFromZero)).ToString();
+            int _missingInvoices = TotalPotentialInvoices - TotalInvoicesOnFileForPeriod;
+            string _percentageOfSitesWithDataOnFile = (decimal.Round(
+                NumericExtensions.SafeDivision((TotalPotenialSitesInPeriod * 100.0M), (AllSitesInCurrentSelection.Count() * 1.0M)), 0, MidpointRounding.AwayFromZero)).ToString();
+            _data.PercentMissingInvoices = _percentageMissingInvoices;
+            _data.PercentSitesWithData = _percentageOfSitesWithDataOnFile;
+            _data.TotalSites = AllSitesInCurrentSelection.Count();
+            _data.TotalMissingInvoices = _missingInvoices;
+            _data.TotalActiveSites = TotalPotenialSitesInPeriod;
+
+            return _data;
+        }
+
+        private IQueryable<InvoiceSummary> ConstructInvoiceQueryForDates(IList<int> AllSitesInCurrentSelection, DateTime SelectFromDate, DateTime SelectToDate)
+        {
+            var InvoiceData = _repository.InvoiceSummaries.Where(s => AllSitesInCurrentSelection.Contains(s.SiteId) & s.InvoiceDate >= SelectFromDate & s.InvoiceDate <= SelectToDate);
+            return InvoiceData;
+        }
+
+        public AvailableFiltersModel GetAllFilters(string userId)
+        {
+            CurrentUserLevel _userLevel = GetUserLevel(userId);
+            AvailableFiltersModel _model = new AvailableFiltersModel();
+            IQueryable<Site> _query = _repository.Sites;
+            try
+            {
+                _model.Categories = AddQueryForGroupCustomerSite(_userLevel, _query).Select(t => t.IndustryClassification).Distinct().Project().To<FilterItem>().ToList();
+                _model.Divisions = AddQueryForGroupCustomerSite(_userLevel, _query).Select(t => t.GroupDivision).Distinct().Project().To<FilterItem>().ToList();
+            }
+            catch { }
+            return _model;
+        }
+
+
+
         # region Dashboard data select private functions
+        private IQueryable<Site> AddQueryForGroupCustomerSite(CurrentUserLevel userLevel, IQueryable<Site> query)
+        {
+            switch (userLevel.UserLevel)
+            {
+                case "Group":
+                    query = query.Where(s => s.Group.GroupName == userLevel.TopLevelName);
+                    break;
+                case "Customer":
+                    query = query.Where(s => s.Customer.CustomerName == userLevel.TopLevelName);
+                    break;
+                case "Site":
+                    query = query.Where(s => s.Customer.CustomerName == userLevel.TopLevelName);
+                    break;
+                default:
+                    break;
+            }
+            return query;
+        }
+
         private IQueryable<Site> SearchByIndustryClassification(List<int> keywords, IQueryable<Site> query)
         {
             //            IQueryable<Site> query = _repository.Sites;
@@ -272,11 +359,12 @@ namespace CimscoPortal.Services
             return _query;
         }
 
-        private Dictionary<DateTime, MonthlySummaryModel> GetDataSummary(IList<int> allSitesInCurrentSelection, DateTime selectFromDate, DateTime selectToDate)
+        private Dictionary<DateTime, MonthlySummaryModel> GetDataSummary(IQueryable<InvoiceSummary> InvoiceData, DateTime selectFromDate, DateTime selectToDate)
         {
-            var _siteData = _repository.InvoiceSummaries.Where(s => allSitesInCurrentSelection.Contains(s.SiteId) & s.InvoiceDate >= selectFromDate & s.InvoiceDate <= selectToDate);
-            var _invoiceTotals = (from p in _siteData
-                                  group p by p.InvoiceDate.Month + p.InvoiceDate.Year into g
+            //var InvoiceData = _repository.InvoiceSummaries.Where(s => allSitesInCurrentSelection.Contains(s.SiteId) & s.InvoiceDate >= selectFromDate & s.InvoiceDate <= selectToDate);
+
+            var _invoiceTotals = (from p in InvoiceData
+                                  group p by new { p.InvoiceDate.Month, p.InvoiceDate.Year } into g
                                   select new MonthlySummaryModel
                                   {
                                       InvoiceTotal = (from f in g select f.InvoiceTotal).Sum(),
@@ -284,7 +372,12 @@ namespace CimscoPortal.Services
                                       TotalInvoices = (from f in g select f).Count(),
                                       InvoiceDate = (from f in g select f.InvoiceDate).FirstOrDefault()
                                   }).ToDictionary(k => k.KeyInvoiceDate);
+            PopulateEmptyMonths(selectFromDate, selectToDate, _invoiceTotals);
+            return _invoiceTotals;
+        }
 
+        private static void PopulateEmptyMonths(DateTime selectFromDate, DateTime selectToDate, Dictionary<DateTime, MonthlySummaryModel> _invoiceTotals)
+        {
             DateTime _loopDate = selectFromDate;
             while (_loopDate <= selectToDate & _loopDate >= selectFromDate)
             {
@@ -294,30 +387,13 @@ namespace CimscoPortal.Services
                 }
                 _loopDate = _loopDate.AddMonths(1);
             }
-            return _invoiceTotals;
         }
 
         #endregion
 
-
-        public AvailableFiltersModel GetAllFilters(string userId)
-        {
-            CurrentUserLevel _userLevel = GetUserLevel(userId);
-            AvailableFiltersModel _model = new AvailableFiltersModel();
-            List<FilterItem> _allDivisions = new List<FilterItem>();
-
-            _model.Categories = _repository.Sites.Where(s => s.Group.GroupName == _userLevel.TopLevelName).Select(t => t.IndustryClassification).Distinct().Project().To<FilterItem>().ToList();
-            _model.Divisions = _repository.Sites.Where(s => s.Group.GroupName == _userLevel.TopLevelName).Select(t => t.GroupDivision).Distinct().Project().To<FilterItem>().ToList();
-            return _model;
-        }
-
-
-        //   SummaryData = new List<SummaryData> { new SummaryData() {   
-        //                                                        Title = "BILL TOTAL", 
-        //                                                        Detail = SqlFunctions.StringConvert(r.TotalEnergyCharges+r.TotalMiscCharges+r.TotalNetworkCharges) }, 
-
-
         #endregion Dashboard data
+
+
         // GPA ** THIS NEEDS TO BE REMOVED
         public SiteHierarchyViewModel GetSiteHierarchy(string userId)
         {

@@ -564,6 +564,12 @@ namespace CimscoPortal.Controllers
                 var result = userManager.Create(user, password);
                 result = userManager.SetLockoutEnabled(user.Id, false);
             }
+            else
+            {
+                user.PasswordHash = userManager.PasswordHasher.HashPassword(password);
+                userManager.Update(user);
+            }
+
             return user;
         }
 

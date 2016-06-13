@@ -82,7 +82,6 @@ F:\Project\CimscoPortal\CimscoPortal.Tests\bin\Debug\System.Web.Http.WebHost.xml
 F:\Project\CimscoPortal\CimscoPortal.Tests\obj\Debug\CimscoPortal.Tests.csprojResolveAssemblyReference.cache
 F:\Project\CimscoPortal\CimscoPortal.Tests\obj\Debug\CimscoPortal.Tests.dll
 F:\Project\CimscoPortal\CimscoPortal.Tests\obj\Debug\CimscoPortal.Tests.pdb
-P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\obj\Debug\CimscoPortal.Tests.csprojResolveAssemblyReference.cache
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\bin\Debug\AutoMapper.Net4.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\bin\Debug\AutoMapper.Unity.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\bin\Debug\CimscoPortal.Tests.dll.config
@@ -215,5 +214,6 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\bin\Debug\k
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\bin\Debug\ru\System.Spatial.resources.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\bin\Debug\zh-Hans\System.Spatial.resources.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\bin\Debug\zh-Hant\System.Spatial.resources.dll
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\obj\Debug\CimscoPortal.Tests.csprojResolveAssemblyReference.cache
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\obj\Debug\CimscoPortal.Tests.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\obj\Debug\CimscoPortal.Tests.pdb

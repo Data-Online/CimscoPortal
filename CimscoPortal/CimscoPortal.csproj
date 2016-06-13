@@ -288,6 +288,7 @@
     <Compile Include="Extensions\RegexUtilities.cs" />
     <Compile Include="Models\ByMonthViewModel.cs" />
     <Compile Include="Models\MonthlySummaryModel.cs" />
+    <Compile Include="Models\TextViewModel.cs" />
     <Compile Include="Models\UserSettingsViewModel.cs" />
     <Compile Include="Models\PortalDataModels.cs" />
     <Compile Include="Models\Internal\UserAccessModel.cs" />
@@ -367,10 +368,15 @@
     <Content Include="App_\common\directives\widget.js" />
     <Content Include="App_\core\core.module.js" />
     <Content Include="App_\core\skin.js" />
+    <Content Include="App_\detailBySite\detailBySite.module.js" />
+    <Content Include="App_\detailBySite\detailBySite.ctrl.js" />
+    <Content Include="App_\detailBySite\detailBySite.data.js" />
     <Content Include="App_\external\angular-ui-select\select.css" />
     <Content Include="App_\external\angular-ui-select\select.js" />
     <Content Include="App_\external\angular-ui-select\select.min.css" />
     <Content Include="App_\external\angular-ui-select\select.min.js" />
+    <Content Include="App_\external\easypiechart\angular.easypiechart.js" />
+    <Content Include="App_\external\easypiechart\angular.easypiechart.min.js" />
     <Content Include="App_\external\widget.js" />
     <Content Include="App_\messaging\messaging.module.js" />
     <Content Include="App_\messaging\messaging.data.js" />
@@ -1483,6 +1489,10 @@
     <Content Include="Scripts\tagsinput\bootstrap-tagsinput.min.js" />
     <Content Include="Scripts\textarea\jquery.autosize.js" />
     <Content Include="Scripts\textarea\jquery.autosize.min.js" />
+    <Content Include="Scripts\toastr\AngularToaster\toaster.css" />
+    <Content Include="Scripts\toastr\AngularToaster\toaster.js" />
+    <Content Include="Scripts\toastr\AngularToaster\toaster.min.css" />
+    <Content Include="Scripts\toastr\AngularToaster\toaster.min.js" />
     <Content Include="Scripts\toastr\toastr.js" />
     <Content Include="Scripts\toastr\toastr.min.js" />
     <Content Include="Scripts\utilities.js" />
@@ -1595,6 +1605,8 @@
     <Content Include="Views\Shared\_Default_.cshtml" />
     <Content Include="Views\Portal\Index2_.cshtml" />
     <Content Include="Views\Portal\SitesOverview.cshtml" />
+    <Content Include="Views\Portal\DetailBySite.cshtml" />
+    <Content Include="Views\Portal\DetailBySitePartials\_Analysis.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />

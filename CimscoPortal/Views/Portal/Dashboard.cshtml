@@ -6,10 +6,10 @@
 <link href="~/App_/external/angular-ui-select/select.min.css" rel="stylesheet" />
 <div data-ng-app="app.dashboard" data-ng-controller="app.dashboard.ctrl">
     <div class="row">
-        <div class="col-xs-12 col-md-12">
+        <div class="col-xs-12 col-md-6">
             <div class="widget">
-                <div class="widget-header">
-                    <span class="widget-caption">Welcome Message</span>
+                <div class="widget-header bg-themeprimary">
+                    <span class="widget-caption">{{welcomeHeader}}</span>
 
                     <div class="widget-buttons">
                         <a href="" widget-collapse></a>
@@ -17,15 +17,15 @@
                     </div>
                 </div>
                 <div class="widget-body">
-                    <div class="chartcontainer" style="width: 100%;">
-                        Welcome message goes here
+                    <div style="width: 100%;">
+                        <span ng-repeat="line in welcomeText"><h5>{{line}}</h5></span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
-    
+
+    <toaster-container></toaster-container>
     <div class="row">
         <div class="col-md-12">
             <div class="widget">
@@ -34,11 +34,11 @@
                     <span class="widget-caption">
                         <i ng-show="loading" class="fa fa-refresh fa-fw" ng-class="{'fa-spin' : loading}"></i>
                         <span class="sr-only">Loading...</span>
-                        <strong> {{totalSites}} Sites</strong> -
-                        <ng-pluralize count="invDistn.length"
+                        @*<strong> {{activeSites}}</strong> -*@
+                        <ng-pluralize count="activeSites"
                                       when="{'1': '{} Site,', 'other': '{} Sites,'}">
                         </ng-pluralize>
-                        showing {{monthSpan}} months of data                        
+                        showing {{monthSpan}} months of data
                     </span>
                     <div class="widget-buttons">
                         <label>
@@ -46,19 +46,16 @@
                             <span class="widget-caption text">Compare With Previous Year</span>
                         </label>
                     </div>
-                    <div class="widget-buttons">
+
+                    <div ng-if="divisionsData" ng-show="divisionsData.length > 0" class="widget-buttons">
                         <div class="btn-group">
-                            <div ng-if="divisionsModel">
-                                <div ng-dropdown-multiselect="" options="divisionsData" selected-model="divisionsModel" extra-settings="divisionsSettings" translation-texts="divisionsCustomTexts">
-                                </div>
+                            <div ng-dropdown-multiselect="" options="divisionsData" selected-model="divisionsModel" extra-settings="divisionsSettings" translation-texts="divisionsCustomTexts">
                             </div>
                         </div>
                     </div>
-                    <div class="widget-buttons">
+                    <div ng-if="categoriesData" ng-show="categoriesData.length > 0" class="widget-buttons">
                         <div class="btn-group">
-                            <div ng-if="categoriesModel">
-                                <div ng-dropdown-multiselect="" options="categoriesData" selected-model="categoriesModel" extra-settings="categoriesSettings" translation-texts="categoriesCustomTexts">
-                                </div>
+                            <div ng-dropdown-multiselect="" options="categoriesData" selected-model="categoriesModel" extra-settings="categoriesSettings" translation-texts="categoriesCustomTexts">
                             </div>
                         </div>
                     </div>
@@ -77,8 +74,8 @@
                 </div>
                 <div class="horizontal-space space-sm"></div>
                 <div class="row">
-                    <div class="col-xs-12 col-md-6">
-                        <div class="widget">
+                    <div class="col-xs-12 col-md-6" ng-style="{opacity: ((loading) && .4) || 1.0}">
+                        <div class=" widget">
                             <div class="widget-header">
                                 <span class="widget-caption">Electricity Cost</span>
 
@@ -94,7 +91,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-md-6">
+                    <div class="col-xs-12 col-md-6" ng-style="{opacity: ((loading) && .4) || 1.0}">
                         <div class="widget">
                             <div class="widget-header">
                                 <span class="widget-caption">Electricity Consumption</span>
@@ -115,7 +112,115 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-xs-12 col-md-12">
+            <div class="widget">
+                <div class="widget-header  bg-themeprimary">
+                    <span class="widget-caption">Summary of Data on File (based on {{monthSpan}} months of data)</span>
+
+                    <div class="widget-buttons">
+                        <a href="" widget-collapse></a>
+                        <a href="" widget-dispose></a>
+                    </div>
+                </div>
+                <div class="widget-body" style="height:105px;" ng-style="{opacity: ((loading) && .4) || 1.0}">
+                    @*<canvas tc-chartjs-pie chart-options="options" chart-data="data" auto-legend></canvas>*@
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="databox databox-lg databox-shadowed databox-graded radius-bordered">
+                                    <label data-toggle="tooltip" title="From the {{activeSites}} active sites, {{missingInvoices}} invoices are yet to be filed ({{missingPercent}}%)." data-placement="right" class="tooltip-palegreen">
+                                        <div class="databox-left bg-themeprimary" style="padding:4px;">
+                                            <div class="databox-piechart">
+                                                <span ng-if="missingPercent" class="EPchart" easypiechart options="missingOptions" percent="missingPercent">
+                                                    <span class="percent" ng-bind="missingPercent"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </label>
+                                    <div class="databox-right">
+                                        <span class="databox-number themesecondary">{{missingPercent}}% of invoices</span>
+                                        <div class="databox-text darkgray">From {{activeSites}} Sites ({{missingInvoices}} missing invoices)</div>
+                                        <div class="databox-stat themesecondary radius-bordered">
+                                            <i class="stat-icon icon-lg fa fa-tasks"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="databox databox-lg databox-shadowed databox-graded radius-bordered">
+                                    <label data-toggle="tooltip" title="Out of a possible {{totalSites}} sites, currently {{filedPercent}}% of sites have filed invoices." data-placement="right" class="tooltip-palegreen">
+                                        <div class="databox-left bg-themeprimary" style="padding:4px;">
+                                            <div class="databox-piechart">
+                                                <span ng-if="filedPercent" class="EPchart" easypiechart options="filedOptions" percent="filedPercent">
+                                                    <span class="percent" ng-bind="filedPercent"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </label>
+                                    <div class="databox-right">
+                                        <span class="databox-number themesecondary">{{filedPercent}}% of sites</span>
+                                        <div class="databox-text darkgray">{{totalSites - activeSites}} Sites on file with no data</div>
+                                        <div class="databox-stat themesecondary radius-bordered">
+                                            <i class="stat-icon icon-lg fa fa-tasks"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" ng-show="false">
+                                <div class="databox databox-lg databox-shadowed databox-graded radius-bordered">
+                                    <div class="databox-left bg-themesecondary" style="padding:4px;">
+                                        <div class="databox-piechart">
+                                            <span class="EPchart" easypiechart options="EPoptions" percent="EPpercent">
+                                                <span class="percent" ng-bind="EPpercent"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="databox-right">
+                                        <span class="databox-number themesecondary">65% of invoices</span>
+                                        <div class="databox-text darkgray">From 5 Sites</div>
+                                        <div class="databox-stat themesecondary radius-bordered">
+                                            <i class="stat-icon icon-lg fa fa-tasks"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<style>
+    .EPchart {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 60px;
+        margin-top: 7px;
+        margin-bottom: 5px;
+        text-align: center;
+    }
+
+        .EPchart canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+    .percent {
+        display: inline-block;
+        line-height: 60px;
+        z-index: 2;
+    }
+
+        .percent:after {
+            content: '%';
+            margin-left: 0.1em;
+            font-size: .8em;
+        }
+</style>
 
 @section PageScripts{
 
@@ -129,6 +234,5 @@
 
     <script src="~/App_/core/customFilters.js"></script>
 
-    <script src="~/Content/css/metro/MetroMenu.js"></script>
 
 }

@@ -13,6 +13,7 @@ namespace CimscoPortal.Infrastructure
         //DashboardViewData GetTotalCostsByMonth(string userId, int monthSpan, int? customerId);
         DashboardViewData GetTotalCostsAndConsumption(string userId, int monthSpan, string filter);
         AvailableFiltersModel GetAllFilters(string userId);
+        TextViewModel GetWelcomeScreen(string userId);
 
         CimscoPortal.Models.SiteHierarchyViewModel GetSiteHierarchy(string userId);
         CimscoPortal.Models.SummaryViewModel GetSummaryDataFor(string userId);

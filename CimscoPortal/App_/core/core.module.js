@@ -13,6 +13,8 @@
         /* 3rd party graphs: Angular directives */
         "angular-flot",
         "tc.chartjs",
-        "angularjs-dropdown-multiselect"
+        "angularjs-dropdown-multiselect",
+        "toaster",
+        "easypiechart"
     ]);
 })();
