@@ -24,18 +24,47 @@
             //var data = { "InvoiceId": 20, "Approved": true };
             var dataApi = "/api/invoiceApproval/" + invoiceId;
             return $http.post(dataApi);
-        }
+        };
 
+        var getTestModel = function () {
+            var dataApi = "/api/testmodel";
+            return $http.get(dataApi)
+                        .then(function (response) {
+                            return response.data;
+                        });
+        };
+
+        var getSiteDetails = function (siteId) {
+            var dataApi = "/api/siteDetails/" + siteId;
+            return $http.get(dataApi)
+                        .then(function (response) {
+                            return response.data;
+                        });
+        };
+
+        var getCostConsumptionData = function (siteId, monthSpan) {
+            var dataApi = "/api/CostAndConsumption/" + siteId + "/" + monthSpan;
+            return $http.get(dataApi)
+                        .then(function (response) {
+                            return response.data;
+                        });
+        };
+
+        
         return {
             getSiteInvoiceData: getSiteInvoiceData,
             getInvoiceData: getInvoiceData,
-            postInvoiceApproval: postInvoiceApproval
+            postInvoiceApproval: postInvoiceApproval,
+            getTestModel: getTestModel,
+            getCostConsumptionData: getCostConsumptionData,
+            getSiteDetails: getSiteDetails
+
         };
 
 
 
     };
-    var module = angular.module("app");
-    module.factory("soDataSource", soDataSource);
+    angular.module("app.siteOverview")
+        .factory("soDataSource", soDataSource);
 
 }());

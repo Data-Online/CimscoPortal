@@ -287,7 +287,9 @@
     <Compile Include="CustomConfig\UserRoles.cs" />
     <Compile Include="Extensions\RegexUtilities.cs" />
     <Compile Include="Models\ByMonthViewModel.cs" />
+    <Compile Include="Models\SiteDetailViewModel.cs" />
     <Compile Include="Models\MonthlySummaryModel.cs" />
+    <Compile Include="Models\TestModel.cs" />
     <Compile Include="Models\TextViewModel.cs" />
     <Compile Include="Models\UserSettingsViewModel.cs" />
     <Compile Include="Models\PortalDataModels.cs" />
@@ -332,6 +334,7 @@
     <Compile Include="Models\CommonInfoViewModel.cs" />
     <Compile Include="Models\InvoiceCountsViewModel.cs" />
     <Compile Include="Models\AvailableFiltersModel.cs" />
+    <Compile Include="Services\Partials\SiteDataService.cs" />
     <Compile Include="Services\PortalService.cs" />
     <Compile Include="SharedController.generated.cs">
       <DependentUpon>T4MVC.tt</DependentUpon>
@@ -365,6 +368,7 @@
     <Content Include="App\SiteOverview\ViewModels\SiteOverviewViewModel.js" />
     <Content Include="App_Data\TestJsonData.txt" />
     <Content Include="App_\common\directives\angular-flot.js" />
+    <Content Include="App_\common\directives\jqSparkline.js" />
     <Content Include="App_\common\directives\widget.js" />
     <Content Include="App_\core\core.module.js" />
     <Content Include="App_\core\skin.js" />
@@ -377,6 +381,11 @@
     <Content Include="App_\external\angular-ui-select\select.min.js" />
     <Content Include="App_\external\easypiechart\angular.easypiechart.js" />
     <Content Include="App_\external\easypiechart\angular.easypiechart.min.js" />
+    <Content Include="App_\external\nvd3\angularjs-nvd3-directives.js" />
+    <Content Include="App_\external\nvd3\angularjs-nvd3-directives.min.js" />
+    <Content Include="App_\external\nvd3\d3.min.js" />
+    <Content Include="App_\external\nvd3\nv.d3.min.css" />
+    <Content Include="App_\external\nvd3\nv.d3.min.js" />
     <Content Include="App_\external\widget.js" />
     <Content Include="App_\messaging\messaging.module.js" />
     <Content Include="App_\messaging\messaging.data.js" />
@@ -393,9 +402,10 @@
     <Content Include="App_\core\customFilters.js" />
     <Content Include="App_\core\invoiceDetail.data.js" />
     <Content Include="App_\core\invoiceDetail.ctrl.js" />
-    <Content Include="App_\core\siteOverview.ctrl.js" />
-    <Content Include="App_\core\siteOverview.data.js" />
     <Content Include="App_\dashboard\dashboard.module.js" />
+    <Content Include="App_\siteOverview\siteOverview.module.js" />
+    <Content Include="App_\siteOverview\siteOverview.ctrl.js" />
+    <Content Include="App_\siteOverview\siteOverview.data.js" />
     <Content Include="assets\fonts\BYekan.woff" />
     <Content Include="assets\fonts\fontawesome-webfont.eot" />
     <Content Include="assets\fonts\fontawesome-webfont.svg" />
@@ -1607,6 +1617,7 @@
     <Content Include="Views\Portal\SitesOverview.cshtml" />
     <Content Include="Views\Portal\DetailBySite.cshtml" />
     <Content Include="Views\Portal\DetailBySitePartials\_Analysis.cshtml" />
+    <Content Include="Views\Portal\DetailBySitePartials\_Approvals.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />

@@ -15,6 +15,12 @@
         "tc.chartjs",
         "angularjs-dropdown-multiselect",
         "toaster",
-        "easypiechart"
+        "easypiechart",
+
+        "googlechart",
+
+        "nvd3ChartDirectives",
+
+        "sparkline"
     ]);
 })();

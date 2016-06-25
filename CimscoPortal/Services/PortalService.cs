@@ -98,68 +98,22 @@ namespace CimscoPortal.Services
                 WelcomeText.Text.Add(WelcomeScreenText.Line3);
             if (WelcomeScreenText.Line4.Trim().Length > 0)
                 WelcomeText.Text.Add(WelcomeScreenText.Line4);
-            if (WelcomeScreenText.Line5.Trim().Length > 0)    
+            if (WelcomeScreenText.Line5.Trim().Length > 0)
                 WelcomeText.Text.Add(WelcomeScreenText.Line5);
             return WelcomeText;
         }
         #endregion
 
+        #region Site data
+        public SiteDetailViewModel GetSiteDetails(int siteId)
+        {
+            var _model = _repository.Sites.Where(s => s.SiteId == siteId).Project().To<SiteDetailViewModel>().FirstOrDefault();
+            return _model;
+        }
+
+        #endregion Site data
+
         #region Dashboard data
-        // Summary of Costs and Consumption filtered by division(s) and site categories
-        // Need data on missing information also
-        //public DashboardViewData GetTotalCostsByMonth(string userId, int monthSpan, int? customerId)
-        //{
-        //    if (!monthSpan.In(3, 6, 12, 24)) { monthSpan = 12; }
-
-        //    //string TestFilter = "15:16;847";
-        //    List<int> _divisionFilter = new List<int> { 15, 16 };
-
-        //    DateTime _firstDate = GetFirstDateForSelect(monthSpan);
-        //    Random rnd = new Random();
-
-        //    List<string> _months = new List<string>();
-        //    List<int> _years = new List<int>();
-        //    List<decimal> _values = new List<decimal>();
-        //    List<decimal> _values12 = new List<decimal>();
-
-        //    for (int _month = 1; _month <= monthSpan; _month++)
-        //    {
-        //        _months.Add(_firstDate.ToString("MMMM"));
-        //        _years.Add(_firstDate.Year);
-        //        _values.Add(rnd.Next(3, 10) * 1043.123M);
-        //        _values12.Add(rnd.Next(3, 10) * 879.383M);
-        //        _firstDate = _firstDate.AddMonths(1);
-        //    }
-
-        //    var data = new ByMonthViewModel()
-        //    {
-        //        Months = _months,
-        //        Years = _years,
-        //        Values = _values,
-        //        Values12 = _values12
-        //    };
-
-        //    //var data = new ByMonthViewModel() { MonthlyData = new List<MonthlyData> 
-        //    //                                            {new MonthlyData() { Value = rnd.Next(3, 10)*1000.0M, Month = 2 } }, 
-        //    //                                    MonthsOfData = 6, 
-        //    //                                    PreviousYearMonthlyData = new List<MonthlyData> 
-        //    //                                            {new MonthlyData() { Value = 11.0M, Month = 2 } } };
-        //    return new DashboardViewData();//data;
-        //}
-
-        //IQueryable<Site> SearchSites(params string[] keywords)
-        //{
-        //    var predicate = PredicateBuilder.False<Site>();
-
-        //    foreach (string keyword in keywords)
-        //    {
-        //        string temp = keyword;
-        //        predicate = predicate.Or(p => p.IndustryClassification.IndustryDescription.Contains(temp));
-        //    }
-        //    return _repository.Sites.Where(predicate);
-        //}
-
-
 
         public DashboardViewData GetTotalCostsAndConsumption(string userId, int monthSpan, string filter)
         {
@@ -180,8 +134,9 @@ namespace CimscoPortal.Services
             IList<int> _allSitesInCurrentSelection = AddQueryForGroupCustomerSite(_userLevel, _query).Select(t => t.SiteId).ToList();
 
             // Current date window
-            DateTime _selectFromDate = GetFirstDateForSelect(monthSpan);
-            DateTime _selectToDate = DateTime.Now.EndOfTheMonth();
+            DateTime _selectFromDate;
+            DateTime _selectToDate;
+            CalculateDateRange(monthSpan, out _selectFromDate, out _selectToDate);
 
             // Data for current (monthSpan) window
             IQueryable<InvoiceSummary> _invoiceData = ConstructInvoiceQueryForDates(_allSitesInCurrentSelection, _selectFromDate, _selectToDate);
@@ -191,10 +146,10 @@ namespace CimscoPortal.Services
             // Data for prior -12 months
             _invoiceData = ConstructInvoiceQueryForDates(_allSitesInCurrentSelection, _selectFromDate.AddYears(-1), _selectToDate.AddYears(-1));
             Dictionary<DateTime, MonthlySummaryModel> _invoiceTotals12 = GetDataSummary(_invoiceData, _selectFromDate.AddYears(-1), _selectToDate.AddYears(-1));
-            
+
             /// Allocate data to view model and return this to the view
-           //DashboardViewData _model = new DashboardViewData();
-           // var zzz = _invoiceTotals.OrderBy(s => s.Key);
+            //DashboardViewData _model = new DashboardViewData();
+            // var zzz = _invoiceTotals.OrderBy(s => s.Key);
             ByMonthViewModel _costData = new ByMonthViewModel()
             {
                 Months = _invoiceTotals.OrderBy(s => s.Key).Select(t => t.Value.MonthName).ToList(), // + ' ' + Get2LetterYear(t.Value.Year)).ToList(),
@@ -253,6 +208,28 @@ namespace CimscoPortal.Services
             return _model;
         }
 
+        public AvailableFiltersModel GetAllFilters(string userId)
+        {
+            CurrentUserLevel _userLevel = GetUserLevel(userId);
+            AvailableFiltersModel _model = new AvailableFiltersModel();
+            IQueryable<Site> _query = _repository.Sites;
+            try
+            {
+                _model.Categories = AddQueryForGroupCustomerSite(_userLevel, _query).Select(t => t.IndustryClassification).Distinct().Project().To<FilterItem>().ToList();
+                _model.Divisions = AddQueryForGroupCustomerSite(_userLevel, _query).Select(t => t.GroupDivision).Distinct().Project().To<FilterItem>().ToList();
+            }
+            catch { }
+            return _model;
+        }
+
+        # region Dashboard data select private functions
+
+        private static void CalculateDateRange(int monthSpan, out DateTime firstDate, out DateTime secondDate)
+        {
+            firstDate = GetFirstDateForSelect(monthSpan);
+            secondDate = DateTime.Now.EndOfTheMonth();
+        }
+
         private string Get2LetterYear(int fourLetterYear)
         {
             return fourLetterYear.ToString().Substring(2, 2);
@@ -281,27 +258,11 @@ namespace CimscoPortal.Services
 
         private IQueryable<InvoiceSummary> ConstructInvoiceQueryForDates(IList<int> AllSitesInCurrentSelection, DateTime SelectFromDate, DateTime SelectToDate)
         {
-            var InvoiceData = _repository.InvoiceSummaries.Where(s => AllSitesInCurrentSelection.Contains(s.SiteId) & s.InvoiceDate >= SelectFromDate & s.InvoiceDate <= SelectToDate);
+            var InvoiceData = _repository.InvoiceSummaries.Where(s => AllSitesInCurrentSelection.Contains(s.SiteId) & s.PeriodEnd >= SelectFromDate & s.PeriodEnd <= SelectToDate);
+            //            var InvoiceData = _repository.InvoiceSummaries.Where(s => AllSitesInCurrentSelection.Contains(s.SiteId) & s.InvoiceDate >= SelectFromDate & s.InvoiceDate <= SelectToDate);
             return InvoiceData;
         }
 
-        public AvailableFiltersModel GetAllFilters(string userId)
-        {
-            CurrentUserLevel _userLevel = GetUserLevel(userId);
-            AvailableFiltersModel _model = new AvailableFiltersModel();
-            IQueryable<Site> _query = _repository.Sites;
-            try
-            {
-                _model.Categories = AddQueryForGroupCustomerSite(_userLevel, _query).Select(t => t.IndustryClassification).Distinct().Project().To<FilterItem>().ToList();
-                _model.Divisions = AddQueryForGroupCustomerSite(_userLevel, _query).Select(t => t.GroupDivision).Distinct().Project().To<FilterItem>().ToList();
-            }
-            catch { }
-            return _model;
-        }
-
-
-
-        # region Dashboard data select private functions
         private IQueryable<Site> AddQueryForGroupCustomerSite(CurrentUserLevel userLevel, IQueryable<Site> query)
         {
             switch (userLevel.UserLevel)
@@ -393,6 +354,97 @@ namespace CimscoPortal.Services
 
         #endregion Dashboard data
 
+        #region Site Overview data
+
+
+        public GoogleChartViewModel GetCostsAndConsumption(int siteId, int monthSpan)
+        {
+            if (!monthSpan.In(3, 6, 12, 24)) { monthSpan = 12; }
+
+            siteId = 2;
+
+            DateTime _selectFromDate;
+            DateTime _selectToDate;
+            CalculateDateRange(monthSpan, out _selectFromDate, out _selectToDate);
+
+            var _query = _repository.InvoiceSummaries.Where(s => s.SiteId == siteId && s.PeriodEnd > _selectFromDate).OrderBy(o => o.PeriodEnd);
+            var _siteArea = _repository.Sites.Where(s => s.SiteId == siteId).Select(c => c.TotalFloorSpaceSqMeters).FirstOrDefault();
+
+            var _result = (from p in _query
+                           select new MonthlySummaryModel()
+                           {
+                               EnergyTotal = (decimal)p.KwhTotal,
+                               InvoiceTotal = (decimal)p.InvoiceTotal,
+                               InvoiceDate = p.PeriodEnd,
+                               TotalInvoices = 1
+                           }).ToDictionary(k => k.KeyInvoiceDate);
+            PopulateEmptyMonths(_selectFromDate, _selectToDate, _result);
+
+            GoogleChartViewModel _model = GoogleChartFor_PowerConsumption(_siteArea, _result);
+
+            return _model;
+        }
+
+        #region Side Overview private functions
+        //_new = new List<CPart>();
+        //_new.Add(new CPart { v = "January", f = null });
+        //_new.Add(new CPart { v = "19.12", f = "42 iteme" });
+        //_new.Add(new CPart { v = "12", f = "Only 12 items" });
+        //_new.Add(new CPart { v = "7", f = "7 servers" });
+        //_new.Add(new CPart { v = "4", f = null });
+        //_model.Rows.Add(new GoogleRows { Cparts = _new });
+        //_new.Add(new CPart { v = "February", f = null });
+        //_new.Add(new CPart { v = "13.32", f = null });
+        //_new.Add(new CPart { v = "1", f = "1 unit left!" });
+        //_new.Add(new CPart { v = "12", f = null });
+        //_new.Add(new CPart { v = "2", f = null });
+        //_model.Rows.Add(new GoogleRows { Cparts = _new });
+
+        private static GoogleChartViewModel GoogleChartFor_PowerConsumption(int? SiteArea, Dictionary<DateTime, MonthlySummaryModel> Result)
+        {
+            GoogleChartViewModel _model = new GoogleChartViewModel();
+            _model.Columns = new List<GoogleCols>();
+            _model.Rows = new List<GoogleRows>();
+
+            _model.Columns.Add(new GoogleCols { label = "Month", type = "string" });
+            _model.Columns.Add(new GoogleCols { label = "Invoice Total excl GST", type = "number" });
+            _model.Columns.Add(new GoogleCols { label = "Total Kwh", type = "number" });
+            _model.Columns.Add(new GoogleCols { label = "Cost / Sqm", type = "number" });
+            _model.Columns.Add(new GoogleCols { label = "Kwh / SqM", type = "number" });
+
+            List<CPart> _dataRows;
+
+            foreach (var _values in Result.OrderBy(o => o.Key))
+            {
+                string _currencySymbol = "$"; string _decimalFormat = "#,##0.00";
+                string _invoiceTotal = _values.Value.InvoiceTotal == 0 ? null : _values.Value.InvoiceTotal.ToString();
+                string _invoicePower = _values.Value.EnergyTotal == 0 ? null : _values.Value.EnergyTotal.ToString();
+                string _invoiceTotalPerSqM = _values.Value.InvoiceTotal ==
+                    0 ? null : NumericExtensions.SafeDivision(_values.Value.InvoiceTotal, (decimal)SiteArea).ToString();
+                string _invoicePowerPerSqM = _values.Value.EnergyTotal ==
+                    0 ? null : NumericExtensions.SafeDivision(_values.Value.EnergyTotal, (decimal)SiteArea).ToString();
+
+                _dataRows = new List<CPart>();
+                _dataRows.Add(new CPart { v = _values.Value.InvoiceDate.ToString("MMMM") + " '" + _values.Value.InvoiceDate.ToString("yy"), f = null });
+                _dataRows.Add(new CPart { v = _invoiceTotal, f = _values.Value.InvoiceTotal.ToString(_currencySymbol + _decimalFormat) });
+                _dataRows.Add(new CPart { v = _invoicePower, f = _values.Value.EnergyTotal.ToString(_decimalFormat) });
+                _dataRows.Add(new CPart
+                {
+                    v = _invoiceTotalPerSqM,
+                    f = NumericExtensions.SafeDivision(_values.Value.InvoiceTotal, (decimal)SiteArea).ToString(_currencySymbol + _decimalFormat)
+                });
+                _dataRows.Add(new CPart
+                {
+                    v = _invoicePowerPerSqM,
+                    f = NumericExtensions.SafeDivision(_values.Value.EnergyTotal, (decimal)SiteArea).ToString(_decimalFormat)
+                });
+                _model.Rows.Add(new GoogleRows { Cparts = _dataRows });
+            };
+            return _model;
+        }
+        #endregion
+
+        #endregion
 
         // GPA ** THIS NEEDS TO BE REMOVED
         public SiteHierarchyViewModel GetSiteHierarchy(string userId)

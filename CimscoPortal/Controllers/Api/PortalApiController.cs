@@ -34,6 +34,16 @@ namespace CimscoPortal.Controllers.Api
         }
 
         [HttpGet]
+        [Route("testmodel")]
+        public HttpResponseMessage TestModel(HttpRequestMessage request)
+        {
+            return request.CreateResponse<GoogleChartViewModel>(HttpStatusCode.OK,
+                            _portalService.GetCostsAndConsumption(2, 12));
+        }
+
+
+
+        [HttpGet]
         [Route("messages")]
         public HttpResponseMessage GetMessages(HttpRequestMessage request)
         {
@@ -88,6 +98,26 @@ namespace CimscoPortal.Controllers.Api
         //    var data = _portalService.GetTotalCostsByMonth(User.Identity.Name, monthSpan, null);
         //    return request.CreateResponse<DashboardViewData>(HttpStatusCode.OK, data);
         //}
+
+        [HttpGet]
+        [Route("siteDetails/{siteId}")]
+        public HttpResponseMessage GetSiteDetails(HttpRequestMessage request, int siteId)
+        {
+            if (GetCurrentUserAccess().ValidSites.Contains(siteId))
+            {
+                return request.CreateResponse<SiteDetailViewModel>(HttpStatusCode.OK,
+                                _portalService.GetSiteDetails(siteId));
+            }
+            return request.CreateResponse(HttpStatusCode.Forbidden);
+        }
+
+        [HttpGet]
+        [Route("CostAndConsumption/{siteId}/{monthSpan}")]
+        public HttpResponseMessage GetCostsAndConsumption(HttpRequestMessage request, int siteId, int monthSpan)
+        {
+            return request.CreateResponse<GoogleChartViewModel>(HttpStatusCode.OK,
+                            _portalService.GetCostsAndConsumption(siteId, monthSpan));
+        }
 
         [HttpGet]
         [Route("TotalCostAndConsumption/{monthSpan}/{filter}")]

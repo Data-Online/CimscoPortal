@@ -175,6 +175,12 @@ namespace CimscoPortal.App_Start
                 .ForMember(m => m.Label, opt => opt.MapFrom(s => s.IndustryDescription))
                 .ForMember(m => m.Id, opt => opt.MapFrom(s => s.IndustryId))
                 ;
+
+            Mapper.CreateMap<Site, SiteDetailViewModel>()
+                .ForMember(m => m.TotalFloorSpaceSqMeters, opt => opt.NullSubstitute(0))
+                .ForMember(m => m.LandSqMeters, opt => opt.NullSubstitute(0))
+                .ForMember(m => m.ProductiveFloorSpaceSqMeters, opt => opt.NullSubstitute(0))
+                .ForMember(m => m.IndustryDescription, opt => opt.MapFrom(s => s.IndustryClassification.IndustryDescription));
         }
 
 

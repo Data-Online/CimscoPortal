@@ -6,7 +6,8 @@ namespace CimscoPortal.Infrastructure
 {
     public interface IPortalService
     {
-
+        // Test data
+        GoogleChartViewModel GetCostsAndConsumption(int siteId, int monthSpan);
         // Refactor status -->
         //CimscoPortal.Models.CustomerHierarchyViewModel GetCompanyHierarchy(string userId);
 
@@ -14,6 +15,7 @@ namespace CimscoPortal.Infrastructure
         DashboardViewData GetTotalCostsAndConsumption(string userId, int monthSpan, string filter);
         AvailableFiltersModel GetAllFilters(string userId);
         TextViewModel GetWelcomeScreen(string userId);
+        SiteDetailViewModel GetSiteDetails(int siteId);
 
         CimscoPortal.Models.SiteHierarchyViewModel GetSiteHierarchy(string userId);
         CimscoPortal.Models.SummaryViewModel GetSummaryDataFor(string userId);

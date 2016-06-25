@@ -4,35 +4,39 @@
     Layout = "~/Views/Shared/_Default.cshtml";
 }
 
-<div data-ng-app="app" data-ng-controller="app.core.siteOverview" data-ng-init="setSiteId(@ViewBag.siteId)">
+<div data-ng-app="app.siteOverview" data-ng-controller="app.siteOverview.ctrl" data-ng-init="setSiteId(@ViewBag.siteId)">
+    <input type="hidden" id="siteId" value="@ViewBag.siteId" />
     <div class="row">
         <div class="col-lg-6 col-sm-6 col-xs-12">
             <div class="widget">
-                <div class="widget-header  bordered-blue">
-                    <span class="widget-caption">Company Details</span>
+                <div class="widget-header  bordered-blue bg-themeprimary">
+                    <span class="widget-caption">Site Details</span>
                     <div class="widget-buttons">
-                        <a href="" widget-config></a>
-                        <a href="" widget-maximize></a>
                         <a href="" widget-collapse></a>
                         <a href="" widget-dispose></a>
                     </div><!--Widget Buttons-->
                 </div>
                 <div class="widget-body">
                     <div>
-                        Company Details and address
-                        <input type="hidden" id="siteId" value="@ViewBag.siteId" />
-                        <span>Site id = @ViewBag.siteId</span>
+                        <h2>{{siteData.siteName}}</h2>
+                        <span>{{siteData.address1}}</span>
+                        <span ng-show="siteData.address2.length > 0">,{{siteData.address2}}</span>
+                        <span ng-show="siteData.address2.length > 0">,{{siteData.address3}}</span>
+                        </br>
+                        <span>
+                            Site Floor Space : {{siteData.totalFloorSpaceSqMeters}} Sq Meters
+                        </span>
+
+                        @*<span>Site id = @ViewBag.siteId</span>*@
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-lg-6 col-sm-6 col-xs-12">
             <div class="widget">
-                <div class="widget-header  bordered-blue">
+                <div class="widget-header  bordered-blue bg-themeprimary">
                     <span class="widget-caption">Summary Data</span>
                     <div class="widget-buttons">
-                        <a href="" widget-config></a>
-                        <a href="" widget-maximize></a>
                         <a href="" widget-collapse></a>
                         <a href="" widget-dispose></a>
                     </div><!--Widget Buttons-->
@@ -45,85 +49,15 @@
             </div>
         </div>
     </div>
-    @*<div class="row">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <div class="row">
-                    <div class="col-xs-12">
-
-                        <div class="dashboard-box">
-                            <div class="box-header">
-                                <div class="deadline">
-                                    {{tabTableHeader}}
-                                </div>
-                            </div>
-                            <div class="widget-header  bordered-themeprimary">
-                                <span ng-repeat="_month in monthSpanOptions" data-ng-click="reviseMonths(_month)" class="widget-caption" ng-class="{'themeprimary' : monthSpan==_month}" style=" padding-left:5px; padding-right:5px">
-                                    <i class="widget-icon fa fa-calendar"></i>
-                                    {{_month}} months
-                                </span>
-                            </div>
-                            <div class="box-tabbs">
-                                <div class="tabbable">
-                                    <ul class="nav nav-tabs tabs-flat  nav-justified" id="myTab11">
-                                        <li class="active">
-                                            <a data-toggle="tab" href="#invoices">
-                                                Invoices
-                                            </a>
-                                        </li>
-                                        <li ng-show="true">
-                                            <a data-toggle="tab" href="#invoicevalue">
-                                                Invoice Value
-                                            </a>
-                                            </ling-show>
-                                        <li ng-show="true">
-                                            <a data-toggle="tab" href="#consumption">
-                                                Consumption
-                                            </a>
-                                        </li>
-                                    </ul>
-                                    <div class="tab-content tabs-flat no-padding">
-                                        <div id="invoices" class="tab-pane animated fadeInUp no-padding-bottom active" style="padding:20px 20px 0 20px;">
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    @Html.Partial("SiteOverviewPartials/_InvoiceList")
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="invoicevalue" class="tab-pane padding-5 animated fadeInUp">
-                                            <div class="row">
-                                                <div class="col-lg-1"></div>
-                                                <div class="col-lg-10">
-                                                    @Html.Partial("SiteOverviewPartials/_InvoiceValue")
-                                                </div>
-                                                <div class="col-lg-1"></div>
-                                            </div>
-                                        </div>
-                                        <div id="consumption" class="tab-pane  animated fadeInUp">
-                                            <div class="row">
-                                                <div class="col-lg-1"></div>
-                                                <div class="col-lg-10">
-                                                    @Html.Partial("SiteOverviewPartials/_Consumption")
-                                                </div>
-                                                <div class="col-lg-1"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>*@
+    <toaster-container></toaster-container>
     <div class="row">
         <div class="col-md-12">
             <div class="widget">
                 <div class="widget-header bg-themeprimary">
-                    <i class="widget-icon fa fa-compress"></i>
-                    <span class="widget-caption"><strong> {{tabTableHeader}}</strong></span>
+                    <span class="widget-caption"><strong> {{siteData.siteName}}</strong> - showing {{monthSpan}} months of data</span>
                     <div class="widget-buttons">
                         <div class="btn-group">
-                            <a href="javascript:void(0);" class="btn btn-default btn-sm">Filter</a>
+                            <a href="javascript:void(0);" data-toggle="dropdown" class="btn btn-default btn-sm">Last {{monthSpan}} Months</a>
                             <a href="javascript:void(0);" data-toggle="dropdown" class="btn btn-primary  btn-sm dropdown-toggle " aria-expanded="false"><i class="fa fa-angle-down"></i></a>
                             <ul class="dropdown-menu">
                                 <li ng-repeat="_month in monthSpanOptions" data-ng-click="reviseMonths(_month)" class="widget-caption" ng-class="{'themeprimary' : monthSpan==_month}">
@@ -137,43 +71,35 @@
                     <div class="box-tabbs">
                         <div class="tabbable">
                             <ul class="nav nav-tabs tabs-flat  nav-justified" id="myTab11">
-                                <li class="active">
+                                <li class="active" ng-show="true">
+                                    <a data-toggle="tab" href="#consumption" ng-click="updateCC();">
+                                        Charges and Consumption
+                                    </a>
+                                </li>
+                                <li ng-show="true">
                                     <a data-toggle="tab" href="#invoices">
                                         Invoices
                                     </a>
                                 </li>
-                                <li ng-show="true">
-                                    <a data-toggle="tab" href="#invoicevalue">
-                                        Invoice Value
-                                    </a>
-                                    </ling-show>
-                                <li ng-show="true">
-                                    <a data-toggle="tab" href="#consumption">
-                                        Consumption
-                                    </a>
-                                </li>
                             </ul>
                             <div class="tab-content tabs-flat no-padding">
-                                <div id="invoices" class="tab-pane animated fadeInUp no-padding-bottom active" style="padding:20px 20px 0 20px;">
+                                <div id="invoices" class="tab-pane animated fadeInUp no-padding-bottom" style="padding:20px 20px 0 20px;">
                                     <div class="row">
-                                        <div class="col-lg-12">
+                                        <div class="col-lg-12" style="min-height:600px;" ng-style="{opacity: ((loading) && .4) || 1.0}">
                                             @Html.Partial("SiteOverviewPartials/_InvoiceList")
                                         </div>
                                     </div>
                                 </div>
-                                <div id="invoicevalue" class="tab-pane padding-5 animated fadeInUp">
+                                <div id="consumption" class="tab-pane  animated fadeInUp active">
                                     <div class="row">
-                                        <div class="col-lg-1"></div>
-                                        <div class="col-lg-10">
-                                            @Html.Partial("SiteOverviewPartials/_InvoiceValue")
+                                        <div class="col-lg-1">
+                                            <span class="databox-number white tootip-info pull-right" data-container="body" data-titleclass="bordered-blue" data-class="dark" data-toggle="popover-hover" data-placement="auto"
+                                                  data-title="Site Cost and Consumption Data" data-content="Graphs show total cost and consumption data for the selected time period. If an invoice is missing, no data point is shown." 
+                                                        data-original-title="" title="">
+                                                <i class="fa fa-2x fa-info-circle" style="color:#262626"></i>
+                                            </span>
                                         </div>
-                                        <div class="col-lg-1"></div>
-                                    </div>
-                                </div>
-                                <div id="consumption" class="tab-pane  animated fadeInUp">
-                                    <div class="row">
-                                        <div class="col-lg-1"></div>
-                                        <div class="col-lg-10">
+                                        <div class="col-lg-10" style="min-height:600px;" ng-style="{opacity: ((loading) && .4) || 1.0}">
                                             @Html.Partial("SiteOverviewPartials/_Consumption")
                                         </div>
                                         <div class="col-lg-1"></div>
@@ -188,27 +114,12 @@
     </div>
 </div>
 @section PageScripts{
-
-    @*<script src="~/Scripts/charts/flot/jquery.flot.crosshair.js"></script>*@
-    @*<script src="~/Scripts/charts/flot/jquery.flot.selection.js"></script>*@
-    <script src="~/Scripts/charts/flot/jquery.flot.min.js"></script>
-    <script src="~/Scripts/charts/flot/jquery.flot.orderBars.js"></script>
-    <script src="~/Scripts/charts/flot/jquery.flot.resize.js"></script>
-    <script src="~/Scripts/charts/flot/jquery.flot.axislabels.js"></script>
-    <script src="~/Scripts/charts/flot/jquery.flot.tooltip.js"></script>
-    <script src="~/Scripts/charts/flot/jquery.flot.categories.min.js"></script>
-    <script src="~/App_/common/directives/angular-flot.js"></script>
-    <script src="~/App_/common/directives/widget.js"></script>
-    <script src="~/App_/core/App.js"></script>
-    <script src="~/App_/core/userDataSource.data.js"></script>
-    <script src="~/App_/core/siteOverview.data.js"></script>
-    <script src="~/App_/core/siteOverview.ctrl.js"></script>
+    <script src="~/App_/siteOverview/siteOverview.data.js"></script>
+    <script src="~/App_/siteOverview/siteOverview.ctrl.js"></script>
     <script src="~/App_/core/customFilters.js"></script>
-    @*<script src="~/Scripts/angular-ui-utils/angular-ui-utils.js"></script>*@
-
 }
-<style type="text/css">
 
+<style type="text/css">
     span.label.label-info.pull-right {
         position: absolute;
         left: -44px;
@@ -272,7 +183,6 @@
             top: 35px;
         }
     }
-
 </style>
 <style>
     .progress-compact {

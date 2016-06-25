@@ -5,7 +5,7 @@
 }
 
 @*<div data-ng-app="companyOverview" data-ng-controller="companyOverviewViewModel">*@
-<div data-ng-app="app.detailBySite" data-ng-controller="app.detailBySite.ctrl">
+<data-ng-app ="app.detailBySite" data-ng-controller="app.detailBySite.ctrl">
     <div class="row">
         <div class="col-lg-6 col-sm-6 col-xs-12" ng-show="customerList.length>0">
             <div class="widget">
@@ -35,10 +35,6 @@
                                 'other': '{} Sites,'}">
                         </ng-pluralize>
                         showing {{monthSpan}} months of data
-                        <span class="databox-number white tootip-info" data-container="body" data-titleclass="bordered-blue" data-class="dark" data-toggle="popover-hover" data-placement="auto"
-                              data-title="Comparing Data Between Sites" data-content="Lines show comparative costs and consumption between the selected sites. The largest value in each category will fill the available space." data-original-title="" title="">
-                            <i class="fa fa-2x fa-question "></i>
-                        </span>
                     </span>
                     <div class="widget-buttons">
                         <div class="btn-group">
@@ -61,18 +57,18 @@
                                         Totals and Analysis
                                     </a>
                                 </li>
-                                @*<li>
-                                        <a data-toggle="tab" href="#approvals">
-                                            Approvals
-                                        </a>
-                                    </li>*@
+                                <li>
+                                    <a data-toggle="tab" href="#approvals" ng-show="false">
+                                        Approvals
+                                    </a>
+                                </li>
                             </ul>
                             <div class="tab-content tabs-flat no-padding">
-                                <div id="analysis" class="tab-pane animated fadeInUp no-padding-bottom active" style="padding:20px 20px 0 20px;">
+                                <div id="analysis" class="tab-pane animated fadeInUp no-padding-bottom active" style="padding:20px 20px 0 20px;" ng-style="{opacity: ((loading) && .4) || 1.0}">
                                     @Html.Partial("DetailBySitePartials/_Analysis")
                                 </div>
                                 <div id="approvals" class="tab-pane animated fadeInUp no-padding-bottom" style="padding:20px 20px 0 20px;">
-                                    @Html.Partial("CompanyOverviewPartials/_Approvals")
+                                    @Html.Partial("DetailBySitePartials/_Approvals")
                                 </div>
                             </div>
                         </div>
@@ -80,34 +76,58 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
-@section PageScripts{
-    @*<script src="~/Scripts/charts/flot/jquery.flot.crosshair.js"></script>
-        <script src="~/Scripts/charts/flot/jquery.flot.selection.js"></script>
-        <script src="~/Scripts/charts/flot/jquery.flot.min.js"></script>
-        <script src="~/Scripts/charts/flot/jquery.flot.resize.js"></script>
-        <script src="~/Scripts/charts/flot/jquery.flot.axislabels.js"></script>
-        <script src="~/Scripts/charts/flot/jquery.flot.tooltip.js"></script>
-        <script src="~/Scripts/charts/flot/angular-flot.js"></script>*@
 
-    @*<script src="~/App/Directives/widget.js"></script>
-        <script src="~/App_/core/App.js"></script>
-        <script src="~/App_/core/userDataSource.data.js"></script>*@
-    <script src="~/App_/detailBySite/detailBySite.data.js"></script>
-    <script src="~/App_/detailBySite/detailBySite.ctrl.js"></script>
-    <script src="~/App_/core/customFilters.js"></script>
-    @*<script src="~/App_/common/directives/widget.js"></script>
+        @*<div class="row">
+            <div class="col-lg-6 col-sm-6 col-xs-12">
+                <h5 class="row-title"><i class="typcn typcn-th-menu"></i>Default List</h5>
+                <div class="dd">
+                    <ol class="dd-list">
+                        <li class="dd-item bordered-inverse">
+                            <div class="dd-handle">
+                                First Level
+                            </div>
+                        </li>
+                        <li class="dd-item" data-id="2">
+                            <div class="dd-handle">Second Level</div>
+                            <ol class="dd-list" style="">
+                                <li class="dd-item" data-id="3">
+                                    <div class="dd-handle">
+                                        Third Level
+                                    </div>
+                                    <ol class="dd-list">
+                                        <li class="dd-item bordered-blue" data-id="6">
+                                            <div class="dd-handle"> Subitem 1 </div>
+                                        </li>
+
+                                        <li class="dd-item bordered-palegreen" data-id="7">
+                                            <div class="dd-handle"> Subitem 2</div>
+                                        </li>
+
+                                        <li class="dd-item bordered-danger" data-id="8">
+                                            <div class="dd-handle"> SubItem 3</div>
+                                        </li>
+                                    </ol>
+                                </li>
+                            </ol>
+                        </li>
+                    </ol>
+
+                </div>
+            </div>
+        </div>*@
+    </div>
+    @section PageScripts{
+        <script src="~/App_/detailBySite/detailBySite.data.js"></script>
+        <script src="~/App_/detailBySite/detailBySite.ctrl.js"></script>
         <script src="~/App_/core/customFilters.js"></script>
-        <script src="~/Scripts/angular-ui-utils/angular-ui-utils.js"></script>*@
-}
-@*<style>
-        .progress-compact {
-            /*background-color: #f5f5f5;
-                                                        border-radius: 4px;
-                                                        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
-                                                        height: 20px;*/
-            margin-bottom: 5px;
-            overflow: hidden;
-        }
-    </style>*@
+
+        @*<script src="~/Scripts/nestable/jquery.nestable.min.js"></script>
+        <script type="text/javascript">
+            jQuery(function ($) {
+                $('.dd').nestable();
+                $('.dd-handle a').on('mousedown', function (e) {
+                    e.stopPropagation();
+                });
+            });
+        </script>*@
+    }

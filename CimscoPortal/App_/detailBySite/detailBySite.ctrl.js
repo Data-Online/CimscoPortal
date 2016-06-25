@@ -5,10 +5,27 @@
         .controller("app.detailBySite.ctrl", detailBySite)
 
     detailBySite.$inject = ['$scope', 'soDataSource', 'userDataSource'];
-    function detailBySite ($scope, soDataSource, userDataSource) {
-       // $scope.monthSpanOptions = [3, 6, 12, 24];
+    function detailBySite($scope, soDataSource, userDataSource) {
+        // $scope.monthSpanOptions = [3, 6, 12, 24];
         var monthSpan = 12; // Refactor out
+        // NVD3 test
+        $scope.exampleData = [  [1025409600000, 0], [1028088000000, -6.3382185140371], [1030766400000, -5.9507873460847], [1033358400000, -11.569146943813], [1036040400000, -5.4767332317425], [1038632400000, 0.50794682203014],
+                                [1041310800000, -5.5310285460542], [1043989200000, -5.7838296963382], [1046408400000, -7.3249341615649], [1049086800000, -6.7078630712489], [1051675200000, 0.44227126150934], [1054353600000, 7.2481659343222]];
+        $scope.exampleData = [[1, 10], [2, 11], [3, 12], [4, 13], [5, 14], [6, 15],
+                              [7, 16], [8, 20], [9, 22], [10, 22], [11, 43], [12, 54]];
 
+        $scope.slData = [12398, 23221, 33421, 34251, 34921, 34252];
+
+        $scope.xFunction = function () {
+            return function (d) {
+                return d[0];
+            }
+        }
+        $scope.yFunction = function () {
+            return function (d) {
+                return d[1];
+            }
+        }
         var onRepo = function (data) {
             var index; var len;
             var tallyArray = [];
@@ -20,9 +37,8 @@
             var maxUnitsPerSqm = getUnitsPerSqm(data.invoiceCosts);
             var maxCostPerSqm = getMaxCostPerSqm(data.invoiceCosts);
             console.log(maxTotalInvoices);
-            for (index = 0, len = data.invoiceTallies.length; index < len; ++index)
-            {
-               // maxEnergyCharge = maxEnergyCharge * data.invoiceTallies[index].calculatedLossRate;
+            for (index = 0, len = data.invoiceTallies.length; index < len; ++index) {
+                // maxEnergyCharge = maxEnergyCharge * data.invoiceTallies[index].calculatedLossRate;
                 tallyArray.push({
                     "site": data.invoiceTallies[index].siteName,
                     "siteId": data.invoiceTallies[index].siteId,
@@ -53,7 +69,7 @@
                     "upsqm": [{ "reading": data.invoiceCosts[index].unitsPerSqm, "percent": data.invoiceCosts[index].unitsPerSqm / maxUnitsPerSqm * 100, "units": "" }],
                     "cpsqm": [{ "reading": data.invoiceCosts[index].costPerSqm, "percent": data.invoiceCosts[index].costPerSqm / maxCostPerSqm * 100, "units": "$" }]
                 });
-              //  console.log("energy charge = " + data.invoiceCosts[index].energyCharge + " max charge = " + maxEnergyCharge + " loss rate = " + data.invoiceTallies[index].calculatedLossRate);
+                //  console.log("energy charge = " + data.invoiceCosts[index].energyCharge + " max charge = " + maxEnergyCharge + " loss rate = " + data.invoiceTallies[index].calculatedLossRate);
             };
             // console.log(sumArray);
             //console.log(tallyArray);
@@ -64,6 +80,8 @@
             $scope.customerList = data.customerList;
             //console.log($scope.customerList);
             console.log('change month span ... ' + monthSpan);
+
+            $scope.loading = false;
         };
 
         var onUserData = function (data) {
@@ -75,10 +93,11 @@
 
             soDataSource.getInvoiceTally(monthSpan, companyId)
                 .then(onRepo, onError);
+
+            $scope.loading = false;
         };
 
-        var getMaxKwh = function(list)
-        {
+        var getMaxKwh = function (list) {
             var max = 0;
             var index; var len;
             for (index = 0, len = list.length; index < len; ++index) {
@@ -108,7 +127,7 @@
             var index; var len;
             for (index = 0, len = list.length; index < len; ++index) {
                 max = Math.max(max, list[index].energyCharge);
-               //console.log("energy charge : " + list[index].energyCharge);
+                //console.log("energy charge : " + list[index].energyCharge);
             }
             return max;
         };
@@ -121,12 +140,13 @@
             }
             return max;
         };
-       
+
         var onError = function (reason) {
             $scope.reason = reason;
         };
 
         $scope.reviseMonths = function (newMonthSpan) {
+            $scope.loading = true;
             console.log('revise data...' + newMonthSpan);
             var companyId = 0;
             monthSpan = newMonthSpan;
@@ -141,6 +161,7 @@
                 .then(onRepo, onError);
         };
 
+        $scope.loading = true;
         userDataSource.getUserData()
             .then(onUserData, onError);
 
@@ -161,6 +182,59 @@
             }
         };
 
+        //
+        // Google chart sparkline test
+        $scope.myChartObject = {};
+
+        var _cols = [];
+        var _rows = [];
+        var _cpart = [];
+
+        init();
+
+        function init() {
+            $scope.myChartObject.type = "LineChart";
+            $scope.myChartObject.displayed = false;
+            $scope.myChartObject.data = {
+                "cols": [{
+                    id: "month",
+                    label: "Month",
+                    type: "string"
+                }, {
+                    id: "laptop-id",
+                    label: "Laptop",
+                    type: "number"
+                }],
+                "rows": [{
+                    c: [{
+                        v: ""
+                    }, {
+                        v: 19,
+                        f: ""
+                    }]
+                }, {
+                    c: [{
+                        v: ""
+                    }, {
+                        v: 13
+                    }]
+
+                }, {
+                    c: [{
+                        v: ""
+                    }, {
+                        v: 24
+                    }]
+                }]
+            };
+            $scope.myChartObject.options = {
+                "width": 120, "height": 40, "showAxisLines": false,  "showValueLabels": false, "labelPosition": 'left'
+            };
+
+            $scope.myChartObject.view = {
+                columns: [0, 1]
+            };
+        }
         //console.log($scope.invoiceDistribution);
         //console.log($scope.invDistn);
 
@@ -332,4 +406,5 @@
         };
 
     };
+
 }());

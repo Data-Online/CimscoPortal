@@ -11,7 +11,8 @@
         /* Feature areas*/
        
         "app.dashboard",
-        "app.detailBySite"
+        "app.detailBySite",
+        "app.siteOverview"
 
     ]);
 

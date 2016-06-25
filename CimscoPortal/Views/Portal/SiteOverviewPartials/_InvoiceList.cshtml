@@ -36,7 +36,7 @@
             @*<div class="clearfix visible-md visible-lg hidden-xs hidden-sm"> &nbsp;</div>*@
         </div>
     </div>
-    <div class="col-lg-6" ng-init="options={};options.selected=true; options.all=true">
+    <div class="col-lg-6" ng-init="options={};options.selected=true; options.all=true;" ng-if="selectItems">
         <div class="form-title bordered-bottom bordered-lightred">
             <span>Show invoice types</span>
         </div>
@@ -45,13 +45,13 @@
                 <div class="row">
                     <span class="checkbox col-lg-5">
                         <label>
-                            <input class="colored-success" ng-model="selectItems.showAll" type="checkbox" ng-init="selectItems.showAll=options.all">
+                            <input class="colored-success" ng-model="selectItems.showAll" type="checkbox" ng-init="selectItems.showAll" ng-click="toggleAll()">
                             <span class="text">All</span>
                         </label>
                     </span>
                     <span class="checkbox col-lg-7">
                         <label>
-                            <input class="colored-success" ng-model="selectItems.showApproved" type="checkbox" ng-init="selectItems.showApproved=options.selected">
+                            <input class="colored-success" ng-model="selectItems.showApproved" type="checkbox" ng-init="selectItems.showApproved" ng-click="selectItems.showAll=false">
                             <span class="text">Approved</span>
                         </label>
                     </span>
@@ -61,13 +61,13 @@
                 <div class="row">
                     <span class="checkbox col-lg-5">
                         <label>
-                            <input class="colored-success" ng-model="selectItems.showMissing" type="checkbox" ng-init="selectItems.showMissing=options.selected">
+                            <input class="colored-success" ng-model="selectItems.showMissing" type="checkbox" ng-init="selectItems.showMissing" ng-click="selectItems.showAll=false">
                             <span class="text">Missing</span>
                         </label>
                     </span>
                     <span class="checkbox col-lg-7">
                         <label>
-                            <input class="colored-success" ng-model="selectItems.showToApprove" type="checkbox" ng-init="selectItems.showToApprove=options.selected">
+                            <input class="colored-success" ng-model="selectItems.showToApprove" type="checkbox" ng-init="selectItems.showToApprove" ng-click="selectItems.showAll=false">
                             <span class="text">To Be Approved</span>
                         </label>
                     </span>
@@ -95,13 +95,13 @@
 </div>
 <hr class="wide" />
 @*<span class="sortorder" ng-show="predicate === 'orderDate'" ng-class="{reverse:reverse}"></span>*@
-<div class="row">
-    <div ng-repeat="inv in invoiceData | filter: { invoiceNumber:query } |invType:selectItems |orderBy:predicate:reverse" class="col-lg-4 col-md-6 col-xs-12">
+<div class="row col-lg-4 col-md-6 col-xs-12" ng-if="selectItems">
+    <div ng-repeat="inv in invoiceData | filter: { invoiceNumber:query } |invType:selectItems |orderBy:predicate:reverse" class="col-lg-12 col-md-12 col-xs-12">
         <div class="well bordered-left bordered-themeprimary">
-                <b>{{inv.invoiceNumber}} </b><span>{{inv.invoiceId}}</span>
-                <span ng-show="inv.approved">
-                    <span class="databox-text">{{inv.approversName}} on <b>{{inv.approvedDate | date:mediumDate}}</b></span>
-                </span>
+            <b>{{inv.invoiceNumber}} </b><span>{{inv.invoiceId}}</span>
+            <span ng-show="inv.approved">
+                <span class="databox-text">{{inv.approversName}} on <b>{{inv.approvedDate | date:mediumDate}}</b></span>
+            </span>
         </div>
         <div class="databox databox-lg databox-xs databox-sm radius-bordered databox-shadowed" ng-style=setOpacity(inv.invoiceNumber)>
             <div class="databox-left bg-white">
@@ -137,29 +137,29 @@
                 </div>
             </div>
             @*<div class="databox-right bordered-thick bordered-sky bg-white">
-                <div class="row">
-                    <div class="col-lg-9 col-xs-9 col-sm-9 nopadding" style="padding-left: 10px;">
-                        <div class=" databox-number sky item-left">
-                            <i class="fa fa-calendar"></i>{{inv.invoiceDate | date:mediumDate}}
+                    <div class="row">
+                        <div class="col-lg-9 col-xs-9 col-sm-9 nopadding" style="padding-left: 10px;">
+                            <div class=" databox-number sky item-left">
+                                <i class="fa fa-calendar"></i>{{inv.invoiceDate | date:mediumDate}}
+                            </div>
+                            <div class="databox-header darkgray">
+                                {{inv.invoiceTotal | currency:$}}
+                            </div>
                         </div>
-                        <div class="databox-header darkgray">
-                            {{inv.invoiceTotal | currency:$}}
+                        <div class="col-lg-3 col-xs-3 col-sm-3 nopadding item-right" style="padding-right: 10px; padding-left: 0">
+                            <span ng-show="inv.verified" class="btn-xs  btn-maroon pull-right">
+                                <i class="fa fa-eye"></i>
+                            </span>
+                            <span data-toggle="tooltip" title="Sort by Invoice Total" ng-show="inv.approved" class="btn-xs btn-palegreen pull-right">
+                                <i class="fa fa-check"></i>
+                            </span>
+                            <span ng-show="!inv.approved" ng-click="approveInv(inv.approved, inv.invoiceId)"
+                                  class="btn btn-info pull-right">
+                                Approve
+                            </span>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-xs-3 col-sm-3 nopadding item-right" style="padding-right: 10px; padding-left: 0">
-                        <span ng-show="inv.verified" class="btn-xs  btn-maroon pull-right">
-                            <i class="fa fa-eye"></i>
-                        </span>
-                        <span data-toggle="tooltip" title="Sort by Invoice Total" ng-show="inv.approved" class="btn-xs btn-palegreen pull-right">
-                            <i class="fa fa-check"></i>
-                        </span>
-                        <span ng-show="!inv.approved" ng-click="approveInv(inv.approved, inv.invoiceId)"
-                              class="btn btn-info pull-right">
-                            Approve
-                        </span>
-                    </div>
-                </div>
-            </div>*@
+                </div>*@
         </div>
     </div>
 </div>
