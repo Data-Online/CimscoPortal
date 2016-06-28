@@ -4,7 +4,8 @@
 
         var getInvoiceTally = function (monthSpan, companyId) {
             
-            var dataApi = "/api/invoicetally/" + monthSpan;
+            //var dataApi = "/api/invoiceTally/" + monthSpan;
+            var dataApi = "/api/detailbysite/" + monthSpan;
             if (companyId > 0)
                 dataApi = dataApi + "/" + companyId;
             return $http.get(dataApi)

@@ -1,86 +1,6 @@
 ﻿
-<div class="row">
-    <div class="col-lg-3 col-xs-12 col-sm-6 visible-lg visible-md hidden-xs hidden-sm">
-        <div class="margin-top-10 visible-xs hidden-lg hidden-md"></div>
-        <div class="row">
-            <div class="col-xs-4 col-sm-4">
-                <span class="databox-number white tootip-info pull-right" data-container="body" data-titleclass="bordered-blue" data-class="dark" data-toggle="popover-hover" data-placement="auto"
-                      data-title="Comparing Data Between Sites" data-content="Lines show comparative costs and consumption between the selected sites. The largest value in each category will fill the available space." data-original-title="" title="">
-                    <i class="fa fa-2x fa-info-circle" style="color:#262626"></i>
-                </span>
-            </div>
-            <div class="col-xs-4 col-sm-4">
-                <label data-toggle="tooltip" title="Sort by Total Value" data-placement="auto" class="tooltip-palegreen">
-                    <span ng-click="order('billTotal')" class="btn-sm btn-labeled btn-palegreen tooltip-palegreen">
-                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='billTotal'"></i>Total Value
-                    </span>
-                </label>
-            </div>
-            <div class="col-xs-4 col-sm-4">
-                <label data-toggle="tooltip" title="Sort by Site Name" data-placement="auto" class="tooltip-palegreen">
-                    <span ng-click="order('site')" class="btn-sm btn-labeled btn-palegreen ">
-                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='site'"></i>Site
-                    </span>
-                </label>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-9 col-xs-12 col-sm-6" ng-init="options={};options.selected=true">
-        <div class="row">
-            <div class="col-md-3 col-xs-12 col-sm-3">
-                <label ng-hide="false">
-                    <input class="checkbox-slider toggle colored-blue" ng-model="showValue" type="checkbox" ng-init="showValue=options.selected">
-                    <span class="text">&nbsp; Energy Charges</span>
-                </label>
-            </div>
-            <div class="visible-xs hidden-md hidden-sm clearfix">&nbsp;</div>
-            <div class="col-md-3 col-xs-12 col-sm-3">
-                <span></span>
-                <label ng-hide="false">
-                    <input class="checkbox-slider toggle colored-warning" ng-model="showKwh" type="checkbox" ng-init="showKwh=options.selected">
-                    <span class="text">&nbsp;Total kWh</span>
-                </label>
-            </div>
-            <div class="visible-xs hidden-md hidden-sm clearfix">&nbsp;</div>
-            <div class="col-md-3 col-xs-12 col-sm-3">
-                <span></span>
-                <label ng-hide="false">
-                    <input class="checkbox-slider toggle colored-palegreen" ng-model="showUsqm" type="checkbox" ng-init="showUsqm=options.selected">
-                    <span class="text">&nbsp;Units per sqM</span>
-                </label>
-            </div>
-            <div class="visible-xs hidden-md hidden-sm clearfix">&nbsp;</div>
-            <div class="col-md-3 col-xs-12 col-sm-3">
-                <span></span>
-                <label ng-hide="false">
-                    <input class="checkbox-slider toggle colored-magenta" ng-model="showCsqm" type="checkbox" ng-init="showCsqm=options.selected">
-                    <span class="text">&nbsp;Cost per sqM</span>
-                </label>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-xs-12 col-sm-6 hidden-lg hidden-md visible-xs visible-sm">
-        <div class="margin-top-10 visible-xs hidden-lg hidden-md"></div>
-        <div class="row">
-            <div class="col-xs-6 col-sm-6">
-                <label data-toggle="tooltip" title="Sort by Total Value" data-placement="auto" class="tooltip-palegreen">
-                    <span ng-click="order('billTotal')" class="btn-sm btn-labeled btn-palegreen tooltip-palegreen">
-                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='billTotal'"></i>Total Value
-                    </span>
-                </label>
-            </div>
-            <div class="col-xs-6 col-sm-6">
-                <label data-toggle="tooltip" title="Sort by Site Name" data-placement="auto" class="tooltip-palegreen">
-                    <span ng-click="order('site')" class="btn-sm btn-labeled btn-palegreen ">
-                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='site'"></i>Site
-                    </span>
-                </label>
-            </div>
-        </div>
-    </div>
-</div>
-<hr class="wide">
-<div ng-repeat="invoice in invoiceDetail |orderBy:predicate:reverse" id="analysisPortal">
+
+
     <table class="table table-hover">
         <tr class="well with-header" style="background-color:#f5f5f5!important;">
 
@@ -92,10 +12,10 @@
                 }
                 <a ng-href="@url1">
                     <i class="stat-icon fa fa-search"></i>
-                    <span style="font-size:large; color:GrayText">{{invoice.site}}</span>
+                    <span style="font-size:large; color:GrayText">{{invoice.siteName}}</span>
                 </a>
-                <span> - Total charges : {{invoice.billTotal | currency:$}}</span>
-                <span>(from {{invoice.invCount}} invoices on file)</span>
+                <span> - Total charges : {{invoice.invoiceCosts.invoiceValue | currency:$}}</span>
+                <span>(from {{invoice.invoiceCosts.totalInvoices}} invoices on file)</span>
                 <i class="stat-icon fa fa-ban" ng-show="invoice.invCount == 0"></i>
 
             </th>
@@ -165,4 +85,4 @@
             </tr>
         </tbody>
     </table>
-</div>
+

@@ -205,6 +205,14 @@ namespace CimscoPortal.Controllers.Api
         }
 
         [HttpGet]
+        [Route("detailbysite/{monthSpan}")]
+        public HttpResponseMessage GetDetailBySite(HttpRequestMessage request, int monthSpan)
+        {
+            var data = _portalService.GetDetailBySite(User.Identity.Name, monthSpan);
+            return request.CreateResponse<DetailBySiteViewModel>(HttpStatusCode.OK, data);
+        }
+
+        [HttpGet]
         [Route("invoicetally/{monthSpan}/{customerId}")]
         public HttpResponseMessage GetInvoiceTally(HttpRequestMessage request, int monthSpan, int customerId)
         {

@@ -23,7 +23,10 @@ namespace CimscoPortal.Infrastructure
         CimscoPortal.Models.CommonInfoViewModel GetCommonData(string userId);
         CimscoPortal.Models.InvoiceDetailViewModel GetInvoiceDetail(int _invoiceId);
         IEnumerable<CimscoPortal.Models.MessageViewModel> GetNavbarDataFor(string pageElement);
+        
         InvoiceTallyViewModel GetInvoiceTally(string userId, int monthSpan, int? customerId);
+        DetailBySiteViewModel GetDetailBySite(string userId, int monthSpan);
+
         IEnumerable<InvoiceOverviewViewModel> GetInvoiceOverviewForSite(int siteId);
         IEnumerable<InvoiceOverviewViewModel> GetInvoiceOverviewForSite(int siteId, int monthsToDisplay);
         InvoiceOverviewViewModel ApproveInvoice(int invoiceId, string userId, string urlRoot);

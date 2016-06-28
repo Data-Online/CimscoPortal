@@ -5,6 +5,10 @@ using System.Text;
 
 namespace CimscoPortal.Models
 {
+
+
+
+    
     public class InvoiceTallyViewModel
     {
         
@@ -14,6 +18,7 @@ namespace CimscoPortal.Models
         public GroupCompanyDetail GroupCompanyDetail { get; set; }
         public List<CustomerHeader> CustomerList { get; set; }    
     }
+
 
     public class CustomerHeader
     {

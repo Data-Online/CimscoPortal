@@ -69,6 +69,11 @@ namespace CimscoPortal.Services
             return _commonData ?? new CommonInfoViewModel();
         }
 
+        private static string GetSystemSettings(string setting)
+        {
+            return System.Configuration.ConfigurationManager.AppSettings[setting];
+        }
+
         private void LogMessage()
         {
 
@@ -125,13 +130,9 @@ namespace CimscoPortal.Services
             Dictionary<int, decimal> _monthTotals = new Dictionary<int, decimal>();
             Dictionary<int, int> _totalMissingInvoices = new Dictionary<int, int>();
 
-            CurrentUserLevel _userLevel = GetUserLevel(userId);
-
-            // Establish filters - if any
             IQueryable<Site> _query = ConstructQueryFromPassedParameter(filter);
 
-            // Select the data
-            IList<int> _allSitesInCurrentSelection = AddQueryForGroupCustomerSite(_userLevel, _query).Select(t => t.SiteId).ToList();
+            IList<int> _allSitesInCurrentSelection = GetSiteIdListForUser(userId, _query);
 
             // Current date window
             DateTime _selectFromDate;
@@ -206,6 +207,18 @@ namespace CimscoPortal.Services
             #endregion
 
             return _model;
+        }
+
+        private IList<int> GetSiteIdListForUser(string userId, IQueryable<Site> query)
+        {
+            CurrentUserLevel _userLevel = GetUserLevel(userId);
+
+            // Establish filters - if any
+            //IQueryable<Site> _query = ConstructQueryFromPassedParameter(filter);
+
+            // Select the data
+            IList<int> _allSitesInCurrentSelection = AddQueryForGroupCustomerSite(_userLevel, query).Select(t => t.SiteId).ToList();
+            return _allSitesInCurrentSelection;
         }
 
         public AvailableFiltersModel GetAllFilters(string userId)
@@ -1050,9 +1063,118 @@ namespace CimscoPortal.Services
 
             //_invoiceTally.GroupCompanyDetail.GroupCompanyName = _siteListForUser.GroupCompanyName;
             _invoiceTally.MonthsOfData = monthSpan;
-
+            GetDetailBySite(userId, monthSpan);
             return _invoiceTally;
         }
+
+        public DetailBySiteViewModel GetDetailBySite(string userId, int monthSpan)
+        {
+            if (!monthSpan.In(3, 6, 12, 24)) { monthSpan = 12; } // GPA --> move to constants
+            DetailBySiteViewModel _model = new DetailBySiteViewModel();
+            DateTime _selectFromDate = GetFirstDateForSelect(monthSpan);
+            DateTime _selectToDate = DateTime.Now.EndOfTheMonth();
+            // Select all sites for this user based on current filter (if any). Modify query if additional selection is required
+            IQueryable<Site> _query = _repository.Sites;
+            IList<int> _allSitesInCurrentSelection = GetSiteIdListForUser(userId, _query);
+
+            var _selectedInvoices = _repository.InvoiceSummaries.Where(s => _allSitesInCurrentSelection.Contains(s.SiteId) & s.PeriodEnd >= _selectFromDate & s.PeriodEnd <= _selectToDate);
+            //.Project().To<DetailBySiteViewModel>();
+
+            var _siteQuery = _repository.Sites.Where(w => _allSitesInCurrentSelection.Contains(w.SiteId)).Distinct();
+            //var zz = _siteQuery.Select(s => s.GroupDivision.DivisionName).Distinct().ToList();
+//            List<SiteDetailData> _detailBySite = _repository.Sites.Where(w => _allSitesInCurrentSelection.Contains(w.SiteId)).Distinct().Project().To<SiteDetailData>().ToList();
+            List<SiteDetailData> _detailBySite = _siteQuery.Project().To<SiteDetailData>().ToList();
+            // AutoMapper.Mapper.Map(InvoiceData, _detailBySite);
+            _model.Divisions = _siteQuery.Select(s => s.GroupDivision.DivisionName).Distinct().ToList();
+            _model.SiteDetailData = _detailBySite;
+            CollateInvoiceDataBySiteId_(_model, _selectedInvoices, _selectFromDate);
+
+            return _model;
+        }
+
+        //
+        private static void CollateInvoiceDataBySiteId_(DetailBySiteViewModel detailBySiteData, IQueryable<Data.Models.InvoiceSummary> siteData, DateTime firstDate)
+        {
+            var _approvedInvoiceCountBySiteId = (from p in siteData
+                                                 where p.Approved == true
+                                                 group p.Approved by p.SiteId into g
+                                                 select new
+                                                 {
+                                                     siteId = g.Key,
+                                                     count = (g.Count() > 0 ? g.Count() : 0)
+                                                 }).ToList();
+
+            var _invoioceCountAndDates = (from p in siteData
+                                          group p by p.SiteId into g
+                                          select new
+                                          {
+                                              siteId = g.Key,
+                                              firstInvoiceOnFileDate = (from f in g orderby f.InvoiceDate ascending select f.InvoiceDate).FirstOrDefault(),
+                                              latestInvoiceDate = (from l in g orderby l.InvoiceDate descending select l.InvoiceDate).FirstOrDefault(),
+                                              count = (g.Count() > 0 ? g.Count() : 0)
+                                          }).ToList();
+
+            var _invoiceTotals = (from p in siteData
+                                  group p by p.SiteId into g
+                                  select new
+                                  {
+                                      siteId = g.Key,
+                                      invoiceValue = (from f in g select f.InvoiceTotal).Sum(),
+                                      energyCharge = (from f in g select f.EnergyChargesTotal).Sum(),
+                                      // energyLosses = (from f in g select f.).Sum(),
+                                      totalKwh = (from f in g select f.KwhTotal).Sum(),
+                                      siteArea = (from f in g select f.Site.TotalFloorSpaceSqMeters).FirstOrDefault()
+                                  }).ToList();
+
+            var _calculatedLosses = (from p in siteData
+                                     group p by p.SiteId into g
+                                     select new
+                                     {
+                                         siteId = g.Key,
+                                         calculatedLosses = (from f in g select f.EnergyCharge.BDL0004 / f.EnergyCharge.BDQ0004).FirstOrDefault()
+                                     }).ToList();
+
+            decimal _defaultLossRate = Convert.ToDecimal(GetSystemSettings("DefaultLossRate"));
+            detailBySiteData.MaxTotalInvoices = _invoioceCountAndDates.Select(s => s.count).Max();
+            
+            foreach (var _entry in detailBySiteData.SiteDetailData)
+            {
+                var _matchingResultForApproved = _approvedInvoiceCountBySiteId.FirstOrDefault(s => s.siteId == _entry.SiteId);
+                var _matchingResultForTotal = _invoioceCountAndDates.FirstOrDefault(s => s.siteId == _entry.SiteId);
+                var _matchingResultForLosses = _calculatedLosses.FirstOrDefault(s => s.siteId == _entry.SiteId);
+                var _match = detailBySiteData.SiteDetailData.Where(s => s.SiteId == _entry.SiteId).FirstOrDefault();
+                _match.InvoiceKeyData = new InvoiceKeyData();
+                _match.InvoiceCosts = new InvoiceCosts_();
+
+                if (_matchingResultForTotal != null)
+                {
+                    if (_matchingResultForApproved != null)
+                    {
+                        _match.InvoiceKeyData.ApprovedInvoices = _matchingResultForApproved.count;
+                    }
+                    _match.InvoiceKeyData.PendingInvoices = _matchingResultForTotal.count - _match.InvoiceKeyData.ApprovedInvoices;
+                    _match.InvoiceKeyData.FirstInvoiceDate = _matchingResultForTotal.firstInvoiceOnFileDate;
+                    _match.InvoiceKeyData.LatestInvoiceDate = _matchingResultForTotal.latestInvoiceDate;
+                    _match.InvoiceKeyData.CalculatedLossRate = Math.Round(_matchingResultForLosses.calculatedLosses, 3);
+                    //_match.MissingInvoices = Math.Max(MonthsFromGivenDate(_matchingResultForTotal.firstInvoiceOnFileDate) - _match.TotalInvoicesOnFile, 0);
+                };
+                _match.InvoiceKeyData.MissingInvoices = Math.Max(MonthsFromGivenDate(firstDate) - _match.InvoiceKeyData.TotalInvoicesOnFile, 0);
+                _match.InvoiceKeyData.CalculatedLossRate = Math.Max(_match.InvoiceKeyData.CalculatedLossRate, _defaultLossRate);
+
+                var _matchingInvoiceData = _invoiceTotals.FirstOrDefault(s => s.siteId == _entry.SiteId);
+                if (_matchingInvoiceData != null)
+                {
+                    _match.InvoiceCosts.InvoiceValue = _matchingInvoiceData.invoiceValue;
+                    _match.InvoiceCosts.EnergyCharge = _matchingInvoiceData.energyCharge;
+                    _match.InvoiceCosts.TotalKwh = _matchingInvoiceData.totalKwh;
+                    _match.InvoiceCosts.SiteArea = _matchingInvoiceData.siteArea;
+                }
+            };
+        }
+
+
+
+        //
 
         private List<CustomerHeader> GetCustomerListForGroup(int groupId)
         {
@@ -1512,13 +1634,13 @@ namespace CimscoPortal.Services
 
         private CurrentUserLevel GetUserLevel(string userId)
         {
-            string _groupsName = _repository.AspNetUsers.Where(s => s.Email == userId).FirstOrDefault().Groups.Select(g => g.GroupName).FirstOrDefault();
+            string _groupName = _repository.AspNetUsers.Where(s => s.Email == userId).FirstOrDefault().Groups.Select(g => g.GroupName).FirstOrDefault();
             string _customerName = _repository.AspNetUsers.Where(s => s.Email == userId).FirstOrDefault().Customers.Select(c => c.CustomerName).FirstOrDefault();
 
 
-            if (!String.IsNullOrEmpty(_groupsName))
+            if (!String.IsNullOrEmpty(_groupName))
             {
-                return new CurrentUserLevel() { UserLevel = "Group", TopLevelName = _groupsName };
+                return new CurrentUserLevel() { UserLevel = "Group", TopLevelName = _groupName };
             }
             else if (!String.IsNullOrEmpty(_customerName))
             {

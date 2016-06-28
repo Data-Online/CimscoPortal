@@ -287,6 +287,7 @@
     <Compile Include="CustomConfig\UserRoles.cs" />
     <Compile Include="Extensions\RegexUtilities.cs" />
     <Compile Include="Models\ByMonthViewModel.cs" />
+    <Compile Include="Models\DetailBySiteViewModel.cs" />
     <Compile Include="Models\SiteDetailViewModel.cs" />
     <Compile Include="Models\MonthlySummaryModel.cs" />
     <Compile Include="Models\TestModel.cs" />
@@ -1475,12 +1476,14 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <None Include="Scripts\jqueryval\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquerysparkline\jquery.sparkline.min.js" />
     <Content Include="Scripts\jqueryval\jquery.validate.js" />
     <Content Include="Scripts\jqueryval\jquery.validate.min.js" />
     <Content Include="Scripts\jqueryval\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jqueryval\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\knob\jquery.knob.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\modules\angular-bootstrap-nav-tree\abn_tree_directive.js" />
     <Content Include="Scripts\multiselect\angularjs-dropdown-multiselect.js" />
     <Content Include="Scripts\nestable\jquery.nestable.min.js" />
     <Content Include="Scripts\npm.js" />
@@ -1618,6 +1621,8 @@
     <Content Include="Views\Portal\DetailBySite.cshtml" />
     <Content Include="Views\Portal\DetailBySitePartials\_Analysis.cshtml" />
     <Content Include="Views\Portal\DetailBySitePartials\_Approvals.cshtml" />
+    <Content Include="Views\Portal\DetailBySitePartials\_Analysis - Copy.cshtml" />
+    <Content Include="Views\Portal\DetailBySitePartials\_AnalysisSortHeader.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />

@@ -8,6 +8,32 @@
     function detailBySite($scope, soDataSource, userDataSource) {
         // $scope.monthSpanOptions = [3, 6, 12, 24];
         var monthSpan = 12; // Refactor out
+        // Accordion
+        $scope.oneAtATime = true;
+
+        $scope.groups = [
+          {
+              title: 'Dynamic Group Header - 1',
+              content: 'Dynamic Group Body - 1'
+          },
+          {
+              title: 'Dynamic Group Header - 2',
+              content: 'Dynamic Group Body - 2'
+          }
+        ];
+
+        $scope.items = ['Item 1', 'Item 2', 'Item 3'];
+
+        $scope.addItem = function () {
+            var newItemNo = $scope.items.length + 1;
+            $scope.items.push('Item ' + newItemNo);
+        };
+
+        $scope.status = {
+            isFirstOpen: true,
+            isFirstDisabled: false
+        };
+
         // NVD3 test
         $scope.exampleData = [  [1025409600000, 0], [1028088000000, -6.3382185140371], [1030766400000, -5.9507873460847], [1033358400000, -11.569146943813], [1036040400000, -5.4767332317425], [1038632400000, 0.50794682203014],
                                 [1041310800000, -5.5310285460542], [1043989200000, -5.7838296963382], [1046408400000, -7.3249341615649], [1049086800000, -6.7078630712489], [1051675200000, 0.44227126150934], [1054353600000, 7.2481659343222]];
@@ -26,6 +52,15 @@
                 return d[1];
             }
         }
+        var onSiteData = function (data) {
+            $scope.siteDetailData = data.siteDetailData;
+            $scope.divisions = data.divisions;
+            //for (index = 0, len = data.siteDetailData.length; index < len; ++index)
+            //{
+            //    // Calculate the stats from passed data
+            //};
+        }
+
         var onRepo = function (data) {
             var index; var len;
             var tallyArray = [];
@@ -92,7 +127,8 @@
             var companyId = 0;
 
             soDataSource.getInvoiceTally(monthSpan, companyId)
-                .then(onRepo, onError);
+                .then(onSiteData, onError);
+                //.then(onRepo, onError);
 
             $scope.loading = false;
         };
