@@ -1,88 +1,80 @@
 ﻿
 
 
-    <table class="table table-hover">
-        <tr class="well with-header" style="background-color:#f5f5f5!important;">
+<table class="table table-hover">
+    <tr class="well with-header" style="background-color:#f5f5f5!important;">
 
-            <th colspan="12">
+        <th colspan="12">
 
 
-                @{ var url1 = Url.Action("SiteOverview", "Portal", new { id = "{{invoice.siteId}}" });
-                 url1 = HttpUtility.UrlDecode(url1);
-                }
-                <a ng-href="@url1">
-                    <i class="stat-icon fa fa-search"></i>
-                    <span style="font-size:large; color:GrayText">{{invoice.siteName}}</span>
-                </a>
-                <span> - Total charges : {{invoice.invoiceCosts.invoiceValue | currency:$}}</span>
-                <span>(from {{invoice.invoiceCosts.totalInvoices}} invoices on file)</span>
-                <i class="stat-icon fa fa-ban" ng-show="invoice.invCount == 0"></i>
+            @{ var url1 = Url.Action("SiteOverview", "Portal", new { id = "{{invoice.siteId}}" });
+             url1 = HttpUtility.UrlDecode(url1);
+            }
+            <a ng-href="@url1">
+                <i class="stat-icon fa fa-search"></i>
+                <span style="font-size:large; color:GrayText">{{siteDetail.siteName}}</span>
+            </a>
+            <span> - Total charges : {{siteDetail.invoiceCosts.invoiceValue | currency:$}}</span>
+            <span>(from {{siteDetail.invoiceKeyData.totalInvoicesOnFile}} invoices on file)</span>
+            <i class="stat-icon fa fa-ban" ng-show="invoice.invCount == 0"></i>
 
-            </th>
+        </th>
+    </tr>
+    <tbody ng-show="siteDetail.invoiceKeyData.totalInvoicesOnFile > 0">
+        <tr ng-show="showValue">
+            <td width="25%" class="responsive-td">
+                <span>
+                    Energy Charges
+                </span>
+            </td>
+            <td width="30%">
+                <div class="progress-bar progress-bar-{{invTheme[1].theme}}" style="width: {{siteDetail.invoiceCosts.energyChargeByPercent}}%">
+                    <span> {{siteDetail.invoiceCosts.energyCharge | currency:$}} </span>
+                </div>
+            </td>
+            <td width="10%">
+                <div ng-if="siteDetail.invoiceHistory.totals.length > 0">
+                    <div jq-sparkline ng-model="siteDetail.invoiceHistory.totals" opts="{{ {type:'line', width:'200px', height:'20px'} }}"></div>
+                    @*siteDetail.invoiceHistory.totals*@
+                </div>
+            </td>
+            <td width="25%">
+                <span ng-repeat="line in siteDetail.graphData.invoiceCounts">
+                    <span class="progress-bar progress-bar-{{invTheme[$index].theme}}" style="width: {{line.percent}}%">
+                        <span> {{line.noOfInv}} </span>
+                    </span>
+                </span>
+
+            </td>
         </tr>
-        <tbody ng-show="invoice.invCount > 0">
-            <tr ng-show="showValue">
-                <td width="25%" class="responsive-td">
-                    <span>
-                        Energy Charges
-                    </span>
-                </td>
-                <td width="30%">
-                    <div ng-repeat="values in invoice.power">
+        <tr ng-show="showKwh">
+            <td width="25%" class="responsive-td"><span>Total kWh</span></td>
+            <td width="30%">
+                <div class="progress-bar progress-bar-{{invTheme[1].theme}}" style="width: {{siteDetail.invoiceCosts.kwhByPercent}}%">
+                    <span> {{siteDetail.invoiceCosts.totalKwh | number:0}} </span>
+                </div>
+            </td>
+            <td width="10%"></td>
+        </tr>
+        <tr ng-show="showUsqm">
+            <td width="25%" class="responsive-td"><span>Units per sqM</span></td>
+            <td width="30%">
+                <div class="progress-bar progress-bar-{{invTheme[1].theme}}" style="width: {{siteDetail.invoiceCosts.unitsPerSqmByPercent}}%">
+                    <span> {{siteDetail.invoiceCosts.unitsPerSqm| number:2}}  </span>
+                </div>
+            </td>
+            <td width="10%"></td>
+        </tr>
+        <tr ng-show="showCsqm">
+            <td width="25%" class="responsive-td"><span>Cost per sqM</span></td>
+            <td width="30%">
 
-                        <div class="progress-bar progress-bar-{{invTheme[$index+1].theme}}" style="width: {{values.percent}}%">
-                            <span ng-show="values.percent>10"> {{values.reading | currency:$}} </span>
-                            <span ng-show="values.percent<=10">&nbsp;</span>
-                        </div>
-                    </div>
-                </td>
-                <td width="10%">
-
-                    <div jq-sparkline ng-model="slData" opts="{{ {type:'line', width:'200px', height:'20px'} }}"></div>
-
-                </td>
-                <td width="25%">
-                    <span ng-repeat="line in invDistn[$index].data">
-                        <span class="progress-bar progress-bar-{{invTheme[$index].theme}}" style="width: {{line.percent}}%">
-                            <span> {{line.noOfInv}} </span>
-                        </span>
-                    </span>
-
-                </td>
-            </tr>
-            <tr ng-show="showKwh">
-                <td width="25%" class="responsive-td"><span>Total kWh</span></td>
-                <td width="30%">
-                    <div ng-repeat="values in invoice.kWh">
-                        <div class="progress-bar progress-bar-{{invTheme[$index+1].theme}}" style="width: {{values.percent}}%">
-                            <span> {{values.reading | number:0}} </span>
-                        </div>
-                    </div>
-                </td>
-                <td width="10%"></td>
-            </tr>
-            <tr ng-show="showUsqm">
-                <td width="25%" class="responsive-td"><span>Units per sqM</span></td>
-                <td width="30%">
-                    <div ng-repeat="values in invoice.upsqm">
-                        <div class="progress-bar progress-bar-{{invTheme[$index+1]}}" style="width: {{values.percent}}%">
-                            <span> {{values.units}} {{values.reading | number:2}}  </span>
-                        </div>
-                    </div>
-                </td>
-                <td width="10%"></td>
-            </tr>
-            <tr ng-show="showCsqm">
-                <td width="25%" class="responsive-td"><span>Cost per sqM</span></td>
-                <td width="30%">
-                    <div ng-repeat="values in invoice.cpsqm">
-                        <div class="progress-bar progress-bar-{{invTheme[$index+1]}}" style="width: {{values.percent}}%">
-                            <span> {{values.reading | currency:$}} </span>
-                        </div>
-                    </div>
-                </td>
-                <td width="10%"></td>
-            </tr>
-        </tbody>
-    </table>
+                <div class="progress-bar progress-bar-{{invTheme[1].theme}}" style="width: {{siteDetail.invoiceCosts.costPerSqmByPercent}}%">
+                    <span> {{siteDetail.invoiceCosts.costPerSqm | currency:$}} </span>
+                </div>
+            </td>
+            <td width="10%"></td>
+        </tr>
+    </tbody>
+</table>
 

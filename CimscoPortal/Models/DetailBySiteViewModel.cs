@@ -27,6 +27,7 @@ namespace CimscoPortal.Models
 
         public InvoiceKeyData InvoiceKeyData { get; set; }
         public InvoiceCosts_ InvoiceCosts { get; set; }
+        public InvoiceHistory InvoiceHistory { get; set; }
     }
     public class InvoiceKeyData
     {
@@ -40,10 +41,19 @@ namespace CimscoPortal.Models
         public decimal CalculatedLossRate { get; set; }
     }
 
+    public class InvoiceHistory
+    {
+        public IEnumerable<decimal> Totals { get; set; }
+    }
+
     public class InvoiceCosts_
     {
         public Decimal InvoiceValue { get; set; }
         public Decimal EnergyCharge { get; set; }
+        public Decimal EnergyChargeByPercent { get; set; }
+        public Decimal KwhByPercent { get; set; }
+        public Decimal CostPerSqmByPercent { get; set; }
+        public Decimal UnitsPerSqmByPercent { get; set; }
         public Decimal TotalKwh { get; set; }
         public int? SiteArea { get; set; }
         public Decimal CostPerSqm { get { return EnergyCharge / Math.Max((SiteArea ?? 0), 1) * 1.0M; } }

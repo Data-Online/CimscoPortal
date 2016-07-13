@@ -4,8 +4,8 @@
     angular.module("app.detailBySite")
         .controller("app.detailBySite.ctrl", detailBySite)
 
-    detailBySite.$inject = ['$scope', 'soDataSource', 'userDataSource'];
-    function detailBySite($scope, soDataSource, userDataSource) {
+    detailBySite.$inject = ['$scope', 'soDataSource', 'userDataSource', 'toaster'];
+    function detailBySite($scope, soDataSource, userDataSource, toaster) {
         // $scope.monthSpanOptions = [3, 6, 12, 24];
         var monthSpan = 12; // Refactor out
         // Accordion
@@ -53,12 +53,40 @@
             }
         }
         var onSiteData = function (data) {
+            $scope.monthSpan = monthSpan;
             $scope.siteDetailData = data.siteDetailData;
             $scope.divisions = data.divisions;
+           // $scope.siteDetailData.invoiceHistory.totals = [12398, 23221, 33421, 34251, 34921, 34252];
             //for (index = 0, len = data.siteDetailData.length; index < len; ++index)
             //{
             //    // Calculate the stats from passed data
             //};
+            var index; var len;
+            var tallyArray = [];
+            for (index = 0, len = data.siteDetailData.length; index < len; ++index) {
+                tallyArray.push({
+                    "invoiceCounts": [
+                        {
+                            "percent": (data.siteDetailData[index].invoiceKeyData.approvedInvoices / data.siteDetailData[index].invoiceKeyData.totalInvoices * 100),
+                            "noOfInv": data.siteDetailData[index].invoiceKeyData.approvedInvoices
+                        },
+                        {
+                            "percent": (data.siteDetailData[index].invoiceKeyData.pendingInvoices / data.siteDetailData[index].invoiceKeyData.totalInvoices * 100),
+                            "noOfInv": data.siteDetailData[index].invoiceKeyData.pendingInvoices
+                        },
+                        {
+                            "percent": (data.siteDetailData[index].invoiceKeyData.missingInvoices / data.siteDetailData[index].invoiceKeyData.totalInvoices * 100),
+                            "noOfInv": data.siteDetailData[index].invoiceKeyData.missingInvoices
+                        }
+                    ]
+                });
+                $scope.siteDetailData[index].graphData = tallyArray[0];
+                
+                tallyArray = [];
+            };
+
+            $scope.loading = false;
+            toaster.pop('success', "Invoice Data Loaded!", "");
         }
 
         var onRepo = function (data) {
@@ -119,18 +147,19 @@
             $scope.loading = false;
         };
 
+        var getInvoiceData = function () {
+            var companyId = 0;
+            soDataSource.getInvoiceTally(monthSpan, companyId)
+               .then(onSiteData, onError);
+        };
+
         var onUserData = function (data) {
+            $scope.loading = true;
             $scope.monthSpanOptions = data.monthSpanOptions;
             $scope.monthSpan = data.monthSpan;
             //$scope.companyId = data.companyId;
             monthSpan = data.monthSpan;
-            var companyId = 0;
-
-            soDataSource.getInvoiceTally(monthSpan, companyId)
-                .then(onSiteData, onError);
-                //.then(onRepo, onError);
-
-            $scope.loading = false;
+            getInvoiceData();
         };
 
         var getMaxKwh = function (list) {
@@ -184,10 +213,8 @@
         $scope.reviseMonths = function (newMonthSpan) {
             $scope.loading = true;
             console.log('revise data...' + newMonthSpan);
-            var companyId = 0;
             monthSpan = newMonthSpan;
-            soDataSource.getInvoiceTally(monthSpan, companyId)
-                .then(onRepo, onError);
+            getInvoiceData();
         };
 
         $scope.changeCompany = function (newCompanyId) {

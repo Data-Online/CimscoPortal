@@ -398,7 +398,7 @@ namespace CimscoPortal.Services
             return _model;
         }
 
-        #region Side Overview private functions
+        #region Site Overview private functions
         //_new = new List<CPart>();
         //_new.Add(new CPart { v = "January", f = null });
         //_new.Add(new CPart { v = "19.12", f = "42 iteme" });
@@ -1070,26 +1070,51 @@ namespace CimscoPortal.Services
         public DetailBySiteViewModel GetDetailBySite(string userId, int monthSpan)
         {
             if (!monthSpan.In(3, 6, 12, 24)) { monthSpan = 12; } // GPA --> move to constants
+
             DetailBySiteViewModel _model = new DetailBySiteViewModel();
             DateTime _selectFromDate = GetFirstDateForSelect(monthSpan);
             DateTime _selectToDate = DateTime.Now.EndOfTheMonth();
+
             // Select all sites for this user based on current filter (if any). Modify query if additional selection is required
             IQueryable<Site> _query = _repository.Sites;
             IList<int> _allSitesInCurrentSelection = GetSiteIdListForUser(userId, _query);
 
             var _selectedInvoices = _repository.InvoiceSummaries.Where(s => _allSitesInCurrentSelection.Contains(s.SiteId) & s.PeriodEnd >= _selectFromDate & s.PeriodEnd <= _selectToDate);
-            //.Project().To<DetailBySiteViewModel>();
-
             var _siteQuery = _repository.Sites.Where(w => _allSitesInCurrentSelection.Contains(w.SiteId)).Distinct();
-            //var zz = _siteQuery.Select(s => s.GroupDivision.DivisionName).Distinct().ToList();
-//            List<SiteDetailData> _detailBySite = _repository.Sites.Where(w => _allSitesInCurrentSelection.Contains(w.SiteId)).Distinct().Project().To<SiteDetailData>().ToList();
             List<SiteDetailData> _detailBySite = _siteQuery.Project().To<SiteDetailData>().ToList();
-            // AutoMapper.Mapper.Map(InvoiceData, _detailBySite);
             _model.Divisions = _siteQuery.Select(s => s.GroupDivision.DivisionName).Distinct().ToList();
             _model.SiteDetailData = _detailBySite;
+
             CollateInvoiceDataBySiteId_(_model, _selectedInvoices, _selectFromDate);
+            CreateEnergyChargeHistoryData(_model, _selectedInvoices);
 
             return _model;
+        }
+
+        private static void CreateEnergyChargeHistoryData(DetailBySiteViewModel model, IQueryable<InvoiceSummary> selectedInvoices)
+        {
+            var _energyChargeHistory = (from i in selectedInvoices
+                                        //where i.SiteId == 5
+                                        orderby i.InvoiceDate
+                                        group i by i.SiteId into g
+                                        select new
+                                        {
+                                            siteId = g.Key,
+                                            month = (from l in g orderby l.InvoiceDate ascending select l.InvoiceDate),
+                                            total = (from l in g orderby l.InvoiceDate ascending select l.EnergyChargesTotal) //l.InvoiceTotal - l.GSTCharges)
+                                        });//.ToList();
+
+            IEnumerable<decimal> _historyDataForSite;
+            foreach (var _siteData in model.SiteDetailData)
+            {
+                try
+                {
+                    _historyDataForSite = _energyChargeHistory.Where(s => s.siteId == _siteData.SiteId).Select(s => s.total).ToList()[0];
+                    _siteData.InvoiceHistory = new InvoiceHistory();
+                    _siteData.InvoiceHistory.Totals = _historyDataForSite;
+                }
+                catch { }
+            }
         }
 
         //
@@ -1136,7 +1161,9 @@ namespace CimscoPortal.Services
 
             decimal _defaultLossRate = Convert.ToDecimal(GetSystemSettings("DefaultLossRate"));
             detailBySiteData.MaxTotalInvoices = _invoioceCountAndDates.Select(s => s.count).Max();
-            
+            decimal _maxEnergyCharge = _invoiceTotals.Select(s => s.energyCharge).Max();
+            decimal _maxKwh = _invoiceTotals.Select(s => s.totalKwh).Max();
+
             foreach (var _entry in detailBySiteData.SiteDetailData)
             {
                 var _matchingResultForApproved = _approvedInvoiceCountBySiteId.FirstOrDefault(s => s.siteId == _entry.SiteId);
@@ -1168,8 +1195,21 @@ namespace CimscoPortal.Services
                     _match.InvoiceCosts.EnergyCharge = _matchingInvoiceData.energyCharge;
                     _match.InvoiceCosts.TotalKwh = _matchingInvoiceData.totalKwh;
                     _match.InvoiceCosts.SiteArea = _matchingInvoiceData.siteArea;
+                    _match.InvoiceCosts.EnergyChargeByPercent = (_matchingInvoiceData.energyCharge / _maxEnergyCharge) * 100;
+                    _match.InvoiceCosts.KwhByPercent = (_matchingInvoiceData.totalKwh / _maxKwh) * 100;
                 }
             };
+
+            decimal _maxCostPerSqM = detailBySiteData.SiteDetailData.Select(s => s.InvoiceCosts.CostPerSqm).Max();
+            decimal _maxUnitsPerSqM = detailBySiteData.SiteDetailData.Select(s => s.InvoiceCosts.UnitsPerSqm).Max();
+
+            foreach (var _entry in detailBySiteData.SiteDetailData)
+            {
+                _entry.InvoiceCosts.CostPerSqmByPercent = (_entry.InvoiceCosts.CostPerSqm / _maxCostPerSqM) * 100;
+                _entry.InvoiceCosts.UnitsPerSqmByPercent = (_entry.InvoiceCosts.UnitsPerSqm / _maxUnitsPerSqM) * 100;
+                
+            }
+
         }
 
 
