@@ -111,32 +111,32 @@ $('#fullscreen-toggler')
     });
 
 /*Handles Popovers*/
-var popovers = $('[data-toggle=popover]');
-$.each(popovers, function () {
-    $(this)
-        .popover({
-            html: true,
-            template: '<div class="popover ' + $(this)
-                .data("class") +
-                '"><div class="arrow"></div><h3 class="popover-title ' +
-                $(this)
-                .data("titleclass") + '">Popover right</h3><div class="popover-content"></div></div>'
-        });
-});
+//var popovers = $('[data-toggle=popover]');
+//$.each(popovers, function () {
+//    $(this)
+//        .popover({
+//            html: true,
+//            template: '<div class="popover ' + $(this)
+//                .data("class") +
+//                '"><div class="arrow"></div><h3 class="popover-title ' +
+//                $(this)
+//                .data("titleclass") + '">Popover right</h3><div class="popover-content"></div></div>'
+//        });
+//});
 
-var hoverpopovers = $('[data-toggle=popover-hover]');
-$.each(hoverpopovers, function () {
-    $(this)
-        .popover({
-            html: true,
-            template: '<div class="popover ' + $(this)
-                .data("class") +
-                '"><div class="arrow"></div><h3 class="popover-title ' +
-                $(this)
-                .data("titleclass") + '">Popover right</h3><div class="popover-content"></div></div>',
-            trigger: "hover"
-        });
-});
+//var hoverpopovers = $('[data-toggle=popover-hover]');
+//$.each(hoverpopovers, function () {
+//    $(this)
+//        .popover({
+//            html: true,
+//            template: '<div class="popover ' + $(this)
+//                .data("class") +
+//                '"><div class="arrow"></div><h3 class="popover-title ' +
+//                $(this)
+//                .data("titleclass") + '">Popover right</h3><div class="popover-content"></div></div>',
+//            trigger: "hover"
+//        });
+//});
 
 
 /*Handles ToolTips*/

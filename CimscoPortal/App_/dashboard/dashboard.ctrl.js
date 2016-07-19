@@ -11,8 +11,8 @@
         })
         .controller("app.dashboard.ctrl", dashboard);
 
-    dashboard.$inject = ['$scope', '$parse', '$interval', 'dbDataSource', 'userDataSource', 'dbConstants', 'toaster'];
-    function dashboard($scope, $parse, $interval, dbDataSource, userDataSource, dbConstants, toaster) {
+    dashboard.$inject = ['$scope', '$parse', '$interval', 'dbDataSource', 'userDataSource', 'dbConstants', 'toaster', 'googleChart'];
+    function dashboard($scope, $parse, $interval, dbDataSource, userDataSource, dbConstants, toaster, googleChart) {
 
         $scope.pop = function () {
             toaster.pop('success', "title", "text");
@@ -70,7 +70,7 @@
 
         var plotAllGraphs = function (data) {
             // console.log('got data .. ');
-            toaster.pop('success', "Data loaded!", "Read data from database");
+            toaster.pop('success', "All data loaded!", "Read histogram and stats data from database");
             $scope.loading = false;
             
             onGraphData(data.cost, dbConstants.costsDataElement, 0);
@@ -111,6 +111,10 @@
             };
         };
 
+        var readAndPlotHistogram = function () {
+            dbDataSource.getTotalCostAndConsumption($scope.monthSpan, getReturnIds())
+                .then(plotAllGraphs, onError);
+        };
 
         $scope.togglePreviousYearsData = function ($event) {
             var checkbox = $event.target;
@@ -122,8 +126,10 @@
             // console.log('revise data...' + newMonthSpan);
             $scope.loading = true;
             $scope.monthSpan = newMonthSpan;
-            dbDataSource.getTotalCostAndConsumption($scope.monthSpan, getReturnIds())
-                .then(plotAllGraphs, onError);
+            readAndPlotHistogram();
+            readAndPlotGoogleGraphData();
+            //dbDataSource.getTotalCostAndConsumption($scope.monthSpan, getReturnIds())
+            //    .then(plotAllGraphs, onError);
         };
 
         function refreshData(showPreviousYear, firstDataset, secondDataset, target) {
@@ -278,8 +284,11 @@
             };
             //console.log('Return values ' + getReturnIds() + ' checkbox = ' + $scope.showPrevious12);
             $scope.loading = true;
-            dbDataSource.getTotalCostAndConsumption($scope.monthSpan, getReturnIds())
-                .then(plotAllGraphs, onError);
+            readAndPlotHistogram();
+            //dbDataSource.getTotalCostAndConsumption($scope.monthSpan, getReturnIds())
+            //    .then(plotAllGraphs, onError);
+
+            readAndPlotGoogleGraphData();
         };
 
         var getReturnIds = function () {
@@ -293,6 +302,67 @@
             });
             return _returnIds;
         };
+
+        // Google chart control GPA: Refactor all code here, copied from SiteOverview
+        
+        var readAndPlotGoogleGraphData = function () {
+            console.log("Google chart plot...");
+            dbDataSource.getCostConsumptionData($scope.monthSpan, getReturnIds())
+                .then(onGoogleGraphData, onError);
+        };
+
+        var onGoogleGraphData = function (data) {
+            var _collatedData = googleChart.collateData(data);
+            initializeGoogleChart(_collatedData);
+            toaster.pop('success', "Google graph data loaded!", "");
+            $scope.loading = false;
+        };
+
+        $scope.myChartObject = {};
+        function initializeGoogleChart(data) {
+            $scope.myChartObject.type = "LineChart";//"BarChart";// 
+            $scope.myChartObject.displayed = false;
+            $scope.myChartObject.data = {
+                "cols": data.cols,
+                "rows": data.rows
+            };
+
+            $scope.myChartObject.options = {
+                "interpolateNulls": true,
+                "chartArea": { "height": "50%" },
+                "title": "Charges and Consumption",
+                "colors": ['#0000FF', '#009900', '#CC0000', '#DD9900'],
+                "defaultColors": ['#0000FF', '#009900', '#CC0000', '#DD9900'],
+                "isStacked": "true",
+                "fill": 20,
+                "displayExactValues": true,
+                "pointSize": 5,
+                "lineWidth": 3,
+                "vAxes": {
+                    0: {
+                        "title": "Invoice Total excl GST",
+                        "format": "currency"
+                    }, 1: {
+                        "title": "Total Kwh",
+                        "format": "decimal"
+                    }
+                }
+    ,
+                "hAxis": {
+                    "title": "Month", "direction": 1, "slantedText": true, "slantedTextAngle": 45
+                },
+                "animation": {
+                    "duration": 1000,
+                    "easing": 'out',
+                }
+                , "series": [{ targetAxisIndex: 0 }, { targetAxisIndex: 1 }]
+            };
+            $scope.myChartObject.view = {
+                columns: [0,1,2]
+            };
+        }
+
+
 
     };
 

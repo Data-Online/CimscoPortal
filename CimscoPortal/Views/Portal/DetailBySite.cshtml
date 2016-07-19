@@ -30,11 +30,14 @@
                 <div class="widget-header bg-themeprimary">
                     @*<i class="widget-icon fa fa-compress"></i>*@
                     <span class="widget-caption">
-                        <ng-pluralize count="siteDetailData.length"
-                                      when="{'1': '{} Site,',
+                        <i ng-show="loading" class="fa fa-refresh fa-fw" ng-class="{'fa-spin' : loading}"></i>
+                        <span ng-show="!loading">
+                            <ng-pluralize count="siteDetailData.length"
+                                          when="{'1': '{} Site,',
                                 'other': '{} Sites,'}">
-                        </ng-pluralize>
-                        showing {{monthSpan}} months of data
+                            </ng-pluralize>
+                            showing {{monthSpan}} months of data
+                        </span>
                     </span>
                     <div class="widget-buttons">
                         <div class="btn-group">
@@ -64,20 +67,85 @@
                                 </li>
                             </ul>
                             <div class="tab-content tabs-flat no-padding" ng-style="{opacity: ((loading) && .4) || 1.0}">
-                                <div id="analysis" class="tab-pane animated fadeInUp no-padding-bottom active" style="padding:20px 20px 0 20px;" >
+                                <div id="analysis" class="tab-pane animated fadeInUp no-padding-bottom active" style="padding:20px 20px 0 20px;">
                                     <p style="padding: 20px 20px 0;" class="bg-whitesmoke">
                                         @Html.Partial("DetailBySitePartials/_AnalysisSortHeader")
                                     </p>
                                     <accordion close-others="oneAtATime">
-                                        <div ng-repeat="division in divisions">
+                                        <div ng-repeat="division in divisions" ng-init="openFirst=true">
                                             @*<accordion-group heading="{{division}}" is-open="status.isFirstOpen" is-disabled="status.isFirstDisabled">*@
-                                            <accordion-group ng-value="search.divisionName=division">
-                                                @*<hr class="wide">*@
+                                            <accordion-group ng-value="search.divisionName=division" is-open="openFirst">
+                                                @*<hr class=" wide">
+                                                *@
                                                 <accordion-heading>
-                                                    <h2>{{search.divisionName}}</h2>
+                                                    <h5>
+                                                        <span ng-if="search.divisionName.length==0||!search.divisionName">{{::emptyDivisionName}}</span>
+                                                        <span ng-if="search.divisionName.length>0">
+                                                            {{search.divisionName}}
+                                                        </span>
+                                                        (
+                                                        <ng-pluralize count="results.length"
+                                                                      when="{'1': '{} Site',
+                                                                            'other': '{} Sites'}">
+                                                        </ng-pluralize>
+                                                        )
+                                                    </h5>
                                                 </accordion-heading>
-                                                <div ng-repeat="siteDetail in siteDetailData |filter:search|orderBy:predicate:reverse" id="analysisPortal">
-                                                    @Html.Partial("DetailBySitePartials/_Analysis")
+
+                                                <table class="table table-hover">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td width="20%" class="responsive-td"></td>
+                                                            <td width="30%">
+                                                                <span class="databox-number white tootip-info pull-left" data-container="body"
+                                                                      data-titleclass="bordered-blue" data-class="dark"
+                                                                      data-toggle="popover" data-placement="auto"
+                                                                      data-title="Comparing Data Between Sites"
+                                                                      data-content="Lines show comparative costs and consumption between the selected sites. The largest value in each category will fill the available space."
+                                                                      data-original-title=""
+                                                                      data-trigger="hover">
+                                                                    <i class="fa fa-2x fa-info-circle" style="color:#262626"></i>
+                                                                    <span style="font-size:large; color:GrayText">Totals</span>
+                                                                </span>
+                                                            </td>
+                                                            <td width="20%">
+                                                                <span class="databox-number white tootip-info pull-left" data-container="body"
+                                                                      data-titleclass="bordered-blue" data-class="dark"
+                                                                      data-toggle="popover" data-placement="auto"
+                                                                      data-title="History"
+                                                                      data-content="Graph shows change in value over time."
+                                                                      data-original-title=""
+                                                                      data-trigger="hover">
+                                                                    <i class="fa fa-2x fa-info-circle" style="color:#262626"></i>
+                                                                    <span style="font-size:large; color:GrayText">History</span>
+                                                                </span>
+                                                            </td>
+                                                            <td width="25%">
+                                                                <span class="databox-number white tootip-info pull-left" data-container="body"
+                                                                      data-titleclass="bordered-blue" data-class="dark"
+                                                                      data-toggle="popover" data-placement="auto"
+                                                                      data-title="Invoices"
+                                                                      data-content="Bar shows total expected number of invoices for the period, split by those approved, waiting for approval or currently missing."
+                                                                      data-original-title=""
+                                                                      data-trigger="hover">
+                                                                    <i class="fa fa-2x fa-info-circle" style="color:#262626"></i>
+                                                                    <span style="font-size:large; color:GrayText">Invoices On File</span>
+                                                                </span>
+                                                            </td>
+
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+
+                                                @*<tr class="well with-header" style="background-color:#f5f5f5!important;">
+                <th colspan="6"><div class="col-md-4"></div><div class="col-md-8">Test</div></th>
+            </tr>*@
+                                                @*<div ng-repeat="siteDetail in siteDetailData |filter:search|orderBy:predicate:reverse" id="analysisPortal">*@
+                                                <div ng-repeat="siteDetail in results = (siteDetailData |filter:search|orderBy:predicate:reverse)" id="analysisPortal">
+                                                    <div ng-show="siteDetail.invoiceKeyData.totalInvoicesOnFile > 0 || showEmpty">
+                                                        @Html.Partial("DetailBySitePartials/_Analysis")
+                                                    </div>
                                                 </div>
                                             </accordion-group>
                                         </div>
@@ -94,9 +162,22 @@
         </div>
     </div>
     @section PageScripts{
+        @*<script src="~/Scripts/angular-ui-bootstrap/ui-bootstrap.js"></script>*@
+        <script src="~/Scripts/angular-ui-bootstrap/ui-bootstrap.js"></script>
+        <script src="~/Scripts/angular-ui-bootstrap/ui-bootstrap.js"></script>
         <script src="~/Scripts/angular-ui-bootstrap/ui-bootstrap.js"></script>
         <script src="~/App_/detailBySite/detailBySite.data.js"></script>
         <script src="~/App_/detailBySite/detailBySite.ctrl.js"></script>
         <script src="~/App_/core/customFilters.js"></script>
 
+        @*<script type="text/javascript">
+                //<![CDATA[
+                $(window).load(function () {
+                    $('.progress-bar[data-toggle="tooltip"]').tooltip({
+                        animated: 'fade',
+                        placement: 'bottom'
+                    });
+                });//]]>
+
+            </script>*@
     }

@@ -21,6 +21,12 @@
 
         "nvd3ChartDirectives",
 
-        "sparkline"
+        "sparkline",
+
+        /* Tooltip for progress bars (.tooltip() or .popover() */
+        "tooltip",
+
+        /* Factory for Google Chart control */
+        "googleChartControl"
     ]);
 })();

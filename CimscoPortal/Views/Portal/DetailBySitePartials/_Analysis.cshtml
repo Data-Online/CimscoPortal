@@ -4,10 +4,10 @@
 <table class="table table-hover">
     <tr class="well with-header" style="background-color:#f5f5f5!important;">
 
-        <th colspan="12">
+        <th colspan="6">
 
 
-            @{ var url1 = Url.Action("SiteOverview", "Portal", new { id = "{{invoice.siteId}}" });
+            @{ var url1 = Url.Action("SiteOverview", "Portal", new { id = "{{siteDetail.siteId}}" });
              url1 = HttpUtility.UrlDecode(url1);
             }
             <a ng-href="@url1">
@@ -16,65 +16,72 @@
             </a>
             <span> - Total charges : {{siteDetail.invoiceCosts.invoiceValue | currency:$}}</span>
             <span>(from {{siteDetail.invoiceKeyData.totalInvoicesOnFile}} invoices on file)</span>
-            <i class="stat-icon fa fa-ban" ng-show="invoice.invCount == 0"></i>
+            @*<i class="stat-icon fa fa-ban" ng-show="siteDetail.invoiceKeyData.totalInvoicesOnFile == 0"></i>*@
 
         </th>
     </tr>
     <tbody ng-show="siteDetail.invoiceKeyData.totalInvoicesOnFile > 0">
         <tr ng-show="showValue">
-            <td width="25%" class="responsive-td">
+            <td width="20%" class="responsive-td">
                 <span>
                     Energy Charges
                 </span>
             </td>
             <td width="30%">
-                <div class="progress-bar progress-bar-{{invTheme[1].theme}}" style="width: {{siteDetail.invoiceCosts.energyChargeByPercent}}%">
+                <span class="progress-bar progress-bar-{{invTheme[1].theme}}" style="width: {{siteDetail.invoiceCosts.energyChargeByPercent}}%"
+                      data-toggle="popover" title="" data-trigger="hover" data-content="Total energy charge for {{siteDetail.invoiceKeyData.totalInvoicesOnFile}} invoice(s)" data-placement="bottom">
                     <span> {{siteDetail.invoiceCosts.energyCharge | currency:$}} </span>
-                </div>
+                </span>
             </td>
-            <td width="10%">
+            <td width="20%">
                 <div ng-if="siteDetail.invoiceHistory.totals.length > 0">
-                    <div jq-sparkline ng-model="siteDetail.invoiceHistory.totals" opts="{{ {type:'line', width:'200px', height:'20px'} }}"></div>
+                    <div jq-sparkline ng-model="siteDetail.invoiceHistory.totals" opts="{{ {type:'line', width:'100%', height:'20px'} }}"></div>
                     @*siteDetail.invoiceHistory.totals*@
                 </div>
             </td>
             <td width="25%">
                 <span ng-repeat="line in siteDetail.graphData.invoiceCounts">
-                    <span class="progress-bar progress-bar-{{invTheme[$index].theme}}" style="width: {{line.percent}}%">
+                    <span class="progress-bar progress-bar-{{invTheme[$index].theme}}" style="width: {{line.percent}}%"
+                          data-toggle="popover" title="" data-trigger="hover" data-content="{{line.noOfInv}} {{line.tooltip}}" data-placement="bottom">
                         <span> {{line.noOfInv}} </span>
                     </span>
                 </span>
-
             </td>
         </tr>
         <tr ng-show="showKwh">
-            <td width="25%" class="responsive-td"><span>Total kWh</span></td>
+            <td width="20%" class="responsive-td">
+                <span>Total kWh</span>
+            </td>
             <td width="30%">
                 <div class="progress-bar progress-bar-{{invTheme[1].theme}}" style="width: {{siteDetail.invoiceCosts.kwhByPercent}}%">
                     <span> {{siteDetail.invoiceCosts.totalKwh | number:0}} </span>
                 </div>
             </td>
-            <td width="10%"></td>
+            <td width="20%"></td>
         </tr>
         <tr ng-show="showUsqm">
-            <td width="25%" class="responsive-td"><span>Units per sqM</span></td>
+            <td width="20%" class="responsive-td">
+                <span>Units per sqM</span>
+            </td>
             <td width="30%">
                 <div class="progress-bar progress-bar-{{invTheme[1].theme}}" style="width: {{siteDetail.invoiceCosts.unitsPerSqmByPercent}}%">
                     <span> {{siteDetail.invoiceCosts.unitsPerSqm| number:2}}  </span>
                 </div>
             </td>
-            <td width="10%"></td>
+            <td width="20%"></td>
         </tr>
         <tr ng-show="showCsqm">
-            <td width="25%" class="responsive-td"><span>Cost per sqM</span></td>
+            <td width="20%" class="responsive-td">
+                <span>Cost per sqM</span>
+            </td>
             <td width="30%">
-
                 <div class="progress-bar progress-bar-{{invTheme[1].theme}}" style="width: {{siteDetail.invoiceCosts.costPerSqmByPercent}}%">
                     <span> {{siteDetail.invoiceCosts.costPerSqm | currency:$}} </span>
                 </div>
             </td>
-            <td width="10%"></td>
+            <td width="20%"></td>
         </tr>
     </tbody>
 </table>
+
 

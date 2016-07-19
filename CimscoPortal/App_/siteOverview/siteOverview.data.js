@@ -43,7 +43,7 @@
         };
 
         var getCostConsumptionData = function (siteId, monthSpan) {
-            var dataApi = "/api/CostAndConsumption/" + siteId + "/" + monthSpan;
+            var dataApi = "/api/CostAndConsumption/" + siteId + "/" + monthSpan + "/__";
             return $http.get(dataApi)
                         .then(function (response) {
                             return response.data;

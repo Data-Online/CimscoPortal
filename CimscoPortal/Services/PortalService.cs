@@ -118,7 +118,7 @@ namespace CimscoPortal.Services
 
         #endregion Site data
 
-        #region Dashboard data
+        #region Dashboard
 
         public DashboardViewData GetTotalCostsAndConsumption(string userId, int monthSpan, string filter)
         {
@@ -129,11 +129,10 @@ namespace CimscoPortal.Services
 
             Dictionary<int, decimal> _monthTotals = new Dictionary<int, decimal>();
             Dictionary<int, int> _totalMissingInvoices = new Dictionary<int, int>();
+            IQueryable<Site> _siteQuery = _repository.Sites;
 
-            IQueryable<Site> _query = ConstructQueryFromPassedParameter(filter);
-
-            IList<int> _allSitesInCurrentSelection = GetSiteIdListForUser(userId, _query);
-
+            _siteQuery = ConstructSiteQueryFromFilter(filter, _siteQuery);
+            IList<int> _allSitesInCurrentSelection = GetSiteIdListForUser(userId, _siteQuery);
             // Current date window
             DateTime _selectFromDate;
             DateTime _selectToDate;
@@ -148,9 +147,7 @@ namespace CimscoPortal.Services
             _invoiceData = ConstructInvoiceQueryForDates(_allSitesInCurrentSelection, _selectFromDate.AddYears(-1), _selectToDate.AddYears(-1));
             Dictionary<DateTime, MonthlySummaryModel> _invoiceTotals12 = GetDataSummary(_invoiceData, _selectFromDate.AddYears(-1), _selectToDate.AddYears(-1));
 
-            /// Allocate data to view model and return this to the view
-            //DashboardViewData _model = new DashboardViewData();
-            // var zzz = _invoiceTotals.OrderBy(s => s.Key);
+            // Allocate data to view model and return this to the view
             ByMonthViewModel _costData = new ByMonthViewModel()
             {
                 Months = _invoiceTotals.OrderBy(s => s.Key).Select(t => t.Value.MonthName).ToList(), // + ' ' + Get2LetterYear(t.Value.Year)).ToList(),
@@ -271,9 +268,9 @@ namespace CimscoPortal.Services
 
         private IQueryable<InvoiceSummary> ConstructInvoiceQueryForDates(IList<int> AllSitesInCurrentSelection, DateTime SelectFromDate, DateTime SelectToDate)
         {
-            var InvoiceData = _repository.InvoiceSummaries.Where(s => AllSitesInCurrentSelection.Contains(s.SiteId) & s.PeriodEnd >= SelectFromDate & s.PeriodEnd <= SelectToDate);
+            var _invoiceData = _repository.InvoiceSummaries.Where(s => AllSitesInCurrentSelection.Contains(s.SiteId) & s.PeriodEnd >= SelectFromDate & s.PeriodEnd <= SelectToDate);
             //            var InvoiceData = _repository.InvoiceSummaries.Where(s => AllSitesInCurrentSelection.Contains(s.SiteId) & s.InvoiceDate >= SelectFromDate & s.InvoiceDate <= SelectToDate);
-            return InvoiceData;
+            return _invoiceData;
         }
 
         private IQueryable<Site> AddQueryForGroupCustomerSite(CurrentUserLevel userLevel, IQueryable<Site> query)
@@ -295,6 +292,28 @@ namespace CimscoPortal.Services
             return query;
         }
 
+
+        #region Industry / Division filter construction
+        private IQueryable<Site> ConstructSiteQueryFromFilter(string filter, IQueryable<Site> query)
+        {
+            // industry-industry.._division-division.. 
+            //IQueryable<Site> _query = _repository.Sites;
+            List<int> _industryClassificationIds;
+            List<int> _divisionIds;
+            try
+            {
+                string _passedIndustryClassificationIds = filter.Split('_')[1];
+                string _passedDivisionIds = filter.Split('_')[2];
+                _industryClassificationIds = _passedIndustryClassificationIds.IntegersFromString('-');
+                _divisionIds = _passedDivisionIds.IntegersFromString('-');
+            }
+            catch { return query; }
+
+            query = SearchByIndustryClassification(_industryClassificationIds, query);
+            query = SearchByDivision(_divisionIds, query);
+            return query;
+        }
+
         private IQueryable<Site> SearchByIndustryClassification(List<int> keywords, IQueryable<Site> query)
         {
             //            IQueryable<Site> query = _repository.Sites;
@@ -313,25 +332,7 @@ namespace CimscoPortal.Services
             }
             return query;
         }
-
-        private IQueryable<Site> ConstructQueryFromPassedParameter(string ParameterString)
-        {
-            IQueryable<Site> _query = _repository.Sites;
-            List<int> _industryClassificationIds;
-            List<int> _divisionIds;
-            try
-            {
-                string _passedIndustryClassificationIds = ParameterString.Split('_')[1];
-                string _passedDivisionIds = ParameterString.Split('_')[2];
-                _industryClassificationIds = _passedIndustryClassificationIds.IntegersFromString('-');
-                _divisionIds = _passedDivisionIds.IntegersFromString('-');
-            }
-            catch { return _query; }
-
-            _query = SearchByIndustryClassification(_industryClassificationIds, _query);
-            _query = SearchByDivision(_divisionIds, _query);
-            return _query;
-        }
+        #endregion
 
         private Dictionary<DateTime, MonthlySummaryModel> GetDataSummary(IQueryable<InvoiceSummary> InvoiceData, DateTime selectFromDate, DateTime selectToDate)
         {
@@ -368,18 +369,88 @@ namespace CimscoPortal.Services
         #endregion Dashboard data
 
         #region Site Overview data
-
-
-        public GoogleChartViewModel GetCostsAndConsumption(int siteId, int monthSpan)
+        public GoogleChartViewModel GetCostsAndConsumption(string userId, int monthSpan, int siteId)
         {
             if (!monthSpan.In(3, 6, 12, 24)) { monthSpan = 12; }
 
-            siteId = 2;
+            // siteId = 2;
+            DateTime _selectFromDate;
+            DateTime _selectToDate;
+            CalculateDateRange(monthSpan, out _selectFromDate, out _selectToDate);
+
+            IQueryable<Site> _siteQuery = _repository.Sites;
+            IList<int> _allSitesInCurrentSelection = new List<int>();
+            _allSitesInCurrentSelection.Add(siteId);
+
+            IQueryable<InvoiceSummary> _invoiceData = ConstructInvoiceQueryForDates(_allSitesInCurrentSelection, _selectFromDate, _selectToDate).OrderBy(o => o.PeriodEnd);
+
+            Dictionary<DateTime, MonthlySummaryModel> _result = CollateInvoiceData(_invoiceData);
+
+            PopulateEmptyMonths(_selectFromDate, _selectToDate, _result);
+
+            var _siteArea = _repository.Sites.Where(s => s.SiteId == siteId).Select(c => c.TotalFloorSpaceSqMeters).FirstOrDefault();
+            GoogleChartViewModel _model = GoogleChartFor_PowerConsumption(_siteArea, _result);
+
+            return _model;
+        }
+
+
+
+        public GoogleChartViewModel GetCostsAndConsumption(string userId, int monthSpan, string filter)
+        {
+            if (!monthSpan.In(3, 6, 12, 24)) { monthSpan = 12; }
+
+            //string filter = "_827-_15-";
+
+            // siteId = 2;
+            DateTime _selectFromDate;
+            DateTime _selectToDate;
+            CalculateDateRange(monthSpan, out _selectFromDate, out _selectToDate);
+
+            IQueryable<Site> _siteQuery = _repository.Sites;
+
+            _siteQuery = ConstructSiteQueryFromFilter(filter, _siteQuery);
+
+            IList<int> _allSitesInCurrentSelection = new List<int>();
+            _allSitesInCurrentSelection = GetSiteIdListForUser(userId, _siteQuery);
+
+            IQueryable<InvoiceSummary> _invoiceData = ConstructInvoiceQueryForDates(_allSitesInCurrentSelection, _selectFromDate, _selectToDate).OrderBy(o => o.PeriodEnd);
+
+            Dictionary<DateTime, MonthlySummaryModel> _result = CollateInvoiceData(_invoiceData);
+
+            PopulateEmptyMonths(_selectFromDate, _selectToDate, _result);
+
+            var _siteArea = 0;
+            GoogleChartViewModel _model = GoogleChartFor_PowerConsumption(_siteArea, _result);
+
+            return _model;
+        }
+
+        private static Dictionary<DateTime, MonthlySummaryModel> CollateInvoiceData(IQueryable<InvoiceSummary> invoiceData)
+        {
+            var _result = (from p in invoiceData
+                           group p by new { p.PeriodEnd.Month, p.PeriodEnd.Year } into g
+                           select new MonthlySummaryModel()
+                           {
+                               InvoiceTotal = (from f in g select f.InvoiceTotal).Sum(),
+                               EnergyTotal = (from f in g select f.KwhTotal).Sum(),
+                               TotalInvoices = (from f in g select f).Count(),
+                               InvoiceDate = (from f in g select f.InvoiceDate).FirstOrDefault()
+                           }).ToDictionary(k => k.KeyInvoiceDate);
+            return _result;
+        }
+
+        public GoogleChartViewModel GetCostsAndConsumption_orig(int siteId, int monthSpan)
+        {
+            if (!monthSpan.In(3, 6, 12, 24)) { monthSpan = 12; }
+
+           // siteId = 2;
 
             DateTime _selectFromDate;
             DateTime _selectToDate;
             CalculateDateRange(monthSpan, out _selectFromDate, out _selectToDate);
 
+            //var _query = _repository.InvoiceSummaries.Where(s => s.PeriodEnd > _selectFromDate).OrderBy(o => o.PeriodEnd);
             var _query = _repository.InvoiceSummaries.Where(s => s.SiteId == siteId && s.PeriodEnd > _selectFromDate).OrderBy(o => o.PeriodEnd);
             var _siteArea = _repository.Sites.Where(s => s.SiteId == siteId).Select(c => c.TotalFloorSpaceSqMeters).FirstOrDefault();
 
@@ -387,13 +458,40 @@ namespace CimscoPortal.Services
                            select new MonthlySummaryModel()
                            {
                                EnergyTotal = (decimal)p.KwhTotal,
-                               InvoiceTotal = (decimal)p.InvoiceTotal,
+                               InvoiceTotal = (decimal)p.InvoiceTotal - p.GstTotal,
                                InvoiceDate = p.PeriodEnd,
                                TotalInvoices = 1
                            }).ToDictionary(k => k.KeyInvoiceDate);
             PopulateEmptyMonths(_selectFromDate, _selectToDate, _result);
 
             GoogleChartViewModel _model = GoogleChartFor_PowerConsumption(_siteArea, _result);
+            var zz = GetCostsAndConsumption(monthSpan);
+
+            return zz;//_model;
+        }
+
+        public GoogleChartViewModel GetCostsAndConsumption(int monthSpan)
+        {
+            if (!monthSpan.In(3, 6, 12, 24)) { monthSpan = 12; }
+
+            DateTime _selectFromDate;
+            DateTime _selectToDate;
+            CalculateDateRange(monthSpan, out _selectFromDate, out _selectToDate);
+
+            var _query = _repository.InvoiceSummaries.Where(s => s.PeriodEnd > _selectFromDate).OrderBy(o => o.PeriodEnd);
+
+            var _result = (from p in _query
+                           group p by new { p.PeriodEnd.Month, p.PeriodEnd.Year } into g
+                           select new MonthlySummaryModel()
+                           {
+                               InvoiceTotal = (from f in g select f.InvoiceTotal).Sum(),
+                               EnergyTotal = (from f in g select f.KwhTotal).Sum(),
+                               TotalInvoices = (from f in g select f).Count(),
+                               InvoiceDate = (from f in g select f.InvoiceDate).FirstOrDefault()
+                           }).ToDictionary(k => k.KeyInvoiceDate);
+            PopulateEmptyMonths(_selectFromDate, _selectToDate, _result);
+
+            GoogleChartViewModel _model = GoogleChartFor_PowerConsumption(1, _result);
 
             return _model;
         }
@@ -1144,7 +1242,7 @@ namespace CimscoPortal.Services
                                   select new
                                   {
                                       siteId = g.Key,
-                                      invoiceValue = (from f in g select f.InvoiceTotal).Sum(),
+                                      invoiceValue = (from f in g select f.InvoiceTotal - f.GstTotal).Sum(),
                                       energyCharge = (from f in g select f.EnergyChargesTotal).Sum(),
                                       // energyLosses = (from f in g select f.).Sum(),
                                       totalKwh = (from f in g select f.KwhTotal).Sum(),

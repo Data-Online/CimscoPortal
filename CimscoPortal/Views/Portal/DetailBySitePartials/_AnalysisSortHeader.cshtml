@@ -1,30 +1,37 @@
 ﻿<div class="row">
-    <div class="col-lg-3 col-xs-12 col-sm-6 visible-lg visible-md hidden-xs hidden-sm">
+    <div class="col-lg-4 col-xs-12 col-sm-6 visible-lg visible-md hidden-xs hidden-sm">
         <div class="margin-top-10 visible-xs hidden-lg hidden-md"></div>
         <div class="row">
-            <div class="col-xs-4 col-sm-4">
-                <span class="databox-number white tootip-info pull-right" data-container="body" data-titleclass="bordered-blue" data-class="dark" data-toggle="popover-hover" data-placement="auto"
-                      data-title="Comparing Data Between Sites" data-content="Lines show comparative costs and consumption between the selected sites. The largest value in each category will fill the available space." data-original-title="" title="">
+            <div class="col-xs-2 col-sm-2">
+                <span ng-show="false" class="databox-number white tootip-info pull-right" data-container="body" data-titleclass="bordered-blue" data-class="dark" data-toggle="popover" data-placement="auto"
+                      data-title="Comparing Data Between Sites" data-content="Lines show comparative costs and consumption between the selected sites. The largest value in each category will fill the available space." data-original-title="" title="" data-trigger="hover">
                     <i class="fa fa-2x fa-info-circle" style="color:#262626"></i>
                 </span>
             </div>
+            <div class="col-xs-2 col-sm-2">
+                <label data-toggle="popover" data-content="Include sites with no data" data-title="" data-placement="auto" data-trigger="hover">
+                    <input type="checkbox" ng-model="showEmpty">
+                    <span class="text" style="color:black">All</span>
+                </label>
+
+            </div>
             <div class="col-xs-4 col-sm-4">
-                <label data-toggle="tooltip" title="Sort by Total Value" data-placement="auto" class="tooltip-palegreen">
-                    <span ng-click="order('billTotal')" class="btn-sm btn-labeled btn-palegreen tooltip-palegreen">
-                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='billTotal'"></i>Total Value
+                <label data-toggle="popover" data-content="Sort by Total Charge" data-title="" data-placement="auto" data-trigger="hover">
+                    <span ng-click="order('invoiceCosts.invoiceValue')" class="btn btn-sm btn-default shiny active">
+                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='invoiceCosts.invoiceValue'"></i>Total Charge
                     </span>
                 </label>
             </div>
             <div class="col-xs-4 col-sm-4">
-                <label data-toggle="tooltip" title="Sort by Site Name" data-placement="auto" class="tooltip-palegreen">
-                    <span ng-click="order('site')" class="btn-sm btn-labeled btn-palegreen ">
-                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='site'"></i>Site
+                <label data-toggle="popover" data-content="Sort by Site Name" data-title="" data-placement="auto" data-trigger="hover">
+                    <span ng-click="order('siteName')" class="btn btn-sm btn-default shiny active">
+                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='siteName'"></i>Site Name
                     </span>
                 </label>
             </div>
         </div>
     </div>
-    <div class="col-lg-9 col-xs-12 col-sm-6" ng-init="options={};options.selected=true">
+    <div class="col-lg-8 col-xs-12 col-sm-6" ng-init="options={};options.selected=true">
         <div class="row">
             <div class="col-md-3 col-xs-12 col-sm-3">
                 <label ng-hide="false">

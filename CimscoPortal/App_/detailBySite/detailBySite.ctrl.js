@@ -9,8 +9,9 @@
         // $scope.monthSpanOptions = [3, 6, 12, 24];
         var monthSpan = 12; // Refactor out
         // Accordion
-        $scope.oneAtATime = true;
-
+        $scope.oneAtATime = true;  // Accordion behaviour
+        $scope.emptyDivisionName = "Not Set";
+        
         $scope.groups = [
           {
               title: 'Dynamic Group Header - 1',
@@ -29,13 +30,8 @@
             $scope.items.push('Item ' + newItemNo);
         };
 
-        $scope.status = {
-            isFirstOpen: true,
-            isFirstDisabled: false
-        };
-
         // NVD3 test
-        $scope.exampleData = [  [1025409600000, 0], [1028088000000, -6.3382185140371], [1030766400000, -5.9507873460847], [1033358400000, -11.569146943813], [1036040400000, -5.4767332317425], [1038632400000, 0.50794682203014],
+        $scope.exampleData = [[1025409600000, 0], [1028088000000, -6.3382185140371], [1030766400000, -5.9507873460847], [1033358400000, -11.569146943813], [1036040400000, -5.4767332317425], [1038632400000, 0.50794682203014],
                                 [1041310800000, -5.5310285460542], [1043989200000, -5.7838296963382], [1046408400000, -7.3249341615649], [1049086800000, -6.7078630712489], [1051675200000, 0.44227126150934], [1054353600000, 7.2481659343222]];
         $scope.exampleData = [[1, 10], [2, 11], [3, 12], [4, 13], [5, 14], [6, 15],
                               [7, 16], [8, 20], [9, 22], [10, 22], [11, 43], [12, 54]];
@@ -56,7 +52,9 @@
             $scope.monthSpan = monthSpan;
             $scope.siteDetailData = data.siteDetailData;
             $scope.divisions = data.divisions;
-           // $scope.siteDetailData.invoiceHistory.totals = [12398, 23221, 33421, 34251, 34921, 34252];
+          //  $scope.divisions[0].isOpen = true;
+           
+            // $scope.siteDetailData.invoiceHistory.totals = [12398, 23221, 33421, 34251, 34921, 34252];
             //for (index = 0, len = data.siteDetailData.length; index < len; ++index)
             //{
             //    // Calculate the stats from passed data
@@ -68,25 +66,28 @@
                     "invoiceCounts": [
                         {
                             "percent": (data.siteDetailData[index].invoiceKeyData.approvedInvoices / data.siteDetailData[index].invoiceKeyData.totalInvoices * 100),
-                            "noOfInv": data.siteDetailData[index].invoiceKeyData.approvedInvoices
+                            "noOfInv": data.siteDetailData[index].invoiceKeyData.approvedInvoices,
+                            "tooltip": "Approved"
                         },
                         {
                             "percent": (data.siteDetailData[index].invoiceKeyData.pendingInvoices / data.siteDetailData[index].invoiceKeyData.totalInvoices * 100),
-                            "noOfInv": data.siteDetailData[index].invoiceKeyData.pendingInvoices
+                            "noOfInv": data.siteDetailData[index].invoiceKeyData.pendingInvoices,
+                            "tooltip": "To be Approved"
                         },
                         {
                             "percent": (data.siteDetailData[index].invoiceKeyData.missingInvoices / data.siteDetailData[index].invoiceKeyData.totalInvoices * 100),
-                            "noOfInv": data.siteDetailData[index].invoiceKeyData.missingInvoices
+                            "noOfInv": data.siteDetailData[index].invoiceKeyData.missingInvoices,
+                            "tooltip": "Missing"
                         }
                     ]
                 });
                 $scope.siteDetailData[index].graphData = tallyArray[0];
-                
                 tallyArray = [];
             };
 
             $scope.loading = false;
             toaster.pop('success', "Invoice Data Loaded!", "");
+            
         }
 
         var onRepo = function (data) {
@@ -291,7 +292,7 @@
                 }]
             };
             $scope.myChartObject.options = {
-                "width": 120, "height": 40, "showAxisLines": false,  "showValueLabels": false, "labelPosition": 'left'
+                "width": 120, "height": 40, "showAxisLines": false, "showValueLabels": false, "labelPosition": 'left'
             };
 
             $scope.myChartObject.view = {

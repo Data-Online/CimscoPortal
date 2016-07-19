@@ -11,7 +11,7 @@ angular.module('sparkline')
             restrict: 'A',
             require: 'ngModel',
             link: function (scope, elem, attrs, ngModel) {
-                console.log('sparkline');
+                //console.log('sparkline');
                 var opts = {};
                 //TODO: Use $eval to get the object
                 opts.type = attrs.type || 'line';

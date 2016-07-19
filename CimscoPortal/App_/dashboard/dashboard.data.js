@@ -15,7 +15,7 @@
 
         var getTotalCostAndConsumption = function (monthSpan, filter) {
 
-            var dataApi = "/api/TotalCostAndConsumption/" + monthSpan + "/" + filter;
+            var dataApi = "/api/TotalCostAndConsumption/" + monthSpan + "/" + filter + "/test";
             return $http.get(dataApi)
                         .then(function (response) {
                             return response.data;
@@ -40,11 +40,21 @@
                 });
         };
 
+        // GPA: Copied from SiteOverview
+        var getCostConsumptionData = function (monthSpan, filter) {
+            var dataApi = "/api/CostAndConsumption" + "/" + monthSpan + "/" + filter;
+            return $http.get(dataApi)
+                        .then(function (response) {
+                            return response.data;
+                        });
+        };
+
         return {
             //getTotalCostsByMonth: getTotalCostsByMonth,
             getTotalCostAndConsumption: getTotalCostAndConsumption,
             getAllFilters: getAllFilters,
-            getWelcomeScreen: getWelcomeScreen
+            getWelcomeScreen: getWelcomeScreen,
+            getCostConsumptionData: getCostConsumptionData   // GPA: Copied from SiteOverview
         };
 
     };

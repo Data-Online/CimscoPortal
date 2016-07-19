@@ -7,7 +7,8 @@ namespace CimscoPortal.Infrastructure
     public interface IPortalService
     {
         // Test data
-        GoogleChartViewModel GetCostsAndConsumption(int siteId, int monthSpan);
+        GoogleChartViewModel GetCostsAndConsumption(string userId, int monthSpan, int siteId); 
+        GoogleChartViewModel GetCostsAndConsumption(string userId, int monthSpan, string filter);
         // Refactor status -->
         //CimscoPortal.Models.CustomerHierarchyViewModel GetCompanyHierarchy(string userId);
 

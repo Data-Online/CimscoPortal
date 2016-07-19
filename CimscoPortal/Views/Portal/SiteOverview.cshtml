@@ -21,8 +21,8 @@
                         <h2>{{siteData.siteName}}</h2>
                         <span>{{siteData.address1}}</span>
                         <span ng-show="siteData.address2.length > 0">,{{siteData.address2}}</span>
-                        <span ng-show="siteData.address2.length > 0">,{{siteData.address3}}</span>
-                        </br>
+                        <span ng-show="siteData.address3.length > 0">,{{siteData.address3}}</span>
+                        <br/>
                         <span>
                             Site Floor Space : {{siteData.totalFloorSpaceSqMeters}} Sq Meters
                         </span>
@@ -93,9 +93,13 @@
                                 <div id="consumption" class="tab-pane  animated fadeInUp active">
                                     <div class="row">
                                         <div class="col-lg-1">
-                                            <span class="databox-number white tootip-info pull-right" data-container="body" data-titleclass="bordered-blue" data-class="dark" data-toggle="popover-hover" data-placement="auto"
-                                                  data-title="Site Cost and Consumption Data" data-content="Graphs show total cost and consumption data for the selected time period. If an invoice is missing, no data point is shown." 
-                                                        data-original-title="" title="">
+                                            <span class="databox-number white tootip-info pull-right" data-container="body"
+                                                  data-titleclass="bordered-blue" data-class="dark"
+                                                  data-toggle="popover" data-placement="auto"
+                                                  data-title="Site Cost and Consumption Data"
+                                                  data-content="Graphs show total cost and consumption data for the selected time period. If an invoice is missing, no data point is shown."
+                                                  data-original-title="" 
+                                                  data-trigger="hover">
                                                 <i class="fa fa-2x fa-info-circle" style="color:#262626"></i>
                                             </span>
                                         </div>

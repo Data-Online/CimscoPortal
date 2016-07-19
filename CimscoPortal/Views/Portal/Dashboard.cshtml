@@ -35,10 +35,12 @@
                         <i ng-show="loading" class="fa fa-refresh fa-fw" ng-class="{'fa-spin' : loading}"></i>
                         <span class="sr-only">Loading...</span>
                         @*<strong> {{activeSites}}</strong> -*@
-                        <ng-pluralize count="activeSites"
-                                      when="{'1': '{} Site,', 'other': '{} Sites,'}">
-                        </ng-pluralize>
-                        showing {{monthSpan}} months of data
+                        <span ng-show="!loading">
+                            <ng-pluralize count="activeSites"
+                                          when="{'1': '{} Site,', 'other': '{} Sites,'}">
+                            </ng-pluralize>
+                            showing {{monthSpan}} months of data
+                        </span>
                     </span>
                     <div class="widget-buttons">
                         <label>
@@ -108,6 +110,9 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="row" ng-if="myChartObject.data" ng-style="{opacity: ((loading) && .4) || 1.0}">
+                    <div google-chart chart="myChartObject" style="height:450px; width:100%;"></div>
                 </div>
             </div>
         </div>

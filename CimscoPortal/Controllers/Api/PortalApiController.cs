@@ -38,7 +38,7 @@ namespace CimscoPortal.Controllers.Api
         public HttpResponseMessage TestModel(HttpRequestMessage request)
         {
             return request.CreateResponse<GoogleChartViewModel>(HttpStatusCode.OK,
-                            _portalService.GetCostsAndConsumption(2, 12));
+                            _portalService.GetCostsAndConsumption("", 12, 2));
         }
 
 
@@ -112,16 +112,32 @@ namespace CimscoPortal.Controllers.Api
         }
 
         [HttpGet]
-        [Route("CostAndConsumption/{siteId}/{monthSpan}")]
+        [Route("CostAndConsumption/{siteId}/{monthSpan}/{filter}")]
         public HttpResponseMessage GetCostsAndConsumption(HttpRequestMessage request, int siteId, int monthSpan)
         {
-            return request.CreateResponse<GoogleChartViewModel>(HttpStatusCode.OK,
-                            _portalService.GetCostsAndConsumption(siteId, monthSpan));
+            var data = _portalService.GetCostsAndConsumption(User.Identity.Name, monthSpan, siteId);
+            return request.CreateResponse<GoogleChartViewModel>(HttpStatusCode.OK,data);
+        }
+
+        [HttpGet]
+        [Route("CostAndConsumption/{monthSpan}/{filter}")]
+        public HttpResponseMessage GetCostsAndConsumption(HttpRequestMessage request, int monthSpan, string filter)
+        {
+            var data = _portalService.GetCostsAndConsumption(User.Identity.Name, monthSpan, filter);
+            return request.CreateResponse<GoogleChartViewModel>(HttpStatusCode.OK, data);
         }
 
         [HttpGet]
         [Route("TotalCostAndConsumption/{monthSpan}/{filter}")]
         public HttpResponseMessage GetTotalCostsAndConsumption(HttpRequestMessage request, int monthSpan, string filter)
+        {
+            var data = _portalService.GetTotalCostsAndConsumption(User.Identity.Name, monthSpan, filter);
+            return request.CreateResponse<DashboardViewData>(HttpStatusCode.OK, data);
+        }
+
+        [HttpGet]
+        [Route("TotalCostAndConsumption/{monthSpan}/{filter}/{test}")]
+        public HttpResponseMessage GetTotalCostsAndConsumption_(HttpRequestMessage request, int monthSpan, string filter, string test)
         {
             var data = _portalService.GetTotalCostsAndConsumption(User.Identity.Name, monthSpan, filter);
             return request.CreateResponse<DashboardViewData>(HttpStatusCode.OK, data);

@@ -54,7 +54,7 @@ namespace CimscoPortal
                 ));
 
             bundles.Add(new ScriptBundle("~/bundles/beyond").Include(
-                "~/Scripts/beyond.min.js"
+                "~/Scripts/beyond.js"
                 ));
 
             bundles.Add(new StyleBundle("~/css/bootstrap-rtl").Include(
