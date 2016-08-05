@@ -18,6 +18,7 @@ namespace CimscoPortal.Models
     {
         public int SiteId { get; set; }
         public string SiteName { get; set; }
+        public int? TotalFloorSpaceSqMeters { get; set; }
         public int? GroupDivisionId { get; set; }
         public string DivisionName { get; set; }
         public Nullable<int> CustomerId { get; set; }
@@ -27,7 +28,11 @@ namespace CimscoPortal.Models
 
         public InvoiceKeyData InvoiceKeyData { get; set; }
         public InvoiceCosts_ InvoiceCosts { get; set; }
-        public InvoiceHistory InvoiceHistory { get; set; }
+
+        public HistoryData InvoiceHistory { get; set; }
+        public HistoryData KwhHistory { get; set; }
+        public HistoryData CostPerSqmHistory { get; set; }
+        public HistoryData UnitsPerSqmHistory { get; set; }
     }
     public class InvoiceKeyData
     {
@@ -41,8 +46,9 @@ namespace CimscoPortal.Models
         public decimal CalculatedLossRate { get; set; }
     }
 
-    public class InvoiceHistory
+    public class HistoryData
     {
+        [System.ComponentModel.DataAnnotations.DisplayFormat(DataFormatString = "{0:C}")]
         public IEnumerable<decimal> Totals { get; set; }
     }
 
@@ -51,12 +57,26 @@ namespace CimscoPortal.Models
         public Decimal InvoiceValue { get; set; }
         public Decimal EnergyCharge { get; set; }
         public Decimal EnergyChargeByPercent { get; set; }
+        public Decimal EnergyChargeByPercentForDivision { get; set; }
         public Decimal KwhByPercent { get; set; }
+        public Decimal KwhByPercentForDivision { get; set; }
         public Decimal CostPerSqmByPercent { get; set; }
+        public Decimal CostPerSqmByPercentForDivision { get; set; }
         public Decimal UnitsPerSqmByPercent { get; set; }
+        public Decimal UnitsPerSqmByPercentForDivision { get; set; }
         public Decimal TotalKwh { get; set; }
         public int? SiteArea { get; set; }
         public Decimal CostPerSqm { get { return EnergyCharge / Math.Max((SiteArea ?? 0), 1) * 1.0M; } }
         public Decimal UnitsPerSqm { get { return TotalKwh / Math.Max((SiteArea ?? 0), 1) * 1.0M; } }
+    }
+
+    public class CollatedInvoiceTotals
+    {
+        public int siteId { get; set; }
+        public decimal invoiceTotal { get; set; }
+        public decimal invoiceValue { get; set; }
+        public decimal energyCharge { get; set; }
+        public decimal totalKwh { get; set; }
+        public int? siteArea { get; set; }
     }
 }

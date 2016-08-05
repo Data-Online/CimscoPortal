@@ -25,8 +25,10 @@
     </div>
     <toaster-container></toaster-container>
     <div class="row">
+        
         <div class="col-md-12">
             <div class="widget">
+                
                 <div class="widget-header bg-themeprimary">
                     @*<i class="widget-icon fa fa-compress"></i>*@
                     <span class="widget-caption">
@@ -52,6 +54,7 @@
                     </div>
                 </div>
                 <div class="widget-body">
+                   
                     <div class="box-tabbs">
                         <div class="tabbable">
                             <ul class="nav nav-tabs tabs-flat  nav-justified" id="myTab11">
@@ -68,20 +71,21 @@
                             </ul>
                             <div class="tab-content tabs-flat no-padding" ng-style="{opacity: ((loading) && .4) || 1.0}">
                                 <div id="analysis" class="tab-pane animated fadeInUp no-padding-bottom active" style="padding:20px 20px 0 20px;">
-                                    <p style="padding: 20px 20px 0;" class="bg-whitesmoke">
+                                    <p style="padding: 20px 20px 0;" class="bg-white">
                                         @Html.Partial("DetailBySitePartials/_AnalysisSortHeader")
                                     </p>
+                                    <i ng-show="loading" style="position:absolute; left:50%; top:20px; margin:auto;" class="fa fa-2x fa-refresh fa-fw" ng-class="{'fa-spin' : loading}"></i>
                                     <accordion close-others="oneAtATime">
-                                        <div ng-repeat="division in divisions" ng-init="openFirst=true">
+                                        <div ng-repeat="division in divisions" ng-init="openFirst=divisionView[$index]">
                                             @*<accordion-group heading="{{division}}" is-open="status.isFirstOpen" is-disabled="status.isFirstDisabled">*@
                                             <accordion-group ng-value="search.divisionName=division" is-open="openFirst">
                                                 @*<hr class=" wide">
                                                 *@
                                                 <accordion-heading>
                                                     <h5>
-                                                        <span ng-if="search.divisionName.length==0||!search.divisionName">{{::emptyDivisionName}}</span>
+                                                        @*<span ng-if="search.divisionName.length==0||!search.divisionName">{{::emptyDivisionName}}</span>*@
                                                         <span ng-if="search.divisionName.length>0">
-                                                            {{search.divisionName}}
+                                                            {{::search.divisionName}}
                                                         </span>
                                                         (
                                                         <ng-pluralize count="results.length"

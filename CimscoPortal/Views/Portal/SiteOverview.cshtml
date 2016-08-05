@@ -22,7 +22,7 @@
                         <span>{{siteData.address1}}</span>
                         <span ng-show="siteData.address2.length > 0">,{{siteData.address2}}</span>
                         <span ng-show="siteData.address3.length > 0">,{{siteData.address3}}</span>
-                        <br/>
+                        <br />
                         <span>
                             Site Floor Space : {{siteData.totalFloorSpaceSqMeters}} Sq Meters
                         </span>
@@ -82,15 +82,12 @@
                                     </a>
                                 </li>
                             </ul>
-                            <div class="tab-content tabs-flat no-padding">
+
+                            <div class="tab-content tabs-flat no-padding" ng-style="{opacity: ((loading) && .4) || 1.0}">
                                 <div id="invoices" class="tab-pane animated fadeInUp no-padding-bottom" style="padding:20px 20px 0 20px;">
-                                    <div class="row">
-                                        <div class="col-lg-12" style="min-height:600px;" ng-style="{opacity: ((loading) && .4) || 1.0}">
-                                            @Html.Partial("SiteOverviewPartials/_InvoiceList")
-                                        </div>
-                                    </div>
+                                    @Html.Partial("SiteOverviewPartials/_InvoiceList")
                                 </div>
-                                <div id="consumption" class="tab-pane  animated fadeInUp active">
+                                <div id="consumption" class="tab-pane animated fadeInUp active no-padding-bottom" style="padding:20px 20px 0 20px;">
                                     <div class="row">
                                         <div class="col-lg-1">
                                             <span class="databox-number white tootip-info pull-right" data-container="body"
@@ -98,15 +95,14 @@
                                                   data-toggle="popover" data-placement="auto"
                                                   data-title="Site Cost and Consumption Data"
                                                   data-content="Graphs show total cost and consumption data for the selected time period. If an invoice is missing, no data point is shown."
-                                                  data-original-title="" 
+                                                  data-original-title=""
                                                   data-trigger="hover">
                                                 <i class="fa fa-2x fa-info-circle" style="color:#262626"></i>
                                             </span>
                                         </div>
-                                        <div class="col-lg-10" style="min-height:600px;" ng-style="{opacity: ((loading) && .4) || 1.0}">
+                                        <div class="col-lg-10">
                                             @Html.Partial("SiteOverviewPartials/_Consumption")
                                         </div>
-                                        <div class="col-lg-1"></div>
                                     </div>
                                 </div>
                             </div>
@@ -116,86 +112,85 @@
             </div>
         </div>
     </div>
-</div>
-@section PageScripts{
-    <script src="~/App_/siteOverview/siteOverview.data.js"></script>
-    <script src="~/App_/siteOverview/siteOverview.ctrl.js"></script>
-    <script src="~/App_/core/customFilters.js"></script>
-}
-
-<style type="text/css">
-    span.label.label-info.pull-right {
-        position: absolute;
-        left: -44px;
-        cursor: pointer;
+    @section PageScripts{
+        <script src="~/App_/siteOverview/siteOverview.data.js"></script>
+        <script src="~/App_/siteOverview/siteOverview.ctrl.js"></script>
+        <script src="~/App_/core/customFilters.js"></script>
     }
 
-    .checkbox + .checkbox, .radio + .radio {
-        margin-top: 10px !important;
-    }
-
-    .form-title {
-        border-bottom: 3px solid #2dc3e8 !important;
-    }
-
-    .databox .databox-text {
-        font-size: 15px !important;
-    }
-
-    .databox.databox-lg .databox-number {
-        font-size: 16px;
-        margin: 0 auto;
-    }
-
-    .databox-text .header {
-        float: right;
-    }
-
-    .well.bordered-left.bordered-themeprimary {
-        margin-bottom: 2px !important;
-        padding: 10px !important;
-    }
-
-    @@media only screen and (max-width: 768px) {
-        .databox-right.bordered-thick.bordered-sky.bg-white {
-            padding: 0px 15px !important;
+    <style type="text/css">
+        span.label.label-info.pull-right {
+            position: absolute;
+            left: -44px;
+            cursor: pointer;
         }
 
-        .databox.databox-lg .databox-number {
+        .checkbox + .checkbox, .radio + .radio {
+            margin-top: 10px !important;
+        }
+
+        .form-title {
+            border-bottom: 3px solid #2dc3e8 !important;
+        }
+
+        .databox .databox-text {
             font-size: 15px !important;
         }
 
-        .databox-text.header {
-            float: left;
+        .databox.databox-lg .databox-number {
+            font-size: 16px;
+            margin: 0 auto;
+        }
+
+        .databox-text .header {
+            float: right;
         }
 
         .well.bordered-left.bordered-themeprimary {
-            /*padding: 2px 5px 16px 5px !important;*/
-            padding: 10px 5px -1px 5px !important;
+            margin-bottom: 2px !important;
+            padding: 10px !important;
         }
 
-        span.label.label-info.pull-right {
-            position: absolute;
-            left: -47px;
-            cursor: pointer;
-            top: 26px;
-        }
+        @@media only screen and (max-width: 768px) {
+            .databox-right.bordered-thick.bordered-sky.bg-white {
+                padding: 0px 15px !important;
+            }
 
-        span.btn-xs.btn-palegreen.pull-right {
-            position: absolute;
-            left: -22px;
-            top: 35px;
+            .databox.databox-lg .databox-number {
+                font-size: 15px !important;
+            }
+
+            .databox-text.header {
+                float: left;
+            }
+
+            .well.bordered-left.bordered-themeprimary {
+                /*padding: 2px 5px 16px 5px !important;*/
+                padding: 10px 5px -1px 5px !important;
+            }
+
+            span.label.label-info.pull-right {
+                position: absolute;
+                left: -47px;
+                cursor: pointer;
+                top: 26px;
+            }
+
+            span.btn-xs.btn-palegreen.pull-right {
+                position: absolute;
+                left: -22px;
+                top: 35px;
+            }
         }
-    }
-</style>
-<style>
-    .progress-compact {
-        /*background-color: #f5f5f5;
+    </style>
+    <style>
+        .progress-compact {
+            /*background-color: #f5f5f5;
                     border-radius: 4px;
                     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
                     height: 20px;*/
-        margin-bottom: 5px;
-        overflow: hidden;
-    }
-</style>
+            margin-bottom: 5px;
+            overflow: hidden;
+        }
+    </style>
 

@@ -1,11 +1,12 @@
 ﻿
 <div class="row" id="InvoiceList">
-    <div class="col-lg-6">
-        <div class="row">
+    <div class="col-lg-12">
+        <div class="col-lg-6">
+
             <div class="col-md-12 col-xs-12 col-sm-12 text-left">
                 <form class="form-inline">
                     <div class="form-title bordered-bottom bordered-lightred">
-                        Search & Filter
+                        Sort & Filter
                     </div>
                     <div class="row">
                         <div class="col-md-5">
@@ -16,14 +17,14 @@
                         </div>
                         <div class="col-md-7 col-xs-12 col-sm-12 margin-top-5">
                             <div class="row visible-md visible-lg hidden-xs hidden-sm pull-left">
-                                <label data-toggle="tooltip" title="Sort by Invoice Date" class="margin-right-5 tooltip-palegreen">
-                                    <span ng-click="order('invoiceDate')" class="btn-sm btn-labeled btn-palegreen">
-                                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='invoiceDate'"></i>Invoice Date
+                                <label data-toggle="popover" data-content="Sort by Date" data-title="" data-placement="auto" data-trigger="hover">
+                                    <span ng-click="order('invoiceKeyDate')" class="btn btn-sm btn-default shiny active">
+                                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='invoiceKeyDate'"></i>Date
                                     </span>
                                 </label>
-                                <label data-toggle="tooltip" title="Sort by Invoice Total" class="tooltip-palegreen">
-                                    <span ng-click="order('invoiceTotal')" class="btn-sm btn-labeled btn-palegreen">
-                                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='invoiceTotal'"></i>Invoice Total
+                                <label data-toggle="popover" data-content="Sort by Invoice Total" data-title="" data-placement="auto" data-trigger="hover">
+                                    <span ng-click="order('invoiceTotal')" class="btn btn-sm btn-default shiny active">
+                                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='invoiceTotal'"></i>Total
                                     </span>
                                 </label>
                             </div>
@@ -31,16 +32,12 @@
                     </div>
                 </form>
             </div>
-            @*<div class="clearfix visible-md visible-lg hidden-xs hidden-sm"> &nbsp;</div>*@
+        </div>
+        <div class="col-lg-6" ng-init="options={};options.selected=true; options.all=true;" ng-if="selectItems">
+            <div class="form-title bordered-bottom bordered-lightred">
+                <span>Show invoice types</span>
+            </div>
 
-            @*<div class="clearfix visible-md visible-lg hidden-xs hidden-sm"> &nbsp;</div>*@
-        </div>
-    </div>
-    <div class="col-lg-6" ng-init="options={};options.selected=true; options.all=true;" ng-if="selectItems">
-        <div class="form-title bordered-bottom bordered-lightred">
-            <span>Show invoice types</span>
-        </div>
-        <div class="row">
             <div class="col-md-6 col-xs-6 col-sm-6">
                 <div class="row">
                     <span class="checkbox col-lg-5">
@@ -73,103 +70,138 @@
                     </span>
                 </div>
             </div>
-        </div>
-        <div class="clearfix hidden-md hidden-lg visible-xs visible-sm"> &nbsp;</div>
-        <div class="row hidden-md hidden-lg visible-xs visible-sm">
-            <div class="col-md-6 col-xs-6 col-sm-6">
-                <label data-toggle="tooltip" title="Sort by Invoice Date" class="tooltip-palegreen">
-                    <span ng-click="order('invoiceDate')" class="btn-sm btn-labeled btn-palegreen">
-                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='invoiceDate'"></i>Invoice Date
-                    </span>
-                </label>
-            </div>
-            <div class="col-md-6 col-xs-6 col-sm-6">
-                <label data-toggle="tooltip" title="Sort by Invoice Total" class="tooltip-palegreen">
-                    <span ng-click="order('invoiceTotal')" class="btn-sm btn-labeled btn-palegreen">
-                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='invoiceTotal'"></i>Invoice Total
-                    </span>
-                </label>
+
+            <div class="clearfix hidden-md hidden-lg visible-xs visible-sm"> &nbsp;</div>
+            <div class="row hidden-md hidden-lg visible-xs visible-sm">
+                <div class="col-md-6 col-xs-6 col-sm-6">
+                    <label data-toggle="popover" data-content="Sort by Date" data-title="" data-placement="auto" data-trigger="hover">
+                        <span ng-click="order('invoiceKeyDate')" class="btn btn-sm btn-default shiny active">
+                            <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='invoiceKeyDate'"></i>Date
+                        </span>
+                    </label>
+                </div>
+                <div class="col-md-6 col-xs-6 col-sm-6">
+                    <label data-toggle="popover" data-content="Sort by Invoice Total" data-title="" data-placement="auto" data-trigger="hover">
+                        <span ng-click="order('invoiceTotal')" class="btn btn-sm btn-default shiny active">
+                            <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='invoiceTotal'"></i>Total
+                        </span>
+                    </label>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<hr class="wide" />
-@*<span class="sortorder" ng-show="predicate === 'orderDate'" ng-class="{reverse:reverse}"></span>*@
-<div class="row col-lg-4 col-md-6 col-xs-12" ng-if="selectItems">
-    <div ng-repeat="inv in invoiceData | filter: { invoiceNumber:query } |invType:selectItems |orderBy:predicate:reverse" class="col-lg-12 col-md-12 col-xs-12">
-        <div class="well bordered-left bordered-themeprimary">
-            <b>{{inv.invoiceNumber}} </b><span>{{inv.invoiceId}}</span>
-            <span ng-show="inv.approved">
-                <span class="databox-text">{{inv.approversName}} on <b>{{inv.approvedDate | date:mediumDate}}</b></span>
-            </span>
-        </div>
-        <div class="databox databox-lg databox-xs databox-sm radius-bordered databox-shadowed" ng-style=setOpacity(inv.invoiceNumber)>
-            <div class="databox-left bg-white">
-                <div ng-class="pctBoxStyle(inv.percentageChange)">
-                    <div class="stat-text">{{inv.percentageChange | number:1}} %</div>
-                    <i ng-class="negativeValue(inv.percentageChange)"></i>
-                </div>
-                <div class="databox-cell cell-12 no-padding padding-top-30  text-align-center">
-                    <span class="databox-number orange no-margin">
-                        <a href="@Url.Action("InvoiceDetail", "Portal")/{{inv.invoiceId}}" title="Invoice Details">
-                            <i class="fa fa-cogs"></i>
-                        </a>
-                        <a ng-show="{{inv.invoicePdf}} " href="https://cimsco.blob.core.windows.net/{{inv.siteId|padNumber:6}}/{{inv.invoiceId|padNumber:8}}.pdf" title="Download PDF">
-                            <i class="fa fa-download"></i>@*{{inv.siteId|padNumber:6}}/{{inv.invoiceId|padNumber:8}}.pdf*@
-                        </a>
-                    </span>
-                </div>
-            </div>
-            <div class="databox-right bordered-thick bordered-sky bg-white">
-                <span class="databox-number sky"><i class="fa fa-calendar"></i>{{inv.invoiceDate | date:mediumDate}}</span>
-                <div class="databox-text darkgray">{{inv.invoiceTotal | currency:$}}</div>
-                <div class="databox-stat radius-bordered">
-                    <span ng-show="inv.verified" class="btn-xs  btn-maroon pull-right">
-                        <i class="fa fa-eye"></i>
-                    </span>
-                    <span data-toggle="tooltip" title="Sort by Invoice Total" ng-show="inv.approved" class="btn-xs btn-palegreen pull-right">
-                        <i class="fa fa-check"></i>
-                    </span>
-                    <span ng-show="!inv.approved" ng-click="approveInv(inv.approved, inv.invoiceId)"
-                          class="label label-info pull-right">
-                        Approve
-                    </span>
-                </div>
-            </div>
-            @*<div class="databox-right bordered-thick bordered-sky bg-white">
-                    <div class="row">
-                        <div class="col-lg-9 col-xs-9 col-sm-9 nopadding" style="padding-left: 10px;">
-                            <div class=" databox-number sky item-left">
-                                <i class="fa fa-calendar"></i>{{inv.invoiceDate | date:mediumDate}}
-                            </div>
-                            <div class="databox-header darkgray">
-                                {{inv.invoiceTotal | currency:$}}
+
+    @*<span class="sortorder" ng-show="predicate === 'orderDate'" ng-class="{reverse:reverse}"></span>*@
+    <div class="col-lg-12">
+        <div class="bg-white" style="padding: 20px 20px 0;"> </div>
+        <div class="col-lg-3"></div>
+        <div class="col-lg-6 col-md-12 col-xs-12" ng-if="selectItems">
+            <div ng-repeat="inv in invoiceData | filter: { invoiceNumber:query } |invType:selectItems |orderBy:predicate:reverse" class="animate-repeat">
+                @*<div class="well bordered-left bordered-themeprimary">
+                        <span ng-show="!inv.approved">Due date {{inv.invoiceDueDate | date:mediumDate}}</span>
+                        <span ng-show="inv.approved">
+                            <span class="databox-text">Approved by {{inv.approversName}} on {{inv.approvedDate | date:mediumDate}}</span>
+                        </span>
+                    </div>*@
+                <div class="databox databox-lg databox-xs databox-sm radius-bordered databox-shadowed" ng-style=setOpacity(inv.invoiceNumber)>
+                    <div class="databox-left bg-white">
+                        <div style="height:20px;" data-toggle="popover" data-content="% Change From Last Month" data-title="" data-placement="auto" data-trigger="hover" popover-append-to-body="true" data-container="body">
+                            <div ng-class="pctBoxStyle(inv.percentageChange)">
+                                <div class="stat-text">{{inv.percentageChange | number:1}} %</div>
+                                <i ng-class="negativeValue(inv.percentageChange)"></i>
                             </div>
                         </div>
-                        <div class="col-lg-3 col-xs-3 col-sm-3 nopadding item-right" style="padding-right: 10px; padding-left: 0">
-                            <span ng-show="inv.verified" class="btn-xs  btn-maroon pull-right">
-                                <i class="fa fa-eye"></i>
-                            </span>
-                            <span data-toggle="tooltip" title="Sort by Invoice Total" ng-show="inv.approved" class="btn-xs btn-palegreen pull-right">
-                                <i class="fa fa-check"></i>
-                            </span>
-                            <span ng-show="!inv.approved" ng-click="approveInv(inv.approved, inv.invoiceId)"
-                                  class="btn btn-info pull-right">
-                                Approve
+                        <div class="databox-cell cell-12 no-padding padding-top-10  text-align-center" ng-show="!inv.missing">
+                            <span class="databox-number orange no-margin">
+                                <a href="@Url.Action("InvoiceDetail", "Portal")/{{inv.invoiceId}}" title="Invoice Details">
+                                    <i class="fa fa-cogs"></i>
+                                </a>
+                                <a ng-show="{{inv.invoicePdf}} " href="https://cimsco.blob.core.windows.net/{{inv.siteId|padNumber:6}}/{{inv.invoiceId|padNumber:8}}.pdf" title="Download PDF">
+                                    <i class="fa fa-download"></i>
+                                </a>
                             </span>
                         </div>
                     </div>
-                </div>*@
+                    <div class=" thin-margin databox-right bordered-thick bordered-sky bg-white">
+                        <div class="col-sm-12 col-md-12 col-lg-12 form-group">
+                            <div class="col-sm-3">
+                                <div style="height:20px;" data-toggle="popover" data-content="Month" data-title="" data-placement="auto" data-trigger="hover"
+                                     popover-append-to-body="true" data-container="body">
+                                    <span class="databox-number magenta">{{inv.invoiceKeyDate | date:"MMM yy"}}</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-4 col-md-4 col-lg-4" >
+                                <div ng-show="!inv.missing" style="height:20px;" data-toggle="popover" data-content="Invoice Date" data-title="" data-placement="auto" data-trigger="hover"
+                                     popover-append-to-body="true" data-container="body">
+                                    <span class="databox-number sky"><i class="fa fa-calendar"></i>{{inv.invoiceDate | date:mediumDate}}</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div ng-show="!inv.approved && !inv.missing" style="height:20px;" data-toggle="popover" data-content="Due Date" data-title="" data-placement="auto" data-trigger="hover"
+                                     popover-append-to-body="true" data-container="body">
+                                    <span class="databox-number sky"><i class="fa fa-calendar"></i>{{inv.invoiceDueDate | date:mediumDate}}</span>
+                                </div>
+                                <div ng-show="inv.approved && !inv.missing" style="height:20px;" data-toggle="popover" data-content="Approved by {{inv.approversName}}" data-title="" data-placement="auto" data-trigger="hover"
+                                     popover-append-to-body="true" data-container="body">
+                                    <span class="databox-number green"><i class="fa fa-calendar"></i>{{inv.approvedDate | date:mediumDate}}</span>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-1" style="height:20px;" >
+                                <div ng-show="!inv.missing" class="databox-stat radius-bordered">
+                                    <span ng-show="inv.verified" class="btn-xs  btn-maroon pull-right">
+                                        <i class="fa fa-eye"></i>
+                                    </span>
+                                    <span data-toggle="popover" data-content="Invoice Approved" data-title="" data-placement="right" data-trigger="hover"
+                                          ng-show="inv.approved" class="btn-xs btn-palegreen pull-right">
+                                        <i class="fa fa-check"></i>
+                                    </span>
+                                    <span data-toggle="popover" data-content="Click to Approve this Invoice" data-title="" data-placement="right" data-trigger="hover" ng-show="!inv.approved" ng-click="approveInv(inv.approved, inv.invoiceId)"
+                                          class="label label-info pull-right">
+                                        Approve
+                                    </span>
+                                </div>
+                                <div ng-show="inv.missing" class="databox-stat radius-bordered">
+                                    <span data-toggle="popover" data-content="Missing Invoice" data-title="" data-placement="right" data-trigger="hover" class="label label-info pull-right">
+                                        Missing
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                        </div>
+                        <div class="col-lg-12" ng-show="!inv.missing">
+                            <div class="col-sm-3">
+                                <div style="height:20px;" data-toggle="popover" data-content="Invoice Total incl. GST" data-title="" data-placement="auto" data-trigger="hover"
+                                     popover-append-to-body="true" data-container="body">
+                                    <div class="databox-text darkgray">{{inv.invoiceTotal | currency:$}}</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div style="height:20px;" data-toggle="popover" data-content="Invoice Number" data-title="" data-placement="auto" data-trigger="hover"
+                                     popover-append-to-body="true" data-container="body">
+                                    <div class="databox-text darkgray">{{inv.invoiceNumber}}</div>
+                                </div>
+
+                            </div>
+                            <div class="col-sm-5">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+        <div class="col-lg-3  col-md-1 col-xs-1"></div>
+
     </div>
 </div>
-<style type="text/css">
-    .sortorder:after {
-        content: '\25b2';
-    }
+@*<style type="text/css">
+        .sortorder:after {
+            content: '\25b2';
+        }
 
-    .sortorder.reverse:after {
-        content: '\25bc';
-    }
-</style>
+        .sortorder.reverse:after {
+            content: '\25bc';
+        }
+    </style>*@
 

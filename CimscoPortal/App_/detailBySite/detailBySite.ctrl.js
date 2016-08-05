@@ -9,8 +9,9 @@
         // $scope.monthSpanOptions = [3, 6, 12, 24];
         var monthSpan = 12; // Refactor out
         // Accordion
+
         $scope.oneAtATime = true;  // Accordion behaviour
-        $scope.emptyDivisionName = "Not Set";
+        //$scope.emptyDivisionName = "Not Set";
         
         $scope.groups = [
           {
@@ -52,7 +53,8 @@
             $scope.monthSpan = monthSpan;
             $scope.siteDetailData = data.siteDetailData;
             $scope.divisions = data.divisions;
-          //  $scope.divisions[0].isOpen = true;
+            console.log($scope.divisions);
+            //$scope.divisions[0].isOpen = true;
            
             // $scope.siteDetailData.invoiceHistory.totals = [12398, 23221, 33421, 34251, 34921, 34252];
             //for (index = 0, len = data.siteDetailData.length; index < len; ++index)
@@ -61,7 +63,17 @@
             //};
             var index; var len;
             var tallyArray = [];
+            var _tabSet = false;
+            $scope.divisionView = [];
+
+            for (var i = 0; i < $scope.divisions.length; i++) {
+               // if ($scope.divisions[i].divisionName == "") { $scope.divisions[i].divisionName = $scope.emptyDivisionName };
+                $scope.divisionView.push(false);
+            };
+            var _showTab = false;
+            //console.log("Len 1 : " + data.siteDetailData.length);
             for (index = 0, len = data.siteDetailData.length; index < len; ++index) {
+                //console.log("Div name " + data.siteDetailData[index].divisionName);
                 tallyArray.push({
                     "invoiceCounts": [
                         {
@@ -82,9 +94,23 @@
                     ]
                 });
                 $scope.siteDetailData[index].graphData = tallyArray[0];
+                //console.log("Invoices on file : " + (data.siteDetailData[index].invoiceKeyData.totalInvoicesOnFile));
+
+                // Expand the first division tab that contains data
+                if ((data.siteDetailData[index].invoiceKeyData.totalInvoicesOnFile) > 0 && !_tabSet) {
+                    //console.log("div len = " + $scope.divisions.length);
+                    for (var i = 0; i < $scope.divisions.length; i++) {
+                       // console.log("Test for Name  = " + $scope.divisions[i]);
+                        if (data.siteDetailData[index].divisionName == $scope.divisions[i]) {
+                            //console.log(data.siteDetailData[index].divisionName);
+                            $scope.divisionView[i] = true
+                            _tabSet = true;
+                        }
+                    }
+                }
                 tallyArray = [];
             };
-
+            console.log($scope.divisionView);
             $scope.loading = false;
             toaster.pop('success', "Invoice Data Loaded!", "");
             

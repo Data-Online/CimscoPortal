@@ -254,7 +254,8 @@
         };
 
         $scope.updateCC = function () {
-            getGraphData();
+            window.dispatchEvent(new Event('resize'));
+//            getGraphData();
         };
 
         function initializeChart() {

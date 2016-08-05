@@ -164,6 +164,8 @@ namespace CimscoPortal.App_Start
             Mapper.CreateMap<EnergyData, AddMonthData>(MemberList.Source)
                 .ForMember(m => m.monthCount, opt => opt.Ignore());
 
+            Mapper.CreateMap<MonthlySummaryModel, InvoiceOverviewViewModel>(MemberList.Source);
+
             Mapper.CreateMap<Division, FilterItem>()
                 //  .ForMember(m => m.Index, opt => opt.Ignore())
                 .ForMember(m => m.Label, opt => opt.MapFrom(s => s.DivisionName))
@@ -185,15 +187,13 @@ namespace CimscoPortal.App_Start
 
             Mapper.CreateMap<Site, SiteDetailData>()
                 .ForMember(m => m.CustomerName, opt => opt.MapFrom(s => s.Customer.CustomerName))
-                .ForMember(m => m.DivisionName, opt => opt.MapFrom(s => s.GroupDivision.DivisionName));
+                .ForMember(m => m.DivisionName, opt => opt.MapFrom(s => s.GroupDivision.DivisionName ?? "Not Set" ));
 
         }
 
 
     }
 }
-
-
 
 
 //public interface ITypeConverter<TSource, TDestination>

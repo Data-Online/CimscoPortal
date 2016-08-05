@@ -17,6 +17,8 @@ namespace CimscoPortal.Models
        // public string id { get; set; }
         public string label { get; set; }
         public string type { get; set; }
+        public string format { get; set; }
+        public string role { get; set; }
     }
 
     public class GoogleRows

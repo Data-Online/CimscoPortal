@@ -1625,6 +1625,7 @@
     <Content Include="Views\Portal\DetailBySitePartials\_Approvals.cshtml" />
     <Content Include="Views\Portal\DetailBySitePartials\_Analysis - Copy.cshtml" />
     <Content Include="Views\Portal\DetailBySitePartials\_AnalysisSortHeader.cshtml" />
+    <Content Include="Views\Portal\DashboardPartials\_DashboardSortHeader.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />

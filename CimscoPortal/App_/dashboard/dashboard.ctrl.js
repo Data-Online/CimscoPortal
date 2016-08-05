@@ -11,25 +11,25 @@
         })
         .controller("app.dashboard.ctrl", dashboard);
 
-    dashboard.$inject = ['$scope', '$parse', '$interval', 'dbDataSource', 'userDataSource', 'dbConstants', 'toaster', 'googleChart'];
-    function dashboard($scope, $parse, $interval, dbDataSource, userDataSource, dbConstants, toaster, googleChart) {
+    dashboard.$inject = ['$scope', '$parse', '$interval', '$timeout', 'dbDataSource', 'userDataSource', 'dbConstants', 'toaster', 'googleChart'];
+    function dashboard($scope, $parse, $interval, $timeout, dbDataSource, userDataSource, dbConstants, toaster, googleChart) {
+        var _googleChartElements =
+            [
+                { elementName: "energyChargesChart", columnNames: ["Invoice Total excl GST", "Previous Year Total"], columns: [{ primary: [], all: [] }], title: "Energy Charges" },
+                { elementName: "electricityConsumptionChart", columnNames: ["Total Kwh", "Previous Year Kwh"], columns: [{ primary: [], all: [] }], title: "Electricity Consumption" }
+            ];
 
+        //var showingPrior12 = false;
         $scope.pop = function () {
             toaster.pop('success', "title", "text");
         };
 
         var divisions = [];
-        //[{ id: 1, label: 'MEGA Stores' },
-        //   { id: 2, label: 'Mitre 10 Stores' }];
         var categories = [];
-        //[{ id: 1, label: 'Hardware and Building Supplies Retailing' },
-        //           { id: 2, label: 'Another A' },
-        //           { id: 3, label: 'Another B' }];
-        //var monthSpan;
-
         var yearArray = {};
         var currentData = [];
         var prior12Data = [];
+        $scope.loading = true;
 
         userDataSource.getUserData()
             .then(onUserData, onError);
@@ -40,42 +40,26 @@
         function onWelcomeMessage(data) {
             $scope.welcomeHeader = data.header;
             $scope.welcomeText = data.text;
-            console.log(data);
         };
 
         function onUserData(data) {
             $scope.monthSpanOptions = data.monthSpanOptions;
-            //monthSpan = data.monthSpan;
             $scope.monthSpan = data.monthSpan;
-            console.log('User Data ' + data.monthSpanOptions + " " + data.monthSpan);
-
-            // $scope.topLevelName = data.topLevelName;
-            var companyId = 0;
-            //dbDataSource.getTotalCostsByMonth(data.monthSpan, companyId)
-            //    .then(function success(data) { return onGraphData(data, dbConstants.costsDataElement, 0) }, onError);
-
-            //dbDataSource.getTotalCostAndConsumption(data.monthSpan, "null")
-            //    .then(plotAllGraphs, onError);
-            //            .then(function success(data) {return onGraphData(data.cost, dbConstants.consDataElement, 1) }, onError);
-
             dbDataSource.getAllFilters()
                 .then(onFiltersOk, onError);
         };
 
         var onFiltersOk = function (data) {
-            //            console.log('Divisions : ' + divisions);
             createMultiDropdown('divisions', data.divisions, true);
             createMultiDropdown('categories', data.categories, true);
         };
 
         var plotAllGraphs = function (data) {
-            // console.log('got data .. ');
             toaster.pop('success', "All data loaded!", "Read histogram and stats data from database");
-            $scope.loading = false;
-            
             onGraphData(data.cost, dbConstants.costsDataElement, 0);
             onGraphData(data.consumption, dbConstants.consDataElement, 1);
             displayStats(data.invoiceStats);
+            $scope.loading = false;
         };
 
         function onGraphData(data, target, index) {
@@ -86,7 +70,6 @@
                 invoices: data.totalInvoices,
                 invoices12: data.totalInvoices12
             };
-            console.log(yearArray);
             var unit = ["$", "KWh"];
             currentData[index] = assignData(data.values, themeprimary, "current" + ":" + unit[index]);
             prior12Data[index] = assignData(data.values12, themesecondary, "minus12" + ":" + unit[index]);
@@ -96,7 +79,6 @@
         function onError(reason) {
             $scope.loading = false;
             toaster.pop('error', "Data Load Error", "Unable to load data from database!");
-            console.log('Error reading user data');
             $scope.reason = reason;
         };
 
@@ -117,19 +99,48 @@
         };
 
         $scope.togglePreviousYearsData = function ($event) {
-            var checkbox = $event.target;
-            refreshData(checkbox.checked, currentData[0], prior12Data[0], dbConstants.costsDataElement);
-            refreshData(checkbox.checked, currentData[1], prior12Data[1], dbConstants.consDataElement);
+            $scope.loading = true;
+           // var checkbox = $event.target;
+            refreshData($scope.showPrevious12, currentData[0], prior12Data[0], dbConstants.costsDataElement);
+            refreshData($scope.showPrevious12, currentData[1], prior12Data[1], dbConstants.consDataElement);
+
+            refreshGoogleChart($scope.showPrevious12, _googleChartElements[googleChart.elementIndex(_googleChartElements, "Electricity Consumption")]);
+            refreshGoogleChart($scope.showPrevious12, _googleChartElements[googleChart.elementIndex(_googleChartElements, "Energy Charges")]);
+            //showingPrior12 = checkbox.checked;
+            //$scope.loading = false;
         };
 
+
         $scope.reviseMonths = function (newMonthSpan) {
-            // console.log('revise data...' + newMonthSpan);
             $scope.loading = true;
             $scope.monthSpan = newMonthSpan;
             readAndPlotHistogram();
             readAndPlotGoogleGraphData();
-            //dbDataSource.getTotalCostAndConsumption($scope.monthSpan, getReturnIds())
-            //    .then(plotAllGraphs, onError);
+           // $scope.loading = false;
+        };
+
+        $scope.toggleGraphType = function ($event) {
+            $scope.loading = true;
+            window.dispatchEvent(new Event('resize'));
+            $scope.loading = false;
+        };
+
+
+        function refreshGoogleChart(showPreviousYear, chartElements) {
+            var getter = $parse(chartElements.elementName + '.view');
+
+            if (showPreviousYear) {
+                var _columns = {
+                    columns: chartElements.columns.all
+                };
+            }
+            else {
+                var _columns = {
+                    columns: chartElements.columns.primary
+                };
+            }
+            getter.assign($scope, _columns);
+            $scope.loading = false;
         };
 
         function refreshData(showPreviousYear, firstDataset, secondDataset, target) {
@@ -188,7 +199,6 @@
         };
 
         var displayStats = function (data) {
-            //console.log('Display stats...' + data.percentMissingInvoices);
             $scope.totalSites = data.totalSites;
 
             // Percentage missing invoices
@@ -254,14 +264,7 @@
 
         };
 
-        //console.log('Categories : ' + categories);
-
-        //        createMultiDropdown('divisions', divisions, true);
-        //        createMultiDropdown('categories', categories, true);
-
         var filterData = function (data, baseName) {
-            console.log('Start delay for data ' + baseName);
-            //console.log($scope.divisionsModel);
             startDelay(data);
         };
 
@@ -282,11 +285,8 @@
                 stop = undefined;
                 _counter = dbConstants.filterSelectDelay;//20;
             };
-            //console.log('Return values ' + getReturnIds() + ' checkbox = ' + $scope.showPrevious12);
             $scope.loading = true;
             readAndPlotHistogram();
-            //dbDataSource.getTotalCostAndConsumption($scope.monthSpan, getReturnIds())
-            //    .then(plotAllGraphs, onError);
 
             readAndPlotGoogleGraphData();
         };
@@ -304,66 +304,55 @@
         };
 
         // Google chart control GPA: Refactor all code here, copied from SiteOverview
-        
         var readAndPlotGoogleGraphData = function () {
-            console.log("Google chart plot...");
             dbDataSource.getCostConsumptionData($scope.monthSpan, getReturnIds())
                 .then(onGoogleGraphData, onError);
         };
 
+
         var onGoogleGraphData = function (data) {
             var _collatedData = googleChart.collateData(data);
-            initializeGoogleChart(_collatedData);
+            initializeGoogleChart(_collatedData, _googleChartElements[googleChart.elementIndex(_googleChartElements, "Electricity Consumption")]);
+            initializeGoogleChart(_collatedData, _googleChartElements[googleChart.elementIndex(_googleChartElements, "Energy Charges")]);
             toaster.pop('success', "Google graph data loaded!", "");
             $scope.loading = false;
         };
 
-        $scope.myChartObject = {};
-        function initializeGoogleChart(data) {
-            $scope.myChartObject.type = "LineChart";//"BarChart";// 
-            $scope.myChartObject.displayed = false;
-            $scope.myChartObject.data = {
-                "cols": data.cols,
-                "rows": data.rows
-            };
+        //console.log(googleChart.configureChart());
 
-            $scope.myChartObject.options = {
-                "interpolateNulls": true,
-                "chartArea": { "height": "50%" },
-                "title": "Charges and Consumption",
-                "colors": ['#0000FF', '#009900', '#CC0000', '#DD9900'],
-                "defaultColors": ['#0000FF', '#009900', '#CC0000', '#DD9900'],
-                "isStacked": "true",
-                "fill": 20,
-                "displayExactValues": true,
-                "pointSize": 5,
-                "lineWidth": 3,
-                "vAxes": {
-                    0: {
-                        "title": "Invoice Total excl GST",
-                        "format": "currency"
-                    }, 1: {
-                        "title": "Total Kwh",
-                        "format": "decimal"
-                    }
+        function initializeGoogleChart(data, chartElements) {
+            // data.axes defined the Axes labels and formats.
+            // Axes 0 == X
+            // Remaining Axes are Y
+
+            var chartElementName = chartElements.elementName;
+
+            var getter = $parse(chartElementName + '.type');
+            getter.assign($scope, 'LineChart');
+
+            getter = $parse(chartElementName + '.data');
+            getter.assign($scope,
+                {
+                    "cols": data.cols,
+                    "rows": data.rows
                 }
-    ,
-                "hAxis": {
-                    "title": "Month", "direction": 1, "slantedText": true, "slantedTextAngle": 45
-                },
-                "animation": {
-                    "duration": 1000,
-                    "easing": 'out',
-                }
-                , "series": [{ targetAxisIndex: 0 }, { targetAxisIndex: 1 }]
-            };
-            $scope.myChartObject.view = {
-                columns: [0,1,2]
-            };
+                );
+
+            // Restrict data displayed on this chart to specified Axes.
+            var selectedColumnNames = [];
+            selectedColumnNames.push(chartElements.columnNames[0]);
+
+            var _axesToDisplay = googleChart.selectAxesByName(selectedColumnNames, data.axes);
+
+            chartElements.columns.primary = _axesToDisplay.columns;
+
+            getter = $parse(chartElementName + '.options');
+            getter.assign($scope,
+                googleChart.configureChart(chartElements.title, _axesToDisplay.axes, data.axes[0].title)
+                );
+            chartElements.columns.all = googleChart.displayAxesByName(chartElements.columnNames, data.axes);
+            refreshGoogleChart($scope.showPrevious12, chartElements);
         }
-
-
-
     };
 
     String.prototype.capitalizeFirstLetter = function () {
@@ -387,7 +376,7 @@
         else
             return 0
     };
- 
+
 
     function singleTooltip(v, yearArray) {
         //console.log(v);
@@ -399,6 +388,7 @@
         else {
             var _invNumber = totalInvoicesFromArray(v, yearArray);
         }
+        //    console.log(pluralise(_invNumber));
         if (unit == "$")
             var _format = v.label + ' ' + yearFromArray(v, yearArray) + ' : ' + unit + numberWithCommas(v.value) + ' (' + _invNumber + ' invoice' + pluralise(_invNumber) + ')';
         else
@@ -409,7 +399,7 @@
 
     function multiTooltip(v, yearArray) {
         var _yearNumber = yearFromArray(v, yearArray);
-        
+
         var unit = v.datasetLabel.split(":").pop();
         if (v.datasetLabel.split(":", 1) != 'current') {
             _yearNumber = _yearNumber - 1;
@@ -418,8 +408,9 @@
         else {
             var _invNumber = totalInvoicesFromArray(v, yearArray);
         }
+        //   console.log(pluralise(_invNumber));
         if (unit == "$")
-            var _format = _yearNumber + ' : ' + unit + numberWithCommas(v.value) + ' (' + _invNumber + ' invoice' + pluralise(_invNumber) +')';
+            var _format = _yearNumber + ' : ' + unit + numberWithCommas(v.value) + ' (' + _invNumber + ' invoice' + pluralise(_invNumber) + ')';
         else
             var _format = _yearNumber + ' : ' + numberWithCommas(v.value) + ' ' + unit + ' (' + _invNumber + ' invoice' + pluralise(_invNumber) + ')';
         return (_format);
@@ -427,10 +418,11 @@
 
     function pluralise(count) {
         // Very simple at the moment
+        //  console.log(count);
         if (count.length >= 0)
-            return 's';
+        { return "s"; }
         else
-            return '';
+        { return ""; }
     };
 
     function numberWithCommas(x) {
@@ -438,3 +430,28 @@
     }
 
 })();
+
+
+//data.cols = [];
+//var colpart = { id: "2", label: "Month", title: "Month", type: "string" };
+//data.cols.push(colpart);
+//var colpart = { id: "3", title: "Invoice Total excl GST", label: "Invoice Total excl GST", type: "number" };
+//data.cols.push(colpart);
+//var colpart = { id: "8", type: "string", role: "tooltip", p: { 'html': true } };
+//data.cols.push(colpart);
+//var colpart = { id: "4", type: "number", title: "Test", label: "test" };
+//data.cols.push(colpart);
+//var colpart = { id: "7", type: "string", role: "tooltip" };
+//data.cols.push(colpart);
+//var colpart = { id: "5", title: "Cost / Sqm", label: "Cost / Sqm", type: "number" };
+//data.cols.push(colpart);
+//var colpart = { id: "6", title: "Kwh / SqM", label: "Kwh / SqM", type: "number" };
+//data.cols.push(colpart);
+
+//data.rows = [];
+//var cpart = [{ v: "August", f: null }, { v: "$0.0", f: null }, { v: "$0.0", f: null }, { v: "$0.0", f: null }, { v: "$0.0", f: null }, { v: "$0.0", f: null }, { v: "$0.0", f: null }];
+//data.rows.push({ c: cpart });
+//var cpart = [{ v: "September", f: null }, { v: "32218.3900", f: "$32,218.39 (3 invoices)" }, { f: "<div style='width:150px; margin:10px;'>September</br><b>$32,218.39</br>(3 invoices)</b></div>" },
+//                { v: "42218.3900", f: "$32,218.39 (3 invoices)" }, { f: "A label" },
+//                { v: "52218.3900", f: "$32,218.39 (3 invoices)" }, { v: "62218.3900", f: "$32,218.39 (3 invoices)" }];
+//data.rows.push({ c: cpart });

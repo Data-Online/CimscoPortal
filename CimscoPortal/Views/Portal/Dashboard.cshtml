@@ -26,6 +26,7 @@
     </div>
 
     <toaster-container></toaster-container>
+
     <div class="row">
         <div class="col-md-12">
             <div class="widget">
@@ -42,12 +43,21 @@
                             showing {{monthSpan}} months of data
                         </span>
                     </span>
-                    <div class="widget-buttons">
-                        <label>
-                            <input class="colored-success" ng-click="togglePreviousYearsData($event)" type="checkbox" ng-model="showPrevious12">
-                            <span class="widget-caption text">Compare With Previous Year</span>
-                        </label>
-                    </div>
+
+                    @*<div class="widget-buttons">
+                            <label ng-hide="false">
+                                <input class="colored-success" ng-model="showLine" type="checkbox" ng-init="showLine=options.selected" data-ng-click="toggleGraphType($event)">
+                                <span class="widget-caption text">&nbsp; Show as line chart</span>
+                            </label>
+                        </div>
+
+
+                        <div class="widget-buttons">
+                            <label>
+                                <input class="colored-success" ng-click="togglePreviousYearsData($event)" type="checkbox" ng-model="showPrevious12">
+                                <span class="widget-caption text">Compare With Previous Year</span>
+                            </label>
+                        </div>*@
 
                     <div ng-if="divisionsData" ng-show="divisionsData.length > 0" class="widget-buttons">
                         <div class="btn-group">
@@ -74,45 +84,62 @@
                         </div>
                     </div>
                 </div>
-                <div class="horizontal-space space-sm"></div>
-                <div class="row">
-                    <div class="col-xs-12 col-md-6" ng-style="{opacity: ((loading) && .4) || 1.0}">
-                        <div class=" widget">
-                            <div class="widget-header">
-                                <span class="widget-caption">Electricity Cost</span>
 
-                                <div class="widget-buttons">
-                                    <a href="" widget-collapse></a>
-                                    <a href="" widget-dispose></a>
+                <div class="widget-body" ng-style="{opacity: ((loading) && .4) || 1.0}">
+                    <p style="padding: 0;" class="bg-whitesmoke">
+                        @Html.Partial("DashboardPartials/_DashboardSortHeader")
+                    </p>
+                    <div class="horizontal-space space-sm"></div>
+                    <div class="row" ng-style="{opacity: ((loading) && .4) || 1.0}">
+                        <div class="col-xs-12 col-md-6">
+                            <div class="widget">
+                                <div class="widget-header">
+                                    <span class="widget-caption">Energy Charges</span>
+
+                                    <div class="widget-buttons">
+                                        <a href="" widget-collapse></a>
+                                        <a href="" widget-dispose></a>
+                                    </div>
+                                </div>
+                                <div class="show-hide-animate">
+                                    <div ng-show="showBar" class="widget-body show-hide-animate" style="padding-top:20px">
+                                        <div class="chartcontainer" style="width: 100%;">
+                                            <canvas tc-chartjs-bar chart-options="barChartOptions" chart-data="costsBarChart" auto-legend></canvas>
+                                        </div>
+                                    </div>
+                                    <div ng-show="!showBar" class="widget-body show-hide-animate" style="height: 360px;  padding-top:5px; padding-right:0; padding-left:0">
+                                        <div class="col-lg-12" ng-if="energyChargesChart.data">
+                                            <div google-chart chart="energyChargesChart" style="height:330px; width:100%; padding-right:5px;"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="widget-body" style="padding-top:20px">
-                                <div class="chartcontainer" style="width: 100%;">
-                                    <canvas tc-chartjs-bar chart-options="barChartOptions" chart-data="costsBarChart" auto-legend></canvas>
+                        </div>
+                        <div class="col-xs-12 col-md-6" ng-style="{opacity: ((loading) && .4) || 1.0}">
+                            <div class="widget">
+                                <div class="widget-header">
+                                    <span class="widget-caption">Electricity Consumption</span>
+
+                                    <div class="widget-buttons">
+                                        <a href="" widget-collapse></a>
+                                        <a href="" widget-dispose></a>
+                                    </div>
+                                </div>
+                                <div class="show-hide-animate">
+                                    <div ng-show="showBar" class="widget-body show-hide-animate" style="padding-top:20px">
+                                        <div class="chartcontainer" style="width: 100%;">
+                                            <canvas tc-chartjs-bar chart-options="barChartOptions" chart-data="consBarChart" auto-legend></canvas>
+                                        </div>
+                                    </div>
+                                    <div ng-show="!showBar" class="widget-body show-hide-animate" style="height: 360px;  padding-top:5px; padding-right:0; padding-left:0">
+                                        <div class="col-lg-12" ng-if="electricityConsumptionChart.data">
+                                            <div google-chart chart="electricityConsumptionChart" style="height:330px; width:100%; padding-right:5px;"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-md-6" ng-style="{opacity: ((loading) && .4) || 1.0}">
-                        <div class="widget">
-                            <div class="widget-header">
-                                <span class="widget-caption">Electricity Consumption</span>
-
-                                <div class="widget-buttons">
-                                    <a href="" widget-collapse></a>
-                                    <a href="" widget-dispose></a>
-                                </div>
-                            </div>
-                            <div class="widget-body" style="padding-top:20px">
-                                <div class="chartcontainer" style="width: 100%;">
-                                    <canvas tc-chartjs-bar chart-options="barChartOptions" chart-data="consBarChart" auto-legend></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row" ng-if="myChartObject.data" ng-style="{opacity: ((loading) && .4) || 1.0}">
-                    <div google-chart chart="myChartObject" style="height:450px; width:100%;"></div>
                 </div>
             </div>
         </div>
@@ -131,10 +158,11 @@
                 <div class="widget-body" style="height:105px;" ng-style="{opacity: ((loading) && .4) || 1.0}">
                     @*<canvas tc-chartjs-pie chart-options="options" chart-data="data" auto-legend></canvas>*@
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="row">
+                        <div ng-if="activeSites" class="row">
                             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                                 <div class="databox databox-lg databox-shadowed databox-graded radius-bordered">
-                                    <label data-toggle="tooltip" title="From the {{activeSites}} active sites, {{missingInvoices}} invoices are yet to be filed ({{missingPercent}}%)." data-placement="right" class="tooltip-palegreen">
+                                    <label data-toggle="popover" data-content="From the {{activeSites}} active sites, {{missingInvoices}} invoices have yet to be filed ({{missingPercent}}%)."
+                                           data-title="" data-placement="auto" data-trigger="hover">
                                         <div class="databox-left bg-themeprimary" style="padding:4px;">
                                             <div class="databox-piechart">
                                                 <span ng-if="missingPercent" class="EPchart" easypiechart options="missingOptions" percent="missingPercent">
@@ -144,7 +172,7 @@
                                         </div>
                                     </label>
                                     <div class="databox-right">
-                                        <span class="databox-number themesecondary">{{missingPercent}}% of invoices</span>
+                                        <span class="databox-number themesecondary">{{missingPercent}}% of invoices missing</span>
                                         <div class="databox-text darkgray">From {{activeSites}} Sites ({{missingInvoices}} missing invoices)</div>
                                         <div class="databox-stat themesecondary radius-bordered">
                                             <i class="stat-icon icon-lg fa fa-tasks"></i>
@@ -154,7 +182,8 @@
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                                 <div class="databox databox-lg databox-shadowed databox-graded radius-bordered">
-                                    <label data-toggle="tooltip" title="Out of a possible {{totalSites}} sites, currently {{filedPercent}}% of sites have filed invoices." data-placement="right" class="tooltip-palegreen">
+                                    <label data-toggle="popover" data-content="Out of a possible {{totalSites}} sites, currently {{filedPercent}}% of sites have filed invoices."
+                                           data-title="" data-placement="auto" data-trigger="hover">
                                         <div class="databox-left bg-themeprimary" style="padding:4px;">
                                             <div class="databox-piechart">
                                                 <span ng-if="filedPercent" class="EPchart" easypiechart options="filedOptions" percent="filedPercent">
@@ -164,7 +193,7 @@
                                         </div>
                                     </label>
                                     <div class="databox-right">
-                                        <span class="databox-number themesecondary">{{filedPercent}}% of sites</span>
+                                        <span class="databox-number themesecondary">{{filedPercent}}% of sites with data</span>
                                         <div class="databox-text darkgray">{{totalSites - activeSites}} Sites on file with no data</div>
                                         <div class="databox-stat themesecondary radius-bordered">
                                             <i class="stat-icon icon-lg fa fa-tasks"></i>

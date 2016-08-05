@@ -50,6 +50,7 @@ namespace CimscoPortal.Models
         public int SiteId { get; set; }
         public int InvoiceId { get; set; }
         public bool InvoicePdf { get; set; }
+        public DateTime InvoiceKeyDate { get; set; }
     }
 
     public class InvoiceDetail
