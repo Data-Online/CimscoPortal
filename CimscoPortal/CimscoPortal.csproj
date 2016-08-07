@@ -390,6 +390,7 @@
     <Content Include="App_\external\nvd3\nv.d3.min.css" />
     <Content Include="App_\external\nvd3\nv.d3.min.js" />
     <Content Include="App_\external\widget.js" />
+    <Content Include="App_\invoiceDetail\invoiceOverview.module.js" />
     <Content Include="App_\messaging\messaging.module.js" />
     <Content Include="App_\messaging\messaging.data.js" />
     <Content Include="App_\messaging\messaging.ctrl.js" />
@@ -403,8 +404,8 @@
     <Content Include="App_\core\companyOverview.data.js" />
     <Content Include="App_\core\companyOverview.ctrl.js" />
     <Content Include="App_\core\customFilters.js" />
-    <Content Include="App_\core\invoiceDetail.data.js" />
-    <Content Include="App_\core\invoiceDetail.ctrl.js" />
+    <Content Include="App_\invoiceDetail\invoiceDetail.data.js" />
+    <Content Include="App_\invoiceDetail\invoiceDetail.ctrl.js" />
     <Content Include="App_\dashboard\dashboard.module.js" />
     <Content Include="App_\siteOverview\siteOverview.module.js" />
     <Content Include="App_\siteOverview\siteOverview.ctrl.js" />
@@ -1603,7 +1604,7 @@
     <Content Include="Views\Portal\SiteOverviewPartials\_InvoiceList.cshtml" />
     <Content Include="Views\Portal\_SparklineBar.cshtml" />
     <Content Include="Views\Portal\InvoiceDetailPartials\_DonutPlusSummary.cshtml" />
-    <Content Include="Views\Portal\_OtherChargesTable.cshtml" />
+    <Content Include="Views\Portal\InvoiceDetailPartials\_OtherChargesTable.cshtml" />
     <Content Include="Views\Portal\_SiteListB.cshtml" />
     <Content Include="Views\Portal\SiteOverview.cshtml" />
     <Content Include="Views\Portal\SiteOverview - Copy.cshtml" />

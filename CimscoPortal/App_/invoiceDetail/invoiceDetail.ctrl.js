@@ -1,6 +1,6 @@
 ﻿(function () {
 
-    var module = angular.module("app");
+    var module = angular.module("app.invoiceDetail");
 
     var invoiceDetail = function ($scope, idDataSource, icDataSource, commonTools) {
 

@@ -66,67 +66,70 @@
                 </div>
             </div>
     </div>*@
+<div class="col-lg-6 col-md-12">
+    <h6 class="row-title before-blue">Delivery Charges</h6>
 
-<div class="table-responsive margin-top-5">
-    <table class="table table-hover">
-        <thead>
-            <tr class="bg-themeprimary">
-                <th colspan="2" class="text-center bg-themeprimary" style="color:white!important">
-                    Network Charges
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>
-                    Variable Charge (Business Day)
-                </td>
-                <td>
-                    {{networkCharges[0] | currency:$}}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Variable Charge (Non Business Day)
-                </td>
-                <td>
-                    {{networkCharges[1] | currency:$}}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Capacity Charge
-                </td>
-                <td>
-                    {{networkCharges[2] | currency:$}}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Demand Charge
-                </td>
-                <td>
-                    {{networkCharges[3] | currency:$}}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Fixed Charge
-                </td>
-                <td>
-                    {{networkCharges[4] | currency:$}}
-                </td>
-            </tr>
-        </tbody>
-        <tfoot>
-            <tr>
-                <td>
-                    <b>Total</b>
-                </td>
-                <td>
-                    <b> {{ncTotal | currency:$}}</b>
-                </td>
-            </tr>
-        </tfoot>
-    </table>
+    <div class="table-responsive margin-top-5">
+        <table class="table table-hover">
+            @*<thead>
+                    <tr class="bg-themeprimary">
+                        <th colspan="2" class="text-center bg-themeprimary" style="color:white!important">
+                            Network Charges
+                        </th>
+                    </tr>
+                </thead>*@
+            <tbody>
+                <tr>
+                    <td>
+                        Variable Charge (Business Day)
+                    </td>
+                    <td>
+                        {{networkCharges[0] | currency:$}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Variable Charge (Non Business Day)
+                    </td>
+                    <td>
+                        {{networkCharges[1] | currency:$}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Capacity Charge
+                    </td>
+                    <td>
+                        {{networkCharges[2] | currency:$}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Demand Charge
+                    </td>
+                    <td>
+                        {{networkCharges[3] | currency:$}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Fixed Charge
+                    </td>
+                    <td>
+                        {{networkCharges[4] | currency:$}}
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>
+                        <b>Total</b>
+                    </td>
+                    <td>
+                        <b> {{ncTotal | currency:$}}</b>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
 </div>

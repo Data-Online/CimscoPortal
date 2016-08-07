@@ -20,8 +20,8 @@
 
         </th>
     </tr>
-    <tbody ng-show="siteDetail.invoiceKeyData.totalInvoicesOnFile > 0">
-        <tr ng-show="showValue">
+    <tbody ng-show="siteDetail.invoiceKeyData.totalInvoicesOnFile > 0" >
+        <tr ng-show="showValue" class="animate-show-hide">
             <td width="20%" class="responsive-td">
                 <span>
                     Energy Charges
@@ -48,7 +48,7 @@
                 </span>
             </td>
         </tr>
-        <tr ng-show="showKwh">
+        <tr ng-show="showKwh" class="animate-show-hide">
             <td width="20%" class="responsive-td">
                 <span>Total kWh</span>
             </td>
@@ -66,7 +66,7 @@
             </td>
             <td width="25%"></td>
         </tr>
-        <tr ng-show="showCsqm">
+        <tr ng-show="showCsqm" class="animate-show-hide">
             <td width="20%" class="responsive-td">
                 <span>Cost per sqM</span>
             </td>
@@ -84,7 +84,7 @@
             </td>
             <td width="25%"></td>
         </tr>
-        <tr ng-show="showUsqm">
+        <tr ng-show="showUsqm" class="animate-show-hide">
             <td width="20%" class="responsive-td">
                 <span>Units per sqM</span>
             </td>

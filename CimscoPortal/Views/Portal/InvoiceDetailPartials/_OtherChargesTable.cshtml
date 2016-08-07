@@ -27,58 +27,62 @@
             </div>
         </div>
     </div>*@
-<div class="table-responsive margin-top-5">
-    <table class="table table-hover">
-        <thead>
-            <tr class="databox-icon">
-                <th colspan="2" class="text-center bg-themeprimary " style="color:white!important">
-                    Other Charges
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>
-                    Business Day Service Charges
-                </td>
-                <td>
-                    {{otherCharges[0] | currency:$}}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Non Business Day Service Charges
-                </td>
-                <td>
-                    {{otherCharges[1] | currency:$}}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Electricity Authority Levy
-                </td>
-                <td>
-                    {{otherCharges[2] | currency:$}}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Admin/Meter Charges
-                </td>
-                <td>
-                    {{otherCharges[3] | currency:$}}
-                </td>
-            </tr>
-        </tbody>
-        <tfoot>
-            <tr>
-                <td>
-                    <b>Total</b>
-                </td>
-                <td>
-                    <b>{{ocTotal | currency:$}}</b>
-                </td>
-            </tr>
-        </tfoot>
-    </table>
+<div class="col-lg-6 col-md-12">
+    <h6 class="row-title before-yellow">Other Charges</h6>
+
+    <div class="table-responsive margin-top-5">
+        <table class="table table-hover">
+            @*<thead>
+                <tr class="databox-icon">
+                    <th colspan="2" class="text-center bg-themeprimary " style="color:white!important">
+                        Other Charges
+                    </th>
+                </tr>
+            </thead>*@
+            <tbody>
+                <tr>
+                    <td>
+                        Business Day Service Charges
+                    </td>
+                    <td>
+                        {{otherCharges[0] | currency:$}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Non Business Day Service Charges
+                    </td>
+                    <td>
+                        {{otherCharges[1] | currency:$}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Electricity Authority Levy
+                    </td>
+                    <td>
+                        {{otherCharges[2] | currency:$}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Admin/Meter Charges
+                    </td>
+                    <td>
+                        {{otherCharges[3] | currency:$}}
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>
+                        <b>Total</b>
+                    </td>
+                    <td>
+                        <b>{{ocTotal | currency:$}}</b>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
 </div>

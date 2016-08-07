@@ -901,33 +901,42 @@ namespace CimscoPortal.Services
         {
             // Read data from database
             InvoiceDetailViewModel _result = new InvoiceDetailViewModel();
-            InvoiceDetail _invoiceDetail = GetInvoiceById(invoiceId);
-            var _energyCharges = _repository.InvoiceSummaries.Where(a => a.InvoiceId == invoiceId).Select(b => b.EnergyCharge).FirstOrDefault();
-            var _otherCharges = _repository.InvoiceSummaries.Where(a => a.InvoiceId == invoiceId).Select(b => b.OtherCharge).FirstOrDefault();
-            var _networkCharges = _repository.InvoiceSummaries.Where(a => a.InvoiceId == invoiceId).Select(b => b.NetworkCharge).FirstOrDefault();
 
-            // Normalise data for common presentation
+            var _invoiceData = _repository.InvoiceSummaries.Where(a => a.InvoiceId == invoiceId);
+
+            // Invoice Details
+            InvoiceDetail _invoiceDetail = _invoiceData.Project().To<InvoiceDetail>().FirstOrDefault();
             SetDefaultLossRateWhenZero(_invoiceDetail);
+
+            // Energy Charges
+            var _energyCharges = _invoiceData.Select(b => b.EnergyCharge).FirstOrDefault();
             SetDefaultEnergyChargesWhenFewerPeriods(_energyCharges);
             EnergyDataModel _businessDayData = AssignBusnessDayData(_energyCharges);
             EnergyDataModel _nonBusinessDayData = AssignNonBusinessDayData(_energyCharges);
-
-            var _serviceCharges = new List<decimal> { _otherCharges.BDSVC, _otherCharges.BDSVCR };
-            var _levyCharges = new List<decimal> { _otherCharges.EALevy, _otherCharges.EALevyR };
-
             List<EnergyDataModel> _energyDataModel = new List<EnergyDataModel>();
             _energyDataModel.Add(_businessDayData);
             _energyDataModel.Add(_nonBusinessDayData);
 
+            // Other Charges
+            var _otherCharges = _invoiceData.Select(b => b.OtherCharge).FirstOrDefault(); 
+
+            // Network Charges
+            var _networkCharges = _invoiceData.Select(b => b.NetworkCharge).FirstOrDefault(); 
+
+            //// Levies
+            //var _serviceCharges = new List<decimal> { _otherCharges.BDSVC, _otherCharges.BDSVCR };
+            //var _levyCharges = new List<decimal> { _otherCharges.EALevy, _otherCharges.EALevyR };
+
+
             // Assign data to the view
-            _result.DonutChartData = AssignDataToDonutChart(_invoiceDetail); //_donutChartData;
+            _result.DonutChartData = AssignDataToDonutChart(_invoiceDetail); 
             _result.InvoiceDetail = _invoiceDetail;
-            _result.OtherCharges = AssignOtherChargesData(_otherCharges); ;// new List<decimal>() { _otherCharges.BDSVC, _otherCharges.NBDSVC, _otherCharges.EALevy, _invoiceDetail.MiscChargesTotal };
-            _result.NetworkCharges = AssignNetworkChargesData(_networkCharges);// new List<decimal>() { _networkCharges.VariableBD, _networkCharges.VariableNBD, _networkCharges.CapacityCharge, _networkCharges.DemandCharge, _networkCharges.FixedCharge };
-            //_result.InvoiceDetail.MiscChargesTotal = _invoiceDetail.EnergyChargesTotal - _businessDayData.TotalCost - _nonBusinessDayData.TotalCost + _invoiceDetail.MiscChargesTotal;
-            // _result.InvoiceDetail.EnergyChargesTotal = _businessDayData.TotalCost + _nonBusinessDayData.TotalCost;
+            _result.OtherCharges = AssignOtherChargesData(_otherCharges); ;
+            _result.NetworkCharges = AssignNetworkChargesData(_networkCharges);
             _result.EnergyCosts = new EnergyCosts();
             _result.EnergyCosts.EnergyCostSeries = _energyDataModel;
+
+            // Return the result
             return _result;
         }
 
@@ -2053,7 +2062,7 @@ namespace CimscoPortal.Services
 
         private InvoiceDetail GetInvoiceById(int invoiceId)
         {
-            var zz = _repository.InvoiceSummaries.Where(s => s.InvoiceId == invoiceId);
+            //var zz = _repository.InvoiceSummaries.Where(s => s.InvoiceId == invoiceId);
             return _repository.InvoiceSummaries.Where(s => s.InvoiceId == invoiceId).Project().To<InvoiceDetail>().FirstOrDefault();
         }
 

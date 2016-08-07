@@ -57,6 +57,8 @@ namespace CimscoPortal.Models
     {
         public DateTime InvoiceDate { get; set; }
         public DateTime InvoiceDueDate { get; set; }
+        public DateTime PeriodEnd { get; set; }
+        public DateTime InvoiceKeyDate { get { return new DateTime(PeriodEnd.Year, PeriodEnd.Month, 1); } }
         public decimal InvoiceTotal { get; set; }
         public decimal MiscChargesTotal { get; set; }
         public decimal NetworkChargesTotal { get; set; }
@@ -77,7 +79,7 @@ namespace CimscoPortal.Models
         public bool OnFile { get; private set; }
         public string MiscChargesLabel { get { return "Other"; } }
         public string NetworkChargesLabel { get { return "Delivery"; } }
-        public string EnergyChargesLabel { get { return "Energy"; } }
+        public string EnergyChargesLabel { get { return "Energy"; } }      
        // public string PdfSourceLocation { get; set; }
     }
 

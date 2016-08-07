@@ -78,7 +78,7 @@
         };
 
     };
-    var module = angular.module("app");
+    var module = angular.module("app.invoiceDetail");
     module.factory("idDataSource", idDataSource);
 
 }());

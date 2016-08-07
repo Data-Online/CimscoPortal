@@ -1,12 +1,12 @@
 ﻿<div class="databox databox-xxlg databox-vertical databox-shadowed bg-white radius-bordered" style="height:auto;">
     <div class="databox-row">
-        <div class="databox-cell cell-4 text-align-center bg-sky">
+        <div class="databox-cell cell-4 text-align-center bg-themeprimary">
             <span class="databox-number">{{invoiceDetail.invoiceNumber}} &nbsp;<i class="fa {{invoiceDetail.invoiceIcon}} no-margin"></i></span>
         </div>
-        <div class="databox-cell cell-4 text-align-center bg-azure">
-            <span class="databox-number">{{invoiceDetail.invoiceDate | date:'MMMM d, y'}}</span>
+        <div class="databox-cell cell-4 text-align-center bg-themeprimary">
+            <span class="databox-number">{{invoiceDetail.invoiceKeyDate | date:'MMMM d, y'}}</span>
         </div>
-        <div class="databox-cell cell-4 text-align-center bg-sky">
+        <div class="databox-cell cell-4 text-align-center bg-themeprimary">
             <span class="databox-number white tootip-info" data-container="body" data-titleclass="bordered-blue" data-class="dark" data-toggle="popover-hover" data-placement="auto"
                   data-title="Change" data-content="Percentage increase / decrease in invoice total compared with last month" data-original-title="" title="">
                 {{invoiceDetail.percentageChange | number:2}} %
@@ -42,7 +42,8 @@
                         <span class="databox-number darkgray pull-right no-margin uppercase">{{invoiceDetail.miscChargesTotal | currency:$}}</span>
                     </div>
                     <div class="databox-row row-2  padding-15">
-                        <span class="badge badge-empty pull-left margin-5"></span>
+                        @*<span class="badge badge-empty pull-left margin-5"></span>*@
+                        <span class="pull-left margin-10"></span>
                         <span class="databox-number darkgray pull-left no-margin">GST</span>
                         <span class="databox-number darkgray pull-right no-margin uppercase">{{invoiceDetail.gstTotal | currency:$}}</span>
                     </div>

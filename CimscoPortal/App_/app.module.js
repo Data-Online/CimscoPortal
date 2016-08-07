@@ -12,7 +12,8 @@
        
         "app.dashboard",
         "app.detailBySite",
-        "app.siteOverview"
+        "app.siteOverview",
+        "app.invoiceDetail"
 
     ]);
 

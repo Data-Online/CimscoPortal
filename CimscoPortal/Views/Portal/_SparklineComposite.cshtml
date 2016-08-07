@@ -32,8 +32,8 @@
                 <span class="databox-text sonic-silver no-margin">Max cents per KWh</span>
             </div>
             <div class="databox-cell cell-4 no-padding text-align-center">
-                <span class="databox-number lightcarbon no-margin">${{nrgData.totalCost * slModel.lossRate  | number:2}} ({{slModel.lossRate | number:4}}%)</span>
-                <span class="databox-text sonic-silver no-margin">Plus losses</span>
+                <span class="databox-number lightcarbon no-margin">${{nrgData.totalCost * slModel.lossRate  | number:2}} ({{slModel.lossRate * 100 | number:2}}%)</span>
+                <span class="databox-text sonic-silver no-margin">Losses</span>
             </div>
         </div>
     </div>
