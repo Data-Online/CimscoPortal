@@ -1,0 +1,13 @@
+﻿<!DOCTYPE html>
+<div ng-if="divisionsData" ng-show="divisionsData.length > 0" class="widget-buttons">
+    <div class="btn-group">
+        <div ng-dropdown-multiselect="" options="divisionsData" selected-model="divisionsModel" extra-settings="divisionsSettings" translation-texts="divisionsCustomTexts">
+        </div>
+    </div>
+</div>
+<div ng-if="categoriesData" ng-show="categoriesData.length > 0" class="widget-buttons">
+    <div class="btn-group">
+        <div ng-dropdown-multiselect="" options="categoriesData" selected-model="categoriesModel" extra-settings="categoriesSettings" translation-texts="categoriesCustomTexts">
+        </div>
+    </div>
+</div>

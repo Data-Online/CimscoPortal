@@ -9,7 +9,7 @@
 
         var siteId = 0;
         var monthSpan = 12;
-
+        var debugStatus_showMessages = false;
         // Determine correct siteId from from MVC model
         $scope.setSiteId = function (_siteId) {
             //console.log("Set site Id to" + _siteId);
@@ -37,7 +37,7 @@
             $scope.monthSpanOptions = data.monthSpanOptions;
             $scope.monthSpan = data.monthSpan;
             monthSpan = data.monthSpan;
-            toaster.pop('success', "User Data Loaded!", "User specific data loaded");
+            if (debugStatus_showMessages) { toaster.pop('success', "User Data Loaded!", "User specific data loaded"); }
            // console.log('Get data');
             getSiteInvoiceData();
             getGraphData();
@@ -48,7 +48,7 @@
         };
 
         var onSiteData = function (data) {
-            toaster.pop('success', "Site Date Loaded!", "");
+            if (debugStatus_showMessages) { toaster.pop('success', "Site Date Loaded!", ""); }
             $scope.tabTableHeader = data.siteName;
             $scope.siteData = data;
            // console.log(data);
@@ -59,7 +59,7 @@
             $scope.monthSpan = monthSpan;
             $scope.invoiceData = data;
             $scope.loading = false;
-            toaster.pop('success', "Invoice Data Loaded!", "");
+            if (debugStatus_showMessages) { toaster.pop('success', "Invoice Data Loaded!", ""); }
         };
 
         var onError = function (reason) {
@@ -202,7 +202,7 @@
                 _cpart = [];
             }
             initializeChart();
-            toaster.pop('success', "Graph data loaded!", "");
+            if (debugStatus_showMessages) { toaster.pop('success', "Graph data loaded!", ""); }
             $scope.loading = false;
         };
 

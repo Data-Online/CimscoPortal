@@ -1,6 +1,6 @@
 ﻿@{
-    ViewBag.Title = "Dashboard";
-    ViewBag.Description = "Cimsco Dashboard";
+    ViewBag.Title = "Invoice Detail";
+    ViewBag.Description = "InvoiceDetail";
     Layout = "~/Views/Shared/_Default.cshtml";
 }
 <style>
@@ -45,7 +45,7 @@
                 <div class="widget-body">
                     <div class="box-tabbs">
                         <div class="tabbable">
-                            <ul class="nav nav-tabs tabs-flat  nav-justified" id="myTab11">
+                            <ul class="nav nav-tabs nav-justified" id="myTab11">
                                 <li class="active">
                                     <a data-toggle="tab" href="#energy">
                                         Energy Charges
@@ -53,7 +53,7 @@
                                 </li>
                                 <li>
                                     <a data-toggle="tab" href="#network">
-                                        Network Charges
+                                        Delivery Charges
                                     </a>
                                 </li>
                                 <li>
@@ -63,12 +63,12 @@
                                 </li>
 
                                 <li>
-                                    <a data-toggle="tab" id="contacttab" href="#historical">
+                                    <a data-toggle="tab" id="contacttab" href="#historical" ng-show="false">
                                         Historical
                                     </a>
                                 </li>
                             </ul>
-                            <div class="tab-content tabs-flat no-padding">
+                            <div class="tab-content no-padding">
                                 <div id="network" class="tab-pane padding-5 animated fadeInUp">
                                     <div class="row">
                                         <div class="col-lg-12">
@@ -81,7 +81,7 @@
                                 <div id="other" class="tab-pane  animated fadeInUp">
                                     <div class="row">
                                         <div class="col-lg-12 chart-container">
-                                            @Html.Partial("_OtherChargesTable")
+                                            @Html.Partial("InvoiceDetailPartials/_OtherChargesTable")
                                         </div>
                                     </div>
 
@@ -111,13 +111,13 @@
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row" ng-show="false">
         <div id="yearToDateGraph" class="col-lg-9 col-sm-12 col-xs-12">
             @Html.Partial("_YearToDateGraph")
         </div>
     </div>
 
-    <div class="row">
+    <div class="row" ng-show="false">
         <div class="col-lg-9 col-sm-12 col-xs-12">
             <hr class="wide" />
             <h3>Stacked <button class="btn btn-sm btn-primary" type="button" ng-click="randomStacked()">Randomize</button></h3>
@@ -186,18 +186,18 @@
     @*<script src="~/Scripts/utilities.js"></script>*@
     @*<script src="~/Scripts/angular-ui-utils/angular-ui-utils.js"></script>*@
 
-    <script src="~/Scripts/charts/flot/jquery.flot.min.js"></script>
+    @*<script src="~/Scripts/charts/flot/jquery.flot.min.js"></script>
     <script src="~/Scripts/charts/flot/jquery.flot.orderBars.js"></script>
     <script src="~/Scripts/charts/flot/jquery.flot.resize.js"></script>
     <script src="~/Scripts/charts/flot/jquery.flot.axislabels.js"></script>
     <script src="~/Scripts/charts/flot/jquery.flot.tooltip.js"></script>
     <script src="~/Scripts/charts/flot/jquery.flot.categories.min.js"></script>
     <script src="~/App_/common/directives/angular-flot.js"></script>
-    <script src="~/App_/common/directives/widget.js"></script>
-    <script src="~/App_/core/App.js"></script>
+    <script src="~/App_/common/directives/widget.js"></script>*@
+    @*<script src="~/App_/core/App.js"></script>*@
     <script src="~/App_/core/invoiceCommonFunctions.data.js"></script>
-    <script src="~/App_/core/invoiceDetail.data.js"></script>
-    <script src="~/App_/core/invoiceDetail.ctrl.js"></script>
+    <script src="~/App_/invoiceDetail/invoiceDetail.ctrl.js"></script>
+    <script src="~/App_/invoiceDetail/invoiceDetail.data.js"></script>
     <script src="~/App_/core/customFilters.js"></script>
 
 

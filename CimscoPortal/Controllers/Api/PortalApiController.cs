@@ -82,7 +82,7 @@ namespace CimscoPortal.Controllers.Api
             return request.CreateResponse<TextViewModel>(HttpStatusCode.OK,
                             _portalService.GetWelcomeScreen(User.Identity.Name));
         }
-        
+
         //[HttpGet]
         //[Route("TotalCostsByMonth/{monthSpan}/{customerId}")]
         //public HttpResponseMessage GetTotalCostsByMonth(HttpRequestMessage request, int monthSpan, int customerId)
@@ -116,7 +116,7 @@ namespace CimscoPortal.Controllers.Api
         public HttpResponseMessage GetCostsAndConsumption(HttpRequestMessage request, int siteId, int monthSpan)
         {
             var data = _portalService.GetCostsAndConsumption(User.Identity.Name, monthSpan, siteId);
-            return request.CreateResponse<GoogleChartViewModel>(HttpStatusCode.OK,data);
+            return request.CreateResponse<GoogleChartViewModel>(HttpStatusCode.OK, data);
         }
 
         [HttpGet]
@@ -178,17 +178,17 @@ namespace CimscoPortal.Controllers.Api
             return request.CreateResponse<MonthlyConsumptionViewModal[]>(HttpStatusCode.OK, data.ToArray());
         }
 
-        
+        #region GetInvoiceOverview
         [HttpGet]
         [Route("invoiceOverviewFor/{siteId}")]
         public HttpResponseMessage GetInvoiceOverview(HttpRequestMessage request, int siteId)
         {
             if (GetCurrentUserAccess().ValidSites.Contains(siteId))
-            { 
+            {
                 var data = _portalService.GetInvoiceOverviewForSite(siteId);
                 return request.CreateResponse<InvoiceOverviewViewModel[]>(HttpStatusCode.OK, data.ToArray());
             }
-            return request.CreateResponse(HttpStatusCode.Forbidden);            
+            return request.CreateResponse(HttpStatusCode.Forbidden);
         }
 
         [HttpGet]
@@ -202,6 +202,17 @@ namespace CimscoPortal.Controllers.Api
             }
             return request.CreateResponse(HttpStatusCode.Forbidden);
         }
+        #endregion
+
+
+        [HttpGet]
+        [Route("invoiceAllOverview/{monthSpan}/{filter}/{pageNo}")]
+        public HttpResponseMessage GetInvoiceOverview(HttpRequestMessage request, int monthSpan, string filter, int pageNo)
+        {
+            //return request.CreateResponse(HttpStatusCode.Forbidden);
+            var data = _portalService.GetAllInvoiceOverview(User.Identity.Name, monthSpan, filter, pageNo);
+            return request.CreateResponse<InvoiceOverviewViewModel[]>(HttpStatusCode.OK, data.ToArray());
+        }
 
         [HttpGet]
         [Route("summarydata")]
@@ -212,13 +223,13 @@ namespace CimscoPortal.Controllers.Api
         }
 
         #region Invoice data
-        [HttpGet]
-        [Route("invoicetally/{monthSpan}")]
-        public HttpResponseMessage GetInvoiceTally(HttpRequestMessage request, int monthSpan)
-        {
-            var data = _portalService.GetInvoiceTally(User.Identity.Name, monthSpan, null);
-            return request.CreateResponse<InvoiceTallyViewModel>(HttpStatusCode.OK, data);
-        }
+        //[HttpGet]
+        //[Route("invoicetally/{monthSpan}")]
+        //public HttpResponseMessage GetInvoiceTally(HttpRequestMessage request, int monthSpan)
+        //{
+        //    var data = _portalService.GetInvoiceTally(User.Identity.Name, monthSpan, null);
+        //    return request.CreateResponse<InvoiceTallyViewModel>(HttpStatusCode.OK, data);
+        //}
 
         [HttpGet]
         [Route("detailbysite/{monthSpan}")]
@@ -228,13 +239,13 @@ namespace CimscoPortal.Controllers.Api
             return request.CreateResponse<DetailBySiteViewModel>(HttpStatusCode.OK, data);
         }
 
-        [HttpGet]
-        [Route("invoicetally/{monthSpan}/{customerId}")]
-        public HttpResponseMessage GetInvoiceTally(HttpRequestMessage request, int monthSpan, int customerId)
-        {
-            var data = _portalService.GetInvoiceTally(User.Identity.Name, monthSpan, customerId);
-            return request.CreateResponse<InvoiceTallyViewModel>(HttpStatusCode.OK, data);
-        }
+        //[HttpGet]
+        //[Route("invoicetally/{monthSpan}/{customerId}")]
+        //public HttpResponseMessage GetInvoiceTally(HttpRequestMessage request, int monthSpan, int customerId)
+        //{
+        //    var data = _portalService.GetInvoiceTally(User.Identity.Name, monthSpan, customerId);
+        //    return request.CreateResponse<InvoiceTallyViewModel>(HttpStatusCode.OK, data);
+        //}
 
         [HttpGet]
         [Route("invoicesummaryfor/{invoiceId}")]
@@ -271,6 +282,15 @@ namespace CimscoPortal.Controllers.Api
                 return request.CreateResponse<InvoiceOverviewViewModel>(HttpStatusCode.OK, _data);
             else
                 return request.CreateResponse(HttpStatusCode.BadRequest);
+        }
+
+        [System.Web.Mvc.ValidateAntiForgeryToken]
+        [HttpGet]
+        [Route("invoiceStatsBySite/{monthSpan}/{filter}")]
+        public HttpResponseMessage GetInvoiceStatsForSites(HttpRequestMessage request, int monthSpan, string filter)
+        {
+            var data = _portalService.GetInvoiceStatsForSites(User.Identity.Name, monthSpan, filter);
+            return request.CreateResponse<InvoiceStatsBySiteViewModel[]>(HttpStatusCode.OK, data.ToArray());
         }
 
         #endregion

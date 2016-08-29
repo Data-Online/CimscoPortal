@@ -1,0 +1,229 @@
+﻿@{
+    ViewBag.Title = "Invoices";
+    ViewBag.Description = "Invoices";
+    Layout = "~/Views/Shared/_Default.cshtml";
+}
+
+@*<div data-ng-app="companyOverview" data-ng-controller="companyOverviewViewModel">*@
+<data-ng-app ="app.invoices" data-ng-controller="app.invoices.ctrl">
+    <div class="row">
+        <div class="col-lg-6 col-sm-6 col-xs-12" ng-show="customerList.length>0">
+            <div class="widget">
+                <div class="widget-header  bordered-blue">
+                    <span class="widget-caption">{{groupCompanyDetail.groupName}}</span>
+                    <div class="widget-buttons">
+                        @*<a href="" widget-config></a>*@
+                        <a href="" widget-maximize></a>
+                        <a href="" widget-collapse></a>
+                        <a href="" widget-dispose></a>
+                    </div><!--Widget Buttons-->
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <toaster-container></toaster-container>
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="widget">
+                <div class="widget-header bg-themeprimary">
+                    @*<i class="widget-icon fa fa-compress"></i>*@
+                    <span class="widget-caption">
+                        <i ng-show="loading" class="fa fa-refresh fa-fw" ng-class="{'fa-spin' : loading}"></i>
+                        <span ng-show="!loading">
+                            <ng-pluralize count="siteDetailData.length"
+                                          when="{'1': '{} Site,',
+                                'other': '{} Sites,'}">
+                            </ng-pluralize>
+                            Showing {{monthSpan}} months of data
+                        </span>
+                    </span>
+                    <span filterdropdowns></span>
+                    <div class="widget-buttons">
+                        <div class="btn-group">
+                            <a href="javascript:void(0);" data-toggle="dropdown" class="btn btn-default btn-sm">Last {{monthSpan}} Months</a>
+                            <a href="javascript:void(0);" data-toggle="dropdown" class="btn btn-primary  btn-sm dropdown-toggle " aria-expanded="false"><i class="fa fa-angle-down"></i></a>
+                            <ul class="dropdown-menu">
+                                <li ng-repeat="_month in monthSpanOptions " data-ng-click="reviseMonths(_month)" class="widget-caption" ng-class="{'themeprimary' : monthSpan==_month}">
+                                    <a href="javascript:void(0);"><i class="widget-icon fa fa-calendar"></i>&nbsp;&nbsp;{{_month}} months</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget-body">
+                    <div class="row">
+                        <div class="col-lg-1" style="padding-bottom:10px;">
+                            <span class="databox-number white tootip-info pull-left" data-container="body"
+                                  data-titleclass="bordered-blue" data-class="dark"
+                                  data-toggle="popover" data-placement="auto"
+                                  data-title="Invoice Browser"
+                                  data-content="A summary of invoice numbers by type is displayed in the boxes below. Use the menu at the top righ of each box to select which invoices to display."
+                                  data-original-title=""
+                                  data-trigger="hover">
+                                <i class="fa fa-2x fa-info-circle" style="color:#262626"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12" ng-repeat="category in invoiceStatsBySite.summary ">
+                            <div class="databox databox-lg databox-shadowed databox-graded radius-bordered">
+                                <label data-toggle="popover" data-content="There are currently {{category.entries}} invoices {{category.header}} across {{category.sites}} sites. (approximately {{category.percent|percentage:100}} of invoiices)."
+                                       data-title="" data-placement="auto" data-trigger="hover">
+                                    <div class="databox-left bg-themeprimary" style="padding:4px;">
+                                        <div class="databox-piechart">
+                                            <span ng-if="category.percent" class="standard-piechart" easypiechart options="epOptions" percent="category.percent">
+                                                <span class="ep-integer" ng-bind="category.percent|percentage:100"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </label>
+                                <div class="databox-right">
+                                    <span class="databox-number themesecondary">{{category.entries}} invoices {{category.header}}</span>
+                                    <div class="databox-text darkgray">From {{category.sites}} Sites</div>
+                                    <div class="databox-stat themesecondary radius-bordered">
+                                        <li ng-show="true">
+                                            <a id="approvals-action-button" class="dropdown-toggle" data-toggle="dropdown" title="Sites" href="#">
+                                                @*<i class="icon fa fa-tasks"></i>*@
+                                                <i class="stat-icon icon-lg fa fa-tasks"></i>
+                                                @*<span class="badge">4</span>*@
+                                            </a>
+                                            <!--Tasks Dropdown-->
+                                            <ul id="approvals-action" class="pull-right dropdown-menu dropdown-tasks dropdown-arrow " style="width:200px;">
+                                                <li class="dropdown-header bordered-darkorange">
+                                                    <i class="fa fa-tasks"></i>
+                                                    {{category.sites}} Sites
+                                                </li>
+
+                                                <li ng-repeat="site in invoiceStatsBySite | filter:greaterThanZero(category.filter) | limitTo:8">
+                                                    <a href="#" ng-click="showInvoices(category.filter, site.siteId, site.siteName)">
+                                                        <div class="clearfix">
+                                                            <span class="pull-left">{{site.siteName | cut:true:25:' ..'}}</span>
+                                                            <span ng-init="_invCount = getCountByFilter(category.filter, site)" class=" pull-right">{{_invCount}}</span>
+                                                        </div>
+
+                                                        <div class="progress progress-xs">
+                                                            <div ng-init="_pctCount = getPercentByFilter(category.filter, site)" style="width:{{_pctCount}}%" class="progress-bar"></div>
+                                                        </div>
+                                                    </a>
+                                                </li>
+                                                <li class="dropdown-footer">
+                                                    <a href="#" ng-click="showInvoices('all', 0, 'All Sites')">
+                                                        Show All Sites
+                                                    </a>
+                                                    <button class="btn btn-xs btn-default shiny darkorange icon-only pull-right"><i class="fa fa-check"></i></button>
+                                                </li>
+                                            </ul>
+                                            <!--/Tasks Dropdown-->
+                                        </li>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" ng-show="false">
+                            <div class="databox databox-lg databox-shadowed databox-graded radius-bordered">
+                                <div class="databox-left bg-themesecondary" style="padding:4px;">
+                                    <div class="databox-piechart">
+                                        <span class="standard-piechart" easypiechart options="EPoptions" percent="EPpercent">
+                                            <span class="percent" ng-bind="EPpercent"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="databox-right">
+                                    <span class="databox-number themesecondary">65% of invoices</span>
+                                    <div class="databox-text darkgray">From 5 Sites</div>
+                                    <div class="databox-stat themesecondary radius-bordered">
+                                        <i class="stat-icon icon-lg fa fa-tasks"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <h6 ng-if="currentSiteName" class="row-title before-azure">{{currentSiteName}}</h6>
+                    <h6 ng-if="!currentSiteName" class="row-title before-azure">No data selected</h6>
+                    @*<div class="row"><span>Current Site Id = {{siteId}}. Site name {{siteName}}. Filter Status = {{invType}}</span></div>*@
+                    <div class="tab-content tabs-flat no-padding" ng-style="{opacity: ((loading) && .4) || 1.0}">
+                        <div id="invoices" class="tab-pane animated fadeInUp no-padding-bottom active" style="padding:20px 20px 0 20px;">
+                            @Html.Partial("SiteOverviewPartials/_InvoiceList")
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @section PageScripts{
+        <script src="~/App_/invoices/invoices.data.js"></script>
+        <script src="~/App_/invoices/invoices.ctrl.js"></script>
+        <script src="~/App_/core/customFilters.js"></script>
+    }
+
+
+    <style type="text/css">
+        span.label.label-info.pull-right {
+            position: absolute;
+            left: -44px;
+            cursor: pointer;
+        }
+
+        .checkbox + .checkbox, .radio + .radio {
+            margin-top: 10px !important;
+        }
+
+        .form-title {
+            border-bottom: 3px solid #2dc3e8 !important;
+        }
+
+        .databox .databox-text {
+            font-size: 15px !important;
+        }
+
+        .databox.databox-lg .databox-number {
+            font-size: 16px;
+            margin: 0 auto;
+        }
+
+        .databox-text .header {
+            float: right;
+        }
+
+        .well.bordered-left.bordered-themeprimary {
+            margin-bottom: 2px !important;
+            padding: 10px !important;
+        }
+
+        @@media only screen and (max-width: 768px) {
+            .databox-right.bordered-thick.bordered-sky.bg-white {
+                padding: 0px 15px !important;
+            }
+
+            .databox.databox-lg .databox-number {
+                font-size: 15px !important;
+            }
+
+            .databox-text.header {
+                float: left;
+            }
+
+            .well.bordered-left.bordered-themeprimary {
+                /*padding: 2px 5px 16px 5px !important;*/
+                padding: 10px 5px -1px 5px !important;
+            }
+
+            span.label.label-info.pull-right {
+                position: absolute;
+                left: -47px;
+                cursor: pointer;
+                top: 26px;
+            }
+
+            span.btn-xs.btn-palegreen.pull-right {
+                position: absolute;
+                left: -22px;
+                top: 35px;
+            }
+        }
+    </style>

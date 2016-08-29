@@ -9,6 +9,7 @@ namespace CimscoPortal.Models
     {
         public List<FilterItem> Divisions { get; set; }
         public List<FilterItem> Categories { get; set; }
+        public List<FilterItem> InvTypes { get; set; }
     }
 
     public class FilterItem

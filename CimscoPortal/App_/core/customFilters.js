@@ -37,4 +37,55 @@
             return items.out;
         }
     });
+
+    filters.filter('cut', function () {
+        return function (value, wordwise, max, tail) {
+            if (!value) return '';
+
+            max = parseInt(max, 10);
+            if (!max) return value;
+            if (value.length <= max) return value;
+
+            value = value.substr(0, max);
+            if (wordwise) {
+                var lastspace = value.lastIndexOf(' ');
+                if (lastspace != -1) {
+                    //Also remove . and , so its gives a cleaner result.
+                    if (value.charAt(lastspace - 1) == '.' || value.charAt(lastspace - 1) == ',') {
+                        lastspace = lastspace - 1;
+                    }
+                    value = value.substr(0, lastspace);
+                }
+            }
+
+            return value + (tail || ' …');
+        };
+    });
+
+    filters.filter('percentage', function () {
+        return function (input, max) {
+            if (isNaN(input)) {
+                return input;
+            }
+            return Math.floor((input * 100) / max) + '%';
+        };
+    });
+    //filters.filter('invByType', function () {
+    //    return function (inv, selectedType) {
+    //        var items = {
+    //            selectedType: selectedType,
+    //            out: [],
+    //            limitTo: 10
+    //        };
+    //        var count = 0;
+    //        angular.forEach(inv, function (value, key) {
+                
+    //            if (value[items.selectedType] > 0 & count < items.limitTo) {
+    //                this.out.push(value);
+    //                count++;
+    //            }
+    //        }, items);
+    //        return items.out;
+    //    }
+    //});
 }());

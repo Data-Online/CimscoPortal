@@ -12,6 +12,7 @@ namespace CimscoPortal.Models
         public List<string> Divisions { get; set; }
         public int MaxTotalInvoices { get; set; }
         public List<SiteDetailData> SiteDetailData { get; set; }
+        public int TotalInvoicesToApprove { get; set; }
     }
     
     public class SiteDetailData
@@ -39,6 +40,9 @@ namespace CimscoPortal.Models
         public int ApprovedInvoices { get; set; }
         public int PendingInvoices { get; set; }
         public int MissingInvoices { get; set; }
+        public decimal ApprovedByPercent { get; set; }
+        public decimal PendingByPercent { get; set; }
+        public decimal MissingByPercent { get; set; }
         public DateTime FirstInvoiceDate { get; set; }
         public DateTime LatestInvoiceDate { get; set; }
         public int TotalInvoicesOnFile { get { return ApprovedInvoices + PendingInvoices; } }
@@ -60,14 +64,33 @@ namespace CimscoPortal.Models
         public Decimal EnergyChargeByPercentForDivision { get; set; }
         public Decimal KwhByPercent { get; set; }
         public Decimal KwhByPercentForDivision { get; set; }
-        public Decimal CostPerSqmByPercent { get; set; }
-        public Decimal CostPerSqmByPercentForDivision { get; set; }
-        public Decimal UnitsPerSqmByPercent { get; set; }
-        public Decimal UnitsPerSqmByPercentForDivision { get; set; }
+        public Decimal EnergyChargePerSqmByPercent { get; set; }
+        //public Decimal CostPerSqmByPercentForDivision { get; set; }
+        public Decimal EnergyChargePerSqmByPercentForDivision { get; set; }
+        public Decimal KwhPerSqmByPercent { get; set; }
+        public Decimal KwhPerSqmByPercentForDivision { get; set; }
         public Decimal TotalKwh { get; set; }
         public int? SiteArea { get; set; }
-        public Decimal CostPerSqm { get { return EnergyCharge / Math.Max((SiteArea ?? 0), 1) * 1.0M; } }
-        public Decimal UnitsPerSqm { get { return TotalKwh / Math.Max((SiteArea ?? 0), 1) * 1.0M; } }
+        //public Decimal CostPerSqm { get { return EnergyCharge / Math.Max((SiteArea ?? 0), 1) * 1.0M; } }
+        public Decimal EnergyChargePerSqm { get {
+            if ((SiteArea ?? 0) > 0)
+            {
+                return (EnergyCharge / SiteArea ?? 0) * 1.0M;
+            }
+            return 0.0M;
+            } }
+        //public Decimal KwhPerSqm { get { return TotalKwh / Math.Max((SiteArea ?? 0), 1) * 1.0M; } }
+        public Decimal KwhPerSqm
+        {
+            get
+            {
+                if ((SiteArea ?? 0) > 0)
+                {
+                    return (TotalKwh / SiteArea ?? 0) * 1.0M;
+                }
+                return 0.0M;
+            }
+        }
     }
 
     public class CollatedInvoiceTotals

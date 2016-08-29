@@ -13,7 +13,8 @@
         "app.dashboard",
         "app.detailBySite",
         "app.siteOverview",
-        "app.invoiceDetail"
+        "app.invoiceDetail",
+        "app.invoices"
 
     ]);
 

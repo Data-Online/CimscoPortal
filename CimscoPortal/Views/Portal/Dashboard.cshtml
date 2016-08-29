@@ -18,6 +18,7 @@
                 </div>
                 <div class="widget-body">
                     <div style="width: 100%;">
+                        <span><h2><b>ALPHA build</b> - Version 0.6</h2></span>
                         <span ng-repeat="line in welcomeText"><h5>{{line}}</h5></span>
                     </div>
                 </div>
@@ -43,35 +44,7 @@
                             showing {{monthSpan}} months of data
                         </span>
                     </span>
-
-                    @*<div class="widget-buttons">
-                            <label ng-hide="false">
-                                <input class="colored-success" ng-model="showLine" type="checkbox" ng-init="showLine=options.selected" data-ng-click="toggleGraphType($event)">
-                                <span class="widget-caption text">&nbsp; Show as line chart</span>
-                            </label>
-                        </div>
-
-
-                        <div class="widget-buttons">
-                            <label>
-                                <input class="colored-success" ng-click="togglePreviousYearsData($event)" type="checkbox" ng-model="showPrevious12">
-                                <span class="widget-caption text">Compare With Previous Year</span>
-                            </label>
-                        </div>*@
-
-                    <div ng-if="divisionsData" ng-show="divisionsData.length > 0" class="widget-buttons">
-                        <div class="btn-group">
-                            <div ng-dropdown-multiselect="" options="divisionsData" selected-model="divisionsModel" extra-settings="divisionsSettings" translation-texts="divisionsCustomTexts">
-                            </div>
-                        </div>
-                    </div>
-                    <div ng-if="categoriesData" ng-show="categoriesData.length > 0" class="widget-buttons">
-                        <div class="btn-group">
-                            <div ng-dropdown-multiselect="" options="categoriesData" selected-model="categoriesModel" extra-settings="categoriesSettings" translation-texts="categoriesCustomTexts">
-                            </div>
-                        </div>
-                    </div>
-
+                    <span filterdropdowns></span>
                     <div class="widget-buttons">
                         <div class="btn-group">
                             <a href="javascript:void(0);" data-toggle="dropdown" class="btn btn-default btn-sm">Last {{monthSpan}} Months</a>
@@ -165,7 +138,7 @@
                                            data-title="" data-placement="auto" data-trigger="hover">
                                         <div class="databox-left bg-themeprimary" style="padding:4px;">
                                             <div class="databox-piechart">
-                                                <span ng-if="missingPercent" class="EPchart" easypiechart options="missingOptions" percent="missingPercent">
+                                                <span ng-if="missingPercent" class="standard-piechart" easypiechart options="missingOptions" percent="missingPercent">
                                                     <span class="percent" ng-bind="missingPercent"></span>
                                                 </span>
                                             </div>
@@ -186,7 +159,7 @@
                                            data-title="" data-placement="auto" data-trigger="hover">
                                         <div class="databox-left bg-themeprimary" style="padding:4px;">
                                             <div class="databox-piechart">
-                                                <span ng-if="filedPercent" class="EPchart" easypiechart options="filedOptions" percent="filedPercent">
+                                                <span ng-if="filedPercent" class="standard-piechart" easypiechart options="filedOptions" percent="filedPercent">
                                                     <span class="percent" ng-bind="filedPercent"></span>
                                                 </span>
                                             </div>
@@ -205,7 +178,7 @@
                                 <div class="databox databox-lg databox-shadowed databox-graded radius-bordered">
                                     <div class="databox-left bg-themesecondary" style="padding:4px;">
                                         <div class="databox-piechart">
-                                            <span class="EPchart" easypiechart options="EPoptions" percent="EPpercent">
+                                            <span class="standard-piechart" easypiechart options="EPoptions" percent="EPpercent">
                                                 <span class="percent" ng-bind="EPpercent"></span>
                                             </span>
                                         </div>
@@ -226,35 +199,7 @@
         </div>
     </div>
 </div>
-<style>
-    .EPchart {
-        position: relative;
-        display: inline-block;
-        width: 60px;
-        height: 60px;
-        margin-top: 7px;
-        margin-bottom: 5px;
-        text-align: center;
-    }
 
-        .EPchart canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-    .percent {
-        display: inline-block;
-        line-height: 60px;
-        z-index: 2;
-    }
-
-        .percent:after {
-            content: '%';
-            margin-left: 0.1em;
-            font-size: .8em;
-        }
-</style>
 
 @section PageScripts{
 

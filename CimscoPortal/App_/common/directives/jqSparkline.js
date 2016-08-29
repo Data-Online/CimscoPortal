@@ -39,7 +39,7 @@ angular.module('sparkline')
                         out.push($filter('number')(data[i],2).replace(/,/g,""))
                     }
 
-                    //console.log(out);
+                    //console.log(opts);
                     $(elem).sparkline(out, opts);
                 };
             }

@@ -25,11 +25,16 @@ namespace CimscoPortal.Infrastructure
         CimscoPortal.Models.InvoiceDetailViewModel GetInvoiceDetail(int _invoiceId);
         IEnumerable<CimscoPortal.Models.MessageViewModel> GetNavbarDataFor(string pageElement);
         
-        InvoiceTallyViewModel GetInvoiceTally(string userId, int monthSpan, int? customerId);
-        DetailBySiteViewModel GetDetailBySite(string userId, int monthSpan);
+        //InvoiceTallyViewModel GetInvoiceTally(string userId, int monthSpan, int? customerId);
+        DetailBySiteViewModel GetDetailBySite(string userId, int monthSpan, string filter = "");
+        IEnumerable<InvoiceStatsBySiteViewModel> GetInvoiceStatsForSites(string userId, int monthSpan, string filter);
 
+        // Invoice Data
         IEnumerable<InvoiceOverviewViewModel> GetInvoiceOverviewForSite(int siteId);
         IEnumerable<InvoiceOverviewViewModel> GetInvoiceOverviewForSite(int siteId, int monthsToDisplay);
+
+        IEnumerable<InvoiceOverviewViewModel> GetAllInvoiceOverview(string userId, int monthSpan, string filter, int pageNo);
+
         InvoiceOverviewViewModel ApproveInvoice(int invoiceId, string userId, string urlRoot);
         IEnumerable<MonthlyConsumptionViewModal> GetHistoricalDataForSite(int siteId);
         UserAccessModel CheckUserAccess(string userName);

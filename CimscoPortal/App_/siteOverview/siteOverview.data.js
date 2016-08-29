@@ -3,7 +3,7 @@
     var soDataSource = function ($http) {
 
         var getSiteInvoiceData = function (siteId, mounthsToDisplay) {
-            console.log("Getting data for Site ID = " + siteId + " for " + mounthsToDisplay + " months");
+            //console.log("Getting data for Site ID = " + siteId + " for " + mounthsToDisplay + " months");
             var dataApi = "/api/invoiceOverviewFor/"+siteId+"/" + mounthsToDisplay;
             return $http.get(dataApi)
                         .then(function (response) {
@@ -12,7 +12,7 @@
         };
 
         var getInvoiceData = function (siteId, invoiceId) {
-            console.log("Getting data for Site ID = " + siteId + " invoiceId = " + invoiceId);
+            //console.log("Getting data for Site ID = " + siteId + " invoiceId = " + invoiceId);
             var dataApi = "/api/invoiceOverviewFor/" + siteId + "/" + invoiceId;
             return $http.get(dataApi)
                         .then(function (response) {

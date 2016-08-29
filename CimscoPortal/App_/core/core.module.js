@@ -27,6 +27,10 @@
         "tooltip",
 
         /* Factory for Google Chart control */
-        "googleChartControl"
-    ]);
+        "googleChartControl",
+
+        /* Common Data control factory */
+        'commonDataControl'
+    ])
+ //   .constant("debugStatus", { "showMessages": false });
 })();

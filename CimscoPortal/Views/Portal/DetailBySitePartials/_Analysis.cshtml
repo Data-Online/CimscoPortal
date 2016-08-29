@@ -20,7 +20,7 @@
 
         </th>
     </tr>
-    <tbody ng-show="siteDetail.invoiceKeyData.totalInvoicesOnFile > 0" >
+    <tbody ng-show="siteDetail.invoiceKeyData.totalInvoicesOnFile > 0">
         <tr ng-show="showValue" class="animate-show-hide">
             <td width="20%" class="responsive-td">
                 <span>
@@ -28,24 +28,45 @@
                 </span>
             </td>
             <td width="30%">
-                <span class="progress-bar progress-bar-{{invTheme[1].theme}}" style="width: {{siteDetail.invoiceCosts.energyChargeByPercentForDivision}}%"
-                      data-toggle="popover" title="" data-trigger="hover" data-content="Total energy charge from {{siteDetail.invoiceKeyData.totalInvoicesOnFile}} invoice(s)" data-placement="bottom">
-                    <span> {{siteDetail.invoiceCosts.energyCharge | currency:$}} </span>
-                </span>
+                <div class="progress-shadowed progress" style="margin-bottom:0" data-toggle="popover" title=""
+                     data-trigger="hover"
+                     data-content="Total energy charge from {{siteDetail.invoiceKeyData.totalInvoicesOnFile}} invoice(s)"
+                     data-placement="bottom">
+                    <span class="progress-bar progress-bar-{{invTheme[1].theme}}"
+                          ng-style="{width: siteDetail.invoiceCosts.energyChargeByPercentForDivision + '%'}">
+                        <span> {{siteDetail.invoiceCosts.energyCharge | currency:$}}</span>
+                    </span>
+                </div>
+                @*<span class="progress-bar progress-bar-{{invTheme[1].theme}}" style="width: {{siteDetail.invoiceCosts.energyChargeByPercentForDivision}}%"
+                          data-toggle="popover" title="" data-trigger="hover" data-content="Total energy charge from {{siteDetail.invoiceKeyData.totalInvoicesOnFile}} invoice(s)" data-placement="bottom">
+                        <span> {{siteDetail.invoiceCosts.energyCharge | currency:$}} </span>
+                    </span>*@
             </td>
             <td width="20%">
                 <div ng-if="siteDetail.invoiceHistory.totals.length > 0">
-                    <div jq-sparkline ng-model="siteDetail.invoiceHistory.totals" opts="{{ {type:'line', width:'100%', height:'20px'} }}"></div>
+                    <div align="center" ng-show="sparkLine" jq-sparkline ng-model="siteDetail.invoiceHistory.totals" opts="{{sparkLineOpts}}"></div>
                     @*siteDetail.invoiceHistory.totals*@
                 </div>
             </td>
             <td width="25%">
                 <span ng-repeat="line in siteDetail.graphData.invoiceCounts">
-                    <span class="progress-bar progress-bar-{{invTheme[$index].theme}}" style="width: {{line.percent}}%"
-                          data-toggle="popover" title="" data-trigger="hover" data-content="{{line.noOfInv}} {{line.tooltip}}" data-placement="bottom">
+                    <span class="progress-bar progress-bar-{{invTheme[$index].theme}}"
+                          ng-style="{width: line.percent + '%'}"
+                          data-toggle="popover" title=""
+                          data-trigger="hover"
+                          data-content="{{line.noOfInv}} {{line.tooltip}}"
+                          data-placement="bottom">
                         <span> {{line.noOfInv}} </span>
                     </span>
                 </span>
+
+                @*<span ng-repeat="line in siteDetail.graphData.invoiceCounts">
+                <span class="progress-bar progress-bar-{{invTheme[$index].theme}}" style="width: {{line.percent}}%"
+                      data-toggle="popover" title="" data-trigger="hover" data-content="{{line.noOfInv}} {{line.tooltip}}" data-placement="bottom">
+                    <span> {{line.noOfInv}} </span>
+                </span>
+            </span>*@
+
             </td>
         </tr>
         <tr ng-show="showKwh" class="animate-show-hide">
@@ -53,14 +74,24 @@
                 <span>Total kWh</span>
             </td>
             <td width="30%">
-                <div class="progress-bar progress-bar-{{invTheme[1].theme}}" style="width: {{siteDetail.invoiceCosts.kwhByPercentForDivision}}%"
+                <div class="progress-shadowed progress" style="margin-bottom:0" data-toggle="popover" title=""
+                     data-trigger="hover"
+                     data-content="Total Kwh consumed from {{siteDetail.invoiceKeyData.totalInvoicesOnFile}} invoice(s)"
+                     data-placement="bottom">
+                    <span class="progress-bar progress-bar-{{invTheme[1].theme}}"
+                          ng-style="{width: siteDetail.invoiceCosts.kwhByPercentForDivision + '%'}">
+                        <span> {{siteDetail.invoiceCosts.totalKwh | number:0}}</span>
+                    </span>
+                </div>
+
+                @*<div class="progress-bar progress-bar-{{invTheme[1].theme}}" style="width: {{siteDetail.invoiceCosts.kwhByPercentForDivision}}%"
                      data-toggle="popover" title="" data-trigger="hover" data-content="Total Kwh consumed from {{siteDetail.invoiceKeyData.totalInvoicesOnFile}} invoice(s)" data-placement="bottom">
                     <span> {{siteDetail.invoiceCosts.totalKwh | number:0}} </span>
-                </div>
+                </div>*@
             </td>
             <td width="20%">
                 <div ng-if="siteDetail.kwhHistory.totals.length > 0">
-                    <div jq-sparkline ng-model="siteDetail.kwhHistory.totals" opts="{{ {type:'line', width:'100%', height:'20px'} }}"></div>
+                    <div align="center" ng-show="sparkLine" jq-sparkline ng-model="siteDetail.kwhHistory.totals" opts="{{sparkLineOpts}}"></div>
                     @*siteDetail.invoiceHistory.totals*@
                 </div>
             </td>
@@ -68,17 +99,27 @@
         </tr>
         <tr ng-show="showCsqm" class="animate-show-hide">
             <td width="20%" class="responsive-td">
-                <span>Cost per sqM</span>
+                <span>Energy Charge per sqM</span>
             </td>
             <td width="30%">
-                <div class="progress-bar progress-bar-{{invTheme[1].theme}}" style="width: {{siteDetail.invoiceCosts.costPerSqmByPercentForDivision}}%"
-                     data-toggle="popover" title="" data-trigger="hover" data-content="Total cost per square meter from {{siteDetail.invoiceKeyData.totalInvoicesOnFile}} invoice(s)" data-placement="bottom">
-                    <span> {{siteDetail.invoiceCosts.costPerSqm | currency:$}} </span>
+                <div class="progress-shadowed progress" style="margin-bottom:0" data-toggle="popover" title=""
+                     data-trigger="hover"
+                     data-content="Total energy charge per square meter from {{siteDetail.invoiceKeyData.totalInvoicesOnFile}} invoice(s)"
+                     data-placement="bottom">
+                    <span class="progress-bar progress-bar-{{invTheme[1].theme}}"
+                          ng-style="{width: siteDetail.invoiceCosts.energyChargePerSqmByPercentForDivision + '%'}">
+                        <span>{{siteDetail.invoiceCosts.energyChargePerSqm | currency:$}}</span>
+                    </span>
                 </div>
+
+                @*<div class="progress-bar progress-bar-{{invTheme[1].theme}}" style="width: {{siteDetail.invoiceCosts.energyChargePerSqmByPercentForDivision}}%"
+                     data-toggle="popover" title="" data-trigger="hover" data-content="Total cost per square meter from {{siteDetail.invoiceKeyData.totalInvoicesOnFile}} invoice(s)" data-placement="bottom">
+                    <span> {{siteDetail.invoiceCosts.energyChargePerSqm | currency:$}} </span>
+                </div>*@
             </td>
             <td width="20%">
                 <div ng-if="siteDetail.costPerSqmHistory.totals.length > 0">
-                    <div jq-sparkline ng-model="siteDetail.costPerSqmHistory.totals" opts="{{ {type:'line', width:'100%', height:'20px'} }}"></div>
+                    <div align="center" ng-show="sparkLine" jq-sparkline ng-model="siteDetail.costPerSqmHistory.totals" opts="{{sparkLineOpts}}"></div>
                     @*siteDetail.invoiceHistory.totals*@
                 </div>
             </td>
@@ -86,17 +127,27 @@
         </tr>
         <tr ng-show="showUsqm" class="animate-show-hide">
             <td width="20%" class="responsive-td">
-                <span>Units per sqM</span>
+                <span>Kwh per sqM</span>
             </td>
             <td width="30%">
-                <div class="progress-bar progress-bar-{{invTheme[1].theme}}" style="width: {{siteDetail.invoiceCosts.unitsPerSqmByPercentForDivision}}%"
-                     data-toggle="popover" title="" data-trigger="hover" data-content="Total units per square meter from {{siteDetail.invoiceKeyData.totalInvoicesOnFile}} invoice(s)" data-placement="bottom">
-                    <span> {{siteDetail.invoiceCosts.unitsPerSqm| number:2}}  </span>
+                <div class="progress-shadowed progress" style="margin-bottom:0" data-toggle="popover" title=""
+                     data-trigger="hover"
+                     data-content="Total Kwh per square meter from {{siteDetail.invoiceKeyData.totalInvoicesOnFile}} invoice(s)"
+                     data-placement="bottom">
+                    <span class="progress-bar progress-bar-{{invTheme[1].theme}}"
+                          ng-style="{width: siteDetail.invoiceCosts.kwhPerSqmByPercentForDivision + '%'}">
+                        <span>{{siteDetail.invoiceCosts.kwhPerSqm | number:2}}</span>
+                    </span>
                 </div>
+
+                @*<div class="progress-bar progress-bar-{{invTheme[1].theme}}" style="width: {{siteDetail.invoiceCosts.unitsPerSqmByPercentForDivision}}%"
+                     data-toggle="popover" title="" data-trigger="hover" data-content="Total Kwh per square meter from {{siteDetail.invoiceKeyData.totalInvoicesOnFile}} invoice(s)" data-placement="bottom">
+                    <span> {{siteDetail.invoiceCosts.unitsPerSqm| number:2}}  </span>
+                </div>*@
             </td>
             <td width="20%">
                 <div ng-if="siteDetail.unitsPerSqmHistory.totals.length > 0">
-                    <div jq-sparkline ng-model="siteDetail.unitsPerSqmHistory.totals" opts="{{ {type:'line', width:'100%', height:'20px'} }}"></div>
+                    <div align="center" class="animate-show-hide" ng-show="sparkLine" jq-sparkline ng-model="siteDetail.unitsPerSqmHistory.totals" opts="{{sparkLineOpts}}"></div>
                     @*siteDetail.invoiceHistory.totals*@
                 </div>
             </td>

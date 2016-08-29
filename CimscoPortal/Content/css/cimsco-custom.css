@@ -245,3 +245,34 @@ div.google-visualization-tooltip > ul > li > span {
 .databox.databox-lg .databox-right.thin-margin {
     padding: 8px;
 }
+
+.standard-piechart {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    margin-top: 7px;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+    .standard-piechart canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+.percent,
+.ep-integer
+ {
+    display: inline-block;
+    line-height: 60px;
+    z-index: 2;
+}
+
+.percent:after {
+    content: '%';
+    margin-left: 0.1em;
+    font-size: .8em;
+}
+

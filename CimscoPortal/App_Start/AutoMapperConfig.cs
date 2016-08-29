@@ -166,6 +166,19 @@ namespace CimscoPortal.App_Start
 
             Mapper.CreateMap<MonthlySummaryModel, InvoiceOverviewViewModel>(MemberList.Source);
 
+            // GPA ** ==> Must be able to simplify this mapping?
+            Mapper.CreateMap<SiteDetailData, InvoiceStatsBySiteViewModel>(MemberList.Source)
+                //.ForAllMembers(m => m.MapFrom(s => s.InvoiceKeyData))
+                .ForMember(m => m.MissingInvoices, opt => opt.MapFrom(s => s.InvoiceKeyData.MissingInvoices))
+                .ForMember(m => m.PendingInvoices, opt => opt.MapFrom(s => s.InvoiceKeyData.PendingInvoices))
+                .ForMember(m => m.ApprovedInvoices, opt => opt.MapFrom(s => s.InvoiceKeyData.ApprovedInvoices))
+                .ForMember(m => m.TotalInvoices, opt => opt.MapFrom(s => s.InvoiceKeyData.TotalInvoices))
+                .ForMember(m => m.TotalInvoicesOnFile, opt => opt.MapFrom(s => s.InvoiceKeyData.TotalInvoicesOnFile))
+                .ForMember(m => m.MissingByPercent, opt => opt.MapFrom(s => s.InvoiceKeyData.MissingByPercent))
+                .ForMember(m => m.PendingByPercent, opt => opt.MapFrom(s => s.InvoiceKeyData.PendingByPercent))
+                .ForMember(m => m.ApprovedByPercent, opt => opt.MapFrom(s => s.InvoiceKeyData.ApprovedByPercent))
+                ;
+
             Mapper.CreateMap<Division, FilterItem>()
                 //  .ForMember(m => m.Index, opt => opt.Ignore())
                 .ForMember(m => m.Label, opt => opt.MapFrom(s => s.DivisionName))

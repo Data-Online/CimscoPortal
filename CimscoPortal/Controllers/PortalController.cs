@@ -129,6 +129,16 @@ namespace CimscoPortal.Controllers
             return View();
         }
 
+        public ActionResult Invoices()
+        {
+            // int categoryId = 2;
+            //var zz = _portalService.GetAlertsFor(categoryId);
+
+            //var user = User.Identity.Name;
+            //var userId = User.Identity.GetUserId();
+            //var zz = User.IsInRole("Admin");
+            return View();
+        }
 
         public ActionResult SiteOverview(int? id)
         {

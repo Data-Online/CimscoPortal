@@ -12,13 +12,13 @@
         .controller("app.dashboard.ctrl", dashboard);
 
     dashboard.$inject = ['$scope', '$parse', '$interval', '$timeout', 'dbDataSource', 'userDataSource', 'filterData', 'dbConstants', 'toaster', 'googleChart'];
-    function dashboard($scope, $parse, $interval, $timeout, dbDataSource, userDataSource, filterData, dbConstants, toaster, googleChart) {
+    function dashboard($scope, $parse, $interval, $timeout, dbDataSource, userDataSource, filterData, dbConstants, toaster, googleChart ) {
         var _googleChartElements =
             [
                 { elementName: "energyChargesChart", columnNames: ["Invoice Total excl GST", "Previous Year Total"], columns: [{ primary: [], all: [] }], title: "Energy Charges" },
                 { elementName: "electricityConsumptionChart", columnNames: ["Total Kwh", "Previous Year Kwh"], columns: [{ primary: [], all: [] }], title: "Electricity Consumption" }
             ];
-        var debugStatus_showMessages = false;
+
         //var showingPrior12 = false;
         $scope.pop = function () {
             toaster.pop('success', "title", "text");
@@ -31,6 +31,10 @@
         var prior12Data = [];
         $scope.loading = true;
 
+        filterData.zztest();
+
+
+
         var onWelcomeMessage = function (data) {
             $scope.welcomeHeader = data.header;
             $scope.welcomeText = data.text;
@@ -39,27 +43,28 @@
         var onUserData = function (data) {
             $scope.monthSpanOptions = data.monthSpanOptions;
             $scope.monthSpan = data.monthSpan;
-            //dbDataSource.getAllFilters()
-            ////filterData.getAllFilters()
-            //   .then(onFiltersOk, onError);
+             //dbDataSource.getAllFilters()
+             ////filterData.getAllFilters()
+             //   .then(onFiltersOk, onError);
         };
 
         var onFiltersOk = function (data) {
-            //createMultiDropdown('divisions', data.divisions, true);
-            filterData.createMultiDropdown('divisions', data.divisions, true, $scope);
+            //filterData.zztest();
+            createMultiDropdown('divisions', data.divisions, true);
+            //filterData.createMultiDropdown('divisions', data.divisions, true, $scope);
             //createMultiDropdown('categories', data.categories, true);
             filterData.createMultiDropdown('categories', data.categories, true, $scope);
         };
 
         var plotAllGraphs = function (data) {
-            if (debugStatus_showMessages) { toaster.pop('success', "All data loaded!", "Read histogram and stats data from database") };
+            toaster.pop('success', "All data loaded!", "Read histogram and stats data from database");
             onGraphData(data.cost, dbConstants.costsDataElement, 0);
             onGraphData(data.consumption, dbConstants.consDataElement, 1);
             displayStats(data.invoiceStats);
             $scope.loading = false;
         };
 
-        var onGraphData = function (data, target, index) {
+        function onGraphData(data, target, index) {
             // Assign data to graph and display
             yearArray = {
                 years: data.years,
@@ -75,8 +80,8 @@
 
         function onError(reason) {
             $scope.loading = false;
-            toaster.pop('error', "Data Load Error", "Unable to load data from database! Status ID =" + reason.status);
-           // console.log(reason);
+            toaster.pop('error', "Data Load Error", "Unable to load data from database!");
+            $scope.reason = reason;
         };
 
         var assignData = function (data, theme, label) {
@@ -94,17 +99,6 @@
             dbDataSource.getTotalCostAndConsumption($scope.monthSpan, getReturnIds())
                 .then(plotAllGraphs, onError);
         };
-
-        var getBusinessData = function () {
-            $scope.loading = true;
-            readAndPlotHistogram();
-            readAndPlotGoogleGraphData();
-        };
-
-        $scope.$on("refreshData", function () {
-            if (debugStatus_showMessages) { toaster.pop('success', "Event triggered", ""); }
-            getBusinessData();
-        });
 
         dbDataSource.getWelcomeScreen()
             .then(onWelcomeMessage, onError);
@@ -248,81 +242,77 @@
             }
         };
         // Multi selects
-        //var createMultiDropdown = function (baseName, selectionItemsList, createWatch) {
-        //    // Create variables on scope
-        //    var getter = $parse(baseName + 'Model');
-        //    getter.assign($scope, []);
+        var createMultiDropdown = function (baseName, selectionItemsList, createWatch) {
+            // Create variables on scope
+            var getter = $parse(baseName + 'Model');
+            getter.assign($scope, []);
 
-        //    getter = $parse(baseName + 'Data');
-        //    getter.assign($scope, selectionItemsList);
-        //    getter = $parse(baseName + 'CustomTexts');
+            getter = $parse(baseName + 'Data');
+            getter.assign($scope, selectionItemsList);
+            getter = $parse(baseName + 'CustomTexts');
 
-        //    var buttonText = 'All ' + baseName.capitalizeFirstLetter();
-        //    var customTexts = { buttonDefaultText: buttonText, uncheckAll: 'Clear Filters' };
-        //    getter.assign($scope, customTexts);
-        //    if (createWatch) {
-        //        $scope.$watch(baseName + 'Model', function (data) {
-        //            filterData(data, baseName);
-        //        }, true);
-        //    };
+            var buttonText = 'All ' + baseName.capitalizeFirstLetter();
+            var customTexts = { buttonDefaultText: buttonText, uncheckAll: 'Clear Filters' };
+            getter.assign($scope, customTexts);
+            if (createWatch) {
+                $scope.$watch(baseName + 'Model', function (data) {
+                    filterData(data, baseName);
+                }, true);
+            };
 
-        //    var maxTextLength = buttonText.length;
-        //    getter = $parse(baseName + 'Settings');
-        //    getter.assign($scope, {
-        //        smartButtonMaxItems: 1,
-        //        externalIdProp: '',
-        //        showCheckAll: false,
-        //        smartButtonTextConverter: function (itemText, originalItem) {
-        //            if (itemText.length > maxTextLength) {
-        //                return itemText.substring(0, (maxTextLength - 2)) + '..';
-        //            }
-        //        }
-        //    });
+            var maxTextLength = buttonText.length;
+            getter = $parse(baseName + 'Settings');
+            getter.assign($scope, {
+                smartButtonMaxItems: 1,
+                externalIdProp: '',
+                showCheckAll: false,
+                smartButtonTextConverter: function (itemText, originalItem) {
+                    if (itemText.length > maxTextLength) {
+                        return itemText.substring(0, (maxTextLength - 2)) + '..';
+                    }
+                }
+            });
 
-        //};
+        };
 
-        //var filterData = function (data, baseName) {
-        //    startDelay(data);
-        //};
+        var filterData = function (data, baseName) {
+            startDelay(data);
+        };
 
-        //var stop;
-        //var _counter = dbConstants.filterSelectDelay;//20;
-        //var startDelay = function (data) {
-        //    if (angular.isDefined(stop)) { _counter = dbConstants.filterSelectDelay; return; }
-        //    stop = $interval(function () {
-        //        if (_counter > 0) {
-        //            _counter--;
-        //        }
-        //        else { stopCounter(data); }
-        //    }, 100)
-        //}
-        //var stopCounter = function (data) {
-        //    if (angular.isDefined(stop)) {
-        //        $interval.cancel(stop);
-        //        stop = undefined;
-        //        _counter = dbConstants.filterSelectDelay;//20;
-        //    };
-        //    $scope.loading = true;
-        //    readAndPlotHistogram();
+        var stop;
+        var _counter = dbConstants.filterSelectDelay;//20;
+        var startDelay = function (data) {
+            if (angular.isDefined(stop)) { _counter = dbConstants.filterSelectDelay; return; }
+            stop = $interval(function () {
+                if (_counter > 0) {
+                    _counter--;
+                }
+                else { stopCounter(data); }
+            }, 100)
+        }
+        var stopCounter = function (data) {
+            if (angular.isDefined(stop)) {
+                $interval.cancel(stop);
+                stop = undefined;
+                _counter = dbConstants.filterSelectDelay;//20;
+            };
+            $scope.loading = true;
+            readAndPlotHistogram();
 
-        //    readAndPlotGoogleGraphData();
-        //};
-
-        //var getReturnIds = function () {
-        //    var _returnIds = "_";
-        //    angular.forEach($scope.categoriesModel, function (value, key) {
-        //        _returnIds += value.id + "-";
-        //    });
-        //    _returnIds += "_";
-        //    angular.forEach($scope.divisionsModel, function (value, key) {
-        //        _returnIds += value.id + "-";
-        //    });
-        //    return _returnIds;
-        //};
+            readAndPlotGoogleGraphData();
+        };
 
         var getReturnIds = function () {
-            return filterData.createApiFilter($scope.categoriesModel, $scope.divisionsModel);
-        }
+            var _returnIds = "_";
+            angular.forEach($scope.categoriesModel, function (value, key) {
+                _returnIds += value.id + "-";
+            });
+            _returnIds += "_";
+            angular.forEach($scope.divisionsModel, function (value, key) {
+                _returnIds += value.id + "-";
+            });
+            return _returnIds;
+        };
 
         // Google chart control GPA: Refactor all code here, copied from SiteOverview
         var readAndPlotGoogleGraphData = function () {
@@ -335,7 +325,7 @@
             var _collatedData = googleChart.collateData(data);
             initializeGoogleChart(_collatedData, _googleChartElements[googleChart.elementIndex(_googleChartElements, "Electricity Consumption")]);
             initializeGoogleChart(_collatedData, _googleChartElements[googleChart.elementIndex(_googleChartElements, "Energy Charges")]);
-            if (debugStatus_showMessages) { toaster.pop('success', "Google graph data loaded!", ""); }
+            toaster.pop('success', "Google graph data loaded!", "");
             $scope.loading = false;
         };
 
