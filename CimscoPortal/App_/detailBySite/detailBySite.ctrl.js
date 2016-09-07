@@ -2,17 +2,14 @@
     'use strict';
 
     angular.module("app.detailBySite")
-            .constant("debugStatus", {
-                "showMessages": false
-            })
-        .controller("app.detailBySite.ctrl", detailBySite)
+            .controller("app.detailBySite.ctrl", detailBySite)
 
     detailBySite.$inject = ['$scope', '$timeout', 'soDataSource', 'userDataSource', 'toaster'];
     function detailBySite($scope, $timeout, soDataSource, userDataSource, toaster) {
         // $scope.monthSpanOptions = [3, 6, 12, 24];
         var monthSpan = 12; // Refactor out
         // Accordion
-
+        var debugStatus = false;
         $scope.oneAtATime = true;  // Accordion behaviour
         //$scope.emptyDivisionName = "Not Set";
 
@@ -82,18 +79,18 @@
                 tallyArray.push({
                     "invoiceCounts": [
                         {
-                            "percent": (data.siteDetailData[index].invoiceKeyData.approvedInvoices / data.siteDetailData[index].invoiceKeyData.totalInvoices * 100),
-                            "noOfInv": data.siteDetailData[index].invoiceKeyData.approvedInvoices,
+                            "percent": (data.siteDetailData[index].invoiceKeyData.approved / data.siteDetailData[index].invoiceKeyData.totalInvoices * 100),
+                            "noOfInv": data.siteDetailData[index].invoiceKeyData.approved,
                             "tooltip": "Approved"
                         },
                         {
-                            "percent": (data.siteDetailData[index].invoiceKeyData.pendingInvoices / data.siteDetailData[index].invoiceKeyData.totalInvoices * 100),
-                            "noOfInv": data.siteDetailData[index].invoiceKeyData.pendingInvoices,
+                            "percent": (data.siteDetailData[index].invoiceKeyData.pending / data.siteDetailData[index].invoiceKeyData.totalInvoices * 100),
+                            "noOfInv": data.siteDetailData[index].invoiceKeyData.pending,
                             "tooltip": "To be Approved"
                         },
                         {
-                            "percent": (data.siteDetailData[index].invoiceKeyData.missingInvoices / data.siteDetailData[index].invoiceKeyData.totalInvoices * 100),
-                            "noOfInv": data.siteDetailData[index].invoiceKeyData.missingInvoices,
+                            "percent": (data.siteDetailData[index].invoiceKeyData.missing / data.siteDetailData[index].invoiceKeyData.totalInvoices * 100),
+                            "noOfInv": data.siteDetailData[index].invoiceKeyData.missing,
                             "tooltip": "Missing"
                         }
                     ]
@@ -118,7 +115,7 @@
             };
             //console.log($scope.divisionView);
             $scope.loading = false;
-            if (debugStatus.showMessages) { toaster.pop('success', "Invoice Data Loaded!", ""); }
+            if (debugStatus) { toaster.pop('success', "Invoice Data Loaded!", ""); }
             //  $timeout(toggleSparklines, 5000);
 
         }

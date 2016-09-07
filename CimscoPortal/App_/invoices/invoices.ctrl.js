@@ -13,7 +13,7 @@
         var _previousFilter = "__";
         var _previousSiteId = -1;
         var _previousMonthSpan = 0;
-        var debugStatus_showMessages = true;
+        var debugStatus_showMessages = false;
         $scope.requests = [];
 
         // Invoice display control
@@ -23,7 +23,7 @@
         };
 
         $scope.showInvoices = function (invType, siteId, currentSiteName) {
-            //console.log("Inv type:" + invType);
+           // console.log("Inv type:" + invType);
             $scope.invType = invType;
             _previousSiteId = $scope.siteId;
             $scope.siteId = siteId;
@@ -62,44 +62,64 @@
             //console.log("Scope site ID = " + $scope.siteId + " previous site id = " + _previousSiteId);
             var filterData = constructFilterInfo(); //getReturnIds();
             //filterData += "_" + getInvTypeId($scope.invType);
-            setCheckBoxes($scope.invType);
+            setCheckBoxes($scope.invType, ($scope.siteId == 0));
             //console.log("Filter = " + filterData.filter + " Previous - " + _previousFilter);
-            if (!filterData.sDivCatChg & !filterData.sInvTypeChg & _previousSiteId == $scope.siteId & _previousMonthSpan == $scope.monthSpan) {
+            //console.log("Div Cat change:" + filterData.sDivCatChg + " Inv Type change:" + filterData.sInvTypeChg + " month change:" + filterData.sMonthChg  + " site Id change:" + filterData.sSiteIdChg)
+            //if (!filterData.sDivCatChg & !filterData.sInvTypeChg & _previousSiteId == $scope.siteId & _previousMonthSpan == $scope.monthSpan) {
+            if (!filterData.sDivCatChg & !filterData.sMonthChg & !filterData.sSiteIdChg & !($scope.siteId == 0 & filterData.sInvTypeChg)) {
                 if (debugStatus_showMessages) { toaster.pop('warning', "No change to filter", "Exit without data update"); }
                 return;
             };
 
+            // If invoice type ID changes then flags if single site, new request if all sites
+
             cancelAllRequests();
-            $scope.loading = true;
+            //$scope.loading = true;
             //console.log("grpdiv select = " + filterData.sDivCat + " inv select = " + filterData.sInvType);
             if ($scope.siteId != 0) {
+                // If SiteId == 0 then selecting all sites. This is handled in next section
+                //          Possible settings : siteId (-1 == not selected)
+                //                            : sDivCatChg == A change in divisin and/or category selection has been made
+                //                            : sInvTypeChg == Change in invoice type made
+                //                            : Change in number of months for statistics selection
+
+                // If no site selected, simply update the current statistics
                 if ($scope.siteId == -1) {
                     // No site selection made, can only update filters where there has been a change
-                   // readAndShowInvStats();
-                    readAndShowInvStats_new(filterData.filter);
+                    if (debugStatus_showMessages) { toaster.pop('success', "A: No site selected - Update stats.", ""); }
+                    readAndShowInvStats(filterData.filter);
                 }
-                else if (filterData.sDivCatChg) {
-                    resetHeaderFilters();
-                    //readAndShowInvStats();
-                    readAndShowInvStats_new(filterData.filter);
-                    $scope.invoiceData = [];
+
+                else if (filterData.sDivCatChg | filterData.sMonthChg) {
+                    // Refresh filters and clear displayed data
+                    if (debugStatus_showMessages) { toaster.pop('success', "aa: Filter change - Update stats, reset data", ""); }
+                    resetHeaderFilters();                    
+                    resetOnScreenData();
+                    readAndShowInvStats(filterData.filter);
                 }
+
+                //else if (filterData.sDivCatChg) {
+                //    if (debugStatus_showMessages) { toaster.pop('success', "B: Catgory change - Update stats, reset data", ""); }
+                //    resetHeaderFilters();
+                //    readAndShowInvStats(filterData.filter);
+                //    resetOnScreenData();
+                //}
                 else if ($scope.siteId > 0) {
                     // Selecting by individual site
                     // No selection on invoice types, so we are just updating the stats
                     if (_previousSiteId != $scope.siteId) {
-                        if (debugStatus_showMessages) { toaster.pop('success', "Read data for selected site", "Set check boxes"); }
-                        
+                        if (debugStatus_showMessages) { toaster.pop('success', "C: Read data for selected site", "Set check boxes"); }
+                        resetOnScreenData($scope.currentSiteName);
                         getBusinessData("site");
-                        setCheckBoxes($scope.invType);
+                        setCheckBoxes($scope.invType, false);
                     }
                     else if (filterData.sInvType) {
-                        if (debugStatus_showMessages) { toaster.pop('success', "Change in check boxes", ""); }
-                        setCheckBoxes($scope.invType);
+                        if (debugStatus_showMessages) { toaster.pop('success', "D: Invoice type change", "Set check boxes"); }
+                        setCheckBoxes($scope.invType, false);
                     } else {
-                       // readAndShowInvStats();
-                        readAndShowInvStats_new(filterData.filter);
-                        if (filterData.sDivCat) { resetHeaderFilters(); }
+                        if (debugStatus_showMessages) { toaster.pop('success', "E: Update stats and reset filters", ""); }
+                        readAndShowInvStats(filterData.filter);
+                        if (filterData.sDivCat) { resetHeaderFilters(); resetOnScreenData(); }
                     }
                 }
             }
@@ -107,25 +127,41 @@
             else {
                 // Selecting all sites (siteId = 0)
                 if (_previousSiteId != $scope.siteId | filterData.sInvTypeChg) {
-                    if (debugStatus_showMessages) { toaster.pop('success', "Site/Inv Type change : Read data for all sites", "Disable check boxes"); }
+                    if (debugStatus_showMessages) {
+                        toaster.pop('success', "Site/Inv Type change : Read data for all sites", "");
+                    }
+                    resetOnScreenData($scope.currentSiteName);
+                    getBusinessData('all', filterData.filter);
                 }
                 else if (filterData.sDivCatChg) {
-                    if (debugStatus_showMessages) { toaster.pop('success', "Cat/Div change : Read data for all sites", "Disable check boxes"); }
+                    if (debugStatus_showMessages) { toaster.pop('success', "Cat/Div change : Clear data and update stats", "Re-read business data"); }
+                    resetOnScreenData($scope.currentSiteName);
+                    readAndShowInvStats(filterData.filter);
+                    getBusinessData('all', filterData.filter);
                 }
-                if (debugStatus_showMessages) { toaster.pop('success', "Read data for all sites", "Filter applied"); }
-                getBusinessData('all', filterData.filter);
+                else if (filterData.sMonthChg) {
+                    if (debugStatus_showMessages) { toaster.pop('success', "Month change : Clear data and update stats", "Re-read business data"); }
+                    resetOnScreenData($scope.currentSiteName);
+                    readAndShowInvStats(filterData.filter);
+                    getBusinessData('all', filterData.filter);
+                }
+                //if (debugStatus_showMessages) { toaster.pop('success', "Read data for all sites", "Filter applied"); }
+                //getBusinessData('all', filterData.filter);
             }
 
             _previousFilter = filterData.filter;
             _previousSiteId = $scope.siteId;
+            _previousMonthSpan = $scope.monthSpan;
         };
 
         var getBusinessData = function (scope, filter) {
             if (scope == 'site') {
                 // Filter is not required - siteId is subject to Group/Division/Industry filter. All invoices are returned, to be filtered on the live page
+                $scope.loading = true;
                 var dataRequest = inDataSource.getSiteInvoiceData($scope.siteId, $scope.monthSpan);
             }
             else if (scope == 'all') {
+                $scope.loading = true;
                 var dataRequest = inDataSource.getAllInvoiceData($scope.monthSpan, filter, 1);
             }
             $scope.requests.push(dataRequest);
@@ -152,12 +188,12 @@
 
 
         var onInvoiceData = function (data) {
-            console.log(data);
+            //console.log(data);
             // $scope.monthSpan = monthSpan;
             $scope.invoiceData = data;
             $scope.loading = false;
             if (debugStatus_showMessages) { toaster.pop('success', "Invoice Data Loaded!", ""); }
-            clearRequest($scope.requests[0]);
+            clearRequest($scope.requests[0]); // Remove request from list, as now complete
         };
 
         //// TEMP
@@ -195,19 +231,9 @@
         //    $scope.loading = false;
         //};
 
-        var readAndShowInvStats_new = function (filter) {
+        var readAndShowInvStats = function (filter) {
             if (debugStatus_showMessages) { toaster.pop('success', "Refresh Stats Data from DB", ""); }
-            $scope.epOptions = {
-                animate: {
-                    duration: 5,
-                    enabled: true
-                },
-                barColor: '#2C3E50',
-                scaleColor: false,
-                lineWidth: 5,
-                lineCap: 'circle',
-                size: 60
-            }
+            $scope.loadingStats = true;
             var dataRequest = inDataSource.getInvoiceStatsBySite($scope.monthSpan, filter);
             $scope.requests.push(dataRequest);
 
@@ -218,18 +244,18 @@
 
             // GPA ** refactoring required
             var _summary = [
-                { sites: 0, entries: 0, percent: 0, filter: "pendingInvoices", header: "to be approved" },
-                { sites: 0, entries: 0, percent: 0, filter: "missingInvoices", header: "missing" },
-                { sites: 0, entries: 0, percent: 0, filter: "approvedInvoices", header: "approved" }
+                { sites: 0, entries: 0, percent: 0, filter: "pending", header: "to be approved" },
+                { sites: 0, entries: 0, percent: 0, filter: "missing", header: "missing" },
+                { sites: 0, entries: 0, percent: 0, filter: "approved", header: "approved" }
             ];
 
             angular.forEach(data, function (entry) {
-                if (entry.pendingInvoices > 0) { _summary[0].sites++; }
-                if (entry.missingInvoices > 0) { _summary[1].sites++; }
-                if (entry.approvedInvoices > 0) { _summary[2].sites++; }
-                _summary[0].entries = _summary[0].entries + entry.pendingInvoices;
-                _summary[1].entries = _summary[1].entries + entry.missingInvoices;
-                _summary[2].entries = _summary[2].entries + entry.approvedInvoices;
+                if (entry.pending> 0) { _summary[0].sites++; }
+                if (entry.missing> 0) { _summary[1].sites++; }
+                if (entry.approved> 0) { _summary[2].sites++; }
+                _summary[0].entries = _summary[0].entries + entry.pending;
+                _summary[1].entries = _summary[1].entries + entry.missing;
+                _summary[2].entries = _summary[2].entries + entry.approved;
             });
             var _totalEntries = 0;
             angular.forEach(_summary, function (entry) {
@@ -244,6 +270,7 @@
             $scope.invoiceStatsBySite.summary = _summary;
             //console.log(data);
             $scope.loading = false;
+            $scope.loadingStats = false;
         };
 
         var getReturnIds = function () {
@@ -265,6 +292,17 @@
         };
 
         var setInitialScope = function () {
+            $scope.epOptions = {
+                animate: {
+                    duration: 5,
+                    enabled: true
+                },
+                barColor: '#2C3E50',
+                scaleColor: false,
+                lineWidth: 5,
+                lineCap: 'circle',
+                size: 60
+            };
             $scope.selectItems = {
                 showAll: true,
                 showApproved: true,
@@ -273,9 +311,9 @@
             };
             resetHeaderFilters();
             _previousFilter = constructFilterInfo().filter;
-            console.log("Previous filter set " + _previousFilter);
+            //console.log("Previous filter set " + _previousFilter);
             //readAndShowInvStats();
-            readAndShowInvStats_new(_previousFilter);
+            readAndShowInvStats(_previousFilter);
         };
 
         var resetHeaderFilters = function () {
@@ -283,9 +321,14 @@
             $scope.siteId = -1;
         };
 
-        var constructFilterInfo = function () {
+        var resetOnScreenData = function (siteName) {
+            $scope.invoiceData = [];
+            $scope.currentSiteName = siteName;
+        };
 
+        var constructFilterInfo = function () {
             var _invTypeId = getInvTypeId($scope.invType);
+            //console.log("Scope type: " + $scope.invType + " code: " + _invTypeId);
             var _filter = getReturnIds();
             //console.log("ZTEST " + _previousFilter.split("_")[1]  + _previousFilter.split("_")[2] + " _filter = " + _filter.split("_")[1]  + _filter.split("_")[2]);
             //console.log("_filter = " + _filter + "_" + _invTypeId + " previous = " + _previousFilter);
@@ -293,9 +336,12 @@
                 sInvType: (_invTypeId != "0")  // Whether there is a selection on Invoice Types (approved/not approved/etc)
                 , sDivCat: (_filter != "__")   // Whether there is a selection on Division / CAtegory types
                 , filter: _filter + "_" + _invTypeId // Current filter that will be passed back to server for data query
-                , sInvTypeChg: (_previousFilter.split("_")[3] != _invTypeId) // Whether there has been a changge in the selection of Invoice Type (eg Approved --> To be approved)
+                , sInvTypeChg: (_previousFilter.split("_")[3] != _invTypeId) // Whether there has been a change in the selection of Invoice Type (eg Approved --> To be approved)
                 , sDivCatChg: (_previousFilter.split("_")[1] + _previousFilter.split("_")[2] != _filter.split("_")[1] + _filter.split("_")[2]) // Whether the Category Division filter has changed
+                , sMonthChg: (_previousMonthSpan != $scope.monthSpan)
+                , sSiteIdChg: (_previousSiteId != $scope.siteId)
             };
+
             //console.log(_filters);
             //console.log("Inv change " + _filters.sInvTypeChg);
             //console.log(_filter);
@@ -304,9 +350,9 @@
             return _filters;
         };
 
-        var setCheckBoxes = function (category) {
+        var setCheckBoxes = function (category, disable) {
             switch (category) {
-                case 'pendingInvoices':
+                case 'pending':
                     $scope.selectItems = {
                         showAll: false,
                         showApproved: false,
@@ -314,7 +360,7 @@
                         showMissing: false
                     };
                     break;
-                case 'approvedInvoices':
+                case 'approved':
                     $scope.selectItems = {
                         showAll: false,
                         showApproved: true,
@@ -322,7 +368,7 @@
                         showMissing: false
                     };
                     break;
-                case 'missingInvoices':
+                case 'missing':
                     $scope.selectItems = {
                         showAll: false,
                         showApproved: false,
@@ -331,6 +377,8 @@
                     };
                     break;
             };
+            if (disable) { $scope.disableCheckboxes = true; }
+            else { $scope.disableCheckboxes = false; }
         };
 
         var onFiltersOk = function (data) {
@@ -357,6 +405,8 @@
             if (reason.status != 0) {
                 toaster.pop('error', "Unable to read data", "Reason: " + reason.statusText + " (status:" + reason.status + ")");
             }
+            $scope.loading = false;
+            $scope.loadingStats = false;
         };
 
         // GPA ** --> Also in SiteOverview. Re-factor to common factory
@@ -451,22 +501,22 @@
         $scope.getCountByFilter = function (field, data) {
             // GPA*** refactor!!
             var _max = 0;
-            if (field == 'pendingInvoices') {
-                return data.pendingInvoices
+            if (field == 'pending') {
+                return data.pending
             };
-            if (field == 'missingInvoices') { return data.missingInvoices };
-            if (field == 'approvedInvoices') { return data.approvedInvoices };
+            if (field == 'missing') { return data.missing};
+            if (field == 'approved') { return data.approved};
             return 0;
         };
 
         $scope.getPercentByFilter = function (field, data) {
             // GPA*** refactor!!
             var _max = 0;
-            if (field == 'pendingInvoices') {
+            if (field == 'pending') {
                 return data.pendingByPercent
             };
-            if (field == 'missingInvoices') { return data.missingByPercent };
-            if (field == 'approvedInvoices') { return data.approvedByPercent };
+            if (field == 'missing') { return data.missingByPercent };
+            if (field == 'approved') { return data.approvedByPercent };
             return 0;
         };
         $scope.getMax = function (a, b) {

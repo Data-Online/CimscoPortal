@@ -38,8 +38,9 @@
 
         var getAllInvoiceData = function (monthSpan, filter, pageNo) {
             //console.log("Getting data for Site ID = " + siteId + " for " + mounthsToDisplay + " months");
+            //console.log(scope);
             pageNo = (pageNo == 0) ? 1 : pageNo;
-            var dataApi = "/api/invoiceAllOverview/" + monthSpan + "/" + filter + "/" + pageNo;
+            var dataApi = "/api/invoiceAllOverview/" + monthSpan  + "/" + filter + "/" + pageNo;
 
             var canceller = $q.defer();
 

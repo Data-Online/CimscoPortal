@@ -169,9 +169,9 @@ namespace CimscoPortal.App_Start
             // GPA ** ==> Must be able to simplify this mapping?
             Mapper.CreateMap<SiteDetailData, InvoiceStatsBySiteViewModel>(MemberList.Source)
                 //.ForAllMembers(m => m.MapFrom(s => s.InvoiceKeyData))
-                .ForMember(m => m.MissingInvoices, opt => opt.MapFrom(s => s.InvoiceKeyData.MissingInvoices))
-                .ForMember(m => m.PendingInvoices, opt => opt.MapFrom(s => s.InvoiceKeyData.PendingInvoices))
-                .ForMember(m => m.ApprovedInvoices, opt => opt.MapFrom(s => s.InvoiceKeyData.ApprovedInvoices))
+                .ForMember(m => m.Missing, opt => opt.MapFrom(s => s.InvoiceKeyData.Missing))
+                .ForMember(m => m.Pending, opt => opt.MapFrom(s => s.InvoiceKeyData.Pending))
+                .ForMember(m => m.Approved, opt => opt.MapFrom(s => s.InvoiceKeyData.Approved))
                 .ForMember(m => m.TotalInvoices, opt => opt.MapFrom(s => s.InvoiceKeyData.TotalInvoices))
                 .ForMember(m => m.TotalInvoicesOnFile, opt => opt.MapFrom(s => s.InvoiceKeyData.TotalInvoicesOnFile))
                 .ForMember(m => m.MissingByPercent, opt => opt.MapFrom(s => s.InvoiceKeyData.MissingByPercent))

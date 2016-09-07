@@ -26,7 +26,7 @@ namespace CimscoPortal.Infrastructure
         IEnumerable<CimscoPortal.Models.MessageViewModel> GetNavbarDataFor(string pageElement);
         
         //InvoiceTallyViewModel GetInvoiceTally(string userId, int monthSpan, int? customerId);
-        DetailBySiteViewModel GetDetailBySite(string userId, int monthSpan, string filter = "");
+        DetailBySiteViewModel GetDetailBySite(string userId, int monthSpan, string filter = "", int maximumSitesToReturn = 0);
         IEnumerable<InvoiceStatsBySiteViewModel> GetInvoiceStatsForSites(string userId, int monthSpan, string filter);
 
         // Invoice Data

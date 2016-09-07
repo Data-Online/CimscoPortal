@@ -37,16 +37,16 @@ namespace CimscoPortal.Models
     }
     public class InvoiceKeyData
     {
-        public int ApprovedInvoices { get; set; }
-        public int PendingInvoices { get; set; }
-        public int MissingInvoices { get; set; }
+        public int Approved { get; set; }
+        public int Pending { get; set; }
+        public int Missing { get; set; }
         public decimal ApprovedByPercent { get; set; }
         public decimal PendingByPercent { get; set; }
         public decimal MissingByPercent { get; set; }
         public DateTime FirstInvoiceDate { get; set; }
         public DateTime LatestInvoiceDate { get; set; }
-        public int TotalInvoicesOnFile { get { return ApprovedInvoices + PendingInvoices; } }
-        public int TotalInvoices { get { return TotalInvoicesOnFile + MissingInvoices; } }
+        public int TotalInvoicesOnFile { get { return Approved + Pending; } }
+        public int TotalInvoices { get { return TotalInvoicesOnFile + Missing; } }
         public decimal CalculatedLossRate { get; set; }
     }
 

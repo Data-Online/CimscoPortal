@@ -188,6 +188,7 @@
         var _rows = [];
         var _cpart = [];
         var onGraphData = function (data) {
+            console.log(data);
             _cols = []; _rows = []; _cpart = [];
             for (var i = 0; i < data.columns.length; i++) {
                 var _nextCol = { id: data.columns[i].$id, title: data.columns[i].label, label: data.columns[i].label, type: data.columns[i].type };
@@ -254,11 +255,32 @@
         };
 
         $scope.updateCC = function () {
-            window.dispatchEvent(new Event('resize'));
+            //window.dispatchEvent(new Event('resize'));
+            _event();
 //            getGraphData();
         };
 
+        // GPA **--> common function
+        var _event = function () {
+            //console.log('event...');
+            if (document.createEvent) { // W3C
+                var ev = document.createEvent('Event');
+                ev.initEvent('resize', true, true);
+              //  console.log('dispatch event');
+                window.dispatchEvent(ev);
+            }
+            else { // IE
+               // console.log('IE event');
+                element = document.documentElement;
+                var event = document.createEventObject();
+                element.fireEvent("onresize", event);
+            }
+        };
+
         function initializeChart() {
+            if (debugStatus_showMessages) { toaster.pop('success', "Chart initialize...", ""); }
+            console.log(_rows);
+            console.log(_cols);
             $scope.myChartObject.type = "LineChart";//"BarChart";// 
             $scope.myChartObject.displayed = false;
             $scope.myChartObject.data = {

@@ -134,7 +134,8 @@ namespace CimscoPortal.Services
         public IEnumerable<InvoiceStatsBySiteViewModel> GetInvoiceStatsForSites(string userId, int monthSpan, string filter)
         {
             if (!monthSpan.In(3, 6, 12, 24)) { monthSpan = 12; } // GPA --> move to constants
-            DetailBySiteViewModel _model = GetDetailBySite(userId, monthSpan, filter); /// Add filter here
+            int _maximumSitesToReturn = 8;
+            DetailBySiteViewModel _model = GetDetailBySite(userId, monthSpan, filter, _maximumSitesToReturn); /// Add filter here
             //   List<InvoiceStatsBySiteViewModel> _result = AutoMapper.Mapper.Map<List<SiteDetailData>, List<InvoiceStatsBySiteViewModel>>(_model.SiteDetailData);
             return AutoMapper.Mapper.Map<List<SiteDetailData>, List<InvoiceStatsBySiteViewModel>>(_model.SiteDetailData);
         }
@@ -390,6 +391,32 @@ namespace CimscoPortal.Services
         {
             try
             {
+                query = SearchByInvoiceType(GetInvoiceTypesFromFilter(filter), query);
+            }
+            catch { } 
+            //try
+            //{
+            //    int _loopCount = 0;
+            //    foreach (string entry in filter.Split('_'))
+            //    {
+            //        //List<int> _passedValueIds = entry.IntegersFromString('-');
+            //        switch (_loopCount)
+            //        {
+            //            case 3:
+            //                query = SearchByInvoiceType(entry.IntegersFromString('-'), query);
+            //                break;
+            //        }
+            //        _loopCount++;
+            //    }
+            //}
+            //catch { return query; }
+            return query;
+        }
+
+        private List<int> GetInvoiceTypesFromFilter(string filter)
+        {
+            try
+            {
                 int _loopCount = 0;
                 foreach (string entry in filter.Split('_'))
                 {
@@ -397,14 +424,14 @@ namespace CimscoPortal.Services
                     switch (_loopCount)
                     {
                         case 3:
-                            query = SearchByInvoiceType(entry.IntegersFromString('-'), query);
-                            break;
+                            return entry.IntegersFromString('-');
                     }
                     _loopCount++;
                 }
             }
-            catch { return query; }
-            return query;
+            catch {  }
+
+            return new List<int>();
         }
 
         private IQueryable<InvoiceSummary> SearchByInvoiceType(List<int> keywords, IQueryable<InvoiceSummary> query)
@@ -416,7 +443,7 @@ namespace CimscoPortal.Services
                 {
                     switch ((string)_hashTable[_type])
                     {
-                        case "toapprove":
+                        case "pending":
                             query = query.Where(p => p.Approved == false);
                             break;
                         case "approved":
@@ -455,7 +482,7 @@ namespace CimscoPortal.Services
             Hashtable hashtable = new Hashtable();
             hashtable.Add(1, "approved");
             hashtable.Add(2, "missing");
-            hashtable.Add(3, "toapprove");
+            hashtable.Add(3, "pending");
             return hashtable;
         }
         #endregion
@@ -484,7 +511,7 @@ namespace CimscoPortal.Services
                                SiteId = (from f in g select f.SiteId).FirstOrDefault(),
                                SiteName = (from f in g select f.Site.SiteName).FirstOrDefault(),
                                InvoiceId = (from f in g select f.InvoiceId).FirstOrDefault(),
-                               InvoicePdf = false // ***
+                               InvoicePdf = false // *** GPA - this does not need to be calculated with every select
                            }).ToDictionary(k => k.InvoiceKeyDate);
 
             if (includeMissing) { PopulateEmptyMonths(selectFromDate, selectToDate, _result); }
@@ -498,12 +525,13 @@ namespace CimscoPortal.Services
 
         private static void PopulateEmptyMonths(DateTime selectFromDate, DateTime selectToDate, Dictionary<DateTime, MonthlySummaryModel> _invoiceTotals)
         {
+            string _siteName = _invoiceTotals.Values.Select(s => s.SiteName).FirstOrDefault();
             DateTime _loopDate = selectFromDate;
             while (_loopDate <= selectToDate & _loopDate >= selectFromDate)
             {
                 if (!_invoiceTotals.ContainsKey(_loopDate.StartOfThisMonth()))
                 {
-                    _invoiceTotals.Add(_loopDate.StartOfThisMonth(), new MonthlySummaryModel() { TotalInvoices = 0, InvoicePeriodDate = _loopDate, Missing = true });
+                    _invoiceTotals.Add(_loopDate.StartOfThisMonth(), new MonthlySummaryModel() { TotalInvoices = 0, InvoicePeriodDate = _loopDate, Missing = true, SiteName = _siteName });
                 }
                 _loopDate = _loopDate.AddMonths(1);
             }
@@ -937,6 +965,9 @@ namespace CimscoPortal.Services
         private List<InvoiceOverviewViewModel> GenerateInvoiceList(int monthSpan, IList<int> allSitesInCurrentSelection, int pageNo = 1, string filter = null)
         {
             // GPA ** >> This function can be very inefficient when dealing with multple sites over a number of months.
+            // scope = "Missing";
+            // ** Missing invoices:
+            // Since missing invoices do not represent data in the database, selection based on these (passed in filter) requires selection after invoice data collation stage
 
             List<InvoiceOverviewViewModel> _result = new List<InvoiceOverviewViewModel>();
             DateTime _selectFromDate;
@@ -945,14 +976,23 @@ namespace CimscoPortal.Services
 
             IQueryable<InvoiceSummary> _invoiceData = ConstructInvoiceQueryForDates(allSitesInCurrentSelection, _selectFromDate, _selectToDate);
 
+            // Given a null filter, no additional selection will be made at this stage
             _invoiceData = ConstructInvoiceQueryFromFilter(filter, _invoiceData); //_invoiceData.Where(s => s.Approved == false);
-            bool _includeMissing = (allSitesInCurrentSelection.Count() == 1); //false;
+
+            bool _filterIncludesMissing = CheckFilterByText(filter, "missing");
+            bool _includeMissing = (allSitesInCurrentSelection.Count() == 1 | _filterIncludesMissing); //false;
 
             foreach (var _siteId in allSitesInCurrentSelection)
             {
-                var _collatedData = (CollateInvoiceData(_invoiceData.Where(s => s.SiteId == _siteId), _selectFromDate, _selectToDate, _includeMissing))
-                        .Select(s => s.Value)
-                        .OrderByDescending(o => o.InvoicePeriodDate);
+                //var _query = CollateInvoiceData(_invoiceData.Where(s => s.SiteId == _siteId), _selectFromDate, _selectToDate, _includeMissing).Where(s => s.Value.Missing == true);
+                var _query =    FilterForMissingInvoicesIfRequested(
+                                    CollateInvoiceData(_invoiceData.Where(s => s.SiteId == _siteId), _selectFromDate, _selectToDate, _includeMissing),
+                                    _filterIncludesMissing
+                                    );
+                //var _collatedData = (CollateInvoiceData(_invoiceData.Where(s => s.SiteId == _siteId), _selectFromDate, _selectToDate, _includeMissing))
+                var _collatedData = (_query)
+                    .Select(s => s.Value)
+                    .OrderByDescending(o => o.InvoicePeriodDate);
                 _result.AddRange(AutoMapper.Mapper.Map<List<MonthlySummaryModel>, List<InvoiceOverviewViewModel>>(_collatedData.ToList()));
             };
 
@@ -963,6 +1003,27 @@ namespace CimscoPortal.Services
 
             CheckPdfSourceFileExists(_result); // Only need to do this once? --> Move to Manage module
             return _result;
+        }
+
+        private bool CheckFilterByText(string filter, string text)
+        {
+            bool _result = false;
+            try
+            {
+                _result = ((string)GetInvoiceCategoryHash()[GetInvoiceTypesFromFilter(filter)[0]] == text);
+            }
+            catch { }
+            return _result;
+        }
+
+        private static IEnumerable<KeyValuePair<DateTime, MonthlySummaryModel>> FilterForMissingInvoicesIfRequested(Dictionary<DateTime, MonthlySummaryModel> dictionary, bool selectMissing)
+        {
+            if (selectMissing) { 
+                return dictionary.Where(s => s.Value.Missing == true);
+            }
+            else {
+               return dictionary;
+            }
         }
 
         // Rename this - updates data for a single invoice when approval triggered
@@ -1459,10 +1520,10 @@ namespace CimscoPortal.Services
         //    return _invoiceTally;
         //}
 
-        public DetailBySiteViewModel GetDetailBySite(string userId, int monthSpan, string filter = "")
+        public DetailBySiteViewModel GetDetailBySite(string userId, int monthSpan, string filter = "", int maximumSitesToReturn = 0)
         {
             if (!monthSpan.In(3, 6, 12, 24)) { monthSpan = 12; } // GPA --> move to constants
-
+            //int maximumSites = 0;
             DetailBySiteViewModel _model = new DetailBySiteViewModel();
 
             DateTime _selectFromDate;
@@ -1477,7 +1538,11 @@ namespace CimscoPortal.Services
             var _selectedInvoices = ConstructInvoiceQueryForDates(_allSitesInCurrentSelection, _selectFromDate, _selectToDate);
             //var _selectedInvoices = _repository.InvoiceSummaries.Where(s => _allSitesInCurrentSelection.Contains(s.SiteId) & s.PeriodEnd >= _selectFromDate & s.PeriodEnd <= _selectToDate);
 
-            var _siteQuery = _repository.Sites.Where(w => _allSitesInCurrentSelection.Contains(w.SiteId)).Distinct();
+            var _siteQuery = _repository.Sites.OrderBy(o => o.SiteName).Where(w => _allSitesInCurrentSelection.Contains(w.SiteId)).Distinct();
+            if (maximumSitesToReturn > 0)
+            {
+                _siteQuery = _siteQuery.Take(maximumSitesToReturn);
+            }
 
             //List<SiteDetailData> _detailBySite = _siteQuery.Project().To<SiteDetailData>().ToList();
             IEnumerable<SiteDetailData> _detailBySite = _siteQuery.Project().To<SiteDetailData>();
@@ -1659,15 +1724,15 @@ namespace CimscoPortal.Services
                 {
                     if (_matchingResultForApproved != null)
                     {
-                        _match.InvoiceKeyData.ApprovedInvoices = _matchingResultForApproved.count;
+                        _match.InvoiceKeyData.Approved = _matchingResultForApproved.count;
                     }
-                    _match.InvoiceKeyData.PendingInvoices = _matchingResultForTotal.count - _match.InvoiceKeyData.ApprovedInvoices;
+                    _match.InvoiceKeyData.Pending = _matchingResultForTotal.count - _match.InvoiceKeyData.Approved;
                     _match.InvoiceKeyData.FirstInvoiceDate = _matchingResultForTotal.firstInvoiceOnFileDate;
                     _match.InvoiceKeyData.LatestInvoiceDate = _matchingResultForTotal.latestInvoiceDate;
                     _match.InvoiceKeyData.CalculatedLossRate = Math.Round(_matchingResultForLosses.calculatedLosses, 3);
                     //_match.MissingInvoices = Math.Max(MonthsFromGivenDate(_matchingResultForTotal.firstInvoiceOnFileDate) - _match.TotalInvoicesOnFile, 0);
                 };
-                _match.InvoiceKeyData.MissingInvoices = Math.Max(MonthsFromGivenDate(firstDate) - _match.InvoiceKeyData.TotalInvoicesOnFile, 0);
+                _match.InvoiceKeyData.Missing = Math.Max(MonthsFromGivenDate(firstDate) - _match.InvoiceKeyData.TotalInvoicesOnFile, 0);
                 _match.InvoiceKeyData.CalculatedLossRate = Math.Max(_match.InvoiceKeyData.CalculatedLossRate, _defaultLossRate);
 
                 var _matchingInvoiceData = _invoiceTotals.FirstOrDefault(s => s.siteId == _entry.SiteId);
@@ -1694,11 +1759,11 @@ namespace CimscoPortal.Services
             decimal _maxEnergyChargePerSqM = detailBySiteData.SiteDetailData.Select(s => s.InvoiceCosts.EnergyChargePerSqm).Max();
             decimal _maxUnitsPerSqM = detailBySiteData.SiteDetailData.Select(s => s.InvoiceCosts.KwhPerSqm).Max();
 
-            var _maxApproved = detailBySiteData.SiteDetailData.Select(s => s.InvoiceKeyData.ApprovedInvoices).Max();
+            var _maxApproved = detailBySiteData.SiteDetailData.Select(s => s.InvoiceKeyData.Approved).Max();
 //            detailBySiteData.MaxApprovedInv = detailBySiteData.SiteDetailData.Select(s => s.InvoiceKeyData.ApprovedInvoices).Max();
-            var _maxMissing = detailBySiteData.SiteDetailData.Select(s => s.InvoiceKeyData.MissingInvoices).Max();
+            var _maxMissing = detailBySiteData.SiteDetailData.Select(s => s.InvoiceKeyData.Missing).Max();
                 //detailBySiteData.MaxMissingInv = detailBySiteData.SiteDetailData.Select(s => s.InvoiceKeyData.MissingInvoices).Max();
-            var _maxPending = detailBySiteData.SiteDetailData.Select(s => s.InvoiceKeyData.PendingInvoices).Max();
+            var _maxPending = detailBySiteData.SiteDetailData.Select(s => s.InvoiceKeyData.Pending).Max();
             //detailBySiteData.MaxPendingInv = detailBySiteData.SiteDetailData.Select(s => s.InvoiceKeyData.PendingInvoices).Max();
 
             // Loop here to calculate the percentage values for this data
@@ -1717,9 +1782,9 @@ namespace CimscoPortal.Services
                 // _entry.InvoiceCosts.CostPerSqmByPercentForDivision = _entry.InvoiceCosts.EnergyChargePerSqmByPercent;
                 _entry.InvoiceCosts.KwhPerSqmByPercentForDivision = _entry.InvoiceCosts.KwhPerSqmByPercent;
 
-                _entry.InvoiceKeyData.ApprovedByPercent = NumericExtensions.SafeDivision(_entry.InvoiceKeyData.ApprovedInvoices, _maxApproved) * 100.0M;
-                _entry.InvoiceKeyData.MissingByPercent = NumericExtensions.SafeDivision(_entry.InvoiceKeyData.MissingInvoices, _maxMissing) * 100.0M;
-                _entry.InvoiceKeyData.PendingByPercent = NumericExtensions.SafeDivision(_entry.InvoiceKeyData.PendingInvoices, _maxPending) * 100.0M;
+                _entry.InvoiceKeyData.ApprovedByPercent = NumericExtensions.SafeDivision(_entry.InvoiceKeyData.Approved, _maxApproved) * 100.0M;
+                _entry.InvoiceKeyData.MissingByPercent = NumericExtensions.SafeDivision(_entry.InvoiceKeyData.Missing, _maxMissing) * 100.0M;
+                _entry.InvoiceKeyData.PendingByPercent = NumericExtensions.SafeDivision(_entry.InvoiceKeyData.Pending, _maxPending) * 100.0M;
 
             }
 

@@ -138,10 +138,35 @@
 
         $scope.toggleGraphType = function ($event) {
             $scope.loading = true;
-            window.dispatchEvent(new Event('resize'));
+            //window.dispatchEvent(new Event('resize'));
+            _event();
+            //var zoom = (window.outerWidth - 10) / window.innerWidth;
+            //if (debugStatus_showMessages) { toaster.pop('warning', "Page zoom ", zoom); }
             $scope.loading = false;
+
+            //var scale = 'scale(1)';
+            //document.body.style.webkitTransform =       // Chrome, Opera, Safari
+            // document.body.style.msTransform =          // IE 9
+            // document.body.style.transform = scale;     // General
+
         };
 
+        // GPA **--> common function
+        var _event = function () {
+           // console.log('event...');
+            if (document.createEvent) { // W3C
+                var ev = document.createEvent('Event');
+                ev.initEvent('resize', true, true);
+             //   console.log('dispatch event');
+                window.dispatchEvent(ev);
+            }
+            else { // IE
+              //  console.log('IE event');
+                element = document.documentElement;
+                var event = document.createEventObject();
+                element.fireEvent("onresize", event);
+            }
+        };
 
         function refreshGoogleChart(showPreviousYear, chartElements) {
             var getter = $parse(chartElements.elementName + '.view');

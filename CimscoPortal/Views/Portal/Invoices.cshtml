@@ -37,7 +37,7 @@
                                           when="{'1': '{} Site,',
                                 'other': '{} Sites,'}">
                             </ng-pluralize>
-                            Showing {{monthSpan}} months of data
+                            Invoice Browser - Showing {{monthSpan}} months of data
                         </span>
                     </span>
                     <span filterdropdowns></span>
@@ -67,7 +67,8 @@
                             </span>
                         </div>
                     </div>
-                    <div class="row">
+                    <i ng-show="loadingStats||loading" style="position:absolute; left:50%; top:20px; margin:auto;" class="fa fa-2x fa-refresh fa-fw" ng-class="{'fa-spin' : loadingStats||loading}"></i>
+                    <div class="row" ng-style="{opacity: ((loadingStats) && .4) || 1.0}">
                         <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12" ng-repeat="category in invoiceStatsBySite.summary ">
                             <div class="databox databox-lg databox-shadowed databox-graded radius-bordered">
                                 <label data-toggle="popover" data-content="There are currently {{category.entries}} invoices {{category.header}} across {{category.sites}} sites. (approximately {{category.percent|percentage:100}} of invoiices)."
@@ -110,7 +111,7 @@
                                                     </a>
                                                 </li>
                                                 <li class="dropdown-footer">
-                                                    <a href="#" ng-click="showInvoices('all', 0, 'All Sites')">
+                                                    <a href="#" ng-click="showInvoices(category.filter, 0, 'All Sites')">
                                                         Show All Sites
                                                     </a>
                                                     <button class="btn btn-xs btn-default shiny darkorange icon-only pull-right"><i class="fa fa-check"></i></button>
@@ -145,6 +146,7 @@
                     <h6 ng-if="currentSiteName" class="row-title before-azure">{{currentSiteName}}</h6>
                     <h6 ng-if="!currentSiteName" class="row-title before-azure">No data selected</h6>
                     @*<div class="row"><span>Current Site Id = {{siteId}}. Site name {{siteName}}. Filter Status = {{invType}}</span></div>*@
+                    <i ng-show="loading" style="position:absolute; left:50%; top:20px; margin:auto;" class="fa fa-2x fa-refresh fa-fw" ng-class="{'fa-spin' : loading}"></i>
                     <div class="tab-content tabs-flat no-padding" ng-style="{opacity: ((loading) && .4) || 1.0}">
                         <div id="invoices" class="tab-pane animated fadeInUp no-padding-bottom active" style="padding:20px 20px 0 20px;">
                             @Html.Partial("SiteOverviewPartials/_InvoiceList")

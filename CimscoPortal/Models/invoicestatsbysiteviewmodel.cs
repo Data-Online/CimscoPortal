@@ -10,9 +10,9 @@ namespace CimscoPortal.Models
     {
         public int SiteId { get; set; }
         public string SiteName { get; set; }
-        public int MissingInvoices { get; set; }
-        public int PendingInvoices { get; set; }
-        public int ApprovedInvoices { get; set; }
+        public int Missing { get; set; }
+        public int Pending { get; set; }
+        public int Approved { get; set; }
         public int TotalInvoices { get; set; }
         public int TotalInvoicesOnFile { get; set; }
         public decimal ApprovedByPercent { get; set; }

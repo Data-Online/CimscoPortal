@@ -222,45 +222,44 @@ Purchase: http://wrapbootstrap.com
 
     <script type="text/javascript">
 
-    $(document).ready(function () {
+        $(document).ready(function () {
 
 
-        $.MetroMenu(
-            {
-                backicon: "/Content/css/metrostatic/img/back.png", // Sub menu back item
-                animation: "fadeInLeft",  // Animation
-                position: "top",  // Position
-                withtooltip: true, // Show tooltip on mouse over
-                divholderid: "MetroMenuDiv", // Div to attach the metro meno in.
-                closeonclick: false, // Menu item click, close the menu
-                escclose: false,  // ESC key, close the menu
-                color1: themeprimary,
-                color2: themesecondary,
-                items: [
-                    {
-                        name: "Dashboard",
-                        fa: "fa-dashboard fa-3x",
-                        link: "@Url.Action("","Portal")"
-                        //icon: "/Content/css/metro/static/img/calendar.png"
-                    },
-                    {
-                        name: "Detail by Site",
-                        fa: "fa-sitemap fa-3x",
-                        link: "@Url.Action("DetailBySite","Portal")" ///Portal/SitesOverview"
+            $.MetroMenu(
+                {
+                    backicon: "/Content/css/metrostatic/img/back.png", // Sub menu back item
+                    animation: "fadeInLeft",  // Animation
+                    position: "top",  // Position
+                    withtooltip: true, // Show tooltip on mouse over
+                    divholderid: "MetroMenuDiv", // Div to attach the metro meno in.
+                    closeonclick: false, // Menu item click, close the menu
+                    escclose: false,  // ESC key, close the menu
+                    color1: themeprimary,
+                    color2: themesecondary,
+                    items: [
+                        {
+                            name: "Dashboard",
+                            fa: "fa-dashboard fa-3x",
+                            link: "@Url.Action("","Portal")"
                             //icon: "/Content/css/metro/static/img/calendar.png"
                         },
                         {
-                            name: "Invoices",
-                            fa: "fa-check-square-o fa-3x",
-                            link: "@Url.Action("Invoices","Portal")" 
-                        }]
+                            name: "Detail by Site",
+                            fa: "fa-sitemap fa-3x",
+                            link: "@Url.Action("DetailBySite","Portal")" ///Portal/SitesOverview"
+                            //icon: "/Content/css/metro/static/img/calendar.png"
+                        },
+                            {
+                                name: "Invoices",
+                                fa: "fa-check-square-o fa-3x",
+                                link: "@Url.Action("Invoices","Portal")"
+                            }]
                 }
-                //},
-                //function (OptionPress) {
-                //    alert("Selected option: " + OptionPress);
-                //}
-            );
-
+                    //},
+                    //function (OptionPress) {
+                    //    alert("Selected option: " + OptionPress);
+                    //}
+                );
         });
 
     </script>
