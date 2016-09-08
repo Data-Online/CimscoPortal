@@ -58,6 +58,8 @@ namespace CimscoPortal.Infrastructure
         AspNetUser GetUserByID(string id);
 
         void UserloginUpdate(LoginHistory model);
+
+        bool LogFeedback(object data, string userId);
     }
 
     public interface IMappingService

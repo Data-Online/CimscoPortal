@@ -151,6 +151,7 @@ namespace CimscoPortal.Data.Migrations
                 new CimscoPortal.Data.Models.SystemConfiguration { Values = "admin@cimsco.co.nz", Key = "SourceEmail" },
                 //                new CimscoPortal.Data.Models.SystemConfiguration { Values = @"Graeme <graeme@dataonline.co.nz>; Graeme2 <atkinsongraeme@gmail.com>; Leo Fouhy <leo_fouhy@paradise.net.nz>", Key = "TestEmails" },
                 new CimscoPortal.Data.Models.SystemConfiguration { Values = @"Graeme <graeme@dataonline.co.nz>; Graeme2 <atkinsongraeme@gmail.com>", Key = "TestEmails" },
+                new CimscoPortal.Data.Models.SystemConfiguration { Values = @"Graeme <graeme@dataonline.co.nz>", Key = "FeedbackEmails" },
                 new CimscoPortal.Data.Models.SystemConfiguration { Values = @"https://cimsco.blob.core.windows.net/images/Cimsco-logo-sml.png", Key = "CimscoTextSml" },
                 new CimscoPortal.Data.Models.SystemConfiguration { Values = @"https://cimsco.blob.core.windows.net", Key = "PdfFileSourceRoot" },
                 new CimscoPortal.Data.Models.SystemConfiguration { Values = "13", Key = "HistoryGraphMonths" },

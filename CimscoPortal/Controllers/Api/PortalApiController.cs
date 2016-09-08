@@ -293,7 +293,49 @@ namespace CimscoPortal.Controllers.Api
             return request.CreateResponse<InvoiceStatsBySiteViewModel[]>(HttpStatusCode.OK, data.ToArray());
         }
 
+
+        [System.Web.Mvc.ValidateAntiForgeryToken]
+        [HttpPost]
+        [Route("feedback")]
+        public System.Web.Mvc.JsonResult Feedback(HttpRequestMessage request, object data)
+        //public HttpResponseMessage Feedback(HttpRequestMessage request, object data)
+        {
+            var result = new System.Web.Mvc.JsonResult();
+            result.JsonRequestBehavior = System.Web.Mvc.JsonRequestBehavior.AllowGet;
+
+            if (_portalService.LogFeedback(data, User.Identity.Name))
+            {
+                result.Data = JsonResponseFactory.SuccessResponse();
+            }
+            else
+            {
+                result.Data = JsonResponseFactory.ErrorResponse("Unable to save feedback");
+            }
+            return result;
+        }
+
         #endregion
+
+
+
+        public class JsonResponseFactory
+        {
+            public static object ErrorResponse(string error)
+            {
+                return new { success = false, ErrorMessage = error };
+            }
+
+            public static object SuccessResponse()
+            {
+                return new { success = true };
+            }
+
+            public static object SuccessResponse(object referenceObject)
+            {
+                return new { Success = true, Object = referenceObject };
+            }
+
+        }
 
 
         public UserAccessModel GetCurrentUserAccess()

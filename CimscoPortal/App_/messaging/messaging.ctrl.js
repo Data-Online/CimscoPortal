@@ -8,6 +8,8 @@
     messaging.$inject = ['$scope', 'msgsource'];
     function messaging ($scope, msgsource) {
 
+        $scope.options = { ajaxURL: "/api/feedback", postHTML: false, html2canvasURL: "~/App_/external/angularFeedback" };
+
         var onRepo = function (data) {
             $scope.msgs = data;
         };

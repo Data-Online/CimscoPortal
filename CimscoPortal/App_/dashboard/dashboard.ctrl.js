@@ -24,6 +24,8 @@
             toaster.pop('success', "title", "text");
         };
 
+        //$scope.options = { ajaxURL: "/api/feedback", postHTML: false, html2canvasURL: "~/App_/external/angularFeedback" };
+
         var divisions = [];
         var categories = [];
         var yearArray = {};

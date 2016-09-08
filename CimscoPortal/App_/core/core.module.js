@@ -30,7 +30,10 @@
         "googleChartControl",
 
         /* Common Data control factory */
-        'commonDataControl'
+        "commonDataControl",
+
+        /* Feedback Tab */
+        "angular-send-feedback"
     ])
  //   .constant("debugStatus", { "showMessages": false });
 })();

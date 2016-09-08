@@ -288,6 +288,7 @@
     <Compile Include="Extensions\RegexUtilities.cs" />
     <Compile Include="Models\ByMonthViewModel.cs" />
     <Compile Include="Models\DetailBySiteViewModel.cs" />
+    <Compile Include="Models\FeedbackData.cs" />
     <Compile Include="Models\InvoiceStatsBySiteViewModel.cs" />
     <Compile Include="Models\SiteDetailViewModel.cs" />
     <Compile Include="Models\MonthlySummaryModel.cs" />
@@ -387,6 +388,13 @@
     <Content Include="App_\external\angular-ui-select\select.js" />
     <Content Include="App_\external\angular-ui-select\select.min.css" />
     <Content Include="App_\external\angular-ui-select\select.min.js" />
+    <Content Include="App_\external\angularFeedback\angular-send-feedback.css" />
+    <Content Include="App_\external\angularFeedback\angular-send-feedback.js" />
+    <Content Include="App_\external\angularFeedback\angular-send-feedback.min.css" />
+    <Content Include="App_\external\angularFeedback\angular-send-feedback.min.js" />
+    <Content Include="App_\external\angularFeedback\angularsendfeedback.html" />
+    <Content Include="App_\external\angularFeedback\html2canvas.js" />
+    <Content Include="App_\external\angularFeedback\icons.png" />
     <Content Include="App_\external\easypiechart\angular.easypiechart.js" />
     <Content Include="App_\external\easypiechart\angular.easypiechart.min.js" />
     <Content Include="App_\external\nvd3\angularjs-nvd3-directives.js" />

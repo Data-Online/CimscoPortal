@@ -41,7 +41,16 @@ namespace CimscoPortal.Services
             this._repository = repository;
         }
 
+
+
         #region Common data and tools
+        public bool LogFeedback(object data, string userId)
+        {
+            var _json = Newtonsoft.Json.JsonConvert.DeserializeObject<FeedbackData>(data.ToString());
+
+            return SendFeedbackMail(_json, userId);
+        }
+
         public UserAccessModel CheckUserAccess(string userName)
         {
             UserAccessModel _userAccess = new UserAccessModel();
@@ -393,7 +402,7 @@ namespace CimscoPortal.Services
             {
                 query = SearchByInvoiceType(GetInvoiceTypesFromFilter(filter), query);
             }
-            catch { } 
+            catch { }
             //try
             //{
             //    int _loopCount = 0;
@@ -429,7 +438,7 @@ namespace CimscoPortal.Services
                     _loopCount++;
                 }
             }
-            catch {  }
+            catch { }
 
             return new List<int>();
         }
@@ -985,7 +994,7 @@ namespace CimscoPortal.Services
             foreach (var _siteId in allSitesInCurrentSelection)
             {
                 //var _query = CollateInvoiceData(_invoiceData.Where(s => s.SiteId == _siteId), _selectFromDate, _selectToDate, _includeMissing).Where(s => s.Value.Missing == true);
-                var _query =    FilterForMissingInvoicesIfRequested(
+                var _query = FilterForMissingInvoicesIfRequested(
                                     CollateInvoiceData(_invoiceData.Where(s => s.SiteId == _siteId), _selectFromDate, _selectToDate, _includeMissing),
                                     _filterIncludesMissing
                                     );
@@ -1018,11 +1027,13 @@ namespace CimscoPortal.Services
 
         private static IEnumerable<KeyValuePair<DateTime, MonthlySummaryModel>> FilterForMissingInvoicesIfRequested(Dictionary<DateTime, MonthlySummaryModel> dictionary, bool selectMissing)
         {
-            if (selectMissing) { 
+            if (selectMissing)
+            {
                 return dictionary.Where(s => s.Value.Missing == true);
             }
-            else {
-               return dictionary;
+            else
+            {
+                return dictionary;
             }
         }
 
@@ -1700,8 +1711,9 @@ namespace CimscoPortal.Services
                 _maxEnergyCharge = _invoiceTotals.Select(s => s.energyCharge).Max();
                 _maxKwh = _invoiceTotals.Select(s => s.totalKwh).Max();
             }
-            catch { 
-            
+            catch
+            {
+
             }
 
             decimal _maxKwhForDivision;
@@ -1760,9 +1772,9 @@ namespace CimscoPortal.Services
             decimal _maxUnitsPerSqM = detailBySiteData.SiteDetailData.Select(s => s.InvoiceCosts.KwhPerSqm).Max();
 
             var _maxApproved = detailBySiteData.SiteDetailData.Select(s => s.InvoiceKeyData.Approved).Max();
-//            detailBySiteData.MaxApprovedInv = detailBySiteData.SiteDetailData.Select(s => s.InvoiceKeyData.ApprovedInvoices).Max();
+            //            detailBySiteData.MaxApprovedInv = detailBySiteData.SiteDetailData.Select(s => s.InvoiceKeyData.ApprovedInvoices).Max();
             var _maxMissing = detailBySiteData.SiteDetailData.Select(s => s.InvoiceKeyData.Missing).Max();
-                //detailBySiteData.MaxMissingInv = detailBySiteData.SiteDetailData.Select(s => s.InvoiceKeyData.MissingInvoices).Max();
+            //detailBySiteData.MaxMissingInv = detailBySiteData.SiteDetailData.Select(s => s.InvoiceKeyData.MissingInvoices).Max();
             var _maxPending = detailBySiteData.SiteDetailData.Select(s => s.InvoiceKeyData.Pending).Max();
             //detailBySiteData.MaxPendingInv = detailBySiteData.SiteDetailData.Select(s => s.InvoiceKeyData.PendingInvoices).Max();
 
@@ -1885,14 +1897,76 @@ namespace CimscoPortal.Services
             return false;
         }
 
+        #region Email Feedback
+        private bool SendFeedbackMail(FeedbackData feedbackData, string userId)
+        {
+            string _sendGridApiKey;
+            string _sourceEmail;
+            string _logoImage;
+            string _rootForPdf;
+
+            GetEmailConfiguration(out _sendGridApiKey, out _sourceEmail, out _logoImage, out _rootForPdf);
+
+            List<String> _recipients = CreateEmailList("FeedbackEmails");
+
+            try
+            {
+                var myMessage = new SendGridMessage();
+                myMessage.From = new MailAddress(_sourceEmail);
+                myMessage.AddTo(_recipients);
+                myMessage.Subject = "New feedback received from " + userId;
+
+                myMessage.Html = CreateFeedbackMailMessage(feedbackData.feedback.note, feedbackData.feedback.img);
+                
+                // Create a Web transport, using API Key
+                var transportWeb = new Web(_sendGridApiKey);
+
+                // Send the email.
+                transportWeb.DeliverAsync(myMessage);
+
+                return true;
+            }
+            catch { }
+
+            return false;
+        }
+
+        private string CreateFeedbackMailMessage(string comments, string image)
+        {
+            StringBuilder _sb = new StringBuilder();
+            _sb.Append("Comments:  ").Append(comments);
+            _sb.Append("</br></br>");
+            _sb.Append("Base64 Image included. Save source as .html file to view in browser</br></br>");
+            _sb.Append("<img src=\"").Append(image).Append("\">");
+            return _sb.ToString();
+        }
+
+        private List<String> CreateEmailList(string configKey)
+        {
+            List<String> _recipients = new List<string>();
+            string _emailContacts = GetConfigValue(configKey);
+            if (_emailContacts.Length > 0)
+            {
+                foreach (var _contact in _emailContacts.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    _recipients.Add((string)_contact);
+                }
+            }
+            return _recipients;
+        }
+
+        #endregion
+
         #region Email approval methods
         private bool SendApprovalMail(int invoiceId, string rootUrl)
         {
             // Create the email object first, then add the properties.
-            string _sendGridApiKey = GetConfigValue("SendGridApi");
-            string _sourceEmail = GetConfigValue("SourceEmail");
-            string _logoImage = GetConfigValue("CimscoTextSml");
-            string _rootForPdf = GetConfigValue("PdfFileSourceRoot");
+            string _sendGridApiKey;
+            string _sourceEmail;
+            string _logoImage;
+            string _rootForPdf;
+
+            GetEmailConfiguration(out _sendGridApiKey, out _sourceEmail, out _logoImage, out _rootForPdf);
 
             try
             {
@@ -1928,6 +2002,14 @@ namespace CimscoPortal.Services
             {
                 return false;
             }
+        }
+
+        private void GetEmailConfiguration(out string _sendGridApiKey, out string _sourceEmail, out string _logoImage, out string _rootForPdf)
+        {
+            _sendGridApiKey = GetConfigValue("SendGridApi");
+            _sourceEmail = GetConfigValue("SourceEmail");
+            _logoImage = GetConfigValue("CimscoTextSml");
+            _rootForPdf = GetConfigValue("PdfFileSourceRoot");
         }
 
         private static void CreateApprovalMailMessage(SendGridMessage myMessage, InvoiceDetail invoiceDetail, string logoImage,
@@ -2127,14 +2209,7 @@ namespace CimscoPortal.Services
             }
             catch { }
 #if DEBUG
-            _recipients = new List<String>();
-
-            string _testEmails = GetConfigValue("TestEmails");
-
-            foreach (var _contact in _testEmails.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                _recipients.Add((string)_contact);
-            }
+            _recipients = CreateEmailList("TestEmails");
 
 #endif
             return _recipients;
