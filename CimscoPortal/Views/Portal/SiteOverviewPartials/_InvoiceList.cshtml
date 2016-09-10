@@ -1,96 +1,100 @@
 ﻿
 <div class="row" id="InvoiceList">
     <div class="col-lg-12">
-        <div class="col-lg-6">
-
-            <div class="col-md-12 col-xs-12 col-sm-12 text-left">
-                <form class="form-inline">
-                    <div class="form-title bordered-bottom bordered-lightred">
-                        Sort & Filter
-                    </div>
-                    <div class="row">
-                        <div class="col-md-5">
-                            <div class="form-group">
-                                <input ng-model="query" type="text"
-                                       placeholder="Invoice number" autofocus class="form-control">
-                            </div>
-                        </div>
-                        <div class="col-md-7 col-xs-12 col-sm-12 margin-top-5">
-                            <div class="row visible-md visible-lg hidden-xs hidden-sm pull-left">
-                                <label data-toggle="popover" data-content="Sort by Date" data-title="" data-placement="auto" data-trigger="hover">
-                                    <span ng-click="order('invoiceKeyDate')" class="btn btn-sm btn-default shiny active">
-                                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='invoiceKeyDate'"></i>Date
-                                    </span>
-                                </label>
-                                <label data-toggle="popover" data-content="Sort by Invoice Total" data-title="" data-placement="auto" data-trigger="hover">
-                                    <span ng-click="order('invoiceTotal')" class="btn btn-sm btn-default shiny active">
-                                        <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='invoiceTotal'"></i>Total
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-        @*ng-init="options={};options.selected=true; options.all=true;"*@
-        <div class="col-lg-6" ng-if="selectItems">
-            <div class="form-title bordered-bottom bordered-lightred">
-                <span>Show invoice types</span>
-            </div>
-
-            <div class="col-md-6 col-xs-6 col-sm-6">
+        <div class="row">
+            <div class="col-lg-6">
                 <div class="row">
-                    <span class="checkbox col-lg-5">
-                        <label>
-                            <input class="colored-success" ng-model="selectItems.showAll" type="checkbox" ng-checked="selectItems.showAll"
-                                   ng-click="toggleAll()" ng-disabled="disableCheckboxes">
-                            <span class="text">All</span>
-                        </label>
-                    </span>
-                    <span class="checkbox col-lg-7">
-                        <label>
-                            <input class="colored-success" ng-model="selectItems.showApproved" type="checkbox" ng-checked="selectItems.showApproved"
-                                   ng-click="selectItems.showAll=false" ng-disabled="disableCheckboxes">
-                            <span class="text">Approved</span>
-                        </label>
-                    </span>
+                    <div class="col-md-12 col-xs-12 col-sm-12 text-left">
+                        <form class="form-inline">
+                            <div class="form-title bordered-bottom bordered-lightred">
+                                Sort & Filter
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <input ng-model="query" type="text"
+                                               placeholder="Invoice number" autofocus class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-7 col-xs-12 col-sm-12 margin-top-5">
+                                    <div class="row visible-md visible-lg hidden-xs hidden-sm pull-left">
+                                        <label data-toggle="popover" data-content="Sort by Date" data-title="" data-placement="auto" data-trigger="hover">
+                                            <span ng-click="order('invoiceKeyDate')" class="btn btn-sm btn-default shiny active">
+                                                <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='invoiceKeyDate'"></i>Date
+                                            </span>
+                                        </label>&nbsp;
+                                        <label data-toggle="popover" data-content="Sort by Invoice Total" data-title="" data-placement="auto" data-trigger="hover">
+                                            <span ng-click="order('invoiceTotal')" class="btn btn-sm btn-default shiny active">
+                                                <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='invoiceTotal'"></i>Total
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-6 col-xs-6 col-sm-6">
-                <div class="row">
-                    <span class="checkbox col-lg-5">
-                        <label>
-                            <input class="colored-success" ng-model="selectItems.showMissing" type="checkbox" ng-value="selectItems.showMissing"
-                                   ng-click="selectItems.showAll=false" ng-disabled="disableCheckboxes">
-                            <span class="text">Missing</span>
-                        </label>
-                    </span>
-                    <span class="checkbox col-lg-7">
-                        <label>
-                            <input class="colored-success" ng-model="selectItems.showToApprove" type="checkbox" ng-checked="selectItems.showToApprove"
-                                   ng-click="selectItems.showAll=false" ng-disabled="disableCheckboxes">
-                            <span class="text">To Be Approved</span>
-                        </label>
-                    </span>
-                </div>
-            </div>
+            @*ng-init="options={};options.selected=true; options.all=true;"*@
+            <div class="col-lg-6" ng-if="selectItems">
 
-            <div class="clearfix hidden-md hidden-lg visible-xs visible-sm"> &nbsp;</div>
-            <div class="row hidden-md hidden-lg visible-xs visible-sm">
-                <div class="col-md-6 col-xs-6 col-sm-6">
-                    <label data-toggle="popover" data-content="Sort by Date" data-title="" data-placement="auto" data-trigger="hover">
-                        <span ng-click="order('invoiceKeyDate')" class="btn btn-sm btn-default shiny active">
-                            <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='invoiceKeyDate'"></i>Date
-                        </span>
-                    </label>
+                <div class="form-title bordered-bottom bordered-lightred">
+                    <span>Show invoice types</span>
                 </div>
-                <div class="col-md-6 col-xs-6 col-sm-6">
-                    <label data-toggle="popover" data-content="Sort by Invoice Total" data-title="" data-placement="auto" data-trigger="hover">
-                        <span ng-click="order('invoiceTotal')" class="btn btn-sm btn-default shiny active">
-                            <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='invoiceTotal'"></i>Total
-                        </span>
-                    </label>
+                <div class="row">
+                    <div class="col-md-6 col-xs-12 col-sm-6">
+                        <div class="row">
+                            <span class="checkbox col-lg-5">
+                                <label>
+                                    <input class="colored-success" ng-model="selectItems.showAll" type="checkbox" ng-checked="selectItems.showAll"
+                                           ng-click="toggleAll()" ng-disabled="disableCheckboxes">
+                                    <span class="text">All</span>
+                                </label>
+                            </span>
+                            <span class="checkbox col-lg-7">
+                                <label>
+                                    <input class="colored-success" ng-model="selectItems.showApproved" type="checkbox" ng-checked="selectItems.showApproved"
+                                           ng-click="selectItems.showAll=false" ng-disabled="disableCheckboxes">
+                                    <span class="text">Approved</span>
+                                </label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xs-12 col-sm-6">
+                        <div class="row">
+                            <span class="checkbox col-lg-5">
+                                <label>
+                                    <input class="colored-success" ng-model="selectItems.showMissing" type="checkbox" ng-value="selectItems.showMissing"
+                                           ng-click="selectItems.showAll=false" ng-disabled="disableCheckboxes">
+                                    <span class="text">Missing</span>
+                                </label>
+                            </span>
+                            <span class="checkbox col-lg-7">
+                                <label>
+                                    <input class="colored-success" ng-model="selectItems.showToApprove" type="checkbox" ng-checked="selectItems.showToApprove"
+                                           ng-click="selectItems.showAll=false" ng-disabled="disableCheckboxes">
+                                    <span class="text">To Be Approved</span>
+                                </label>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix hidden-md hidden-lg visible-xs visible-sm"> &nbsp;</div>
+                <div class="row hidden-md hidden-lg visible-xs visible-sm">
+                    <div class="col-md-6 col-xs-6 col-sm-6">
+                        <label data-toggle="popover" data-content="Sort by Date" data-title="" data-placement="auto" data-trigger="hover">
+                            <span ng-click="order('invoiceKeyDate')" class="btn btn-sm btn-default shiny active">
+                                <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='invoiceKeyDate'"></i>Date
+                            </span>
+                        </label>
+                    </div>
+                    <div class="col-md-6 col-xs-6 col-sm-6">
+                        <label data-toggle="popover" data-content="Sort by Invoice Total" data-title="" data-placement="auto" data-trigger="hover">
+                            <span ng-click="order('invoiceTotal')" class="btn btn-sm btn-default shiny active">
+                                <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='invoiceTotal'"></i>Total
+                            </span>
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -98,121 +102,153 @@
 
     @*<span class="sortorder" ng-show="predicate === 'orderDate'" ng-class="{reverse:reverse}"></span>*@
     <div class="col-lg-12">
-        <div class="bg-white" style="padding: 20px 20px 0;"> </div>
-        <div class="col-lg-3"></div>
-        <div class="col-lg-6 col-md-12 col-xs-12" ng-if="selectItems">
-            <div ng-repeat="inv in invoiceData | filter: { invoiceNumber:query } |invType:selectItems |orderBy:predicate:reverse" class="animate-repeat">
-                @*<div class="well bordered-left bordered-themeprimary">
-                        <span ng-show="!inv.approved">Due date {{inv.invoiceDueDate | date:mediumDate}}</span>
-                        <span ng-show="inv.approved">
-                            <span class="databox-text">Approved by {{inv.approversName}} on {{inv.approvedDate | date:mediumDate}}</span>
-                        </span>
-                    </div>*@
-                <div class="databox databox-lg databox-xs databox-sm radius-bordered databox-shadowed">
-                    <div class="databox-left bg-white">
-                        <div ng-if="!inv.missing" style="height:20px;" data-toggle="popover" data-content="% Change from previous month" data-title="" data-placement="auto" data-trigger="hover" popover-append-to-body="true" data-container="body">
-                            <div ng-class="pctBoxStyle(inv.percentageChange)">
-                                <div class="stat-text">{{inv.percentageChange | number:1}} %</div>
-                                <i ng-class="negativeValue(inv.percentageChange)"></i>
-                            </div>
-                        </div>
-                        <div ng-if="!inv.missing" class="databox-cell cell-12 no-padding padding-top-10  text-align-center">
-                            <span class="databox-number orange no-margin">
-                                <a href="@Url.Action("InvoiceDetail", "Portal")/{{inv.invoiceId}}" title="Invoice Details">
-                                    <i class="fa fa-cogs"></i>
-                                </a>
-                                <a ng-show="{{inv.invoicePdf}} " href="https://cimsco.blob.core.windows.net/{{inv.siteId|padNumber:6}}/{{inv.invoiceId|padNumber:8}}.pdf" title="Download PDF">
-                                    <i class="fa fa-download"></i>
-                                </a>
-                            </span>
-                        </div>
-                    </div>
-                    <div class=" thin-margin databox-right bordered-thick bordered-sky bg-white">
-                        <div class="col-sm-12 col-md-12 col-lg-12 form-group">
-                            <div class="col-sm-4 col-md-4 col-lg-4">
-                                <div ng-show="!inv.missing" style="height:20px;" data-toggle="popover" data-content="Invoice Date" data-title="" data-placement="auto" data-trigger="hover"
-                                     popover-append-to-body="true" data-container="body">
-                                    <span class="databox-number sky"><i class="fa fa-calendar"></i>{{inv.invoiceDate | date:mediumDate}}</span>
-                                </div>
-                            </div>
-                            <div class="col-sm-4" ng-show="!inv.missing">
-                                <div ng-show="!inv.approved" style="height:20px;" data-toggle="popover" data-content="Due Date" data-title="" data-placement="auto" data-trigger="hover"
-                                     popover-append-to-body="true" data-container="body">
-                                    <span class="databox-number blueberry"><i class="fa fa-calendar"></i>{{inv.invoiceDueDate | date:mediumDate}}</span>
-                                </div>
-                                <div ng-show="inv.approved" style="height:20px;" data-toggle="popover" data-content="Approved by {{inv.approversName}}" data-title="" data-placement="auto" data-trigger="hover"
-                                     popover-append-to-body="true" data-container="body">
-                                    <span class="databox-number green"><i class="fa fa-calendar"></i>{{inv.approvedDate | date:mediumDate}}</span>
-                                </div>
-                            </div>
-                            <div class="col-sm-3" ng-show="inv.missing"></div>
-                            <div class="col-sm-3" ng-if="!inv.missing">
-                                <div style="height:20px;" data-toggle="popover" data-content="Billing Period Month" data-title="" data-placement="auto" data-trigger="hover"
-                                     popover-append-to-body="true" data-container="body">
-                                    <span class="databox-number magenta">{{inv.invoiceKeyDate | date:"MMM yyyy"}}</span>
-                                </div>
-                            </div>
-                            <div class="col-sm-4" ng-if="inv.missing">
-                                <div style="height:20px;" data-toggle="popover" data-content="Billing Period Month" data-title="" data-placement="auto" data-trigger="hover"
-                                     popover-append-to-body="true" data-container="body">
-                                    <span class="databox-number magenta">{{inv.invoiceKeyDate | date:"MMMM yyyy"}}</span>
-                                </div>
-                            </div>
-                            <div class="col-sm-1" style="height:20px;">
-                                <div ng-show="!inv.missing" class="databox-stat radius-bordered">
-                                    <span ng-show="inv.verified" class="btn-xs  btn-maroon pull-right">
-                                        <i class="fa fa-eye"></i>
-                                    </span>
-                                    <span data-toggle="popover" data-content="Invoice Approved" data-title="" data-placement="right" data-trigger="hover"
-                                          ng-show="inv.approved" class="btn-xs btn-palegreen pull-right">
-                                        <i class="fa fa-check"></i>
-                                    </span>
-                                    <span data-toggle="popover" data-content="Click to Approve this Invoice" data-title="" data-placement="right" data-trigger="hover" ng-show="!inv.approved" ng-click="approveInv(inv.approved, inv.invoiceId)"
-                                          class="label label-info pull-right">
-                                        Approve
-                                    </span>
-                                </div>
-                                <div ng-show="inv.missing" class="databox-stat radius-bordered">
-                                    <span data-toggle="popover" data-content="Missing Invoice" data-title="" data-placement="right" data-trigger="hover" class="label label-info pull-right">
-                                        Missing
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                        </div>
-                        <div class="col-lg-12" ng-show="!inv.missing">
+        <div class="row">
+            <div class="bg-white" style="padding: 20px 20px 0;"> </div>
+            <div class="col-lg-3"></div>
+            <div class="col-lg-6 col-md-12 col-xs-12" ng-if="selectItems">
 
-                            <div class="col-sm-4">
-                                <div style="height:20px;" data-toggle="popover" data-content="Invoice Number" data-title="" data-placement="auto" data-trigger="hover"
-                                     popover-append-to-body="true" data-container="body">
-                                    <div class="databox-text darkgray">{{inv.invoiceNumber}}</div>
+                <div ng-repeat="inv in invoiceData | filter: { invoiceNumber:query } |invType:selectItems |orderBy:predicate:reverse" class="animate-repeat">
+                    <div class="row">
+                        @*<div class="well bordered-left bordered-themeprimary">
+                                <span ng-show="!inv.approved">Due date {{inv.invoiceDueDate | date:mediumDate}}</span>
+                                <span ng-show="inv.approved">
+                                    <span class="databox-text">Approved by {{inv.approversName}} on {{inv.approvedDate | date:mediumDate}}</span>
+                                </span>
+                            </div>*@
+                        <div class="databox databox-lg databox-xs databox-sm radius-bordered databox-shadowed">
+                            <div class="databox-left bg-white">
+                                <div ng-if="!inv.missing" style="height:20px;" data-toggle="popover" data-content="% Change from previous month" data-title="" data-placement="auto" data-trigger="hover" popover-append-to-body="true" data-container="body">
+                                    <div ng-class="pctBoxStyle(inv.percentageChange)">
+                                        <div class="stat-text">{{inv.percentageChange | number:1}} %</div>
+                                        <i ng-class="negativeValue(inv.percentageChange)"></i>
+                                    </div>
                                 </div>
+                                <div ng-if="!inv.missing" class="databox-cell cell-12 no-padding padding-top-10  text-align-center">
+                                    <span class="databox-number orange no-margin">
+                                        <a href="@Url.Action("InvoiceDetail", "Portal")/{{inv.invoiceId}}" title="Invoice Details">
+                                            <i class="fa fa-cogs"></i>
+                                        </a>
+                                        <a ng-show="{{inv.invoicePdf}} " href="https://cimsco.blob.core.windows.net/{{inv.siteId|padNumber:6}}/{{inv.invoiceId|padNumber:8}}.pdf" title="Download PDF">
+                                            <i class="fa fa-download"></i>
+                                        </a>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class=" thin-margin databox-right bordered-thick bordered-darkblue bg-white">
+                                <div class="col-xs-9 col-sm-9 col-md-10 col-lg-10">
+                                    <div class="row">
+                                        <div class="col-xs-5 col-sm-12 col-md-12 col-lg-12 form-group invoices-custom">
+                                            <div class="row">
+                                                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                                    <div ng-show="!inv.missing" style="height:20px;" data-toggle="popover" data-content="Invoice Date" data-title="" data-placement="auto" data-trigger="hover"
+                                                         popover-append-to-body="true" data-container="body">
+                                                        <span class="databox-number sky"><i class="fa fa-calendar"></i>{{inv.invoiceDate | date:mediumDate}}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4" ng-show="!inv.missing">
+                                                    <div ng-show="!inv.approved" style="height:20px;" data-toggle="popover" data-content="Due Date" data-title="" data-placement="auto" data-trigger="hover"
+                                                         popover-append-to-body="true" data-container="body">
+                                                        <span class="databox-number blueberry"><i class="fa fa-calendar"></i>{{inv.invoiceDueDate | date:mediumDate}}</span>
+                                                    </div>
+                                                    <div ng-show="inv.approved" style="height:20px;" data-toggle="popover" data-content="Approved by {{inv.approversName}}" data-title="" data-placement="auto" data-trigger="hover"
+                                                         popover-append-to-body="true" data-container="body">
+                                                        <span class="databox-number green"><i class="fa fa-calendar"></i>{{inv.approvedDate | date:mediumDate}}</span>
+                                                    </div>
+                                                </div>
+                                                @*<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" ng-show="inv.missing"></div>*@
+                                                <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" ng-if="!inv.missing">
+                                                    <div style="height:20px;" data-toggle="popover" data-content="Billing Period Month" data-title="" data-placement="auto" data-trigger="hover"
+                                                         popover-append-to-body="true" data-container="body">
+                                                        <span class="databox-number magenta">{{inv.invoiceKeyDate | date:"MMM yyyy"}}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4" ng-if="inv.missing">
+                                                    <div style="height:20px;" data-toggle="popover" data-content="Billing Period Month" data-title="" data-placement="auto" data-trigger="hover"
+                                                         popover-append-to-body="true" data-container="body">
+                                                        <span class="databox-number magenta">{{inv.invoiceKeyDate | date:"MMMM yyyy"}}</span>
+                                                    </div>
+                                                </div>
+                                                @*<div class="col-xs-12 col-sm-1 col-md-1 col-lg-1" style="height:20px;">
+                            <div ng-show="!inv.missing" class="databox-stat radius-bordered">
+                                <span ng-show="inv.verified" class="btn-xs  btn-maroon pull-right">
+                                    <i class="fa fa-eye"></i>
+                                </span>
+                                <span data-toggle="popover" data-content="Invoice Approved" data-title="" data-placement="right" data-trigger="hover"
+                                      ng-show="inv.approved" class="btn-xs btn-palegreen pull-right">
+                                    <i class="fa fa-check"></i>
+                                </span>
+                                <span data-toggle="popover" data-content="Click to Approve this Invoice" data-title="" data-placement="right" data-trigger="hover" ng-show="!inv.approved" ng-click="approveInv(inv.approved, inv.invoiceId)"
+                                      class="label label-info pull-right">
+                                    Approve
+                                </span>
+                            </div>
+                            <div ng-show="inv.missing" class="databox-stat radius-bordered">
+                                <span data-toggle="popover" data-content="Missing Invoice" data-title="" data-placement="right" data-trigger="hover" class="label label-info pull-right">
+                                    Missing
+                                </span>
+                            </div>
+                        </div>*@
+                                            </div>
+                                        </div>
+                                        <div class=" col-xs-5 col-sm-12 col-md-12 col-lg-12 invoices-custom" ng-show="!inv.missing">
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <div style="height:20px;" data-toggle="popover" data-content="Invoice Number" data-title="" data-placement="auto" data-trigger="hover"
+                                                         popover-append-to-body="true" data-container="body">
+                                                        <div class="databox-text darkgray">{{inv.invoiceNumber}}</div>
+                                                    </div>
 
-                            </div>
-                            <div class="col-sm-4">
-                                <span ng-if="currentSiteName=='All Sites'" class="databox-text darkgray">{{inv.siteName | cut:true:23:'..'}}</span>
-                            </div>
-                            <div class="col-sm-3">
-                                <div style="height:20px;" data-toggle="popover" data-content="Invoice Total incl. GST" data-title="" data-placement="auto" data-trigger="hover"
-                                     popover-append-to-body="true" data-container="body">
-                                    <div class="databox-text darkgray">{{inv.invoiceTotal | currency:$}}</div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <span ng-if="currentSiteName=='All Sites'" class="databox-text darkgray">{{inv.siteName | cut:true:23:'..'}}</span>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div style="height:20px;" data-toggle="popover" data-content="Invoice Total incl. GST" data-title="" data-placement="auto" data-trigger="hover"
+                                                         popover-append-to-body="true" data-container="body">
+                                                        <div class="databox-text darkgray">{{inv.invoiceTotal | currency:$}}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class=" col-xs-2 col-sm-12 col-md-12 col-lg-12 invoices-custom" ng-show="inv.missing">
+                                            <div class="row">
+                                                <div class="col-sm-4"></div>
+                                                <div class="col-sm-7">
+                                                    <span ng-if="currentSiteName=='All Sites'" class="databox-text darkgray">{{inv.siteName | cut:true:30:'..'}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-sm-1">
-                            </div>
-                        </div>
-                        <div class="col-lg-12" ng-show="inv.missing">
-                            <div class="col-sm-4"></div>
-                            <div class="col-sm-7">
-                                <span ng-if="currentSiteName=='All Sites'" class="databox-text darkgray">{{inv.siteName | cut:true:30:'..'}}</span>
+                                <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
+                                    <div ng-show="!inv.missing" class="databox-stat radius-bordered">
+                                        <span ng-show="inv.verified" class="btn-xs  btn-maroon pull-right">
+                                            <i class="fa fa-eye"></i>
+                                        </span>
+                                        <span data-toggle="popover" data-content="Invoice Approved" data-title="" data-placement="top" data-trigger="hover"
+                                              ng-show="inv.approved" class="btn-xs btn-palegreen pull-right">
+                                            <i class="fa fa-check"></i>
+                                        </span>
+                                        <span data-toggle="popover" data-content="Click to Approve this Invoice" data-title="" data-placement="top" data-trigger="hover" ng-show="!inv.approved" ng-click="approveInv(inv.approved, inv.invoiceId)"
+                                              class="label label-info pull-right">
+                                            Approve
+                                        </span>
+                                    </div>
+                                    <div ng-show="inv.missing" class="databox-stat radius-bordered">
+                                        <span data-toggle="popover" data-content="Missing Invoice" data-title="" data-placement="top" data-trigger="hover" class="label label-info pull-right">
+                                            Missing
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-3  col-md-1 col-xs-1"></div>
 
+
+                <div class="col-lg-3  col-md-1 col-xs-1"></div>
+
+            </div>
         </div>
     </div>
 </div>

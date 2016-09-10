@@ -1,7 +1,7 @@
 ﻿<div class="row">
-    <div class="col-lg-4 col-xs-12 col-sm-6 visible-lg visible-md hidden-xs hidden-sm">
+    <div class="col-lg-4 col-md-6 col-xs-12 col-sm-6 visible-lg visible-md hidden-xs hidden-sm">
         <div class="margin-top-10 visible-xs hidden-lg hidden-md"></div>
-        <div class="row">
+        <div class="row margin-bottom-10">
             <div class="col-xs-2 col-sm-2">
                 <span ng-show="false" class="databox-number white tootip-info pull-right" data-container="body" data-titleclass="bordered-blue" data-class="dark" data-toggle="popover" data-placement="auto"
                       data-title="Comparing Data Between Sites" data-content="Lines show comparative costs and consumption between the selected sites. The largest value in each category will fill the available space." data-original-title="" title="" data-trigger="hover">
@@ -31,16 +31,16 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-8 col-xs-12 col-sm-6" ng-init="options={};options.selected=true">
+    <div class="col-lg-8 col-md-12 col-xs-12 col-sm-12" ng-init="options={};options.selected=true">
         <div class="row">
-            <div class="col-md-3 col-xs-12 col-sm-3">
+            <div class="col-md-3 col-xs-12 col-sm-6">
                 <label ng-hide="false">
                     <input class="checkbox-slider toggle colored-blue" ng-model="showValue" type="checkbox" ng-init="showValue=options.selected">
                     <span class="text">&nbsp; Energy Charges</span>
                 </label>
             </div>
             <div class="visible-xs hidden-md hidden-sm clearfix">&nbsp;</div>
-            <div class="col-md-3 col-xs-12 col-sm-3">
+            <div class="col-md-3 col-xs-12 col-sm-6">
                 <span></span>
                 <label ng-hide="false">
                     <input class="checkbox-slider toggle colored-warning" ng-model="showKwh" type="checkbox" ng-init="showKwh=options.selected">
@@ -48,7 +48,7 @@
                 </label>
             </div>
             <div class="visible-xs hidden-md hidden-sm clearfix">&nbsp;</div>
-            <div class="col-md-3 col-xs-12 col-sm-3">
+            <div class="col-md-3 col-xs-12 col-sm-6">
                 <span></span>
                 <label ng-hide="false">
                     <input class="checkbox-slider toggle colored-palegreen" ng-model="showUsqm" type="checkbox" ng-init="showUsqm=options.selected">
@@ -56,7 +56,7 @@
                 </label>
             </div>
             <div class="visible-xs hidden-md hidden-sm clearfix">&nbsp;</div>
-            <div class="col-md-3 col-xs-12 col-sm-3">
+            <div class="col-md-3 col-xs-12 col-sm-6">
                 <span></span>
                 <label ng-hide="false">
                     <input class="checkbox-slider toggle colored-magenta" ng-model="showCsqm" type="checkbox" ng-init="showCsqm=options.selected">
