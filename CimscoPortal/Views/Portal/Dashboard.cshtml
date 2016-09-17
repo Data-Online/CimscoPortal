@@ -136,7 +136,7 @@
                                 <div class="databox databox-lg databox-shadowed databox-graded radius-bordered">
                                     <label data-toggle="popover" data-content="From the {{activeSites}} active sites, {{missingInvoices}} invoices have yet to be filed ({{missingPercent}}%)."
                                            data-title="" data-placement="auto" data-trigger="hover">
-                                        <div class="databox-left bg-themeprimary" style="padding:4px;">
+                                        <div class="databox-left bg-lightred" style="padding:4px;">
                                             <div class="databox-piechart">
                                                 <span ng-if="missingPercent" class="standard-piechart" easypiechart options="missingOptions" percent="missingPercent">
                                                     <span class="percent" ng-bind="missingPercent"></span>
@@ -157,7 +157,7 @@
                                 <div class="databox databox-lg databox-shadowed databox-graded radius-bordered">
                                     <label data-toggle="popover" data-content="Out of a possible {{totalSites}} sites, currently {{filedPercent}}% of sites have filed invoices."
                                            data-title="" data-placement="auto" data-trigger="hover">
-                                        <div class="databox-left bg-themeprimary" style="padding:4px;">
+                                        <div class="databox-left bg-lightred" style="padding:4px;">
                                             <div class="databox-piechart">
                                                 <span ng-if="filedPercent" class="standard-piechart" easypiechart options="filedOptions" percent="filedPercent">
                                                     <span class="percent" ng-bind="filedPercent"></span>
@@ -176,7 +176,7 @@
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" ng-show="false">
                                 <div class="databox databox-lg databox-shadowed databox-graded radius-bordered">
-                                    <div class="databox-left bg-themesecondary" style="padding:4px;">
+                                    <div class="databox-left bg-lightred" style="padding:4px;">
                                         <div class="databox-piechart">
                                             <span class="standard-piechart" easypiechart options="EPoptions" percent="EPpercent">
                                                 <span class="percent" ng-bind="EPpercent"></span>
