@@ -109,12 +109,30 @@
             console.log(_returnIds);
             return _returnIds;
         };
+        elementIndex = function (elements, title) {
+            // E
+            // Return index for this title
+            for (var i = 0; i < elements.length; i++) {
+                if (elements[i].title == title) { return i }
+            };
+            return -1;
+        };
+
+        var getCostConsumptionData = function (monthSpan, filter, siteId) {
+            var dataApi = "/api/CostAndConsumption_" + "/" + monthSpan + "/" + filter + "/" + siteId;
+            return $http.get(dataApi)
+                        .then(function (response) {
+                            return response.data;
+                        });
+        };
 
         return {
             createMultiDropdown: createMultiDropdown,
             getAllFilters: getAllFilters,
             getEventName: getEventName,
-            createApiFilter: createApiFilter
+            createApiFilter: createApiFilter,
+            elementIndex: elementIndex,
+            getCostConsumptionData: getCostConsumptionData
         };
     }
 

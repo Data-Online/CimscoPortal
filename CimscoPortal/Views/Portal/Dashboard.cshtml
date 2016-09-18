@@ -18,7 +18,7 @@
                 </div>
                 <div class="widget-body">
                     <div style="width: 100%;">
-                        <span><h2><b>ALPHA build</b> - Version 0.7.1</h2></span>
+                        <span><h2><b>ALPHA build</b> - Version 0.7.2</h2></span>
                         <span ng-repeat="line in welcomeText"><h5>{{line}}</h5></span>
                     </div>
                 </div>
@@ -61,59 +61,10 @@
 
                 <div class="widget-body" ng-style="{opacity: ((loading) && .4) || 1.0}">
                     <p style="padding: 0;" class="bg-whitesmoke">
-                        @Html.Partial("DashboardPartials/_DashboardSortHeader")
+                        @Html.Partial("SharedPartials/_CostConsumptionSortHeader")
                     </p>
-                    <div class="horizontal-space space-sm"></div>
-                    <div class="row" ng-style="{opacity: ((loading) && .4) || 1.0}">
-                        <div class="col-xs-12 col-md-6">
-                            <div class="widget">
-                                <div class="widget-header">
-                                    <span class="widget-caption">Energy Charges</span>
-
-                                    <div class="widget-buttons">
-                                        <a href="" widget-collapse></a>
-                                        <a href="" widget-dispose></a>
-                                    </div>
-                                </div>
-                                <div class="show-hide-animate">
-                                    <div ng-show="showBar" class="widget-body show-hide-animate" style="padding-top:20px">
-                                        <div class="chartcontainer" style="width: 100%;">
-                                            <canvas tc-chartjs-bar chart-options="barChartOptions" chart-data="costsBarChart" auto-legend></canvas>
-                                        </div>
-                                    </div>
-                                    <div ng-show="!showBar" class="widget-body show-hide-animate" style="height: 360px;  padding-top:5px; padding-right:0; padding-left:0">
-                                        <div class="col-lg-12" ng-if="energyChargesChart.data">
-                                            <div google-chart chart="energyChargesChart" style="height:330px; width:100%; padding-right:5px;"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-md-6" ng-style="{opacity: ((loading) && .4) || 1.0}">
-                            <div class="widget">
-                                <div class="widget-header">
-                                    <span class="widget-caption">Electricity Consumption</span>
-
-                                    <div class="widget-buttons">
-                                        <a href="" widget-collapse></a>
-                                        <a href="" widget-dispose></a>
-                                    </div>
-                                </div>
-                                <div class="show-hide-animate">
-                                    <div ng-show="showBar" class="widget-body show-hide-animate" style="padding-top:20px">
-                                        <div class="chartcontainer" style="width: 100%;">
-                                            <canvas tc-chartjs-bar chart-options="barChartOptions" chart-data="consBarChart" auto-legend></canvas>
-                                        </div>
-                                    </div>
-                                    <div ng-show="!showBar" class="widget-body show-hide-animate" style="height: 360px;  padding-top:5px; padding-right:0; padding-left:0">
-                                        <div class="col-lg-12" ng-if="electricityConsumptionChart.data">
-                                            <div google-chart chart="electricityConsumptionChart" style="height:330px; width:100%; padding-right:5px;"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <i ng-show="loading" style="position:absolute; left:50%; top:50px; margin:auto;" class="fa fa-2x fa-refresh fa-fw" ng-class="{'fa-spin' : loading}"></i>
+                    @Html.Partial("SharedPartials/_CostConsumptionGraph")
                 </div>
             </div>
         </div>

@@ -112,19 +112,67 @@ namespace CimscoPortal.Controllers.Api
         }
 
         [HttpGet]
+        [Route("CostAndConsumption_/{monthSpan}/{filter}/{siteId}")]
+        public HttpResponseMessage GetCostsAndConsumption(HttpRequestMessage request, int monthSpan, string filter, int siteId)
+        {
+            if (CheckUserAccess(siteId))
+            //if (GetCurrentUserAccess().ValidSites.Contains(siteId))
+            {
+                CostConsumptionOptions _options = new CostConsumptionOptions();
+                _options.userId = User.Identity.Name;
+                _options.siteId = siteId;
+                _options.filter = filter;
+                _options.includeMissing = true;
+                _options.previous12 = true;
+
+                //var data = _portalService.GetCostsAndConsumption(User.Identity.Name, monthSpan, siteId);
+                var data = _portalService.GetCostsAndConsumption_(monthSpan, _options);
+                return request.CreateResponse<GoogleChartViewModel>(HttpStatusCode.OK, data);
+            }
+            return request.CreateResponse(HttpStatusCode.Forbidden);
+        }
+
+        private bool CheckUserAccess(int siteId)
+        {
+            if (siteId == 0)
+            {
+                return true;
+            }
+            return GetCurrentUserAccess().ValidSites.Contains(siteId);
+        }
+
+
+        [HttpGet]
         [Route("CostAndConsumption/{siteId}/{monthSpan}/{filter}")]
         public HttpResponseMessage GetCostsAndConsumption(HttpRequestMessage request, int siteId, int monthSpan)
         {
-            var data = _portalService.GetCostsAndConsumption(User.Identity.Name, monthSpan, siteId);
-            return request.CreateResponse<GoogleChartViewModel>(HttpStatusCode.OK, data);
+            if (GetCurrentUserAccess().ValidSites.Contains(siteId))
+            {
+                CostConsumptionOptions _options = new CostConsumptionOptions();
+                _options.siteId = siteId;
+                _options.includeMissing = true;
+                _options.previous12 = true;
+
+                var data = _portalService.GetCostsAndConsumption(User.Identity.Name, monthSpan, siteId);
+                var data_ = _portalService.GetCostsAndConsumption_(monthSpan, _options);
+                return request.CreateResponse<GoogleChartViewModel>(HttpStatusCode.OK, data_);
+            }
+            return request.CreateResponse(HttpStatusCode.Forbidden);
         }
 
         [HttpGet]
         [Route("CostAndConsumption/{monthSpan}/{filter}")]
         public HttpResponseMessage GetCostsAndConsumption(HttpRequestMessage request, int monthSpan, string filter)
         {
+            CostConsumptionOptions _options = new CostConsumptionOptions();
+            _options.userId = User.Identity.Name;
+            _options.filter = filter;
+            _options.includeMissing = true;
+            _options.previous12 = true;
+
+            var data_ = _portalService.GetCostsAndConsumption_(monthSpan, _options);
             var data = _portalService.GetCostsAndConsumption(User.Identity.Name, monthSpan, filter);
-            return request.CreateResponse<GoogleChartViewModel>(HttpStatusCode.OK, data);
+            return request.CreateResponse<GoogleChartViewModel>(HttpStatusCode.OK, data_);
         }
 
         [HttpGet]

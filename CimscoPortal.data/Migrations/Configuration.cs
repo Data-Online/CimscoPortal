@@ -32,7 +32,9 @@ namespace CimscoPortal.Data.Migrations
             "holiday1@cimsco.co.nz",
             "holiday2@cimsco.co.nz",
             "nees.hardware@cimsco.co.nz",
-            "masterton.supermarkets@cimsco.co.nz"
+            "masterton.supermarkets@cimsco.co.nz",
+            "foodstuffs.ni@cimsco.co.nz",
+            "mitre10.nz@cimsco.co.nz"
         };
         // ==>**** Ref at AccountController.cs: This is where these accounts are created
 
@@ -126,6 +128,10 @@ namespace CimscoPortal.Data.Migrations
             context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Mitre10', [LastName] = 'Admin', [CompanyLogo] = 'mitre10.png' where [eMail] = 'mitre10@cimsco.co.nz'");
             context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Mitre10 NZ', [LastName] = 'Admin', [CompanyLogo] = 'mitre10.png' where [eMail] = 'mitre10_2@cimsco.co.nz'");
             context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Steven', [LastName] = 'Nelson', [CompanyLogo] = 'mitre10.png' where [eMail] = 'nees.hardware@cimsco.co.nz'");
+            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Mitre10', [LastName] = 'Admin', [CompanyLogo] = 'mitre10.png' where [eMail] = 'mitre10.nz@cimsco.co.nz'");
+            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Foodstuffs', [LastName] = 'Admin', [CompanyLogo] = 'foodstuffs.png' where [eMail] = 'foodstuffs.ni@cimsco.co.nz'");
+            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Foodstuffs', [LastName] = 'Admin', [CompanyLogo] = 'foodstuffs.png' where [eMail] = 'foodstuffs@cimsco.co.nz'");
+            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Foodstuffs', [LastName] = 'Admin', [CompanyLogo] = 'foodstuffs.png' where [eMail] = 'foodstuffs2@cimsco.co.nz'");
         }
 
         private void LinkTestUsersToCustomerOrGroup(CimscoPortal.Data.Models.CimscoPortalContext context)
@@ -134,8 +140,8 @@ namespace CimscoPortal.Data.Migrations
             //LinkUsersCustomer("Intercontinental Group", new string[] { "masterton@cimsco.co.nz" }, context);
             LinkUsersCustomer("Nees Hardware Ltd", new string[] { "mitre10@cimsco.co.nz", "nees.hardware@cimsco.co.nz" }, context);
 
-            LinkUsersGroup("Foodstuffs North Island", new string[] { "foodstuffs@cimsco.co.nz", "foodstuffs2@cimsco.co.nz" }, context);
-            LinkUsersGroup("Mitre 10 New Zealand", new string[] { "mitre10_2@cimsco.co.nz" }, context);
+            LinkUsersGroup("Foodstuffs North Island", new string[] { "foodstuffs@cimsco.co.nz", "foodstuffs2@cimsco.co.nz", "foodstuffs.ni@cimsco.co.nz" }, context);
+            LinkUsersGroup("Mitre 10 New Zealand", new string[] { "mitre10_2@cimsco.co.nz", "mitre10.nz@cimsco.co.nz" }, context);
 
             LinkUserSite("HP Lane St Data Center", "HP@cimsco.co.nz", context);
             

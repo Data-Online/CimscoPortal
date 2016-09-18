@@ -13,12 +13,36 @@
 
     dashboard.$inject = ['$scope', '$parse', '$interval', '$timeout', 'dbDataSource', 'userDataSource', 'filterData', 'dbConstants', 'toaster', 'googleChart'];
     function dashboard($scope, $parse, $interval, $timeout, dbDataSource, userDataSource, filterData, dbConstants, toaster, googleChart) {
+
+        var debugStatus_showMessages = false;
+
+        // elemenName == Page element where chart is to be reendered
+        // columnNames == [Primary, Seconday] axes for chart. Primary axis is displayed by default. These names need to match columns returned from server.
+        // title == Title to render on page (if required)
+        // activeAxes == Which of the 2 axes are displayed. Current suppor is for Primary, !Secondary (true, false) OR Primary, Secondary (true, true)
         var _googleChartElements =
             [
-                { elementName: "energyChargesChart", columnNames: ["Invoice Total excl GST", "Previous Year Total"], columns: [{ primary: [], all: [] }], title: "Energy Charges" },
-                { elementName: "electricityConsumptionChart", columnNames: ["Total Kwh", "Previous Year Kwh"], columns: [{ primary: [], all: [] }], title: "Electricity Consumption" }
+                {
+                    elementName: "energyChargesChart", columnNames: ["Invoice Total excl GST", "Previous Year Total"],
+                    columns: [{ primary: [], all: [] }], title: "Energy Charges", activeAxes: [true, false]
+                },
+                {
+                    elementName: "electricityConsumptionChart", columnNames: ["Total Kwh", "Previous Year Kwh"],
+                    columns: [{ primary: [], all: [] }], title: "Electricity Consumption", activeAxes: [true, false]
+                }
             ];
-        var debugStatus_showMessages = false;
+        // Directive required for (eg, where chart name = "energyChargesChart"):
+        // <div class="col-lg-12" ng-if="energyChargesChart.data">
+        //        <div google-chart chart="energyChargesChart" style="height:330px; width:100%; padding-right:5px;"></div>
+        // </div>
+
+        $scope.chartHelpText = {
+            title: "Cost and Consumption Data", // Tootltip title is not handled correctly - hard coded in partial for now.
+            detail: "Charts show total energy and invoice costs for all sites with data on file. All totals exclude GST."
+        };
+
+        $scope.includeBarChart = true;
+
         //var showingPrior12 = false;
         $scope.pop = function () {
             toaster.pop('success', "title", "text");
@@ -119,14 +143,22 @@
 
         $scope.togglePreviousYearsData = function ($event) {
             $scope.loading = true;
+           // console.log(_googleChartElements);
             // var checkbox = $event.target;
             refreshData($scope.showPrevious12, currentData[0], prior12Data[0], dbConstants.costsDataElement);
             refreshData($scope.showPrevious12, currentData[1], prior12Data[1], dbConstants.consDataElement);
 
-            refreshGoogleChart($scope.showPrevious12, _googleChartElements[googleChart.elementIndex(_googleChartElements, "Electricity Consumption")]);
-            refreshGoogleChart($scope.showPrevious12, _googleChartElements[googleChart.elementIndex(_googleChartElements, "Energy Charges")]);
-            //showingPrior12 = checkbox.checked;
-            //$scope.loading = false;
+
+            // ** showPrevious12 --> active axes in _googleChartElements
+            //googleChart.refreshGoogleChart($scope, $scope.showPrevious12, _googleChartElements[filterData.elementIndex(_googleChartElements, "Electricity Consumption")]);
+            //googleChart.refreshGoogleChart($scope, $scope.showPrevious12, _googleChartElements[filterData.elementIndex(_googleChartElements, "Energy Charges")]);
+
+            // Decide which axes are to be displayed.
+            googleChart.toggleAxis2Display($scope.showPrevious12, _googleChartElements);
+            // Refresh
+            googleChart.refreshGoogleChart($scope, _googleChartElements[filterData.elementIndex(_googleChartElements, "Electricity Consumption")]);
+            googleChart.refreshGoogleChart($scope, _googleChartElements[filterData.elementIndex(_googleChartElements, "Energy Charges")]);
+            $scope.loading = false;
         };
 
 
@@ -139,6 +171,7 @@
         };
 
         $scope.toggleGraphType = function ($event) {
+            console.log('toggle graph');
             $scope.loading = true;
             //window.dispatchEvent(new Event('resize'));
             _event();
@@ -168,23 +201,6 @@
                 var event = document.createEventObject();
                 element.fireEvent("onresize", event);
             }
-        };
-
-        function refreshGoogleChart(showPreviousYear, chartElements) {
-            var getter = $parse(chartElements.elementName + '.view');
-
-            if (showPreviousYear) {
-                var _columns = {
-                    columns: chartElements.columns.all
-                };
-            }
-            else {
-                var _columns = {
-                    columns: chartElements.columns.primary
-                };
-            }
-            getter.assign($scope, _columns);
-            $scope.loading = false;
         };
 
         function refreshData(showPreviousYear, firstDataset, secondDataset, target) {
@@ -274,133 +290,26 @@
                 size: 60
             }
         };
-        // Multi selects
-        //var createMultiDropdown = function (baseName, selectionItemsList, createWatch) {
-        //    // Create variables on scope
-        //    var getter = $parse(baseName + 'Model');
-        //    getter.assign($scope, []);
-
-        //    getter = $parse(baseName + 'Data');
-        //    getter.assign($scope, selectionItemsList);
-        //    getter = $parse(baseName + 'CustomTexts');
-
-        //    var buttonText = 'All ' + baseName.capitalizeFirstLetter();
-        //    var customTexts = { buttonDefaultText: buttonText, uncheckAll: 'Clear Filters' };
-        //    getter.assign($scope, customTexts);
-        //    if (createWatch) {
-        //        $scope.$watch(baseName + 'Model', function (data) {
-        //            filterData(data, baseName);
-        //        }, true);
-        //    };
-
-        //    var maxTextLength = buttonText.length;
-        //    getter = $parse(baseName + 'Settings');
-        //    getter.assign($scope, {
-        //        smartButtonMaxItems: 1,
-        //        externalIdProp: '',
-        //        showCheckAll: false,
-        //        smartButtonTextConverter: function (itemText, originalItem) {
-        //            if (itemText.length > maxTextLength) {
-        //                return itemText.substring(0, (maxTextLength - 2)) + '..';
-        //            }
-        //        }
-        //    });
-
-        //};
-
-        //var filterData = function (data, baseName) {
-        //    startDelay(data);
-        //};
-
-        //var stop;
-        //var _counter = dbConstants.filterSelectDelay;//20;
-        //var startDelay = function (data) {
-        //    if (angular.isDefined(stop)) { _counter = dbConstants.filterSelectDelay; return; }
-        //    stop = $interval(function () {
-        //        if (_counter > 0) {
-        //            _counter--;
-        //        }
-        //        else { stopCounter(data); }
-        //    }, 100)
-        //}
-        //var stopCounter = function (data) {
-        //    if (angular.isDefined(stop)) {
-        //        $interval.cancel(stop);
-        //        stop = undefined;
-        //        _counter = dbConstants.filterSelectDelay;//20;
-        //    };
-        //    $scope.loading = true;
-        //    readAndPlotHistogram();
-
-        //    readAndPlotGoogleGraphData();
-        //};
-
-        //var getReturnIds = function () {
-        //    var _returnIds = "_";
-        //    angular.forEach($scope.categoriesModel, function (value, key) {
-        //        _returnIds += value.id + "-";
-        //    });
-        //    _returnIds += "_";
-        //    angular.forEach($scope.divisionsModel, function (value, key) {
-        //        _returnIds += value.id + "-";
-        //    });
-        //    return _returnIds;
-        //};
 
         var getReturnIds = function () {
             return filterData.createApiFilter($scope.categoriesModel, $scope.divisionsModel);
         }
 
         // Google chart control GPA: Refactor all code here, copied from SiteOverview
+        var _siteSelect = 0;  // 0 == select all sites for current user
         var readAndPlotGoogleGraphData = function () {
-            dbDataSource.getCostConsumptionData($scope.monthSpan, getReturnIds())
+            filterData.getCostConsumptionData($scope.monthSpan, getReturnIds(), _siteSelect)
                 .then(onGoogleGraphData, onError);
         };
 
 
         var onGoogleGraphData = function (data) {
-            var _collatedData = googleChart.collateData(data);
-            initializeGoogleChart(_collatedData, _googleChartElements[googleChart.elementIndex(_googleChartElements, "Electricity Consumption")]);
-            initializeGoogleChart(_collatedData, _googleChartElements[googleChart.elementIndex(_googleChartElements, "Energy Charges")]);
+            googleChart.initializeGoogleChart($scope, data, _googleChartElements[filterData.elementIndex(_googleChartElements, "Electricity Consumption")]);
+            googleChart.initializeGoogleChart($scope, data, _googleChartElements[filterData.elementIndex(_googleChartElements, "Energy Charges")]);
             if (debugStatus_showMessages) { toaster.pop('success', "Google graph data loaded!", ""); }
             $scope.loading = false;
         };
 
-        //console.log(googleChart.configureChart());
-
-        function initializeGoogleChart(data, chartElements) {
-            // data.axes defined the Axes labels and formats.
-            // Axes 0 == X
-            // Remaining Axes are Y
-
-            var chartElementName = chartElements.elementName;
-
-            var getter = $parse(chartElementName + '.type');
-            getter.assign($scope, 'LineChart');
-
-            getter = $parse(chartElementName + '.data');
-            getter.assign($scope,
-                {
-                    "cols": data.cols,
-                    "rows": data.rows
-                }
-                );
-
-            // Restrict data displayed on this chart to specified Axes.
-            var selectedColumnNames = [];
-            selectedColumnNames.push(chartElements.columnNames[0]);
-
-            var _axesToDisplay = googleChart.selectAxesByName(selectedColumnNames, data.axes);
-
-            chartElements.columns.primary = _axesToDisplay.columns;
-
-            getter = $parse(chartElementName + '.options');
-            getter.assign($scope,
-                googleChart.configureChart(chartElements.title, _axesToDisplay.axes, data.axes[0].title)
-                );
-            chartElements.columns.all = googleChart.displayAxesByName(chartElements.columnNames, data.axes);
-            refreshGoogleChart($scope.showPrevious12, chartElements);
-        }
     };
 
     String.prototype.capitalizeFirstLetter = function () {

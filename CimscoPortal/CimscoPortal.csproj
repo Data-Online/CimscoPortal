@@ -289,6 +289,7 @@
     <Compile Include="Models\ByMonthViewModel.cs" />
     <Compile Include="Models\DetailBySiteViewModel.cs" />
     <Compile Include="Models\FeedbackData.cs" />
+    <Compile Include="Models\CostConsumptionOptions.cs" />
     <Compile Include="Models\InvoiceStatsBySiteViewModel.cs" />
     <Compile Include="Models\SiteDetailViewModel.cs" />
     <Compile Include="Models\MonthlySummaryModel.cs" />
@@ -423,6 +424,7 @@
     <Content Include="App_\invoiceDetail\invoiceDetail.data.js" />
     <Content Include="App_\invoiceDetail\invoiceDetail.ctrl.js" />
     <Content Include="App_\dashboard\dashboard.module.js" />
+    <Content Include="App_\siteOverview\siteOverview.ctrl-original.js" />
     <Content Include="App_\siteOverview\siteOverview.module.js" />
     <Content Include="App_\siteOverview\siteOverview.ctrl.js" />
     <Content Include="App_\siteOverview\siteOverview.data.js" />
@@ -570,6 +572,7 @@
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\fonts\typicons.svg" />
     <Content Include="Content\fonts\weathericons-regular-webfont.svg" />
+    <Content Include="Content\images\foodstuffs.png" />
     <Content Include="Content\images\mitre10.png" />
     <Content Include="Content\images\PakNSave.jpg" />
     <Content Include="Content\images\uhf_ic_logo.png" />
@@ -1642,8 +1645,9 @@
     <Content Include="Views\Portal\DetailBySitePartials\_Approvals.cshtml" />
     <Content Include="Views\Portal\DetailBySitePartials\_Analysis - Copy.cshtml" />
     <Content Include="Views\Portal\DetailBySitePartials\_AnalysisSortHeader.cshtml" />
-    <Content Include="Views\Portal\DashboardPartials\_DashboardSortHeader.cshtml" />
     <Content Include="Views\Portal\Invoices.cshtml" />
+    <Content Include="Views\Portal\SharedPartials\_CostConsumptionGraph.cshtml" />
+    <Content Include="Views\Portal\SharedPartials\_CostConsumptionSortHeader.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />
@@ -1653,6 +1657,7 @@
     <Folder Include="Domain\" />
     <Folder Include="fonts\" />
     <Folder Include="Views\CimscoPortal\" />
+    <Folder Include="Views\Portal\DashboardPartials\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

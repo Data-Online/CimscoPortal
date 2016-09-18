@@ -38,6 +38,11 @@ namespace CimscoPortal.Extensions
 
             return _result;
         }
+
+        //public static bool IsNullOrValue(this int? value, int valueToCheck)
+        //{
+        //    return (value ?? valueToCheck) == valueToCheck;
+        //}
     }
 
     public static class DateExtensions

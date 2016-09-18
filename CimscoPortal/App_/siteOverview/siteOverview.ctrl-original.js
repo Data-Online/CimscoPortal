@@ -4,13 +4,12 @@
     var module = angular.module("app.siteOverview")
         .controller("app.siteOverview.ctrl", siteOverview);
 
-    siteOverview.$inject = ['$scope', '$timeout', '$filter', 'soDataSource', 'userDataSource', 'filterData', 'toaster', 'googleChart'];
-    function siteOverview($scope, $timeout, $filter, soDataSource, userDataSource, filterData, toaster, googleChart) {
-
-        var debugStatus_showMessages = true;
+    siteOverview.$inject = ['$scope', '$timeout', '$filter', 'soDataSource', 'userDataSource', 'toaster', 'googleChart'];
+    function siteOverview($scope, $timeout, $filter, soDataSource, userDataSource, toaster, googleChart) {
 
         var siteId = 0;
-        //var monthSpan = 12;       
+        var monthSpan = 12;
+        var debugStatus_showMessages = false;
         // Determine correct siteId from from MVC model
         $scope.setSiteId = function (_siteId) {
             //console.log("Set site Id to" + _siteId);
@@ -19,57 +18,25 @@
 
         // Google chart definition
         var _googleChartElements =
-        [
-            {
-                elementName: "energyChargesChart", columnNames: ["Invoice Total excl GST", "Previous Year Total"],
-                columns: [{ primary: [], all: [] }], title: "Energy Charges", activeAxes: [true, false]
-            },
-            {
-                elementName: "electricityConsumptionChart", columnNames: ["Total Kwh", "Previous Year Kwh"],
-                columns: [{ primary: [], all: [] }], title: "Electricity Consumption", activeAxes: [true, false]
-            }
-        ];
-        $scope.chartHelpText = {
-            title: "Site Cost and Consumption Data", // Tootltip title is not handled correctly - hard coded in partial for now.
-            detail: "Graphs show total cost and consumption data for the selected time period. If an invoice is missing, no data point is shown. All totals exclude GST."
-        };
+    [
+        {
+            elementName: "energyChargesChart", columnNames: ["Invoice Total excl GST", "Previous Year Total"],
+            columns: [{ primary: [], all: [] }], title: "Energy Charges", activeAxes: [true, false]
+        },
+        {
+            elementName: "electricityConsumptionChart", columnNames: ["Total Kwh", "Previous Year Kwh"],
+            columns: [{ primary: [], all: [] }], title: "Electricity Consumption", activeAxes: [true, false]
+        }
+    ];
 
-        $scope.includeBarChart = false;  // Whether histogram chart is available as option
-        $scope.showBar = false;
-       
         // Core Data
-        var _filterData = "__";
-        var readAndPlotGoogleGraphData = function () {
-            filterData.getCostConsumptionData($scope.monthSpan, _filterData, siteId)
-                .then(onGoogleGraphData, onError);
-        };
-        var onGoogleGraphData = function (data) {
-            googleChart.initializeGoogleChart($scope, data, _googleChartElements[filterData.elementIndex(_googleChartElements, "Electricity Consumption")]);
-            googleChart.initializeGoogleChart($scope, data, _googleChartElements[filterData.elementIndex(_googleChartElements, "Energy Charges")]);
-            if (debugStatus_showMessages) { toaster.pop('warning', "Google graph data loaded!", ""); }
-
-            console.log($scope.energyChargesChart.data);
-            $scope.loading = false;
-        };
-
-        $scope.togglePreviousYearsData = function ($event) {
-            $scope.loading = true;
-            // Decide which axes are to be displayed.
-            googleChart.toggleAxis2Display($scope.showPrevious12, _googleChartElements);
-            // Refresh
-            googleChart.refreshGoogleChart($scope, _googleChartElements[filterData.elementIndex(_googleChartElements, "Electricity Consumption")]);
-            googleChart.refreshGoogleChart($scope, _googleChartElements[filterData.elementIndex(_googleChartElements, "Energy Charges")]);
-            $scope.loading = false;
-        };
-
-
         var getGraphData = function () {
-            soDataSource.getCostConsumptionData(siteId, $scope.monthSpan)
+            soDataSource.getCostConsumptionData(siteId, monthSpan)
                 .then(onGraphData, onError);
         };
 
         var getSiteInvoiceData = function () {
-            soDataSource.getSiteInvoiceData(siteId, $scope.monthSpan)
+            soDataSource.getSiteInvoiceData(siteId, monthSpan)
                  .then(onInvoiceData, onError);
         };
 
@@ -82,29 +49,27 @@
             $scope.loading = true;
             $scope.monthSpanOptions = data.monthSpanOptions;
             $scope.monthSpan = data.monthSpan;
-            //monthSpan = data.monthSpan;
+            monthSpan = data.monthSpan;
             if (debugStatus_showMessages) { toaster.pop('success', "User Data Loaded!", "User specific data loaded"); }
-            // console.log('Get data');
+           // console.log('Get data');
             getSiteInvoiceData();
-          //  getGraphData();
-            getSiteData();
+            getGraphData();
 
-            readAndPlotGoogleGraphData();
+            getSiteData();
             
 
-            if (debugStatus_showMessages) { toaster.pop('success', "Business Data Loaded!", ""); }
         };
 
         var onSiteData = function (data) {
             if (debugStatus_showMessages) { toaster.pop('success', "Site Date Loaded!", ""); }
             $scope.tabTableHeader = data.siteName;
             $scope.siteData = data;
-            // console.log(data);
+           // console.log(data);
         };
 
         var onInvoiceData = function (data) {
             //console.log('Get data call');
-            //$scope.monthSpan = monthSpan;
+            $scope.monthSpan = monthSpan;
             $scope.invoiceData = data;
             $scope.loading = false;
             if (debugStatus_showMessages) { toaster.pop('success', "Invoice Data Loaded!", ""); }
@@ -125,10 +90,9 @@
         // Common front end functions
         $scope.reviseMonths = function (newMonthSpan) {
             $scope.loading = true;
-            $scope.monthSpan = newMonthSpan;
+            monthSpan = newMonthSpan;
 
             getSiteInvoiceData();
-            readAndPlotGoogleGraphData();
 
             // Only refresh if this is the current tab
             var assignedClasses = document.getElementById("consumption").className;
@@ -168,7 +132,7 @@
         };
 
         var invoiceApproved = function (result, invoiceId) {
-            //  console.log("Approved ok for invoiceId : " + invoiceId);
+          //  console.log("Approved ok for invoiceId : " + invoiceId);
             var foundIndex = $filter('filter')($scope.invoiceData, { invoiceId: invoiceId }, true)[0].$id - 1;
 
             $scope.invoiceData[foundIndex].approversName = result.data.approversName;
@@ -306,7 +270,7 @@
         $scope.updateCC = function () {
             //window.dispatchEvent(new Event('resize'));
             _event();
-            //            getGraphData();
+//            getGraphData();
         };
 
         // GPA **--> common function
@@ -315,11 +279,11 @@
             if (document.createEvent) { // W3C
                 var ev = document.createEvent('Event');
                 ev.initEvent('resize', true, true);
-                //  console.log('dispatch event');
+              //  console.log('dispatch event');
                 window.dispatchEvent(ev);
             }
             else { // IE
-                // console.log('IE event');
+               // console.log('IE event');
                 element = document.documentElement;
                 var event = document.createEventObject();
                 element.fireEvent("onresize", event);
@@ -328,8 +292,8 @@
 
         function initializeChart() {
             if (debugStatus_showMessages) { toaster.pop('success', "Chart initialize...", ""); }
-           // console.log(_rows);
-           // console.log(_cols);
+            console.log(_rows);
+            console.log(_cols);
             $scope.myChartObject.type = "LineChart";//"BarChart";// 
             $scope.myChartObject.displayed = false;
             $scope.myChartObject.data = {

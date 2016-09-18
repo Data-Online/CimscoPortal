@@ -6,6 +6,8 @@
 
 <div data-ng-app="app.siteOverview" data-ng-controller="app.siteOverview.ctrl" data-ng-init="setSiteId(@ViewBag.siteId)">
     <input type="hidden" id="siteId" value="@ViewBag.siteId" />
+
+
     <div class="row">
         <div class="col-lg-6 col-sm-6 col-xs-12">
             <div class="widget">
@@ -89,20 +91,10 @@
                                 </div>
                                 <div id="consumption" class="tab-pane animated fadeInUp active no-padding-bottom" style="padding:20px 20px 0 20px;">
                                     <div class="row">
-                                        <div class="col-lg-1">
-                                            <span class="databox-number white tootip-info pull-right" data-container="body"
-                                                  data-titleclass="bordered-blue" data-class="dark"
-                                                  data-toggle="popover" data-placement="auto"
-                                                  data-title="Site Cost and Consumption Data"
-                                                  data-content="Graphs show total cost and consumption data for the selected time period. If an invoice is missing, no data point is shown."
-                                                  data-original-title=""
-                                                  data-trigger="hover">
-                                                <i class="fa fa-2x fa-info-circle" style="color:#262626"></i>
-                                            </span>
-                                        </div>
-                                        <div class="col-lg-10">
-                                            @Html.Partial("SiteOverviewPartials/_Consumption")
-                                        </div>
+                                        @*                                            @Html.Partial("SiteOverviewPartials/_Consumption")*@
+                                        @Html.Partial("SharedPartials/_CostConsumptionSortHeader")
+                                        <i ng-show="loading" style="position:absolute; left:50%; top:50px; margin:auto;" class="fa fa-2x fa-refresh fa-fw" ng-class="{'fa-spin' : loading}"></i>
+                                        @Html.Partial("SharedPartials/_CostConsumptionGraph")
                                     </div>
                                 </div>
                             </div>
@@ -112,9 +104,14 @@
             </div>
         </div>
     </div>
+
     @section PageScripts{
         <script src="~/App_/siteOverview/siteOverview.data.js"></script>
         <script src="~/App_/siteOverview/siteOverview.ctrl.js"></script>
+
+        <!--Specific to Elements on this page *** GPA to be removed -->
+        <script src="~/Scripts/charts/chartjs/Chart.js"></script>
+
         <script src="~/App_/core/customFilters.js"></script>
     }
 

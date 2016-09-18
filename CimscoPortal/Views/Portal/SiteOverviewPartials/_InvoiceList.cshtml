@@ -194,7 +194,7 @@
                                 <span ng-if="currentSiteName=='All Sites'" class="databox-text darkgray">{{inv.siteName | cut:true:23:'..'}}</span>
                             </div>
                             <div class="col-sm-3">
-                                <div style="height:20px;" data-toggle="popover" data-content="Invoice Total incl. GST" data-title="" data-placement="auto" data-trigger="hover"
+                                <div style="height:20px;" data-toggle="popover" data-content="Invoice Total excl. GST" data-title="" data-placement="auto" data-trigger="hover"
                                      popover-append-to-body="true" data-container="body">
                                     <div class="databox-text darkgray">{{inv.invoiceTotal | currency:$}}</div>
                                 </div>
