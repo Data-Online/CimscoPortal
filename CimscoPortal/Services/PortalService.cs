@@ -163,6 +163,21 @@ namespace CimscoPortal.Services
         #endregion
         #region Dashboard
 
+        public InvoiceStatsViewModel GetDashboardStatistics(string userId, int monthSpan, string filter)
+        {
+            InvoiceStatsViewModel _model = new InvoiceStatsViewModel();
+            DateTime _selectFromDate;
+            DateTime _selectToDate;
+            CalculateDateRange(monthSpan, out _selectFromDate, out _selectToDate);
+
+            IList<int> _allSitesInCurrentSelection = CreateSiteList(userId, filter);
+
+            IQueryable<InvoiceSummary> _invoiceData = ConstructInvoiceQueryForDates(_allSitesInCurrentSelection, _selectFromDate, _selectToDate);
+            _model = CalculateStatisticsForFiledInvoices(monthSpan, _allSitesInCurrentSelection.Count(), _invoiceData);
+
+            return _model;
+        }
+
         public DashboardViewData GetTotalCostsAndConsumption(string userId, int monthSpan, string filter)
         {
             bool CreateTestData = false;

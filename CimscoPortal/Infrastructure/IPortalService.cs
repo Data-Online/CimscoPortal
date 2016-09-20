@@ -11,6 +11,8 @@ namespace CimscoPortal.Infrastructure
         GoogleChartViewModel GetCostsAndConsumption(string userId, int monthSpan, string filter);
         GoogleChartViewModel GetCostsAndConsumption_(int monthSpan, CostConsumptionOptions options);
 
+        InvoiceStatsViewModel GetDashboardStatistics(string userId, int monthSpan, string filter);
+
         // Refactor status -->
         //CimscoPortal.Models.CustomerHierarchyViewModel GetCompanyHierarchy(string userId);
 

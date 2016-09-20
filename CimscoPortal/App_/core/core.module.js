@@ -28,6 +28,7 @@
 
         /* Factory for Google Chart control */
         "googleChartControl",
+        //"googleChartDirectives",
 
         /* Common Data control factory */
         "commonDataControl",
@@ -35,5 +36,5 @@
         /* Feedback Tab */
         "angular-send-feedback"
     ])
- //   .constant("debugStatus", { "showMessages": false });
+   // .constant("debugStatus", { "showMessages": false });
 })();

@@ -13,9 +13,17 @@
         //                });
         //};
 
-        var getTotalCostAndConsumption = function (monthSpan, filter) {
+        //var getTotalCostAndConsumption = function (monthSpan, filter) {
 
-            var dataApi = "/api/TotalCostAndConsumption/" + monthSpan + "/" + filter + "/test";
+        //    var dataApi = "/api/TotalCostAndConsumption/" + monthSpan + "/" + filter + "/test";
+        //    return $http.get(dataApi)
+        //                .then(function (response) {
+        //                    return response.data;
+        //                });
+        //};
+
+        var getDashboardStatistics = function (monthSpan, filter) {
+            var dataApi = "/api/DashboardStatistics/" + monthSpan + "/" + filter;
             return $http.get(dataApi)
                         .then(function (response) {
                             return response.data;
@@ -51,10 +59,11 @@
 
         return {
             //getTotalCostsByMonth: getTotalCostsByMonth,
-            getTotalCostAndConsumption: getTotalCostAndConsumption,
+            //getTotalCostAndConsumption: getTotalCostAndConsumption,
             getAllFilters: getAllFilters,
             getWelcomeScreen: getWelcomeScreen,
-            getCostConsumptionData: getCostConsumptionData   // GPA: Copied from SiteOverview
+            getCostConsumptionData: getCostConsumptionData,
+            getDashboardStatistics: getDashboardStatistics
         };
 
     };

@@ -1,5 +1,9 @@
-﻿angular.module("googleChartControl", [])
-    .factory('googleChart', function ($parse) {
+﻿(function () {
+    angular.module("googleChartControl", [])
+    .factory('googleChart', googleChart)
+    .directive('dualchart', dualchart);
+
+    function googleChart($parse) {
         var singleAxes = function (single, axes) {
             var _displayAxes = [];
             var _columns = []; // Always display the first column (== x axis values)
@@ -92,7 +96,7 @@
                 "title": "", //title,
                 "colors": ['#0000FF', '#009900', '#CC0000', '#DD9900'],
                 "defaultColors": ['#0000FF', '#009900', '#CC0000', '#DD9900'],
-                "isStacked": "true",
+           //     "isStacked": "true",
                 "fill": 20,
                 "displayExactValues": true,
                 "pointSize": 5,
@@ -105,7 +109,7 @@
                     "duration": 1000,
                     "easing": 'out',
                 },
-                "series": _series, 
+                "series": _series,
                 "tooltip": { isHtml: true },
                 "legend": { position: "top", maxlines: 1 }
             };
@@ -130,8 +134,8 @@
             //console.log(_collatedData);
             var _chartElementName = chartElements.elementName;
             //console.log(_chartElementName);
-            var getter = $parse(_chartElementName + '.type');
-            getter.assign(scope, 'LineChart');
+            //var getter = $parse(_chartElementName + '.type');
+            //getter.assign(scope, 'LineChart');
             var getter = $parse(_chartElementName + '.title');
             getter.assign(scope, chartElements.title);
             getter = $parse(_chartElementName + '.data');
@@ -154,7 +158,40 @@
                 configureChart(chartElements.title, _axesToDisplay.axes, _collatedData.axes[0].title)
                 );
             chartElements.columns.all = displayAxesByName(chartElements.columnNames, _collatedData.axes);
+
+            if (scope.showAsBar) {
+                var _type = 'column';
+            }
+            else {
+                var _type = 'line';
+            }
+
+            switchGoogleChartType(scope, _type, chartElements);
+
             refreshGoogleChart(scope, chartElements);
+        };
+
+        var switchAllGoogleChartTypes = function (scope, chartType, allChartElements) {
+            angular.forEach(allChartElements, function (element, key) { switchGoogleChartType(scope, chartType, element); });
+        };
+
+        var switchGoogleChartType = function (scope, chartType, chartElements) {
+            var _chartElementName = chartElements.elementName;
+
+            switch (chartType) {
+                case 'line':
+                    var _type = 'LineChart';
+                    var _stacked = true;
+                    break;
+                case 'column':
+                    var _type = 'ColumnChart';
+                    var _stacked = false;
+                    break;
+            }
+            var getter = $parse(_chartElementName + '.type');
+            getter.assign(scope, _type);
+            var getter = $parse(_chartElementName + '.options.isStacked');
+            getter.assign(scope, _stacked);
         };
 
         var refreshGoogleChart = function (scope, chartElements) {
@@ -181,7 +218,21 @@
         return {
             initializeGoogleChart: initializeGoogleChart,
             refreshGoogleChart: refreshGoogleChart,
-            toggleAxis2Display: toggleAxis2Display
+            toggleAxis2Display: toggleAxis2Display,
+            switchAllGoogleChartTypes: switchAllGoogleChartTypes
         };
 
-    });
+    }
+
+    dualchart.$inject = ['cdcConstants'];
+    function dualchart (cdcConstants) {
+        return {
+            restrict: "E",
+            templateUrl: cdcConstants.template_url + "googleDualChart.html",
+            scope: {
+                chart: "=",
+            }
+        };
+    }
+
+}());

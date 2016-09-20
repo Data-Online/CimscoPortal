@@ -34,8 +34,8 @@
             detail: "Graphs show total cost and consumption data for the selected time period. If an invoice is missing, no data point is shown. All totals exclude GST."
         };
 
-        $scope.includeBarChart = false;  // Whether histogram chart is available as option
-        $scope.showBar = false;
+        $scope.includeBarChart = true;  // Whether histogram chart is available as option
+        $scope.showAsBar = false;
        
         // Core Data
         var _filterData = "__";
@@ -134,6 +134,18 @@
             var assignedClasses = document.getElementById("consumption").className;
             if (assignedClasses.indexOf("active") > 0)
                 getGraphData();
+        };
+
+        $scope.toggleGraphType = function ($event) {
+            $scope.loading = true;
+            if ($scope.showAsBar) {
+                var _type = 'column'
+            }
+            else {
+                var _type = 'line'
+            }
+            googleChart.switchAllGoogleChartTypes($scope, _type, _googleChartElements);
+            $scope.loading = false;
         };
 
         // Invoice display control

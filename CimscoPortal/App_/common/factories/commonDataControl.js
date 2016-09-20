@@ -5,7 +5,7 @@
         .constant("cdcConstants", {
             "filterSelectDelay": "15",
             "triggerName": "refreshData",
-            "template_url": '/App_/common/factories/templates/'
+            "template_url": '/App_/common/templates/'
         })
         .directive('filterdropdowns', filterdropdowns);
 

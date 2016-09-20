@@ -377,7 +377,8 @@
     <Content Include="App_\common\directives\widget.js" />
     <Content Include="App_\common\factories\commonDataControl.js" />
     <Content Include="App_\common\factories\googleChart.js" />
-    <Content Include="App_\common\factories\templates\filterDropdowns.html" />
+    <Content Include="App_\common\templates\filterDropdowns.html" />
+    <Content Include="App_\common\templates\googleDualChart.html" />
     <Content Include="App_\core\core.module.js" />
     <Content Include="App_\core\skin.js" />
     <Content Include="App_\dashboard\dashboard.ctrl.js" />
@@ -1648,6 +1649,7 @@
     <Content Include="Views\Portal\Invoices.cshtml" />
     <Content Include="Views\Portal\SharedPartials\_CostConsumptionGraph.cshtml" />
     <Content Include="Views\Portal\SharedPartials\_CostConsumptionSortHeader.cshtml" />
+    <Content Include="Views\Portal\SharedPartials\_CostConsumptionGraph - Copy.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />

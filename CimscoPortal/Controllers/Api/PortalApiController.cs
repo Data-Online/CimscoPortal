@@ -191,6 +191,14 @@ namespace CimscoPortal.Controllers.Api
             return request.CreateResponse<DashboardViewData>(HttpStatusCode.OK, data);
         }
 
+        [HttpGet]
+        [Route("DashboardStatistics/{monthSpan}/{filter}")]
+        public HttpResponseMessage GetDashboardStatistics(HttpRequestMessage request, int monthSpan, string filter)
+        {
+            var data = _portalService.GetDashboardStatistics(User.Identity.Name, monthSpan, filter);
+            return request.CreateResponse<InvoiceStatsViewModel>(HttpStatusCode.OK, data);
+        }
+
         //[HttpGet]
         //[Route("companyhierarchy")]
         //public HttpResponseMessage GetCompanyData(HttpRequestMessage request)
