@@ -56,7 +56,7 @@ Purchase: http://wrapbootstrap.com
         <div class="navbar-inner">
             <div class="navbar-container">
                 <!-- Navbar Barnd -->
-                <div class="navbar-header pull-left" style="padding-right:55px;">
+                <div class="navbar-header pull-left" style="padding-right:25px;">
                     <a href="@Url.Action("","Portal")" class="navbar-brand">
                         <small>
                             <img src="~/assets/img/CimscoLogoBase.png" alt="" />
@@ -66,7 +66,7 @@ Purchase: http://wrapbootstrap.com
                 <!-- /Navbar Barnd -->
                 <!-- Sidebar Collapse -->
                 <!-- /Sidebar Collapse -->
-                <div style="padding-top:10px; font-size:large; color:white">{{common.topLevelName}}</div>
+                <div class="navbar-topLevelName">{{common.topLevelName}}</div>
 
                 <!-- Account Area and Settings --->
                 <div class="navbar-header pull-right">
@@ -228,38 +228,38 @@ Purchase: http://wrapbootstrap.com
 
     <script type="text/javascript">
 
-        $(document).ready(function () {
+    $(document).ready(function () {
 
 
-            $.MetroMenu(
-                {
-                    backicon: "/Content/css/metrostatic/img/back.png", // Sub menu back item
-                    animation: "fadeInLeft",  // Animation
-                    position: "top",  // Position
-                    withtooltip: true, // Show tooltip on mouse over
-                    divholderid: "MetroMenuDiv", // Div to attach the metro meno in.
-                    closeonclick: false, // Menu item click, close the menu
-                    escclose: false,  // ESC key, close the menu
-                    color1: themeprimary,
-                    color2: themesecondary,
-                    items: [
+        $.MetroMenu(
+            {
+                backicon: "/Content/css/metrostatic/img/back.png", // Sub menu back item
+                animation: "fadeInLeft",  // Animation
+                position: "top",  // Position
+                withtooltip: false, // Show tooltip on mouse over
+                divholderid: "MetroMenuDiv", // Div to attach the metro meno in.
+                closeonclick: false, // Menu item click, close the menu
+                escclose: false,  // ESC key, close the menu
+                color1: themeprimary,
+                color2: themesecondary,
+                items: [
+                    {
+                        name: "Dashboard",
+                        fa: "fa-dashboard fa-3x",
+                        link: "@Url.Action("","Portal")"
+                        //icon: "/Content/css/metro/static/img/calendar.png"
+                    },
+                    {
+                        name: "Detail by Site",
+                        fa: "fa-sitemap fa-3x",
+                        link: "@Url.Action("DetailBySite","Portal")" ///Portal/SitesOverview"
+                        //icon: "/Content/css/metro/static/img/calendar.png"
+                    },
                         {
-                            name: "Dashboard",
-                            fa: "fa-dashboard fa-3x",
-                            link: "@Url.Action("","Portal")"
-                            //icon: "/Content/css/metro/static/img/calendar.png"
-                        },
-                        {
-                            name: "Detail by Site",
-                            fa: "fa-sitemap fa-3x",
-                            link: "@Url.Action("DetailBySite","Portal")" ///Portal/SitesOverview"
-                            //icon: "/Content/css/metro/static/img/calendar.png"
-                        },
-                            {
-                                name: "Invoices",
-                                fa: "fa-check-square-o fa-3x",
-                                link: "@Url.Action("Invoices","Portal")"
-                            }]
+                            name: "Invoices",
+                            fa: "fa-check-square-o fa-3x",
+                            link: "@Url.Action("Invoices","Portal")"
+                        }]
                 }
                     //},
                     //function (OptionPress) {

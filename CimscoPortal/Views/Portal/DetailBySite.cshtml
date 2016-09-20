@@ -70,7 +70,7 @@
                                 </li>
                             </ul>
                             <div class="tab-content tabs-flat no-padding" ng-style="{opacity: ((loading) && .4) || 1.0}">
-                                <div id="analysis" class="tab-pane animated fadeInUp no-padding-bottom active" style="padding:20px 20px 0 20px;">
+                                <div id="analysis" class="tab-pane animated fadeInUp no-padding-bottom active" > @*style="padding:20px 20px 0 20px;"*@
                                     <p style="padding: 20px 20px 0;" class="bg-white">
                                         @Html.Partial("DetailBySitePartials/_AnalysisSortHeader")
                                     </p>
@@ -98,7 +98,41 @@
 
                                                 <table class="table table-hover">
                                                     <tbody>
-                                                        <tr>
+                                                        <tr class="visible-xs hidden-md hidden-sm hidden-lg">
+                                                            <td colspan="4">
+                                                                <span class="databox-number white tootip-info" data-container="body"
+                                                                      data-titleclass="bordered-blue" data-class="dark"
+                                                                      data-toggle="popover" data-placement="auto"
+                                                                      data-title="Comparing Data Between Sites"
+                                                                      data-content="Lines show comparative costs and consumption between the selected sites. The largest value in each category will fill the available space."
+                                                                      data-original-title=""
+                                                                      data-trigger="hover">
+                                                                    <i class="fa fa-2x fa-info-circle" style="color:#262626"></i>
+                                                                    <span style="font-size:large; color:GrayText">Totals</span>
+                                                                </span><br />
+                                                                <span class="databox-number white tootip-info" data-container="body"
+                                                                      data-titleclass="bordered-blue" data-class="dark"
+                                                                      data-toggle="popover" data-placement="auto"
+                                                                      data-title="History"
+                                                                      data-content="Graph shows change in value over time."
+                                                                      data-original-title=""
+                                                                      data-trigger="hover">
+                                                                    <i class="fa fa-2x fa-info-circle" style="color:#262626"></i>
+                                                                    <span style="font-size:large; color:GrayText">History</span>
+                                                                </span><br />
+                                                                <span class="databox-number white tootip-info" data-container="body"
+                                                                      data-titleclass="bordered-blue" data-class="dark"
+                                                                      data-toggle="popover" data-placement="auto"
+                                                                      data-title="Invoices"
+                                                                      data-content="Bar shows total expected number of invoices for the period, split by those approved, waiting for approval or currently missing."
+                                                                      data-original-title=""
+                                                                      data-trigger="hover">
+                                                                    <i class="fa fa-2x fa-info-circle" style="color:#262626"></i>
+                                                                    <span style="font-size:large; color:GrayText">Invoices On File</span>
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="hidden-xs visible-md visible-sm visible-lg">
                                                             <td width="20%" class="responsive-td"></td>
                                                             <td width="30%" align="center">
                                                                 <span class="databox-number white tootip-info pull-left" data-container="body"

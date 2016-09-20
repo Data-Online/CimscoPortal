@@ -1,5 +1,5 @@
 ﻿<div class="row">
-    <div class="col-lg-4 col-xs-12 col-sm-6 visible-lg visible-md hidden-xs hidden-sm">
+    <div class="col-lg-3 col-md-4 col-xs-12 col-sm-6 visible-lg visible-md hidden-xs hidden-sm">
         <div class="margin-top-10 visible-xs hidden-lg hidden-md"></div>
         <div class="row">
             <div class="col-xs-2 col-sm-2">
@@ -18,17 +18,16 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-8 col-xs-12 col-sm-6" ng-init="options={};options.selected=false">
+    <div class="col-lg-9 col-md-8 col-xs-12 col-sm-6" ng-init="options={};options.selected=false">
         <div class="row">
-            <div class="col-md-4 col-xs-12 col-sm-12">
-                <label ng-show="includeBarChart" >
-                    <input class="checkbox-slider toggle colored-blue" ng-model="showAsBar" type="checkbox" data-ng-click="toggleGraphType($event)">
-                    @*<input class="checkbox-slider toggle colored-blue" ng-model="showBar" type="checkbox" ng-init="showLine=options.selected" data-ng-click="toggleGraphType($event)">*@
+            <div class="col-md-5 col-xs-12 col-sm-12">
+                <label ng-hide="false">
+                    <input class="checkbox-slider toggle colored-blue" ng-model="showBar" type="checkbox" ng-init="showLine=options.selected" data-ng-click="toggleGraphType($event)">
                     <span class="text">&nbsp;Show data as bar chart</span>
                 </label>
             </div>
             <div class="visible-xs hidden-md hidden-sm clearfix">&nbsp;</div>
-            <div class="col-md-4 col-xs-12 col-sm-12">
+            <div class="col-md-7 col-xs-12 col-sm-12">
                 <span></span>
                 <label ng-show="true">
                     <input class="checkbox-slider toggle colored-success" data-ng-click="togglePreviousYearsData($event)" type="checkbox" ng-model="showPrevious12">

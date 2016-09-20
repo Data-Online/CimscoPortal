@@ -54,9 +54,9 @@
                     </div>
                 </div>
                 <div class="widget-body">
-                    <div class="row">
-                        <div class="col-lg-1" style="padding-bottom:10px;">
-                            <span class="databox-number white tootip-info pull-left" data-container="body"
+                    <div class="row margin-bottom-10">
+                        <div class="col-lg-12">
+                            <span class="databox-number white tootip-info" data-container="body"
                                   data-titleclass="bordered-blue" data-class="dark"
                                   data-toggle="popover" data-placement="auto"
                                   data-title="Invoice Browser"
@@ -73,7 +73,7 @@
                             <div class="databox databox-lg databox-shadowed databox-graded radius-bordered">
                                 <label data-toggle="popover" data-content="There are currently {{category.entries}} invoices {{category.header}} across {{category.sites}} sites. (approximately {{category.percent|percentage:100}} of invoiices)."
                                        data-title="" data-placement="auto" data-trigger="hover">
-                                    <div class="databox-left bg-themeprimary" style="padding:4px;">
+                                    <div class="databox-left bg-lightred" style="padding:4px;">
                                         <div class="databox-piechart">
                                             <span ng-if="category.percent" class="standard-piechart" easypiechart options="epOptions" percent="category.percent">
                                                 <span class="ep-integer" ng-bind="category.percent|percentage:100"></span>
@@ -92,7 +92,7 @@
                                                 @*<span class="badge">4</span>*@
                                             </a>
                                             <!--Tasks Dropdown-->
-                                            <ul id="approvals-action" class="pull-right dropdown-menu dropdown-tasks dropdown-arrow " style="width:200px;">
+                                            <ul id="approvals-action" class="pull-right dropdown-menu dropdown-tasks dropdown-arrow ">
                                                 <li class="dropdown-header bordered-darkorange">
                                                     <i class="fa fa-tasks"></i>
                                                     {{category.sites}} Sites
@@ -125,7 +125,7 @@
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" ng-show="false">
                             <div class="databox databox-lg databox-shadowed databox-graded radius-bordered">
-                                <div class="databox-left bg-themesecondary" style="padding:4px;">
+                                <div class="databox-left bg-bg-lightred" style="padding:4px;">
                                     <div class="databox-piechart">
                                         <span class="standard-piechart" easypiechart options="EPoptions" percent="EPpercent">
                                             <span class="percent" ng-bind="EPpercent"></span>
@@ -176,7 +176,7 @@
         }
 
         .form-title {
-            border-bottom: 3px solid #2dc3e8 !important;
+            border-bottom: 3px solid #0072c6 !important;
         }
 
         .databox .databox-text {
