@@ -21,8 +21,9 @@
     <div class="col-lg-9 col-md-8 col-xs-12 col-sm-6" ng-init="options={};options.selected=false">
         <div class="row">
             <div class="col-md-5 col-xs-12 col-sm-12">
-                <label ng-hide="false">
-                    <input class="checkbox-slider toggle colored-blue" ng-model="showBar" type="checkbox" ng-init="showLine=options.selected" data-ng-click="toggleGraphType($event)">
+                <label ng-show="includeBarChart">
+                    <input class="checkbox-slider toggle colored-blue" ng-model="showAsBar" type="checkbox" data-ng-click="toggleGraphType($event)">
+                    @*<input class="checkbox-slider toggle colored-blue" ng-model="showBar" type="checkbox" ng-init="showLine=options.selected" data-ng-click="toggleGraphType($event)">*@
                     <span class="text">&nbsp;Show data as bar chart</span>
                 </label>
             </div>
