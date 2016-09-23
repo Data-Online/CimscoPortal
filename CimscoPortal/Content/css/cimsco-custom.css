@@ -537,3 +537,8 @@ div.google-visualization-tooltip > ul > li > span {
     white-space: nowrap;
     }
 }
+
+
+#dvdetailBySiteAnalysis tr td {
+        padding:5px!important;
+    }
