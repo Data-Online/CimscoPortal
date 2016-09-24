@@ -109,12 +109,12 @@
                 <div class="widget-header bg-themeprimary">
                     @*<i class="widget-icon fa fa-compress"></i>*@
                     <span class="widget-caption">
-                        <strong> {{groupCompanyDetail.topLevelName}}</strong> - <ng-pluralize
-                            count="invDistn.length" 
-                        when="{'1': '{} Site,',
+                        <strong> {{groupCompanyDetail.topLevelName}}</strong> - <ng-pluralize count="invDistn.length"
+                                                                                              when="{'1': '{} Site,',
                                'other': '{} Sites,'}">
                         </ng-pluralize>
-                    showing {{monthSpan}} months of data</span>
+                        showing {{monthSpan}} months of data
+                    </span>
                     <div class="widget-buttons">
                         <div class="btn-group">
                             <a href="javascript:void(0);" class="btn btn-default btn-sm">Select Months</a>
@@ -140,7 +140,7 @@
                                     <a data-toggle="tab" href="#other1">
                                         Invoice Value
                                     </a>
-                                    </ling-show>
+                                </li>
                                 <li ng-show="false">
                                     <a data-toggle="tab" href="#other2">
                                         Consumption
@@ -205,7 +205,7 @@
         <script src="~/Scripts/charts/flot/jquery.flot.axislabels.js"></script>
         <script src="~/Scripts/charts/flot/jquery.flot.tooltip.js"></script>
         <script src="~/Scripts/charts/flot/angular-flot.js"></script>
-        
+
         @*<script src="~/App/CompanyOverview/App.js"></script>
             <script src="~/App/CompanyOverview/coDataSource.js"></script>
             <script src="~/App/CompanyOverview/ViewModels/CompanyOverviewViewModel.js"></script>
