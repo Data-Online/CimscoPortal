@@ -19,12 +19,12 @@
                                 <div class="col-md-7 col-xs-12 col-sm-12 margin-top-5">
                                     <div class="row visible-md visible-lg hidden-xs hidden-sm pull-left">
                                         <label data-toggle="popover" data-content="Sort by Date" data-title="" data-placement="auto" data-trigger="hover">
-                                            <span ng-click="order('invoiceKeyDate')" class="btn btn-sm btn-default shiny active">
+                                            <span ng-click="order('invoiceKeyDate')" class="btn btn-sm btn-info shiny active">
                                                 <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='invoiceKeyDate'"></i>Date
                                             </span>
                                         </label>&nbsp;
                                         <label data-toggle="popover" data-content="Sort by Invoice Total" data-title="" data-placement="auto" data-trigger="hover">
-                                            <span ng-click="order('invoiceTotal')" class="btn btn-sm btn-default shiny active">
+                                            <span ng-click="order('invoiceTotal')" class="btn btn-sm btn-info shiny active">
                                                 <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='invoiceTotal'"></i>Total
                                             </span>
                                         </label>
@@ -148,24 +148,24 @@
                                                 <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4" ng-show="!inv.missing">
                                                     <div ng-show="!inv.approved" style="height:20px;" data-toggle="popover" data-content="Due Date" data-title="" data-placement="auto" data-trigger="hover"
                                                          popover-append-to-body="true" data-container="body">
-                                                        <span class="databox-number blueberry"><i class="fa fa-calendar"></i>{{inv.invoiceDueDate | date:mediumDate}}</span>
+                                                        <span class="databox-number themeprimary"><i class="fa fa-calendar"></i>{{inv.invoiceDueDate | date:mediumDate}}</span>
                                                     </div>
                                                     <div ng-show="inv.approved" style="height:20px;" data-toggle="popover" data-content="Approved by {{inv.approversName}}" data-title="" data-placement="auto" data-trigger="hover"
                                                          popover-append-to-body="true" data-container="body">
-                                                        <span class="databox-number green"><i class="fa fa-calendar"></i>{{inv.approvedDate | date:mediumDate}}</span>
+                                                        <span class="databox-number success"><i class="fa fa-calendar"></i>{{inv.approvedDate | date:mediumDate}}</span>
                                                     </div>
                                                 </div>
                                                 @*<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" ng-show="inv.missing"></div>*@
                                                 <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" ng-if="!inv.missing">
                                                     <div style="height:20px;" data-toggle="popover" data-content="Billing Period Month" data-title="" data-placement="auto" data-trigger="hover"
                                                          popover-append-to-body="true" data-container="body">
-                                                        <span class="databox-number magenta">{{inv.invoiceKeyDate | date:"MMM yyyy"}}</span>
+                                                        <span class="databox-number themesecondary">{{inv.invoiceKeyDate | date:"MMM yyyy"}}</span>
                                                     </div>
                                                 </div>
                                                 <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4" ng-if="inv.missing">
                                                     <div style="height:20px;" data-toggle="popover" data-content="Billing Period Month" data-title="" data-placement="auto" data-trigger="hover"
                                                          popover-append-to-body="true" data-container="body">
-                                                        <span class="databox-number magenta">{{inv.invoiceKeyDate | date:"MMMM yyyy"}}</span>
+                                                        <span class="databox-number themesecondary">{{inv.invoiceKeyDate | date:"MMMM yyyy"}}</span>
                                                     </div>
                                                 </div>
                                                 @*<div class="col-xs-12 col-sm-1 col-md-1 col-lg-1" style="height:20px;">
@@ -226,11 +226,11 @@
                                             <i class="fa fa-eye"></i>
                                         </span>
                                         <span data-toggle="popover" data-content="Invoice Approved" data-title="" data-placement="top" data-trigger="hover"
-                                              ng-show="inv.approved" class="btn-xs btn-palegreen pull-right">
+                                              ng-show="inv.approved" class="btn-xs btn-success pull-right">
                                             <i class="fa fa-check"></i>
                                         </span>
                                         <span data-toggle="popover" data-content="Click to Approve this Invoice" data-title="" data-placement="top" data-trigger="hover" ng-show="!inv.approved" ng-click="approveInv(inv.approved, inv.invoiceId)"
-                                              class="label label-info pull-right">
+                                              class="label label-primary pull-right">
                                             Approve
                                         </span>
                                     </div>

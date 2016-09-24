@@ -6,7 +6,7 @@
 <link href="~/App_/external/angular-ui-select/select.min.css" rel="stylesheet" />
 <div data-ng-app="app.dashboard" data-ng-controller="app.dashboard.ctrl">
     <div class="row">
-        <div class="col-xs-12 col-md-6">
+        <div class="col-xs-12 col-md-12">
             <div class="widget">
                 <div class="widget-header bg-themeprimary">
                     <span class="widget-caption">{{welcomeHeader}}</span>
@@ -48,7 +48,7 @@
                     <div class="widget-buttons">
                         <div class="btn-group">
                             <a href="javascript:void(0);" data-toggle="dropdown" class="btn btn-default btn-sm">Last {{monthSpan}} Months</a>
-                            <a href="javascript:void(0);" data-toggle="dropdown" class="btn btn-primary  btn-sm dropdown-toggle " aria-expanded="false"><i class="fa fa-angle-down"></i></a>
+                            <a href="javascript:void(0);" data-toggle="dropdown" class="btn btn-default  btn-sm dropdown-toggle " aria-expanded="false"><i class="fa fa-angle-down"></i></a>
                             <ul class="dropdown-menu">
                                 <li ng-repeat="_month in monthSpanOptions " data-ng-click="reviseMonths(_month)" class="widget-caption" ng-class="{'themeprimary' : monthSpan==_month}">
                                     <a href="javascript:void(0);"><i class="widget-icon fa fa-calendar"></i>&nbsp;&nbsp;{{_month}} months</a>

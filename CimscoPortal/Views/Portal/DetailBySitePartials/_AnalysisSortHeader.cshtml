@@ -17,14 +17,14 @@
             </div>
             <div class="col-xs-4 col-sm-4">
                 <label data-toggle="popover" data-content="Sort by Total Charge" data-title="" data-placement="auto" data-trigger="hover">
-                    <span ng-click="order('invoiceCosts.invoiceValue')" class="btn btn-sm btn-default shiny active">
+                    <span ng-click="order('invoiceCosts.invoiceValue')" class="btn btn-sm btn-info shiny active">
                         <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='invoiceCosts.invoiceValue'"></i>Total Charge
                     </span>
                 </label>
             </div>
             <div class="col-xs-4 col-sm-4">
                 <label data-toggle="popover" data-content="Sort by Site Name" data-title="" data-placement="auto" data-trigger="hover">
-                    <span ng-click="order('siteName')" class="btn btn-sm btn-default shiny active">
+                    <span ng-click="order('siteName')" class="btn btn-sm btn-info shiny active">
                         <i class="stat-icon fa {{sortArrow}}" ng-show="predicate=='siteName'"></i>Site Name
                     </span>
                 </label>
@@ -35,32 +35,32 @@
         <div class="row">
             <div class="col-md-3 col-xs-12 col-sm-6">
                 <label ng-hide="false">
-                    <input class="checkbox-slider toggle colored-blue" ng-model="showValue" type="checkbox" ng-init="showValue=options.selected">
-                    <span class="text">&nbsp; Energy Charges</span>
+                    <input class="checkbox-slider slider-icon  colored-primary" ng-model="showValue" type="checkbox" ng-init="showValue=options.selected">
+                    <span class="text">&nbsp;&nbsp;Energy Charges</span>
                 </label>
             </div>
             <div class="visible-xs hidden-md hidden-sm clearfix">&nbsp;</div>
             <div class="col-md-3 col-xs-12 col-sm-6">
                 <span></span>
                 <label ng-hide="false">
-                    <input class="checkbox-slider toggle colored-warning" ng-model="showKwh" type="checkbox" ng-init="showKwh=options.selected">
-                    <span class="text">&nbsp;Total kWh</span>
+                    <input class="checkbox-slider slider-icon colored-warning" ng-model="showKwh" type="checkbox" ng-init="showKwh=options.selected">
+                    <span class="text">&nbsp;&nbsp;Total kWh</span>
                 </label>
             </div>
             <div class="visible-xs hidden-md hidden-sm clearfix">&nbsp;</div>
             <div class="col-md-3 col-xs-12 col-sm-6">
                 <span></span>
                 <label ng-hide="false">
-                    <input class="checkbox-slider toggle colored-palegreen" ng-model="showUsqm" type="checkbox" ng-init="showUsqm=options.selected">
-                    <span class="text">&nbsp;Units per sqM</span>
+                    <input class="checkbox-slider slider-icon colored-success" ng-model="showUsqm" type="checkbox" ng-init="showUsqm=options.selected">
+                    <span class="text">&nbsp;&nbsp;Units per sqM</span>
                 </label>
             </div>
             <div class="visible-xs hidden-md hidden-sm clearfix">&nbsp;</div>
             <div class="col-md-3 col-xs-12 col-sm-6">
                 <span></span>
                 <label ng-hide="false">
-                    <input class="checkbox-slider toggle colored-magenta" ng-model="showCsqm" type="checkbox" ng-init="showCsqm=options.selected">
-                    <span class="text">&nbsp;Cost per sqM</span>
+                    <input class="checkbox-slider slider-icon colored-orange" ng-model="showCsqm" type="checkbox" ng-init="showCsqm=options.selected">
+                    <span class="text">&nbsp;&nbsp;Cost per sqM</span>
                 </label>
             </div>
         </div>

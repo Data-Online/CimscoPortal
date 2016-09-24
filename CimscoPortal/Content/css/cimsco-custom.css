@@ -516,29 +516,43 @@ div.google-visualization-tooltip > ul > li > span {
 
 
 .custom-edit-form, .custom-detail-form {
-    width:50%;margin:0 auto;
+    width: 50%;
+    margin: 0 auto;
 }
+
 @media all and (max-width: 768px) {
-   .custom-edit-form, .custom-detail-form {
-    width:100%;margin:0 auto;
+    .custom-edit-form, .custom-detail-form {
+        width: 100%;
+        margin: 0 auto;
+    }
 }
-}
+
 @media (min-width: 769px) and (max-width: 800px) {
-   .custom-edit-form, .custom-detail-form {
-    width:80%;margin:0 auto;
-}
+    .custom-edit-form, .custom-detail-form {
+        width: 80%;
+        margin: 0 auto;
+    }
 }
 
 @media all and (max-width: 370px) {
     .form-username-detail {
         /*width: 195px;*/
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 }
 
 
 #dvdetailBySiteAnalysis tr td {
-        padding:5px!important;
-    }
+    padding: 5px !important;
+}
+
+.bg-lightred {
+    background-color: #fb6e52 !important;
+}
+
+
+.btn-default i {
+    color:#444!important;
+}

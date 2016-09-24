@@ -44,7 +44,7 @@
                     <div class="widget-buttons">
                         <div class="btn-group">
                             <a href="javascript:void(0);" data-toggle="dropdown" class="btn btn-default btn-sm">Last {{monthSpan}} Months</a>
-                            <a href="javascript:void(0);" data-toggle="dropdown" class="btn btn-primary  btn-sm dropdown-toggle " aria-expanded="false"><i class="fa fa-angle-down"></i></a>
+                            <a href="javascript:void(0);" data-toggle="dropdown" class="btn btn-default  btn-sm dropdown-toggle " aria-expanded="false"><i class="fa fa-angle-down"></i></a>
                             <ul class="dropdown-menu">
                                 <li ng-repeat="_month in monthSpanOptions " data-ng-click="reviseMonths(_month)" class="widget-caption" ng-class="{'themeprimary' : monthSpan==_month}">
                                     <a href="javascript:void(0);"><i class="widget-icon fa fa-calendar"></i>&nbsp;&nbsp;{{_month}} months</a>
@@ -75,7 +75,7 @@
                                        data-title="" data-placement="auto" data-trigger="hover">
                                     <div class="databox-left bg-lightred" style="padding:4px;">
                                         <div class="databox-piechart">
-                                            <span ng-if="category.percent" class="standard-piechart" easypiechart options="epOptions" percent="category.percent">
+                                            <span ng-if="category.percent|percentage:100" class="standard-piechart" easypiechart options="epOptions" percent="category.percent|percentage:100">
                                                 <span class="ep-integer" ng-bind="category.percent|percentage:100"></span>
                                             </span>
                                         </div>
@@ -86,7 +86,7 @@
                                     <div class="databox-text darkgray">From {{category.sites}} Sites</div>
                                     <div class="databox-stat themesecondary radius-bordered">
                                         <li ng-show="true">
-                                            <a id="approvals-action-button" class="dropdown-toggle" data-toggle="dropdown" title="Sites" href="#">
+                                            <a id="approvals-action-button" class="dropdown-toggle themesecondary" data-toggle="dropdown" title="Sites" href="#">
                                                 @*<i class="icon fa fa-tasks"></i>*@
                                                 <i class="stat-icon icon-lg fa fa-tasks"></i>
                                                 @*<span class="badge">4</span>*@
@@ -143,8 +143,8 @@
                         </div>
 
                     </div>
-                    <h6 ng-if="currentSiteName" class="row-title before-azure">{{currentSiteName}}</h6>
-                    <h6 ng-if="!currentSiteName" class="row-title before-azure">No data selected</h6>
+                    <h6 ng-if="currentSiteName" class="row-title before-lightred">{{currentSiteName}}</h6>
+                    <h6 ng-if="!currentSiteName" class="row-title before-lightred">No data selected</h6>
                     @*<div class="row"><span>Current Site Id = {{siteId}}. Site name {{siteName}}. Filter Status = {{invType}}</span></div>*@
                     <i ng-show="loading" style="position:absolute; left:50%; top:20px; margin:auto;" class="fa fa-2x fa-refresh fa-fw" ng-class="{'fa-spin' : loading}"></i>
                     <div class="tab-content tabs-flat no-padding" ng-style="{opacity: ((loading) && .4) || 1.0}">
