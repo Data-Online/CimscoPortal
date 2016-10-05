@@ -1,7 +1,23 @@
 ﻿<div class="widget">
-    <div class="widget-header">
-        <span class="widget-caption">{{::chart.title}}</span>
-
+    <div class="widget-header {{border}}">
+        <!--style="background:">-->
+        <span class="widget-caption">
+            {{::chart.title}}&nbsp
+            <!--<i ng-show="chart.filtersActive" class="fa fa-filter">-->
+            <span ng-show="chart.filtersActive" class="databox-number white tootip-info pull-right"
+                  data-container="body"
+                  data-titleclass="bordered-blue"
+                  data-class="dark"
+                  data-toggle="popover"
+                  data-placement="auto"
+                  data-title="Filtered Data"
+                  data-content="Data in this chart has been filtered according to your selection(s) from the dropdowns above"
+                  data-original-title="" title=""
+                  data-trigger="hover">
+                <i class="fa fa-filter" style="color:#262626"></i>
+            </span>
+            <!--</i>-->
+        </span>
         <div class="widget-buttons">
             <a href="" widget-collapse></a>
             <!--<a href="" widget-dispose></a>-->
@@ -10,7 +26,7 @@
     <div class="show-hide-animate">
         <div class="widget-body show-hide-animate" style="height: 360px;  padding-top:5px; padding-right:0; padding-left:0">
             <div class="col-lg-12" ng-if="chart.data">
-                <div google-chart chart="chart" style="height:330px; width:100%; padding-right:5px;"></div>
+                <div google-chart chart="chart" agc-on-select="seriesSelected(selectedItem)"  style="height:330px; width:100%; padding-right:5px;" ></div>
             </div>
         </div>
     </div>

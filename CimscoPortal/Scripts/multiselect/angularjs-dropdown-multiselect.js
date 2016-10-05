@@ -145,28 +145,28 @@ directiveModule.directive('ngDropdownMultiselect', ['$filter', '$document', '$co
                         clearObject($scope.selectedModel);
                     }
                 }
+// GPA ** >> commented out as caused error with google chart select. Required multi-dropdown funcions appear fine without this section.
+                //if ($scope.settings.closeOnBlur) {
+                //    $document.on('click', function (e) {
+                //        var target = e.target.parentElement;
+                //        var parentFound = false;
 
-                if ($scope.settings.closeOnBlur) {
-                    $document.on('click', function (e) {
-                        var target = e.target.parentElement;
-                        var parentFound = false;
+                //        while (angular.isDefined(target) && target !== null && !parentFound) {
+                //            if (_.contains(target.className.split(' '), 'multiselect-parent') && !parentFound) {
+                //                if(target === $dropdownTrigger) {
+                //                    parentFound = true;
+                //                }
+                //            }
+                //            target = target.parentElement;
+                //        }
 
-                        while (angular.isDefined(target) && target !== null && !parentFound) {
-                            if (_.contains(target.className.split(' '), 'multiselect-parent') && !parentFound) {
-                                if(target === $dropdownTrigger) {
-                                    parentFound = true;
-                                }
-                            }
-                            target = target.parentElement;
-                        }
-
-                        if (!parentFound) {
-                            $scope.$apply(function () {
-                                $scope.open = false;
-                            });
-                        }
-                    });
-                }
+                //        if (!parentFound) {
+                //            $scope.$apply(function () {
+                //                $scope.open = false;
+                //            });
+                //        }
+                //    });
+                //}
 
                 $scope.getGroupTitle = function (groupValue) {
                     if ($scope.settings.groupByTextProvider !== null) {

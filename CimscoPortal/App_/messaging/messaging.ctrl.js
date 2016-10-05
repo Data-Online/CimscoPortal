@@ -5,11 +5,11 @@
         .module("app.messaging")
         .controller("app.messaging.ctrl", messaging);
 
-    messaging.$inject = ['$scope', 'msgsource'];
-    function messaging ($scope, msgsource) {
+    messaging.$inject = ['$scope', 'msgsource', 'sharedData'];
+    function messaging($scope, msgsource, sharedData) {
 
         $scope.options = { ajaxURL: "/api/feedback", postHTML: false, html2canvasURL: "~/App_/external/angularFeedback" };
-
+        
         var onRepo = function (data) {
             $scope.msgs = data;
         };
@@ -20,6 +20,7 @@
 
         var onCommonRepo = function (data) {
             $scope.common = data;
+            sharedData.setSharedValues(data.topLevelName, "");
         };
 
         var onCommonError = function(reason) {

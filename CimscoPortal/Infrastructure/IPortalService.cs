@@ -7,8 +7,6 @@ namespace CimscoPortal.Infrastructure
     public interface IPortalService
     {
         // Test data
-        GoogleChartViewModel GetCostsAndConsumption(string userId, int monthSpan, int siteId); 
-        GoogleChartViewModel GetCostsAndConsumption(string userId, int monthSpan, string filter);
         GoogleChartViewModel GetCostsAndConsumption_(int monthSpan, CostConsumptionOptions options);
 
         InvoiceStatsViewModel GetDashboardStatistics(string userId, int monthSpan, string filter);

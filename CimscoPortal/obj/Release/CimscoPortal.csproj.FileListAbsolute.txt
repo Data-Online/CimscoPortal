@@ -146,3 +146,4 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\SendGridMail.
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\LinqKit.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\LinqKit.pdb
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\LinqKit.xml
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.Web.Administration.dll

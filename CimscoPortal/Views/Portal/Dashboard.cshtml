@@ -1,4 +1,5 @@
-﻿@{
+﻿@model CimscoPortal.Controllers.PortalController.ztest
+@{
     ViewBag.Title = "Company Dashboard";
     ViewBag.Description = "Company Dashboard";
     Layout = "~/Views/Shared/_Default.cshtml";
@@ -18,7 +19,7 @@
                 </div>
                 <div class="widget-body">
                     <div style="width: 100%;">
-                        <span><h2><b>ALPHA build</b> - Version 0.7.2</h2></span>
+                        <span><h2><b>ALPHA build</b> - Version 0.7.6</h2></span>
                         <span ng-repeat="line in welcomeText"><h5>{{line}}</h5></span>
                     </div>
                 </div>
@@ -58,13 +59,60 @@
                     </div>
                 </div>
 
-                <div class="widget-body" ng-style="{opacity: ((loading) && .4) || 1.0}">
+                @*<div class="widget-body" ng-style="{opacity: ((loading) && .4) || 1.0}">*@
+                <div class="widget-body">
                     <p style="padding: 0;" class="bg-whitesmoke">
                         @Html.Partial("SharedPartials/_CostConsumptionSortHeader")
                     </p>
-                    <i ng-show="loading" style="position:absolute; left:50%; top:50px; margin:auto;" class="fa fa-2x fa-refresh fa-fw" ng-class="{'fa-spin' : loading}"></i>
-                    @Html.Partial("SharedPartials/_CostConsumptionGraph")
+                    @*<i ng-show="loading" style="position:absolute; left:50%; top:50px; margin:auto;" class="fa fa-2x fa-refresh fa-fw" ng-class="{'fa-spin' : loading}"></i>*@
+                    @*@{
+                        Html.ViewData.Add(new System.Collections.Generic.KeyValuePair<string, object>("Action", "Edit"));}
+                        @Html.Partial("SharedPartials/_CostConsumptionGraph", Html.ViewData)*@
+                    <i ng-show="loading" style="position:absolute; left:48%; top:50px; margin:auto; z-index:99" class="fa fa-4x fa-refresh fa-fw" ng-class="{'fa-spin' : loading}"></i>
+
+                    @Html.Partial("SharedPartials/_DualCharts", new ViewDataDictionary {
+                            { "leftGraph", "energyChargesChart" },
+                            { "rightGraph", "electricityConsumptionChart" },
+                            { "border", "bordered-darkorange"}
+                    })
+                    <div ng-if="energyChargesChart0 && splitDivisons" class="show-hide-animate">
+                        @Html.Partial("SharedPartials/_DualCharts", new ViewDataDictionary {
+                            { "leftGraph", "energyChargesChart0" },
+                            { "rightGraph", "electricityConsumptionChart0" },
+                            { "border", "bordered-blue"}
+                        })
+                    </div>
+                    <div ng-if="energyChargesChart1 && splitDivisons" class="animated fadeInUp fadeOut">
+                        @Html.Partial("SharedPartials/_DualCharts", new ViewDataDictionary {
+                            { "leftGraph", "energyChargesChart1" },
+                            { "rightGraph", "electricityConsumptionChart1" },
+                            { "border", "bordered-blue"}
+                        })
+                    </div>
+                    <div ng-if="energyChargesChart2 && splitDivisons" class="animated fadeInUp fadeOut">
+                        @Html.Partial("SharedPartials/_DualCharts", new ViewDataDictionary {
+                            { "leftGraph", "energyChargesChart2" },
+                            { "rightGraph", "electricityConsumptionChart2" },
+                            { "border", "bordered-blue"}
+                        })
+                    </div>
+                    <div ng-if="energyChargesChart3 && splitDivisons" class="animated fadeInUp fadeOut">
+                        @Html.Partial("SharedPartials/_DualCharts", new ViewDataDictionary {
+                            { "leftGraph", "energyChargesChart3" },
+                            { "rightGraph", "electricityConsumptionChart3" },
+                            { "border", "bordered-blue"}
+                        })
+                    </div>
+                    @*@Html.Partial("SharedPartials/_DualCharts_", new ViewDataDictionary {
+                            { "leftGraph", "energyChargesChart" },
+                            { "rightGraph", "electricityConsumptionChart" },
+                            { "border", "bordered-darkorange"}
+                    })*@
+
+                    @*<div google-chart chart="energyChargesChart" agc-on-select="seriesSelected(selectedItem)" style="height:330px; width:100%; padding-right:5px;"></div>
+                    <div google-chart chart="myChart" agc-on-select="seriesSelected(selectedItem)"></div>*@
                 </div>
+
             </div>
         </div>
     </div>
@@ -76,8 +124,8 @@
                     <span class="widget-caption">Summary of Data on File (based on {{monthSpan}} months of data)</span>
 
                     <div class="widget-buttons">
-                        <a href="" widget-collapse></a>
-                        <a href="" widget-dispose></a>
+                        <a href = "" widget-collapse></a>
+                        <a href = "" widget-dispose></a>
                     </div>
                 </div>
                 <div class="widget-body" ng-style="{opacity: ((loading) && .4) || 1.0}">
@@ -162,7 +210,7 @@
     <script src="~/App_/dashboard/dashboard.ctrl.js"></script>
 
     <!--Specific to Elements on this page-->
-    <script src="~/Scripts/charts/chartjs/Chart.js"></script>
+    @*<script src="~/Scripts/charts/chartjs/Chart.js"></script>*@
 
 
     <script src="~/App_/core/customFilters.js"></script>

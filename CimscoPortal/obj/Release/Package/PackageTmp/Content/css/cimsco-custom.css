@@ -263,16 +263,295 @@ div.google-visualization-tooltip > ul > li > span {
     }
 
 .percent,
-.ep-integer
- {
+.ep-integer {
     display: inline-block;
     line-height: 60px;
     z-index: 2;
 }
 
-.percent:after {
-    content: '%';
-    margin-left: 0.1em;
-    font-size: .8em;
+    .percent:after {
+        content: '%';
+        margin-left: 0.1em;
+        font-size: .8em;
+    }
+
+
+/**Added 9-Sept-2016**/
+#logoutForm li.dropdown-footer {
+    border-top: 3px solid #fb6e52 !important;
+    padding: 10px !important;
+    border-bottom: 0 !important;
+    text-align: right !important;
+    margin-top: 1px !important;
 }
 
+    #logoutForm li.dropdown-footer a {
+        color: #717171 !important;
+        font-size: 13px !important;
+        font-weight: 300 !important;
+    }
+
+.navbar .navbar-inner .navbar-header .navbar-account .account-area > li .dropdown-menu.dropdown-login-area > li.edit a:hover {
+    color: #0072c6 !important;
+}
+
+/*.navbar .navbar-inner .navbar-header .navbar-account .account-area > li .dropdown-menu.dropdown-login-area > li .avatar-area {
+    width: 160px !important;
+}*/
+
+.navbar .navbar-inner .navbar-header .navbar-account {
+    height: auto !important;
+}
+
+.navbar-topLevelName {
+    padding-top: 10px;
+    font-size: large;
+    color: white;
+    height: 45px;
+    padding-left: 22px;
+}
+
+.databox .databox-number {
+    font-size: 15px !important;
+}
+
+.navbar .navbar-brand {
+    padding: 2px 0 2px 10px !important;
+}
+
+.navbar-header .email {
+    width: 100%;
+}
+
+    .navbar-header .email a {
+        width: 150px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin: 0 auto !important;
+    }
+
+.nav-tabs.nav-justified > .active > a, .nav-tabs.nav-justified > .active > a:hover, .nav-tabs.nav-justified > .active > a:focus {
+    border-top: 2px solid #0072c6 !important;
+}
+
+.border-bottom-gray {
+    border-bottom: 1px solid #ccc;
+}
+
+.accordion.panel-group .panel-heading .accordion-toggle:after {
+    top: 20px !important;
+}
+
+.bordered-darkblue {
+    border-color: #0072c6 !important;
+}
+
+
+
+.databox .databox-cell {
+    padding: 0px !important;
+}
+
+.databox {
+    display: block !important;
+}
+
+.bordered-darkorange {
+    border-bottom: 3px solid #ed4e2a !important;
+    padding: 0 10px !important;
+    line-height: 34px !important;
+    /*margin-bottom: 10px !important;*/
+}
+
+.bordered-blue {
+    border-bottom: 3px solid #5db2ff !important;
+    padding: 0 10px !important;
+    line-height: 34px !important;
+    /*margin-bottom: 10px !important;*/
+}
+
+#approvals-action {
+    width: 240px;
+}
+
+.dropdown-footer a {
+    display: inline-block !important;
+}
+
+.dropdown-footer button {
+    margin-right: 10px !important;
+}
+
+.border-custom {
+    border-left: 1px solid #fff;
+    border-right: 1px solid #fff;
+}
+
+.validation-summary-errors {
+    margin-top: 10px;
+}
+
+.register-container .registerbox {
+    height: 490px !important;
+}
+
+
+
+@media all and (max-width: 631px) {
+    #InvoiceList .databox .databox-number, #InvoiceList .databox .databox-text {
+        font-size: 12px !important;
+    }
+}
+
+@media all and (max-width: 560px) {
+    #InvoiceList .databox.databox-lg {
+        height: 150px;
+    }
+
+        #InvoiceList .databox.databox-lg .databox-right, #InvoiceList .databox.databox-lg .databox-left {
+            height: 150px;
+        }
+
+
+    #InvoiceList .invoices-custom {
+        /*width: 100%;*/
+        width: auto;
+    }
+}
+
+@media all and (max-width: 360px) {
+    #InvoiceList .databox.databox-lg .databox-left {
+        height: 80px;
+    }
+
+    #InvoiceList .databox.databox-lg {
+        height: 230px;
+    }
+
+        #InvoiceList .databox.databox-lg .databox-left {
+            border-bottom: 3px solid #0072c6 !important;
+            width: 100%;
+        }
+
+    #InvoiceList .databox .databox-right.bordered-thick {
+        border-left: none !important;
+    }
+
+    #InvoiceList .databox-left .databox-stat.radius-bordered {
+        left: 0 !important;
+        margin: 0 5% !important;
+        width: 90% !important;
+    }
+
+    #InvoiceList .databox-left .databox-number {
+        font-size: 20px !important;
+    }
+
+    .SlineComposite canvas {
+        width: 180px !important;
+    }
+
+    .register-container .registerbox {
+        height: 530px !important;
+        margin: 10px;
+        width: 300px !important;
+    }
+
+    div.databox label {
+        display: none;
+    }
+
+    div.databox .databox-right {
+        width: 100% !important;
+    }
+
+    .navbar-topLevelName {
+        font-size: 13px !important;
+    }
+}
+
+
+@media only screen and (max-width: 530px) {
+    .navbar .navbar-brand {
+        padding-left: 20px !important;
+    }
+}
+
+@media all and (max-width: 390px) {
+    .databox .databox-number {
+        font-size: 13px !important;
+    }
+}
+
+@media all and (max-width: 600px) {
+    .mmArrowLeftTop, .mmArrowRightTop {
+        top: 65px !important;
+    }
+}
+
+@media all and (max-width: 530px) {
+    .mmArrowLeftTop, .mmArrowRightTop {
+        top: 110px !important;
+    }
+}
+
+@media all and (max-width: 580px) {
+    .navbar-topLevelName {
+        font-size: 14px !important;
+    }
+}
+
+
+
+
+.table-scrollable.editabledatatable {
+    border: none !important;
+}
+
+@media all and (max-width: 1024px) {
+    #editabledatatable_wrapper {
+        width: 1024px !important;
+    }
+
+    .editabledatatable .DTTTFooter {
+        width: 1024px !important;
+    }
+}
+
+
+.custom-edit-form, .custom-detail-form {
+    width:50%;margin:0 auto;
+}
+@media all and (max-width: 768px) {
+   .custom-edit-form, .custom-detail-form {
+    width:100%;margin:0 auto;
+}
+}
+@media (min-width: 769px) and (max-width: 800px) {
+   .custom-edit-form, .custom-detail-form {
+    width:80%;margin:0 auto;
+}
+}
+
+@media all and (max-width: 370px) {
+    .form-username-detail {
+        /*width: 195px;*/
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    }
+}
+
+.gc-tooltip {
+    color: black;
+}
+.gc-tooltip.positive {
+    background-color:#f4b400;
+}
+    .gc-tooltip.negative {
+        background-color: #8cc474;
+    }
+    .gc-tooltip.unchanged {
+        background-color: #11a9cc;
+    }

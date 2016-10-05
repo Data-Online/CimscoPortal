@@ -85,16 +85,23 @@
                                 </li>
                             </ul>
 
-                            <div class="tab-content tabs-flat no-padding" ng-style="{opacity: ((loading) && .4) || 1.0}">
+                            @*<div class="tab-content tabs-flat no-padding" ng-style="{opacity: ((loading) && .4) || 1.0}">*@
+                            <div class="tab-content tabs-flat no-padding">
                                 <div id="invoices" class="tab-pane animated fadeInUp no-padding-bottom" style="padding:20px 20px 0 20px;">
+                                    <i ng-show="loading" style="position:absolute; left:48%; top:50px; margin:auto; z-index:99" class="fa fa-4x fa-refresh fa-fw" ng-class="{'fa-spin' : loading}"></i>
                                     @Html.Partial("SiteOverviewPartials/_InvoiceList")
                                 </div>
                                 <div id="consumption" class="tab-pane animated fadeInUp active no-padding-bottom" style="padding:20px 20px 0 20px;">
                                     <div class="row">
                                         @*                                            @Html.Partial("SiteOverviewPartials/_Consumption")*@
                                         @Html.Partial("SharedPartials/_CostConsumptionSortHeader")
-                                        <i ng-show="loading" style="position:absolute; left:50%; top:50px; margin:auto;" class="fa fa-2x fa-refresh fa-fw" ng-class="{'fa-spin' : loading}"></i>
-                                        @Html.Partial("SharedPartials/_CostConsumptionGraph")
+                                        <i ng-show="loading" style="position:absolute; left:48%; top:50px; margin:auto; z-index:99" class="fa fa-4x fa-refresh fa-fw" ng-class="{'fa-spin' : loading}"></i>
+                                        @*<i ng-show="loading" style="position:absolute; left:50%; top:50px; margin:auto;" class="fa fa-2x fa-refresh fa-fw" ng-class="{'fa-spin' : loading}"></i>*@
+                                        @Html.Partial("SharedPartials/_DualCharts", new ViewDataDictionary {
+                                            { "leftGraph", "energyChargesChart" },
+                                            { "rightGraph", "electricityConsumptionChart" },
+                                            { "border", "bordered-darkorange"}
+                                        })
                                     </div>
                                 </div>
                             </div>

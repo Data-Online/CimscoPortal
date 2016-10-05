@@ -7,8 +7,12 @@
     siteOverview.$inject = ['$scope', '$timeout', '$filter', 'soDataSource', 'userDataSource', 'filterData', 'toaster', 'googleChart'];
     function siteOverview($scope, $timeout, $filter, soDataSource, userDataSource, filterData, toaster, googleChart) {
 
-        var debugStatus_showMessages = true;
+        $scope.gczztest = gczztest;
+        var gczztest = function (element) {
+            console.log("Selected " + element);
+        };
 
+        var debugStatus_showMessages = false;
         var siteId = 0;
         //var monthSpan = 12;       
         // Determine correct siteId from from MVC model
@@ -18,17 +22,36 @@
         };
 
         // Google chart definition
+        //var _googleChartElements =
+        //[
+        //    {
+        //        elementName: "energyChargesChart", columnNames: ["Invoice Total excl GST", "Previous Year Total"],
+        //        columns: [{ primary: [], all: [] }], title: "Energy Charges", activeAxes: [true, false]
+        //    },
+        //    {
+        //        elementName: "electricityConsumptionChart", columnNames: ["Total Kwh", "Previous Year Kwh"],
+        //        columns: [{ primary: [], all: [] }], title: "Electricity Consumption", activeAxes: [true, false]
+        //    }
+        //];
+        $scope.allowShowEnergySavings = true;
+
+
         var _googleChartElements =
         [
             {
-                elementName: "energyChargesChart", columnNames: ["Invoice Total excl GST", "Previous Year Total"],
-                columns: [{ primary: [], all: [] }], title: "Energy Charges", activeAxes: [true, false]
+                elementName: "energyChargesChart", columnNames: ["Invoice Total excl GST", "Previous Year Total", "Project Saving Estimate"],
+                title: "Energy Charges", activeAxes: [true, false, false],
+                columns: [[], [], []], colours: ['#009900', '#0000FF', '#DD9900']
             },
             {
                 elementName: "electricityConsumptionChart", columnNames: ["Total Kwh", "Previous Year Kwh"],
-                columns: [{ primary: [], all: [] }], title: "Electricity Consumption", activeAxes: [true, false]
+                title: "Electricity Consumption", activeAxes: [true, false],
+                columns: [[], []], colours: ['#009900', '#0000FF']
             }
         ];
+
+        var _chartElementId = 'elementName'; // Element used when finding entry by name from the above array.
+
         $scope.chartHelpText = {
             title: "Site Cost and Consumption Data", // Tootltip title is not handled correctly - hard coded in partial for now.
             detail: "Graphs show total cost and consumption data for the selected time period. If an invoice is missing, no data point is shown. All totals exclude GST."
@@ -36,7 +59,8 @@
 
         $scope.includeBarChart = true;  // Whether histogram chart is available as option
         $scope.showAsBar = false;
-       
+        $scope.allowDisplayByDivision = false;
+
         // Core Data
         var _filterData = "__";
         var readAndPlotGoogleGraphData = function () {
@@ -44,23 +68,24 @@
                 .then(onGoogleGraphData, onError);
         };
         var onGoogleGraphData = function (data) {
-            googleChart.initializeGoogleChart($scope, data, _googleChartElements[filterData.elementIndex(_googleChartElements, "Electricity Consumption")]);
-            googleChart.initializeGoogleChart($scope, data, _googleChartElements[filterData.elementIndex(_googleChartElements, "Energy Charges")]);
+            googleChart.initializeGoogleChart($scope, data, _googleChartElements[filterData.elementIndex(_googleChartElements, "energyChargesChart", _chartElementId)]);
+            googleChart.initializeGoogleChart($scope, data, _googleChartElements[filterData.elementIndex(_googleChartElements, "electricityConsumptionChart", _chartElementId)]);
             if (debugStatus_showMessages) { toaster.pop('warning', "Google graph data loaded!", ""); }
 
             console.log($scope.energyChargesChart.data);
             $scope.loading = false;
         };
 
-        $scope.togglePreviousYearsData = function ($event) {
-            $scope.loading = true;
-            // Decide which axes are to be displayed.
-            googleChart.toggleAxis2Display($scope.showPrevious12, _googleChartElements);
-            // Refresh
-            googleChart.refreshGoogleChart($scope, _googleChartElements[filterData.elementIndex(_googleChartElements, "Electricity Consumption")]);
-            googleChart.refreshGoogleChart($scope, _googleChartElements[filterData.elementIndex(_googleChartElements, "Energy Charges")]);
-            $scope.loading = false;
-        };
+        googleChart.createButtonControls($scope, _googleChartElements);
+
+        //$scope.togglePreviousYearsData = function ($event) {
+        //    $scope.loading = true;
+        //    // Decide which axes are to be displayed.
+        //    googleChart.toggleAxis2Display($scope.showPrevious12, _googleChartElements);
+        //    // Refresh
+        //    googleChart.refreshAllGoogleCharts($scope, _googleChartElements);
+        //    $scope.loading = false;
+        //};
 
 
         var getGraphData = function () {
@@ -86,11 +111,11 @@
             if (debugStatus_showMessages) { toaster.pop('success', "User Data Loaded!", "User specific data loaded"); }
             // console.log('Get data');
             getSiteInvoiceData();
-          //  getGraphData();
+            //  getGraphData();
             getSiteData();
 
             readAndPlotGoogleGraphData();
-            
+
 
             if (debugStatus_showMessages) { toaster.pop('success', "Business Data Loaded!", ""); }
         };
@@ -112,7 +137,7 @@
 
         var onError = function (reason) {
             $scope.loading = false;
-            toaster.pop('error', "Data Load Error", "Unable to load data from database!");
+            toaster.pop('error', "Data Load Error", "Unable to load data from database! ("+ reason.status+")");
             console.log('An error occured : ' + reason.status);
             $scope.reason = "There was a problem (code:" + reason.status + ")";
         };
@@ -126,14 +151,15 @@
         $scope.reviseMonths = function (newMonthSpan) {
             $scope.loading = true;
             $scope.monthSpan = newMonthSpan;
-
+            console.log("Invoice data...");
             getSiteInvoiceData();
+            console.log("Graph data...");
             readAndPlotGoogleGraphData();
 
             // Only refresh if this is the current tab
-            var assignedClasses = document.getElementById("consumption").className;
-            if (assignedClasses.indexOf("active") > 0)
-                getGraphData();
+            ////var assignedClasses = document.getElementById("consumption").className;
+            ////if (assignedClasses.indexOf("active") > 0)
+            ////    getGraphData();
         };
 
         $scope.toggleGraphType = function ($event) {
@@ -340,8 +366,8 @@
 
         function initializeChart() {
             if (debugStatus_showMessages) { toaster.pop('success', "Chart initialize...", ""); }
-           // console.log(_rows);
-           // console.log(_cols);
+            // console.log(_rows);
+            // console.log(_cols);
             $scope.myChartObject.type = "LineChart";//"BarChart";// 
             $scope.myChartObject.displayed = false;
             $scope.myChartObject.data = {

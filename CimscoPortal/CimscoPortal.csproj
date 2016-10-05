@@ -20,6 +20,7 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -378,6 +379,7 @@
     <Content Include="App_\common\factories\commonDataControl.js" />
     <Content Include="App_\common\factories\googleChart.js" />
     <Content Include="App_\common\templates\filterDropdowns.html" />
+    <Content Include="App_\common\templates\googleDualChartHeader.html" />
     <Content Include="App_\common\templates\googleDualChart.html" />
     <Content Include="App_\core\core.module.js" />
     <Content Include="App_\core\skin.js" />
@@ -399,6 +401,7 @@
     <Content Include="App_\external\angularFeedback\icons.png" />
     <Content Include="App_\external\easypiechart\angular.easypiechart.js" />
     <Content Include="App_\external\easypiechart\angular.easypiechart.min.js" />
+    <Content Include="App_\external\ng-google-chart\ng-google-chart.min.js" />
     <Content Include="App_\external\nvd3\angularjs-nvd3-directives.js" />
     <Content Include="App_\external\nvd3\angularjs-nvd3-directives.min.js" />
     <Content Include="App_\external\nvd3\d3.min.js" />
@@ -1638,7 +1641,6 @@
     <Content Include="Views\Portal\SiteOverviewPartials\_Consumption.cshtml" />
     <Content Include="Views\Portal\SiteOverviewPartials\_InvoiceValue.cshtml" />
     <Content Include="Views\Portal\Dashboard.cshtml" />
-    <Content Include="Views\Shared\_Default_.cshtml" />
     <Content Include="Views\Portal\Index2_.cshtml" />
     <Content Include="Views\Portal\SitesOverview.cshtml" />
     <Content Include="Views\Portal\DetailBySite.cshtml" />
@@ -1647,9 +1649,12 @@
     <Content Include="Views\Portal\DetailBySitePartials\_Analysis - Copy.cshtml" />
     <Content Include="Views\Portal\DetailBySitePartials\_AnalysisSortHeader.cshtml" />
     <Content Include="Views\Portal\Invoices.cshtml" />
-    <Content Include="Views\Portal\SharedPartials\_CostConsumptionGraph.cshtml" />
+    <Content Include="Views\Portal\SharedPartials\_DualCharts-.cshtml" />
     <Content Include="Views\Portal\SharedPartials\_CostConsumptionSortHeader.cshtml" />
     <Content Include="Views\Portal\SharedPartials\_CostConsumptionGraph - Copy.cshtml" />
+    <Content Include="Views\Shared\_Default_.cshtml" />
+    <Content Include="Views\Portal\SharedPartials\_Test.cshtml" />
+    <Content Include="Views\Portal\SharedPartials\_DualCharts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />

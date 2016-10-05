@@ -329,7 +329,7 @@ namespace CimscoPortal.Services
         private static InvoiceStatsViewModel CalculateStatisticsForFiledInvoices(int MonthSpan, int TotalSites, IQueryable<InvoiceSummary> InvoiceData)
         {
             var _data = new InvoiceStatsViewModel();
-            var TotalPotenialSitesInPeriod = InvoiceData.Select(s => s.SiteId).Distinct().Count();
+            int TotalPotenialSitesInPeriod = CountOfDistinctSites(InvoiceData);
             var TotalPotentialInvoices = TotalPotenialSitesInPeriod * MonthSpan;
             var TotalInvoicesOnFileForPeriod = InvoiceData.Count();
 
@@ -345,6 +345,11 @@ namespace CimscoPortal.Services
             _data.TotalActiveSites = TotalPotenialSitesInPeriod;
 
             return _data;
+        }
+
+        private static int CountOfDistinctSites(IQueryable<InvoiceSummary> InvoiceData)
+        {
+            return InvoiceData.Select(s => s.SiteId).Distinct().Count();
         }
 
         private IQueryable<InvoiceSummary> ConstructInvoiceQueryForDates(IList<int> AllSitesInCurrentSelection, DateTime SelectFromDate, DateTime SelectToDate)
@@ -606,53 +611,8 @@ namespace CimscoPortal.Services
             _invoiceData = ConstructInvoiceQueryForDates(_allSitesInCurrentSelection, _selectFromDate.AddYears(-1), _selectToDate.AddYears(-1)).OrderBy(o => o.PeriodEnd);
             _result12 = CollateInvoiceData(_invoiceData, _selectFromDate.AddYears(-1), _selectToDate.AddYears(-1), options.includeMissing);
 
-            GoogleChartViewModel _model = GoogleChartFor_PowerConsumption_(_result, _result12, _siteArea);
-            return _model;
-        }
-
-        public GoogleChartViewModel GetCostsAndConsumption(string userId, int monthSpan, int siteId)
-        {
-            if (!monthSpan.In(3, 6, 12, 24)) { monthSpan = 12; }
-            bool _includeMissing = true;
-            // siteId = 2;
-            DateTime _selectFromDate;
-            DateTime _selectToDate;
-            CalculateDateRange(monthSpan, out _selectFromDate, out _selectToDate);
-
-            //IQueryable<Site> _siteQuery = _repository.Sites;
-            Dictionary<DateTime, MonthlySummaryModel> _result = new Dictionary<DateTime, MonthlySummaryModel>();
-            IList<int> _allSitesInCurrentSelection = CreateSiteList(siteId);
-
-            IQueryable<InvoiceSummary> _invoiceData = ConstructInvoiceQueryForDates(_allSitesInCurrentSelection, _selectFromDate, _selectToDate).OrderBy(o => o.PeriodEnd);
-
-            _result = CollateInvoiceData(_invoiceData, _selectFromDate, _selectToDate, _includeMissing);
-
-            var _siteArea = _repository.Sites.Where(s => s.SiteId == siteId).Select(c => c.TotalFloorSpaceSqMeters).FirstOrDefault();
-            GoogleChartViewModel _model = GoogleChartFor_PowerConsumption(_siteArea, _result);
-
-            return _model;
-        }
-
-        public GoogleChartViewModel GetCostsAndConsumption(string userId, int monthSpan, string filter)
-        {
-            if (!monthSpan.In(3, 6, 12, 24)) { monthSpan = 12; }
-            bool _includeMissing = true;
-            //string filter = "_827-_15-";
-
-            // siteId = 2;
-            DateTime _selectFromDate;
-            DateTime _selectToDate;
-            CalculateDateRange(monthSpan, out _selectFromDate, out _selectToDate);
-
-            IList<int> _allSitesInCurrentSelection = CreateSiteList(userId, filter);
-
-            IQueryable<InvoiceSummary> _invoiceData = ConstructInvoiceQueryForDates(_allSitesInCurrentSelection, _selectFromDate, _selectToDate).OrderBy(o => o.PeriodEnd);
-            Dictionary<DateTime, MonthlySummaryModel> _result = CollateInvoiceData(_invoiceData, _selectFromDate, _selectToDate, _includeMissing);
-            _invoiceData = ConstructInvoiceQueryForDates(_allSitesInCurrentSelection, _selectFromDate.AddYears(-1), _selectToDate.AddYears(-1)).OrderBy(o => o.PeriodEnd);
-            Dictionary<DateTime, MonthlySummaryModel> _result12 = CollateInvoiceData(_invoiceData, _selectFromDate.AddYears(-1), _selectToDate.AddYears(-1), _includeMissing);
-
-            GoogleChartViewModel _model = GoogleChartFor_PowerConsumption(_result, _result12);
-
+            GoogleChartViewModel _model = GoogleChartFor_PowerConsumption(_result, _result12, CountOfDistinctSites(_invoiceData), _siteArea);
+            //GoogleChartViewModel _model = GoogleChartFor_PowerConsumption(_result, _result12, _allSitesInCurrentSelection.Count(), _siteArea);
             return _model;
         }
 
@@ -672,55 +632,54 @@ namespace CimscoPortal.Services
         }
 
         #region Site Overview private functions
-        //_new = new List<CPart>();
-        //_new.Add(new CPart { v = "January", f = null });
-        //_new.Add(new CPart { v = "19.12", f = "42 iteme" });
-        //_new.Add(new CPart { v = "12", f = "Only 12 items" });
-        //_new.Add(new CPart { v = "7", f = "7 servers" });
-        //_new.Add(new CPart { v = "4", f = null });
-        //_model.Rows.Add(new GoogleRows { Cparts = _new });
-        //_new.Add(new CPart { v = "February", f = null });
-        //_new.Add(new CPart { v = "13.32", f = null });
-        //_new.Add(new CPart { v = "1", f = "1 unit left!" });
-        //_new.Add(new CPart { v = "12", f = null });
-        //_new.Add(new CPart { v = "2", f = null });
-        //_model.Rows.Add(new GoogleRows { Cparts = _new });
-        private static GoogleChartViewModel GoogleChartFor_PowerConsumption_(Dictionary<DateTime, MonthlySummaryModel> Result, Dictionary<DateTime, MonthlySummaryModel> Result12, int? SiteArea = 0)
+
+        private static GoogleChartViewModel GoogleChartFor_PowerConsumption(Dictionary<DateTime, MonthlySummaryModel> Result, Dictionary<DateTime, MonthlySummaryModel> Result12, int invoiceStdCount, int? SiteArea = 0)
         {
             GoogleChartViewModel _model = new GoogleChartViewModel();
             _model.Columns = new List<GoogleCols>();
             _model.Rows = new List<GoogleRows>();
 
             // X Axis
+
             _model.Columns.Add(new GoogleCols { label = "Month", type = "string", format = "string" });
             // Y Axes
-            _model.Columns.Add(new GoogleCols { label = "Invoice Total excl GST", type = "number", format = "currency" });
+            _model.Columns.Add(new GoogleCols { label = "Invoice Total excl GST", type = "number", format = "currency", role="data" });
             _model.Columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
-
-            _model.Columns.Add(new GoogleCols { label = "Total Kwh", type = "number", format = "decimal" });
-            _model.Columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
-
-            _model.Columns.Add(new GoogleCols { label = "Cost / Sqm", type = "number", format = "currency" });
-            _model.Columns.Add(new GoogleCols { label = "Kwh / SqM", type = "number", format = "decimal" });
-
-            _model.Columns.Add(new GoogleCols { label = "Previous Year Total", type = "number", format = "currency" });
-            _model.Columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
-
-            _model.Columns.Add(new GoogleCols { label = "Previous Year Kwh", type = "number", format = "decimal" });
-            _model.Columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
-
-            _model.Columns.Add(new GoogleCols { label = "Previous Year Cost / Sqm", type = "number", format = "currency" });
-            _model.Columns.Add(new GoogleCols { label = "Previous Year Kwh / SqM", type = "number", format = "decimal" });
-
             _model.Columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
 
+            _model.Columns.Add(new GoogleCols { label = "Total Kwh", type = "number", format = "decimal", role = "data" });
+            _model.Columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
+            _model.Columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
+
+            _model.Columns.Add(new GoogleCols { label = "Cost / Sqm", type = "number", format = "currency", role = "data" });
+            _model.Columns.Add(new GoogleCols { label = "Kwh / SqM", type = "number", format = "decimal" });
+
+            _model.Columns.Add(new GoogleCols { label = "Previous Year Total", type = "number", format = "currency", role = "data" });
+            _model.Columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
+            _model.Columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
+
+
+            _model.Columns.Add(new GoogleCols { label = "Previous Year Kwh", type = "number", format = "decimal", role = "data" });
+            _model.Columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
+            _model.Columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
+
+
+            _model.Columns.Add(new GoogleCols { label = "Previous Year Cost / Sqm", type = "number", format = "currency", role = "data" });
+            _model.Columns.Add(new GoogleCols { label = "Previous Year Kwh / SqM", type = "number", format = "decimal", role = "data" });
+
+            _model.Columns.Add(new GoogleCols { label = "Project Saving Estimate", type = "number", format = "decimal", role = "data" });
+            _model.Columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
+            _model.Columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
 
             List<CPart> _dataRows;
             string _invoiceCount;
             string _invoiceCount12;
+            string[] _flags;
 
             foreach (var _values in Result.OrderBy(o => o.Key))
             {
+                _flags = FormatGraphPoint(_values.Value.TotalInvoices, Result12.Where(w => w.Key == _values.Key.AddYears(-1)).Select(s => s.Value.TotalInvoices).FirstOrDefault(), invoiceStdCount);
+
                 decimal _total12 = Result12.Where(w => w.Key == _values.Key.AddYears(-1)).Select(s => s.Value.InvoiceTotal).FirstOrDefault();
                 decimal _power12 = Result12.Where(w => w.Key == _values.Key.AddYears(-1)).Select(s => s.Value.EnergyTotal).FirstOrDefault();
 
@@ -736,14 +695,17 @@ namespace CimscoPortal.Services
                 string _invoicePowerPerSqM = _values.Value.EnergyTotal ==
                     0 ? null : NumericExtensions.SafeDivision(_values.Value.EnergyTotal, (decimal)SiteArea).ToString();
 
-                if (_values.Value.TotalInvoices > 1)
-                {
-                    _invoiceCount = " (" + _values.Value.TotalInvoices.ToString() + " invoices)";
-                }
-                else
-                {
-                    _invoiceCount = "";
-                };
+                decimal _costSavingEstimate = _values.Value.InvoiceTotal ==
+                    0 ? 0 : NumericExtensions.SafeDivision(_power12, (NumericExtensions.SafeDivision(_values.Value.EnergyTotal, _values.Value.InvoiceTotal)));
+
+                //if (_values.Value.TotalInvoices > 1)
+                //{
+                //    _invoiceCount = " (" + _values.Value.TotalInvoices.ToString() + " invoices)";
+                //}
+                //else
+                //{
+                //    _invoiceCount = "";
+                //};
 
                 _invoiceCount = ReturnInvoiceCountText(_values.Value.TotalInvoices);
                 _invoiceCount12 = ReturnInvoiceCountText(Result12.Where(w => w.Key == _values.Key.AddYears(-1)).Select(s => s.Value.TotalInvoices).FirstOrDefault());
@@ -752,22 +714,36 @@ namespace CimscoPortal.Services
                 // X axis
                 _dataRows.Add(new CPart { v = _values.Value.InvoicePeriodDate.ToString("MMMM") + " '" + _values.Value.InvoicePeriodDate.ToString("yy"), f = null });
 
-                // Invoice Total plus tooltip
+                // Invoice Total + tooltip + style
                 _dataRows.Add(new CPart { v = _invoiceTotal, f = _values.Value.InvoiceTotal.ToString(_currencySymbol + _decimalFormat) + _invoiceCount });
                 _dataRows.Add(new CPart
                 {
                     f = ReturnHtmlFormattedTooltip(_values.Value.InvoicePeriodDate,
-                                                   _values.Value.InvoiceTotal.ToString(_currencySymbol + _decimalFormat), _invoiceCount
+                                                   _values.Value.InvoiceTotal.ToString(_currencySymbol + _decimalFormat), _invoiceCount,
+                                                   (FormatDelta(_total12, _values.Value.InvoiceTotal, _decimalFormat))
                                                   )
                 });
+                _dataRows.Add(new CPart
+                {
+                    //v = "point { size: 18; shape-type: star; } "
+                    //v = ""
+                    v = _flags[0]
+                });
 
-                // Kwh + tooltip
+                // Kwh + tooltip + style
                 _dataRows.Add(new CPart { v = _invoicePower, f = _values.Value.EnergyTotal.ToString(_decimalFormat) + _invoiceCount });
                 _dataRows.Add(new CPart
                 {
                     f = ReturnHtmlFormattedTooltip(_values.Value.InvoicePeriodDate,
-                                                   _values.Value.EnergyTotal.ToString(_decimalFormat) + " " + _energySymbol, _invoiceCount
+                                                   _values.Value.EnergyTotal.ToString(_decimalFormat) + " " + _energySymbol, _invoiceCount,
+                                                   (FormatDelta(_power12, _values.Value.EnergyTotal, _decimalFormat))
                                                   )
+                });
+                _dataRows.Add(new CPart
+                {
+                    v = _flags[0]
+                    //v = "point { size: 12; shape-type: star; } "
+                    //v = ""
                 });
 
                 // Cost / Sqm
@@ -784,22 +760,36 @@ namespace CimscoPortal.Services
                     f = NumericExtensions.SafeDivision(_values.Value.EnergyTotal, (decimal)SiteArea).ToString(_decimalFormat)
                 });
 
-                // Previous years total cost + tooltip
+                // Previous years total cost + tooltip + style
                 _dataRows.Add(new CPart { v = _invoiceTotal12, f = _total12.ToString(_currencySymbol + _decimalFormat) + _invoiceCount12 });
                 _dataRows.Add(new CPart
                 {
                     f = ReturnHtmlFormattedTooltip(_values.Value.InvoicePeriodDate.AddYears(-1),
-                                                   _total12.ToString(_currencySymbol + _decimalFormat), _invoiceCount12
-                                                   )
+                                                   _total12.ToString(_currencySymbol + _decimalFormat), _invoiceCount12,
+                                                   ""
+                                                   )                                                  
+                });
+                _dataRows.Add(new CPart
+                {
+                    v = _flags[1]
+                    //v = "point { size: 12; shape-type: star; } "
+                    //v = ""
                 });
 
-                // Previous years Kwh + tooltip
+                // Previous years Kwh + tooltip + style
                 _dataRows.Add(new CPart { v = _invoicePower12, f = _power12.ToString(_decimalFormat) + _invoiceCount12 });
                 _dataRows.Add(new CPart
                 {
                     f = ReturnHtmlFormattedTooltip(_values.Value.InvoicePeriodDate.AddYears(-1),
-                                                  _power12.ToString(_decimalFormat) + " " + _energySymbol, _invoiceCount12
+                                                  _power12.ToString(_decimalFormat) + " " + _energySymbol, _invoiceCount12,
+                                                  ""
                                                   )
+                });
+                _dataRows.Add(new CPart
+                {
+                    v = _flags[1]
+                    //v = "point { size: 12; shape-type: star; } "
+                    //v = ""
                 });
 
                 // Previous years cost / Sqm
@@ -816,168 +806,103 @@ namespace CimscoPortal.Services
                     f = NumericExtensions.SafeDivision(_power12, (decimal)SiteArea).ToString(_decimalFormat)
                 });
 
+                // Project saving estimate + tooltip + style
                 _dataRows.Add(new CPart
                 {
-                    v = "point { size: 18 } "
+                    v = (_costSavingEstimate == 0 ? null : _costSavingEstimate.ToString()),
+                    f = _costSavingEstimate.ToString(_currencySymbol + _decimalFormat)
                 });
+                _dataRows.Add(new CPart
+                {
+                    f = ReturnHtmlFormattedTooltip(_values.Value.InvoicePeriodDate, _costSavingEstimate.ToString(_currencySymbol + _decimalFormat),
+                    FormatDelta(_costSavingEstimate, _values.Value.InvoiceTotal, _decimalFormat)
+                    )
+                });
+                _dataRows.Add(new CPart
+                {
+                    v = _flags[2]
+                });
+
+
 
                 _model.Rows.Add(new GoogleRows { Cparts = _dataRows });
             };
             return _model;
         }
 
-
-        private static GoogleChartViewModel GoogleChartFor_PowerConsumption(int? SiteArea, Dictionary<DateTime, MonthlySummaryModel> Result)
+        private static string[] FormatGraphPoint(int count, int count12, int countExpected)
         {
-            GoogleChartViewModel _model = new GoogleChartViewModel();
-            _model.Columns = new List<GoogleCols>();
-            _model.Rows = new List<GoogleRows>();
+            // Both counts below expected - both axes
+            // count below expected 
+            // count12 below expected
 
-            _model.Columns.Add(new GoogleCols { label = "Month", type = "string", format = "string" });
-            _model.Columns.Add(new GoogleCols { label = "Invoice Total excl GST", type = "number", format = "currency" });
-            _model.Columns.Add(new GoogleCols { label = "Total Kwh", type = "number", format = "decimal" });
-            _model.Columns.Add(new GoogleCols { label = "Cost / Sqm", type = "number", format = "currency" });
-            _model.Columns.Add(new GoogleCols { label = "Kwh / SqM", type = "number", format = "decimal" });
-
-            List<CPart> _dataRows;
-            string _invoiceCount;
-            foreach (var _values in Result.OrderBy(o => o.Key))
+            string[] _flag = new string[3];
+            if (count < countExpected)
             {
-                string _currencySymbol = "$"; string _decimalFormat = "#,##0.00";
-                string _invoiceTotal = _values.Value.InvoiceTotal == 0 ? null : _values.Value.InvoiceTotal.ToString();
-                string _invoicePower = _values.Value.EnergyTotal == 0 ? null : _values.Value.EnergyTotal.ToString();
-                string _invoiceTotalPerSqM = _values.Value.InvoiceTotal ==
-                    0 ? null : NumericExtensions.SafeDivision(_values.Value.InvoiceTotal, (decimal)SiteArea).ToString();
-                string _invoicePowerPerSqM = _values.Value.EnergyTotal ==
-                    0 ? null : NumericExtensions.SafeDivision(_values.Value.EnergyTotal, (decimal)SiteArea).ToString();
+                _flag[0] = "point { fill-color: #a52714; } ";
+            }
 
-                if (_values.Value.TotalInvoices > 1)
-                {
-                    _invoiceCount = " (" + _values.Value.TotalInvoices.ToString() + " invoices)";
-                }
-                else
-                {
-                    _invoiceCount = "";
-                };
-                _dataRows = new List<CPart>();
-                _dataRows.Add(new CPart { v = _values.Value.InvoicePeriodDate.ToString("MMMM") + " '" + _values.Value.InvoicePeriodDate.ToString("yy"), f = null });
-                _dataRows.Add(new CPart { v = _invoiceTotal, f = _values.Value.InvoiceTotal.ToString(_currencySymbol + _decimalFormat) + _invoiceCount });
-                _dataRows.Add(new CPart { v = _invoicePower, f = _values.Value.EnergyTotal.ToString(_decimalFormat) + _invoiceCount });
-                _dataRows.Add(new CPart
-                {
-                    v = _invoiceTotalPerSqM,
-                    f = NumericExtensions.SafeDivision(_values.Value.InvoiceTotal, (decimal)SiteArea).ToString(_currencySymbol + _decimalFormat)
-                });
-                _dataRows.Add(new CPart
-                {
-                    v = _invoicePowerPerSqM,
-                    f = NumericExtensions.SafeDivision(_values.Value.EnergyTotal, (decimal)SiteArea).ToString(_decimalFormat)
-                });
-                _model.Rows.Add(new GoogleRows { Cparts = _dataRows });
-            };
-            return _model;
-        }
-
-        private static GoogleChartViewModel GoogleChartFor_PowerConsumption(Dictionary<DateTime, MonthlySummaryModel> Result, Dictionary<DateTime, MonthlySummaryModel> Result12)
-        {
-            GoogleChartViewModel _model = new GoogleChartViewModel();
-            _model.Columns = new List<GoogleCols>();
-            _model.Rows = new List<GoogleRows>();
-
-            _model.Columns.Add(new GoogleCols { label = "Month", type = "string", format = "string" });
-
-            _model.Columns.Add(new GoogleCols { label = "Invoice Total excl GST", type = "number", format = "currency" });
-            _model.Columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
-
-            _model.Columns.Add(new GoogleCols { label = "Total Kwh", type = "number", format = "decimal" });
-            _model.Columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
-
-            _model.Columns.Add(new GoogleCols { label = "Previous Year Total", type = "number", format = "currency" });
-            _model.Columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
-
-            _model.Columns.Add(new GoogleCols { label = "Previous Year Kwh", type = "number", format = "decimal" });
-            _model.Columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
-
-            _model.Columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
-
-            List<CPart> _dataRows;
-            string _invoiceCount;
-            string _invoiceCount12;
-
-            foreach (var _values in Result.OrderBy(o => o.Key))
+            if (count12 < countExpected)
             {
-                decimal _total12 = Result12.Where(w => w.Key == _values.Key.AddYears(-1)).Select(s => s.Value.InvoiceTotal).FirstOrDefault();
-                decimal _power12 = Result12.Where(w => w.Key == _values.Key.AddYears(-1)).Select(s => s.Value.EnergyTotal).FirstOrDefault();
+                _flag[1] = "point { fill-color: #a52714; } ";
+            }
 
-                string _currencySymbol = "$"; string _decimalFormat = "#,##0.00"; string _energySymbol = "Kwh";
-                string _invoiceTotal = _values.Value.InvoiceTotal == 0 ? null : _values.Value.InvoiceTotal.ToString();
-                string _invoicePower = _values.Value.EnergyTotal == 0 ? null : _values.Value.EnergyTotal.ToString();
-                string _invoiceTotal12 = _total12 == 0 ? null : _total12.ToString();
-                string _invoicePower12 = _power12 == 0 ? null : _power12.ToString();
-
-                if (_values.Value.TotalInvoices > 1)
-                {
-                    _invoiceCount = " (" + _values.Value.TotalInvoices.ToString() + " invoices)";
-                }
-                else
-                {
-                    _invoiceCount = "";
-                };
-
-                _invoiceCount = ReturnInvoiceCountText(_values.Value.TotalInvoices);
-                _invoiceCount12 = ReturnInvoiceCountText(Result12.Where(w => w.Key == _values.Key.AddYears(-1)).Select(s => s.Value.TotalInvoices).FirstOrDefault());
-
-                _dataRows = new List<CPart>();
-                _dataRows.Add(new CPart { v = _values.Value.InvoicePeriodDate.ToString("MMMM") + " '" + _values.Value.InvoicePeriodDate.ToString("yy"), f = null });
-
-                _dataRows.Add(new CPart { v = _invoiceTotal, f = _values.Value.InvoiceTotal.ToString(_currencySymbol + _decimalFormat) + _invoiceCount });
-                _dataRows.Add(new CPart
-                {
-                    f = ReturnHtmlFormattedTooltip(_values.Value.InvoicePeriodDate,
-                                                   _values.Value.InvoiceTotal.ToString(_currencySymbol + _decimalFormat), _invoiceCount
-                                                  )
-                });
-
-                _dataRows.Add(new CPart { v = _invoicePower, f = _values.Value.EnergyTotal.ToString(_decimalFormat) + _invoiceCount });
-                _dataRows.Add(new CPart
-                {
-                    f = ReturnHtmlFormattedTooltip(_values.Value.InvoicePeriodDate,
-                                                   _values.Value.EnergyTotal.ToString(_decimalFormat) + " " + _energySymbol, _invoiceCount
-                                                  )
-                });
-
-                _dataRows.Add(new CPart { v = _invoiceTotal12, f = _total12.ToString(_currencySymbol + _decimalFormat) + _invoiceCount12 });
-                _dataRows.Add(new CPart
-                {
-                    f = ReturnHtmlFormattedTooltip(_values.Value.InvoicePeriodDate.AddYears(-1),
-                                                   _total12.ToString(_currencySymbol + _decimalFormat), _invoiceCount12
-                                                   )
-                });
-
-                _dataRows.Add(new CPart { v = _invoicePower12, f = _power12.ToString(_decimalFormat) + _invoiceCount12 });
-                _dataRows.Add(new CPart
-                {
-                    f = ReturnHtmlFormattedTooltip(_values.Value.InvoicePeriodDate.AddYears(-1),
-                                                  _power12.ToString(_decimalFormat) + " " + _energySymbol, _invoiceCount12
-                                                  )
-                });
-
-                _dataRows.Add(new CPart
-                {
-                    v = "point { size: 18 } "
-                });
-
-                _model.Rows.Add(new GoogleRows { Cparts = _dataRows });
-            };
-            return _model;
+            if (count12 != count)
+            {
+                _flag[2] = "point { fill-color: #a52714; } ";
+            }
+            return _flag;
         }
 
-        private static string ReturnHtmlFormattedTooltip(DateTime date, string value, string count)
+        private static string FormatDelta(decimal value1, decimal value2, string format)
         {
-            string _result = string.Format("<div style='width:150px; margin:10px;'><b>{0} {1}</b><br/>{2}<br/>{3}</div>", date.ToString("MMMM"), date.ToString("yyyy"), value, count);
+            if (value1 == 0 | value2 == 0) { return ""; }
+            decimal _result = value2 - value1;
+            string _positiveNegative = "positive fa fa-long-arrow-up";
+            if (_result < 0) { _result = _result * -1;  _positiveNegative = "negative fa fa-long-arrow-down"; }
+
+            return string.Format("<br/><span class='{0} {1}'> {2}</span>", "gc-tooltip", _positiveNegative, _result.ToString(format));
+        }
+
+        private static string ReturnHtmlFormattedTooltip(DateTime date, string value, string count, string variation)
+        {
+            string _result = string.Format("<div style='width:180px; margin:10px;'><b>{0} {1}</b>{3}<br/>{2}", date.ToString("MMMM"), date.ToString("yyyy"), value, count);
+
+            if (variation.Length > 0)
+            {
+                _result = _result + string.Format("{0} <span>cf {1}</span>", variation, date.AddYears(-1).ToString("yyyy"));
+            }
+            _result = _result + string.Format("</div");
             return _result;
         }
 
+        private static string ReturnHtmlFormattedTooltip(DateTime date, string value, string delta)
+        {
+            string _line;
+            string _result = "";
+            _line = string.Format("If consumption remained at {0} levels", date.AddYears(-1).ToString("yyyy"));
+            _line = _line + string.Format(", the bill for <b>{0} {1}</b> has an estimated value of {2}", date.ToString("MMMM"), date.ToString("yyyy"), value);
+            _result = TooltipLine(_line, _result);
+            _line = string.Format("Difference : {0}", delta);
+            _result = TooltipLine(_line, _result);
+            return TooltipWrapper(_result);
+        }
+
+        private static string TooltipWrapper(string result)
+        {
+            string _boxWidth = "180";
+            return string.Format("<div style='width:{0}px; margin:10px;'>{1}</div>", _boxWidth, result);
+        }
+
+        private static string TooltipLine(string line, string result)
+        {
+            string _divider = "";
+            if (result.Length > 0) { _divider = "<br/>"; }
+            return string.Format("{0}{2}{1}", result, line, _divider);
+        }
+
+        // fa-arrows-h
+        // fa-long-arrow-up
         private static string ReturnInvoiceCountText(int total)
         {
             string _pl = "";

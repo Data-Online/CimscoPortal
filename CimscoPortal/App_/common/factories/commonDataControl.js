@@ -5,12 +5,23 @@
         .constant("cdcConstants", {
             "filterSelectDelay": "15",
             "triggerName": "refreshData",
-            "template_url": '/App_/common/templates/'
+            "template_url": '/App_/common/templates/',
+            "inactiveFilter": "_"
         })
-        .directive('filterdropdowns', filterdropdowns);
+        .directive('filterdropdowns', filterdropdowns)
+        .service('sharedData', sharedData);
 
 
-
+    function sharedData() {
+        var sharedValues = { topLevelName: "", levelType: "" };
+        return {
+            getSharedValues: function () { return sharedValues; },
+            setSharedValues: function (name, type) {
+                sharedValues.topLevelName = name;
+                sharedValues.levelType = type;
+            }
+        };
+    }
 
     filterdropdowns.$inject = ['cdcConstants'];
     function filterdropdowns(cdcConstants) {
@@ -98,25 +109,60 @@
         };
 
         var createApiFilter = function (categories, divisions) {
-            var _returnIds = "_";
+            var _returnIds = cdcConstants.inactiveFilter;
             angular.forEach(categories, function (value, key) {
                 _returnIds += value.id + "-";
             });
-            _returnIds += "_";
+            _returnIds += cdcConstants.inactiveFilter;
             angular.forEach(divisions, function (value, key) {
                 _returnIds += value.id + "-";
             });
-            console.log(_returnIds);
+            //console.log(_returnIds);
             return _returnIds;
         };
-        elementIndex = function (elements, title) {
-            // E
-            // Return index for this title
-            for (var i = 0; i < elements.length; i++) {
-                if (elements[i].title == title) { return i }
-            };
-            return -1;
+
+        var inactiveFilter = function () {
+            return cdcConstants.inactiveFilter + cdcConstants.inactiveFilter;
         };
+
+        //elementIndex_ = function (elements, elementName) {
+        //    //var zz = elementIndex_(elements, elementName, 'elementName');
+        //    //console.log(zz);
+        //    // Return index for this title
+        //    for (var i = 0; i < elements.length; i++) {
+        //        if (elements[i].elementName == elementName) { return i }
+        //    };
+            
+        //    return -1;
+        //};
+
+        elementIndex = function (elements, elementName, keyElement) {
+            // Return index for this title
+            //var keyElement = 'elementName';
+            for (var i = 0; i < elements.length; i++) {
+                var _element = elements[i];
+                getter = $parse(keyElement);
+                if (getter(_element) == elementName) { return i };
+            };
+            //angular.forEach(elements, function (element, key) {
+            //    getter = $parse(keyElement);
+            //    var _currentElement = getter(element);
+            //    console.log(_currentElement + " looking for : " + elementName + " key = " + key + " match = " + (_currentElement == elementName));
+
+            //    if (_currentElement == elementName) { console.log("returning " + key); return key };
+            //});
+            return -1;
+            //            for (var i = 0; i < elements.length; i++) {
+//                var _element = elements[i];
+//                //console.log(_element.elementName);
+//                getter = $parse('elementName');
+//                var ztest = getter(_element);
+//                console.log(ztest);
+////                if (elements[i].elementName == elementName) { return i }
+//            };
+  //          return -1;
+        };
+
 
         var getCostConsumptionData = function (monthSpan, filter, siteId) {
             var dataApi = "/api/CostAndConsumption_" + "/" + monthSpan + "/" + filter + "/" + siteId;
@@ -132,7 +178,8 @@
             getEventName: getEventName,
             createApiFilter: createApiFilter,
             elementIndex: elementIndex,
-            getCostConsumptionData: getCostConsumptionData
+            getCostConsumptionData: getCostConsumptionData,
+            inactiveFilter: inactiveFilter
         };
     }
 

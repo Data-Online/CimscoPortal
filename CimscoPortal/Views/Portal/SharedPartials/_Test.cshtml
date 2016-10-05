@@ -1,0 +1,16 @@
+﻿@{
+    var leftGraph = (string)ViewData["leftGraph"];
+    var rightGraph = (string)ViewData["rightGraph"];
+    var border = (string)ViewData["border"];
+}
+
+<div class="row" ng-style="{opacity: ((loading) && .4) || 1.0}">
+    <div class="col-xs-12 col-md-6">
+        <dualchart chart="@leftGraph" border="@border"></dualchart>
+    </div>
+    <div class="col-xs-12 col-md-6">
+        <dualchart chart="@rightGraph" border="@border"></dualchart>
+    </div>
+</div>
+<div google-chart chart="energyChargesChart" agc-on-select="seriesSelected(selectedItem)" style="height:330px; width:100%; padding-right:5px;"></div>
+<div google-chart chart="@rightGraph" agc-on-select="seriesSelected(selectedItem)" style="height:330px; width:100%; padding-right:5px;"></div>

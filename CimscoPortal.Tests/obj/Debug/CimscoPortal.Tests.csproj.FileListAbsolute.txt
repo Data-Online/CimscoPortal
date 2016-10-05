@@ -217,3 +217,5 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\bin\Debug\z
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\bin\Debug\zh-Hant\System.Spatial.resources.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\obj\Debug\CimscoPortal.Tests.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\obj\Debug\CimscoPortal.Tests.pdb
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Tests\bin\Debug\Microsoft.Web.Administration.dll

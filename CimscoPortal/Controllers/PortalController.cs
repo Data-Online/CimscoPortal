@@ -104,7 +104,14 @@ namespace CimscoPortal.Controllers
             var user = User.Identity.Name;
             var userId = User.Identity.GetUserId();
             var zz = User.IsInRole("Admin");
-            return View();
+            var model = new ztest { elementA = "John", elementB = "New York" };
+            return View(model);
+        }
+
+        public class ztest
+        {
+            public string elementA { get; set; }
+            public string elementB { get; set; }
         }
 
         public ActionResult SitesOverview()

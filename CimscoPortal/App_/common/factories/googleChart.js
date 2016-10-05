@@ -1,23 +1,25 @@
 ﻿(function () {
     angular.module("googleChartControl", [])
     .factory('googleChart', googleChart)
-    .directive('dualchart', dualchart);
+    .directive('dualChartHeader', dualChartHeader);
 
     function googleChart($parse) {
-        var singleAxes = function (single, axes) {
+        var reverseAxisOrder = true; // Use when 2nd axis is to be displayed as first bar (eg it is an ealier date, so makes sense to display in reverse order)
+
+        var singleAxes = function (startIndex, axes) {
+            // Starts at "index" entry in columns, and extracts elements for single axis graph. Can include Tooltip and / or Style
             var _displayAxes = [];
             var _columns = []; // Always display the first column (== x axis values)
-            var _index = single;
             var _totalRows = 1;
             var _singleCount = 0;
-            for (var i = _index; i < axes.length; i++) {
+            for (var i = startIndex; i < axes.length; i++) {
+                // Only allow "tooltip" or "style" if "data" role has already been added
                 if (_singleCount - _totalRows >= 0) {
-                    if (axes[i].format == "tooltip") {
-                        _columns.push(i);
+                    if (axes[i].format != "tooltip" & axes[i].format != "style") {
+                        break;
                     }
-                    break;
                 }
-                if (axes[i].format != "tooltip") {
+                if (axes[i].format != "tooltip" & axes[i].format != "style") {
                     _singleCount++;
                     _displayAxes.push(axes[i]);
                 }
@@ -26,12 +28,14 @@
             var _data = { axes: _displayAxes, columns: _columns };
             return _data;
         };
+
         var pushColumns = function (array, newColumns) {
             for (var i = 0; i < newColumns.length; i++) {
                 array.push(newColumns[i]);
             }
             return array;
         };
+
         var returnIndex = function (forName, data) {
             for (var j = 0; j < data.length; j++) {
                 if (data[j].title == forName) {
@@ -45,12 +49,21 @@
             var _displayAxes = [];
             var _columns = [0];
             for (index = 0; index < axesNames.length; index++) {
-                var _entry = returnIndex(axesNames[index], axesData);
-                _displayAxes = pushColumns(_displayAxes, singleAxes(_entry, axesData).axes);
-                _columns = pushColumns(_columns, singleAxes(_entry, axesData).columns);
+                var _startAtIndex = returnIndex(axesNames[index], axesData);
+                var _singleAxes = singleAxes(_startAtIndex, axesData);
+                _displayAxes = pushColumns(_displayAxes, _singleAxes.axes);
+                _columns = pushColumns(_columns, _singleAxes.columns);
             }
             var _data = { axes: _displayAxes, columns: _columns };
             return _data;
+        };
+
+        addAxesByName = function (axesNames, axesData, elementName) {
+
+            angular.forEach(axesNames, function (axesName, index) {
+                var getter = $parse(elementName + '.title');
+                getter.assign(scope, chartElements.title);
+            })
         };
 
         collateData = function (data) {
@@ -65,7 +78,7 @@
                     _nextCol.p = { 'html': true };
                 }
                 _cols.push(_nextCol);
-                var _fmt = _nextCol.role == "tooltip" ? "tooltip" : data.columns[i].format;
+                var _fmt = _nextCol.role == "tooltip" ? "tooltip" : (_nextCol.role == "style" ? "style" : data.columns[i].format);
                 var _axis = { "title": data.columns[i].label, "format": _fmt }
                 _axes.push(_axis);
             };
@@ -83,6 +96,7 @@
         };
         //
         configureChart = function (title, vAxes, hAxisTitle) {
+            angular.forEach(vAxes, function (obj, index) { console.log(obj); });
             var _right = 0;
             if (vAxes.length == 2) {
                 var _series = [{ targetAxisIndex: 0 }, { targetAxisIndex: 1 }];
@@ -96,7 +110,7 @@
                 "title": "", //title,
                 "colors": ['#0000FF', '#009900', '#CC0000', '#DD9900'],
                 "defaultColors": ['#0000FF', '#009900', '#CC0000', '#DD9900'],
-           //     "isStacked": "true",
+                //     "isStacked": "true",
                 "fill": 20,
                 "displayExactValues": true,
                 "pointSize": 5,
@@ -116,8 +130,26 @@
             return options;
         };
 
-        displayAxesByName = function (axesNames, axesData) {
+        displayAxesByName = function (axesNames, axesData, reverseOrder) {
             var _columns = [0];
+            if (reverseOrder) {
+                for (index = axesNames.length - 1; index >= 0; index--) {
+                    var _entry = returnIndex(axesNames[index], axesData);
+                    _columns = pushColumns(_columns, singleAxes(_entry, axesData).columns);
+                }
+            }
+            else {
+                for (index = 0; index < axesNames.length; index++) {
+                    var _entry = returnIndex(axesNames[index], axesData);
+                    _columns = pushColumns(_columns, singleAxes(_entry, axesData).columns);
+                }
+            }
+            return _columns;
+        };
+
+        var displayAxesByName_ = function (axesNames, axesData) {
+            var _columns = [];
+
             for (index = 0; index < axesNames.length; index++) {
                 var _entry = returnIndex(axesNames[index], axesData);
                 _columns = pushColumns(_columns, singleAxes(_entry, axesData).columns);
@@ -129,13 +161,13 @@
             // data.axes defined the Axes labels and formats.
             // Axes 0 == X
             // Remaining Axes are Y
+            var _firstDisplayAxis = 0; // Element in chartElements that should be treated as primary axis data (displayed initially)
 
+
+            // Firstly assign all available data
             var _collatedData = collateData(data);
             //console.log(_collatedData);
             var _chartElementName = chartElements.elementName;
-            //console.log(_chartElementName);
-            //var getter = $parse(_chartElementName + '.type');
-            //getter.assign(scope, 'LineChart');
             var getter = $parse(_chartElementName + '.title');
             getter.assign(scope, chartElements.title);
             getter = $parse(_chartElementName + '.data');
@@ -144,20 +176,24 @@
                     "cols": _collatedData.cols,
                     "rows": _collatedData.rows
                 }
-                );
+            );
 
-            // Restrict data displayed on this chart to specified Axes.
+            // Establish which data and elements to display
+            // Primary
             var selectedColumnNames = [];
-            selectedColumnNames.push(chartElements.columnNames[0]);
-
+            selectedColumnNames.push(chartElements.columnNames[_firstDisplayAxis]);
             var _axesToDisplay = selectAxesByName(selectedColumnNames, _collatedData.axes);
-            chartElements.columns.primary = _axesToDisplay.columns;
-
+            console.log("Axes " + _axesToDisplay.columns);
             getter = $parse(_chartElementName + '.options');
             getter.assign(scope,
                 configureChart(chartElements.title, _axesToDisplay.axes, _collatedData.axes[0].title)
                 );
-            chartElements.columns.all = displayAxesByName(chartElements.columnNames, _collatedData.axes);
+
+            angular.forEach(chartElements.columnNames, function (column, index) {
+                var _col = [];
+                _col.push(column);
+                chartElements.columns[index] = displayAxesByName_(_col, _collatedData.axes);
+            });
 
             if (scope.showAsBar) {
                 var _type = 'column';
@@ -168,11 +204,14 @@
 
             switchGoogleChartType(scope, _type, chartElements);
 
-            refreshGoogleChart(scope, chartElements);
+            refreshGoogleChart(scope, chartElements, reverseAxisOrder);
         };
 
         var switchAllGoogleChartTypes = function (scope, chartType, allChartElements) {
-            angular.forEach(allChartElements, function (element, key) { switchGoogleChartType(scope, chartType, element); });
+            angular.forEach(allChartElements, function (element, key) {
+                console.log("switching : " + element);
+                switchGoogleChartType(scope, chartType, element);
+            });
         };
 
         var switchGoogleChartType = function (scope, chartType, chartElements) {
@@ -194,45 +233,103 @@
             getter.assign(scope, _stacked);
         };
 
-        var refreshGoogleChart = function (scope, chartElements) {
-            var getter = $parse(chartElements.elementName + '.view');
-            if (chartElements.activeAxes[1]) {
-                var _columns = {
-                    columns: chartElements.columns.all
-                };
-            }
-            else {
-                var _columns = {
-                    columns: chartElements.columns.primary
-                };
-            }
-            getter.assign(scope, _columns);
+        var refreshAllGoogleCharts = function (scope, allChartElements) {
+            angular.forEach(allChartElements, function (element, key) {
+                refreshGoogleChart(scope, element, reverseAxisOrder);
+            });
         };
+
+        var refreshGoogleChart = function (scope, chartElement, reverseOrder) {
+            // First column is x Axis, so always display
+            var _columns = [];
+            var _colors = [];
+            angular.forEach(chartElement.activeAxes, function (active, index) {
+                if (active) {
+                    if (chartElement.columns[index]) {
+                        if (reverseOrder) {
+                            _columns = chartElement.columns[index].concat(_columns);
+                            _colors.unshift(chartElement.colours[index]);
+                        }
+                        else {
+                            _columns = _columns.concat(chartElement.columns[index]);
+                            _colors.push(chartElement.colours[index]);
+                        }
+                    }
+                }
+            });
+            _columns.unshift(0);
+            var getter = $parse(chartElement.elementName + '.view');
+            getter.assign(scope, { columns: _columns });
+            var getter = $parse(chartElement.elementName + '.options.colors');
+            getter.assign(scope, _colors);
+        };
+
 
         var toggleAxis2Display = function (displaySecondary, chartElements) {
             angular.forEach(chartElements, function (value, key) {
                 value.activeAxes[1] = displaySecondary;
             });
         };
+        var ZtoggleAxis2Display = function (display, chartElements) {
+            angular.forEach(chartElements, function (value, key) {
+                console.log(value + " " + (value.activeAxes[2]));
+                value.activeAxes[2] = display;
+            });
+        };
+
+        var createButtonControls = function (scope, chartElements) {
+            scope.togglePreviousYearsData = function ($event) {
+                scope.loading = true;
+                // Decide which axes are to be displayed.
+                toggleAxis2Display(scope.showPrevious12, chartElements);
+                // Refresh
+                refreshAllGoogleCharts(scope, chartElements);
+                scope.loading = false;
+            };
+
+            scope.toggleEnergySavingData = function ($event) {
+                scope.loading = true;
+                // Decide which axes are to be displayed.
+                ZtoggleAxis2Display(scope.showSavings, chartElements)
+                // Refresh
+                refreshAllGoogleCharts(scope, chartElements);
+                scope.loading = false;
+            };
+        };
 
         return {
             initializeGoogleChart: initializeGoogleChart,
-            refreshGoogleChart: refreshGoogleChart,
-            toggleAxis2Display: toggleAxis2Display,
-            switchAllGoogleChartTypes: switchAllGoogleChartTypes
+            //toggleAxis2Display: toggleAxis2Display,
+            switchAllGoogleChartTypes: switchAllGoogleChartTypes,
+            refreshAllGoogleCharts: refreshAllGoogleCharts,
+            //ZtoggleAxis2Display: ZtoggleAxis2Display,
+            createButtonControls: createButtonControls
         };
 
     }
 
-    dualchart.$inject = ['cdcConstants'];
-    function dualchart (cdcConstants) {
+    //dualchart.$inject = ['cdcConstants'];
+    //function dualchart(cdcConstants) {
+    //    return {
+    //        restrict: 'E',
+    //        templateUrl: cdcConstants.template_url + "googleDualChart.html",
+    //        scope: {
+    //            'chart': '=',
+    //            'border': '@'
+    //        }
+    //    };
+    //};
+
+    dualChartHeader.$inject = ['cdcConstants'];
+    function dualChartHeader(cdcConstants) {
         return {
-            restrict: "E",
-            templateUrl: cdcConstants.template_url + "googleDualChart.html",
+            restrict: 'AE',
+            templateUrl: cdcConstants.template_url + "googleDualChartHeader.html",
             scope: {
-                chart: "=",
+                'chart': '=',
+                'border': '@'
             }
         };
-    }
+    };
 
 }());

@@ -357,13 +357,18 @@ div.google-visualization-tooltip > ul > li > span {
     display: block !important;
 }
 
-
-
 .bordered-darkorange {
     border-bottom: 3px solid #ed4e2a !important;
     padding: 0 10px !important;
     line-height: 34px !important;
-    margin-bottom: 10px !important;
+    /*margin-bottom: 10px !important;*/
+}
+
+.bordered-blue {
+    border-bottom: 3px solid #5db2ff !important;
+    padding: 0 10px !important;
+    line-height: 34px !important;
+    /*margin-bottom: 10px !important;*/
 }
 
 #approvals-action {
@@ -537,3 +542,16 @@ div.google-visualization-tooltip > ul > li > span {
     white-space: nowrap;
     }
 }
+
+.gc-tooltip {
+    color: black;
+}
+.gc-tooltip.positive {
+    background-color:#f4b400;
+}
+    .gc-tooltip.negative {
+        background-color: #8cc474;
+    }
+    .gc-tooltip.unchanged {
+        background-color: #11a9cc;
+    }
