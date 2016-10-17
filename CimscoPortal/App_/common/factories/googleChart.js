@@ -1,7 +1,7 @@
 ﻿(function () {
     angular.module("googleChartControl", [])
-    .factory('googleChart', googleChart)
-    .directive('dualChartHeader', dualChartHeader);
+    .factory('googleChart', googleChart);
+    //.directive('dualChartHeader', dualChartHeader);
 
     function googleChart($parse) {
         var reverseAxisOrder = true; // Use when 2nd axis is to be displayed as first bar (eg it is an ealier date, so makes sense to display in reverse order)
@@ -320,6 +320,38 @@
     //    };
     //};
 
+    //dualChartHeader.$inject = ['cdcConstants'];
+    //function dualChartHeader(cdcConstants) {
+    //    return {
+    //        restrict: 'AE',
+    //        templateUrl: cdcConstants.template_url + "googleDualChartHeader.html",
+    //        scope: {
+    //            'chart': '=',
+    //            'border': '@'
+    //        }
+    //    };
+    //};
+
+    //zztest.$inject = ['cdcConstants'];
+    //function zztest(cdcConstants) {
+    //    function zdualChartHeader() {
+    //        return {
+    //            restrict: 'AE',
+    //            templateUrl: cdcConstants.template_url + "googleDualChartHeader.html",
+    //            scope: {
+    //                'chart': '=',
+    //                'border': '@'
+    //            }
+    //        };
+    //    };
+    //    return { zdualChartHeader: zdualChartHeader };
+    //};
+
+}());
+
+(function () {
+    angular.module('googleChartControl')
+        .directive('dualChartHeader', dualChartHeader);
     dualChartHeader.$inject = ['cdcConstants'];
     function dualChartHeader(cdcConstants) {
         return {
@@ -330,6 +362,22 @@
                 'border': '@'
             }
         };
-    };
+    }
+})();
 
-}());
+(function () {
+    angular.module('googleChartControl')
+        .directive('dualChartFilter', dualChartFilter);
+
+    dualChartFilter.$inject = ['cdcConstants'];
+    function dualChartFilter(cdcConstants) {
+        return {
+            restrict: 'AE',
+            templateUrl: cdcConstants.template_url + "googleDualChartFilter.html",
+            scope: {
+                'filter': '=',
+                'href': '@'
+            }
+        };
+    }
+})();

@@ -10,5 +10,6 @@ namespace CimscoPortal.Models
     {
         public List<int> MonthSpanOptions { get { return new List<int> { 3, 6, 12, 24 }; } }
         public int MonthSpan { get; set; }
+        public bool ShowWelcomeMessage { get; set; }
     }
 }

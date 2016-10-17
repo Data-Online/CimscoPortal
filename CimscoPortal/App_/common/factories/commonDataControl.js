@@ -125,6 +125,24 @@
             return cdcConstants.inactiveFilter + cdcConstants.inactiveFilter;
         };
 
+        var filterTypeActive = function (type, filter) {
+            var _filterParts = filter.split(cdcConstants.inactiveFilter);
+            //console.log(_filterParts);
+            switch (type) {
+                case 'division':
+                    return _filterParts[2] != "";
+                    break;
+                case 'category':
+                    return _filterParts[1] != "";
+                    break;
+                case 'any':
+                    return filter != cdcConstants.inactiveFilter + cdcConstants.inactiveFilter;
+                    break;
+                default:
+                    return false;
+            }
+        };
+
         //elementIndex_ = function (elements, elementName) {
         //    //var zz = elementIndex_(elements, elementName, 'elementName');
         //    //console.log(zz);
@@ -179,8 +197,54 @@
             createApiFilter: createApiFilter,
             elementIndex: elementIndex,
             getCostConsumptionData: getCostConsumptionData,
-            inactiveFilter: inactiveFilter
+            inactiveFilter: inactiveFilter,
+            filterTypeActive: filterTypeActive
         };
     }
 
-}());
+})();
+
+(function () {
+    angular.module("commonDataControl")
+        .factory('dataFormatting', dataFormatting);
+
+    function dataFormatting () {
+        return {
+            pctBoxStyle: function (value) {
+                var num = parseInt(value);
+                var style = 'databox-stat radius-bordered';
+                if (num <= -999) {
+                    style = style + ' hide-element';
+                }
+                else if (num > 0) {
+                    style = style + ' bg-warning';
+                }
+                else if (num < 0) {
+                    style = style + ' bg-green';
+                }
+                else {
+                    style = style + ' bg-sky';
+                }
+                return style;
+            },
+            negativeValue: function (value) {
+                var num = parseInt(value);
+                var style = 'stat-icon';
+                if (num == -999) {
+
+                }
+                else if (num == 0) {
+                    style = style + ' fa fa-arrows-h';
+                }
+                else if (num > 0) {
+                    style = style + ' fa fa-long-arrow-up';
+                }
+                else if (num < 0) {
+                    style = style + ' fa fa-long-arrow-down';
+                }
+                // console.log('Style for value ' + num +' set to ' + style);
+                return style;
+            }
+        };
+    }
+})();

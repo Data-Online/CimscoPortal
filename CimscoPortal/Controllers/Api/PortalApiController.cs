@@ -54,7 +54,20 @@ namespace CimscoPortal.Controllers.Api
         public HttpResponseMessage GetUserSettings(HttpRequestMessage request)
         {
             return request.CreateResponse<UserSettingsViewModel>(HttpStatusCode.OK,
-                            _portalService.GetUserSettingsFor(User.Identity.Name));
+                            _portalService.GetUserSettings(User.Identity.Name));
+        }
+
+
+        [System.Web.Mvc.ValidateAntiForgeryToken]
+        [HttpPost]
+        [Route("saveUserData")]
+        public HttpResponseMessage SaveUserData(HttpRequestMessage request, [FromBody] UserSettingsViewModel userSettings)
+        {
+            UserSettingsViewModel _data = _portalService.SaveUserData(userSettings, User.Identity.Name);
+            if (_data != null)
+                return request.CreateResponse<UserSettingsViewModel>(HttpStatusCode.OK, _data);
+            else
+                return request.CreateResponse(HttpStatusCode.BadRequest);
         }
 
         [HttpGet]
@@ -116,7 +129,7 @@ namespace CimscoPortal.Controllers.Api
                 _options.previous12 = true;
 
                 //var data = _portalService.GetCostsAndConsumption(User.Identity.Name, monthSpan, siteId);
-                var data = _portalService.GetCostsAndConsumption_(monthSpan, _options);
+                var data = _portalService.GetCostsAndConsumption(monthSpan, _options);
                 return request.CreateResponse<GoogleChartViewModel>(HttpStatusCode.OK, data);
             }
             return request.CreateResponse(HttpStatusCode.Forbidden);
@@ -165,21 +178,21 @@ namespace CimscoPortal.Controllers.Api
         //    return request.CreateResponse<GoogleChartViewModel>(HttpStatusCode.OK, data_);
         //}
 
-        [HttpGet]
-        [Route("TotalCostAndConsumption/{monthSpan}/{filter}")]
-        public HttpResponseMessage GetTotalCostsAndConsumption(HttpRequestMessage request, int monthSpan, string filter)
-        {
-            var data = _portalService.GetTotalCostsAndConsumption(User.Identity.Name, monthSpan, filter);
-            return request.CreateResponse<DashboardViewData>(HttpStatusCode.OK, data);
-        }
+        //[HttpGet]
+        //[Route("TotalCostAndConsumption/{monthSpan}/{filter}")]
+        //public HttpResponseMessage GetTotalCostsAndConsumption(HttpRequestMessage request, int monthSpan, string filter)
+        //{
+        //    var data = _portalService.GetTotalCostsAndConsumption(User.Identity.Name, monthSpan, filter);
+        //    return request.CreateResponse<DashboardViewData>(HttpStatusCode.OK, data);
+        //}
 
-        [HttpGet]
-        [Route("TotalCostAndConsumption/{monthSpan}/{filter}/{test}")]
-        public HttpResponseMessage GetTotalCostsAndConsumption_(HttpRequestMessage request, int monthSpan, string filter, string test)
-        {
-            var data = _portalService.GetTotalCostsAndConsumption(User.Identity.Name, monthSpan, filter);
-            return request.CreateResponse<DashboardViewData>(HttpStatusCode.OK, data);
-        }
+        //[HttpGet]
+        //[Route("TotalCostAndConsumption/{monthSpan}/{filter}/{test}")]
+        //public HttpResponseMessage GetTotalCostsAndConsumption_(HttpRequestMessage request, int monthSpan, string filter, string test)
+        //{
+        //    var data = _portalService.GetTotalCostsAndConsumption(User.Identity.Name, monthSpan, filter);
+        //    return request.CreateResponse<DashboardViewData>(HttpStatusCode.OK, data);
+        //}
 
         [HttpGet]
         [Route("DashboardStatistics/{monthSpan}/{filter}")]
@@ -278,10 +291,10 @@ namespace CimscoPortal.Controllers.Api
         //}
 
         [HttpGet]
-        [Route("detailbysite/{monthSpan}")]
-        public HttpResponseMessage GetDetailBySite(HttpRequestMessage request, int monthSpan)
+        [Route("detailbysite/{monthSpan}/{filter}")]
+        public HttpResponseMessage GetDetailBySite(HttpRequestMessage request, int monthSpan, string filter)
         {
-            var data = _portalService.GetDetailBySite(User.Identity.Name, monthSpan);
+            var data = _portalService.GetDetailBySite(User.Identity.Name, monthSpan, filter);
             return request.CreateResponse<DetailBySiteViewModel>(HttpStatusCode.OK, data);
         }
 

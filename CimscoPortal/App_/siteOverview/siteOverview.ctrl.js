@@ -4,8 +4,8 @@
     var module = angular.module("app.siteOverview")
         .controller("app.siteOverview.ctrl", siteOverview);
 
-    siteOverview.$inject = ['$scope', '$timeout', '$filter', 'soDataSource', 'userDataSource', 'filterData', 'toaster', 'googleChart'];
-    function siteOverview($scope, $timeout, $filter, soDataSource, userDataSource, filterData, toaster, googleChart) {
+    siteOverview.$inject = ['$scope', '$timeout', '$filter', 'soDataSource', 'userDataSource', 'filterData', 'toaster', 'googleChart', 'dataFormatting'];
+    function siteOverview($scope, $timeout, $filter, soDataSource, userDataSource, filterData, toaster, googleChart, dataFormatting) {
 
         $scope.gczztest = gczztest;
         var gczztest = function (element) {
@@ -21,20 +21,7 @@
             siteId = _siteId;
         };
 
-        // Google chart definition
-        //var _googleChartElements =
-        //[
-        //    {
-        //        elementName: "energyChargesChart", columnNames: ["Invoice Total excl GST", "Previous Year Total"],
-        //        columns: [{ primary: [], all: [] }], title: "Energy Charges", activeAxes: [true, false]
-        //    },
-        //    {
-        //        elementName: "electricityConsumptionChart", columnNames: ["Total Kwh", "Previous Year Kwh"],
-        //        columns: [{ primary: [], all: [] }], title: "Electricity Consumption", activeAxes: [true, false]
-        //    }
-        //];
         $scope.allowShowEnergySavings = true;
-
 
         var _googleChartElements =
         [
@@ -51,6 +38,7 @@
         ];
 
         var _chartElementId = 'elementName'; // Element used when finding entry by name from the above array.
+        var _userData = [];
 
         $scope.chartHelpText = {
             title: "Site Cost and Consumption Data", // Tootltip title is not handled correctly - hard coded in partial for now.
@@ -78,22 +66,13 @@
 
         googleChart.createButtonControls($scope, _googleChartElements);
 
-        //$scope.togglePreviousYearsData = function ($event) {
-        //    $scope.loading = true;
-        //    // Decide which axes are to be displayed.
-        //    googleChart.toggleAxis2Display($scope.showPrevious12, _googleChartElements);
-        //    // Refresh
-        //    googleChart.refreshAllGoogleCharts($scope, _googleChartElements);
-        //    $scope.loading = false;
-        //};
-
-
         var getGraphData = function () {
             soDataSource.getCostConsumptionData(siteId, $scope.monthSpan)
                 .then(onGraphData, onError);
         };
 
         var getSiteInvoiceData = function () {
+            //console.log("Site ID for invoice data = " + siteId);
             soDataSource.getSiteInvoiceData(siteId, $scope.monthSpan)
                  .then(onInvoiceData, onError);
         };
@@ -105,8 +84,11 @@
 
         var onUserData = function (data) {
             $scope.loading = true;
-            $scope.monthSpanOptions = data.monthSpanOptions;
-            $scope.monthSpan = data.monthSpan;
+            _userData = data;
+            userDataSource.assignUserData($scope, _userData);
+
+            //$scope.monthSpanOptions = data.monthSpanOptions;
+            //$scope.monthSpan = data.monthSpan;
             //monthSpan = data.monthSpan;
             if (debugStatus_showMessages) { toaster.pop('success', "User Data Loaded!", "User specific data loaded"); }
             // console.log('Get data');
@@ -118,6 +100,10 @@
 
 
             if (debugStatus_showMessages) { toaster.pop('success', "Business Data Loaded!", ""); }
+        };
+
+        var updateUserData = function (setting, value) {
+            _userData = userDataSource.updateUserData(_userData, setting, value);
         };
 
         var onSiteData = function (data) {
@@ -137,7 +123,7 @@
 
         var onError = function (reason) {
             $scope.loading = false;
-            toaster.pop('error', "Data Load Error", "Unable to load data from database! ("+ reason.status+")");
+            toaster.pop('error', "Data Load Error", "Unable to load data from database! (" + reason.status + ")");
             console.log('An error occured : ' + reason.status);
             $scope.reason = "There was a problem (code:" + reason.status + ")";
         };
@@ -151,15 +137,11 @@
         $scope.reviseMonths = function (newMonthSpan) {
             $scope.loading = true;
             $scope.monthSpan = newMonthSpan;
-            console.log("Invoice data...");
             getSiteInvoiceData();
-            console.log("Graph data...");
             readAndPlotGoogleGraphData();
 
-            // Only refresh if this is the current tab
-            ////var assignedClasses = document.getElementById("consumption").className;
-            ////if (assignedClasses.indexOf("active") > 0)
-            ////    getGraphData();
+            updateUserData("monthSpan", newMonthSpan);
+
         };
 
         $scope.toggleGraphType = function ($event) {
@@ -226,43 +208,8 @@
             $scope.invoiceData.splice(index, 1);
         };
 
-        $scope.pctBoxStyle = function (myValue) {
-            var num = parseInt(myValue);
-            var style = 'databox-stat radius-bordered';
-            if (num <= -999) {
-                style = style + ' hide-element';
-            }
-            else if (num > 0) {
-                style = style + ' bg-warning';
-            }
-            else if (num < 0) {
-                style = style + ' bg-green';
-            }
-            else {
-                style = style + ' bg-sky';
-            }
-            return style;
-        };
-
-        $scope.negativeValue = function (myValue) {
-            var num = parseInt(myValue);
-            var style = 'stat-icon';
-            if (num == -999) {
-
-            }
-            else if (num == 0) {
-                style = style + ' fa fa-arrows-h';
-            }
-            else if (num > 0) {
-                style = style + ' fa fa-long-arrow-up';
-            }
-            else if (num < 0) {
-                style = style + ' fa fa-long-arrow-down';
-            }
-            // console.log('Style for value ' + num +' set to ' + style);
-            return style;
-        };
-
+        $scope.pctBoxStyle = dataFormatting.pctBoxStyle;
+        $scope.negativeValue = dataFormatting.negativeValue;
 
         // Google Chart control
         // Properties

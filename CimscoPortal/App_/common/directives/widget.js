@@ -125,6 +125,24 @@ module
         };
     });
 
+//Dispose Widget - dont show again
+module
+    .directive('widgetDispose2', function () {
+        return {
+            restrict: 'A',
+            template: '<i class="fa fa-ban"></i>',
+            link: function (scope, el, attr) {
+                el.on('click', function () {
+                    var widget = el.parents(".widget").eq(0);
+                    var disposeinterval = 300;
+                    widget.hide(disposeinterval, function () {
+                        widget.remove();
+                    });
+                });
+            }
+        };
+    });
+
 //Config Widget
 module
     .directive('widgetConfig', function () {

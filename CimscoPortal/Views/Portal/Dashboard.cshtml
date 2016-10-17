@@ -6,7 +6,7 @@
 }
 <link href="~/App_/external/angular-ui-select/select.min.css" rel="stylesheet" />
 <div data-ng-app="app.dashboard" data-ng-controller="app.dashboard.ctrl">
-    <div class="row">
+    <div ng-if="showWelcomeMessage" class="row">
         <div class="col-xs-12 col-md-6">
             <div class="widget">
                 <div class="widget-header bg-themeprimary">
@@ -19,8 +19,9 @@
                 </div>
                 <div class="widget-body">
                     <div style="width: 100%;">
-                        <span><h2><b>ALPHA build</b> - Version 0.7.6</h2></span>
+                        <span><h2><b>ALPHA build</b> - Version 0.7.8a</h2></span>
                         <span ng-repeat="line in welcomeText"><h5>{{line}}</h5></span>
+                        <span class="pull-right" ng-click="updateUserData('welcomeMsg');"><a href="" widget-dispose-txt></a></span><br />
                     </div>
                 </div>
             </div>
@@ -73,44 +74,56 @@
                     @Html.Partial("SharedPartials/_DualCharts", new ViewDataDictionary {
                             { "leftGraph", "energyChargesChart" },
                             { "rightGraph", "electricityConsumptionChart" },
-                            { "border", "bordered-darkorange"}
+                            { "border", "bordered-darkorange"},
+                            { "filter", "divisionLinkFilter" },
+                            { "href", @Url.Action("DetailBySite", "Portal") }
                     })
+
+
                     <div ng-if="energyChargesChart0 && splitDivisons" class="show-hide-animate">
                         @Html.Partial("SharedPartials/_DualCharts", new ViewDataDictionary {
                             { "leftGraph", "energyChargesChart0" },
                             { "rightGraph", "electricityConsumptionChart0" },
-                            { "border", "bordered-blue"}
+                            { "border", "bordered-blue"},
+                            { "filter", "divisionLinkFilter0" },
+                            { "href", @Url.Action("DetailBySite", "Portal") }
                         })
                     </div>
                     <div ng-if="energyChargesChart1 && splitDivisons" class="animated fadeInUp fadeOut">
                         @Html.Partial("SharedPartials/_DualCharts", new ViewDataDictionary {
                             { "leftGraph", "energyChargesChart1" },
                             { "rightGraph", "electricityConsumptionChart1" },
-                            { "border", "bordered-blue"}
+                            { "border", "bordered-blue"},
+                            { "filter", "divisionLinkFilter1" },
+                            { "href", @Url.Action("DetailBySite", "Portal") }
                         })
                     </div>
                     <div ng-if="energyChargesChart2 && splitDivisons" class="animated fadeInUp fadeOut">
                         @Html.Partial("SharedPartials/_DualCharts", new ViewDataDictionary {
                             { "leftGraph", "energyChargesChart2" },
                             { "rightGraph", "electricityConsumptionChart2" },
-                            { "border", "bordered-blue"}
+                            { "border", "bordered-blue"},
+                            { "filter", "divisionLinkFilter2" },
+                            { "href", @Url.Action("DetailBySite", "Portal") }
                         })
                     </div>
                     <div ng-if="energyChargesChart3 && splitDivisons" class="animated fadeInUp fadeOut">
                         @Html.Partial("SharedPartials/_DualCharts", new ViewDataDictionary {
                             { "leftGraph", "energyChargesChart3" },
                             { "rightGraph", "electricityConsumptionChart3" },
-                            { "border", "bordered-blue"}
+                            { "border", "bordered-blue"},
+                            { "filter", "divisionLinkFilter3" },
+                            { "href", @Url.Action("DetailBySite", "Portal") }
                         })
                     </div>
                     @*@Html.Partial("SharedPartials/_DualCharts_", new ViewDataDictionary {
-                            { "leftGraph", "energyChargesChart" },
-                            { "rightGraph", "electricityConsumptionChart" },
-                            { "border", "bordered-darkorange"}
-                    })*@
+                                { "leftGraph", "energyChargesChart" },
+                                { "rightGraph", "electricityConsumptionChart" },
+                                { "border", "bordered-darkorange"}
+                        })*@
 
                     @*<div google-chart chart="energyChargesChart" agc-on-select="seriesSelected(selectedItem)" style="height:330px; width:100%; padding-right:5px;"></div>
-                    <div google-chart chart="myChart" agc-on-select="seriesSelected(selectedItem)"></div>*@
+                        <div google-chart chart="myChart" agc-on-select="seriesSelected(selectedItem)"></div>*@
                 </div>
 
             </div>
@@ -124,8 +137,8 @@
                     <span class="widget-caption">Summary of Data on File (based on {{monthSpan}} months of data)</span>
 
                     <div class="widget-buttons">
-                        <a href = "" widget-collapse></a>
-                        <a href = "" widget-dispose></a>
+                        <a href="" widget-collapse></a>
+                        <a href="" widget-dispose></a>
                     </div>
                 </div>
                 <div class="widget-body" ng-style="{opacity: ((loading) && .4) || 1.0}">
@@ -133,20 +146,30 @@
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <div ng-if="activeSites" class="row">
                             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                <div class="databox databox-lg databox-shadowed databox-graded radius-bordered">
+                                <div class="databox databox-lg c-custom databox-shadowed databox-graded radius-bordered">
+                                    <div class="databox-row row-4 bg-lightred no-padding">
+                                        <div class="databox-cell cell-1 text-align-center no-padding padding-top-5">
+                                            <span class="databox-number white">
+                                                <i class="fa fa-bar-chart-o no-margin"></i>
+                                            </span>
+                                        </div>
+                                        <div class="databox-cell cell-8 no-padding padding-top-5 text-align-left">
+                                            <span class="databox-number white text-capitalize">Missing Invoices</span>
+                                        </div>
+                                    </div>
                                     <label data-toggle="popover" data-content="From the {{activeSites}} active sites, {{missingInvoices}} invoices have yet to be filed ({{missingPercent}}%)."
                                            data-title="" data-placement="auto" data-trigger="hover">
                                         <div class="databox-left bg-lightred" style="padding:4px;">
                                             <div class="databox-piechart">
                                                 <span ng-if="missingPercent" class="standard-piechart" easypiechart options="missingOptions" percent="missingPercent">
-                                                    <span class="percent" ng-bind="missingPercent"></span>
+                                                    <span class="ep-integer" ng-bind="missingInvoices"></span>
                                                 </span>
                                             </div>
                                         </div>
                                     </label>
                                     <div class="databox-right">
-                                        <span class="databox-number themesecondary">{{missingPercent}}% of invoices missing</span>
-                                        <div class="databox-text darkgray">From {{activeSites}} Sites ({{missingInvoices}} missing invoices)</div>
+                                        <span class="databox-number themesecondary">{{missingInvoices}} invoices are missing ({{missingPercent}}%)</span>
+                                        <div class="databox-text databox-text darkgray">From {{activeSites}} active sites</div>
                                         <div class="databox-stat themesecondary radius-bordered">
                                             <i class="stat-icon icon-lg fa fa-tasks"></i>
                                         </div>
@@ -154,19 +177,29 @@
                                 </div>
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                <div class="databox databox-lg databox-shadowed databox-graded radius-bordered">
-                                    <label data-toggle="popover" data-content="Out of a possible {{totalSites}} sites, currently {{filedPercent}}% of sites have filed invoices."
+                                <div class="databox databox-lg c-custom databox-shadowed databox-graded radius-bordered">
+                                    <div class="databox-row row-4 bg-lightred no-padding">
+                                        <div class="databox-cell cell-1 text-align-center no-padding padding-top-5">
+                                            <span class="databox-number white">
+                                                <i class="fa fa-bar-chart-o no-margin"></i>
+                                            </span>
+                                        </div>
+                                        <div class="databox-cell cell-8 no-padding padding-top-5 text-align-left">
+                                            <span class="databox-number white text-capitalize">Active Sites</span>
+                                        </div>
+                                    </div>
+                                    <label data-toggle="popover" data-content="Out of a possible {{totalSites}}, currently {{activeSites}} sites have filed invoices."
                                            data-title="" data-placement="auto" data-trigger="hover">
                                         <div class="databox-left bg-lightred" style="padding:4px;">
                                             <div class="databox-piechart">
                                                 <span ng-if="filedPercent" class="standard-piechart" easypiechart options="filedOptions" percent="filedPercent">
-                                                    <span class="percent" ng-bind="filedPercent"></span>
+                                                    <span class="ep-integer" ng-bind="activeSites"></span>
                                                 </span>
                                             </div>
                                         </div>
                                     </label>
                                     <div class="databox-right">
-                                        <span class="databox-number themesecondary">{{filedPercent}}% of sites with data</span>
+                                        <span class="databox-number themesecondary">{{activeSites}} sites with data ({{filedPercent}}%).</span>
                                         <div class="databox-text darkgray">{{totalSites - activeSites}} Sites on file with no data</div>
                                         <div class="databox-stat themesecondary radius-bordered">
                                             <i class="stat-icon icon-lg fa fa-tasks"></i>

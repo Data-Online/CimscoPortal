@@ -24,6 +24,7 @@ namespace CimscoPortal.Models
         public string DivisionName { get; set; }
         public Nullable<int> CustomerId { get; set; }
         public string CustomerName { get; set; }
+        public int FiledInvoiceCount { get; set; }
 
         public int MonthsOfData { get; set; }
 

@@ -126,6 +126,24 @@
             };
         });
 
+    //Dispose Widget - dont show again
+    module
+        .directive('widgetDisposeTxt', function () {
+            return {
+                restrict: 'A',
+                template: "Don't show again",
+                link: function (scope, el, attr) {
+                    el.on('click', function () {
+                        var widget = el.parents(".widget").eq(0);
+                        var disposeinterval = 300;
+                        widget.hide(disposeinterval, function () {
+                            widget.remove();
+                        });
+                    });
+                }
+            };
+        });
+
     //Config Widget
     module
         .directive('widgetConfig', function () {

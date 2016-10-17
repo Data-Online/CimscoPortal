@@ -7,7 +7,7 @@ namespace CimscoPortal.Infrastructure
     public interface IPortalService
     {
         // Test data
-        GoogleChartViewModel GetCostsAndConsumption_(int monthSpan, CostConsumptionOptions options);
+        GoogleChartViewModel GetCostsAndConsumption(int monthSpan, CostConsumptionOptions options);
 
         InvoiceStatsViewModel GetDashboardStatistics(string userId, int monthSpan, string filter);
 
@@ -15,7 +15,7 @@ namespace CimscoPortal.Infrastructure
         //CimscoPortal.Models.CustomerHierarchyViewModel GetCompanyHierarchy(string userId);
 
         //DashboardViewData GetTotalCostsByMonth(string userId, int monthSpan, int? customerId);
-        DashboardViewData GetTotalCostsAndConsumption(string userId, int monthSpan, string filter);
+        //DashboardViewData GetTotalCostsAndConsumption(string userId, int monthSpan, string filter);
         AvailableFiltersModel GetAllFilters(string userId);
         TextViewModel GetWelcomeScreen(string userId);
         SiteDetailViewModel GetSiteDetails(int siteId);
@@ -28,7 +28,7 @@ namespace CimscoPortal.Infrastructure
         IEnumerable<CimscoPortal.Models.MessageViewModel> GetNavbarDataFor(string pageElement);
         
         //InvoiceTallyViewModel GetInvoiceTally(string userId, int monthSpan, int? customerId);
-        DetailBySiteViewModel GetDetailBySite(string userId, int monthSpan, string filter = "", int maximumSitesToReturn = 0);
+        DetailBySiteViewModel GetDetailBySite(string userId, int monthSpan, string filter, int maximumSitesToReturn = 0);
         IEnumerable<InvoiceStatsBySiteViewModel> GetInvoiceStatsForSites(string userId, int monthSpan, string filter);
 
         // Invoice Data
@@ -38,9 +38,10 @@ namespace CimscoPortal.Infrastructure
         IEnumerable<InvoiceOverviewViewModel> GetAllInvoiceOverview(string userId, int monthSpan, string filter, int pageNo);
 
         InvoiceOverviewViewModel ApproveInvoice(int invoiceId, string userId, string urlRoot);
+        UserSettingsViewModel SaveUserData(UserSettingsViewModel userSettings, string userId);
         IEnumerable<MonthlyConsumptionViewModal> GetHistoricalDataForSite(int siteId);
         UserAccessModel CheckUserAccess(string userName);
-        UserSettingsViewModel GetUserSettingsFor(string userName);
+        UserSettingsViewModel GetUserSettings(string userName);
         // <--
 
         //System.Collections.Generic.List<CimscoPortal.Models.AlertViewModel> GetAlertsFor(int category);

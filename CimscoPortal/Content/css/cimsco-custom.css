@@ -275,7 +275,6 @@ div.google-visualization-tooltip > ul > li > span {
         font-size: .8em;
     }
 
-
 /**Added 9-Sept-2016**/
 #logoutForm li.dropdown-footer {
     border-top: 3px solid #fb6e52 !important;
@@ -555,3 +554,73 @@ div.google-visualization-tooltip > ul > li > span {
     .gc-tooltip.unchanged {
         background-color: #11a9cc;
     }
+
+.databox.databox-lg.c-custom {
+    height: 120px;
+}
+
+/* from Invoices page formatting */
+        span.label.label-info.pull-right {
+            position: absolute;
+            left: -44px;
+            cursor: pointer;
+        }
+
+        .checkbox + .checkbox, .radio + .radio {
+            margin-top: 10px !important;
+        }
+
+        .form-title {
+            border-bottom: 3px solid #0072c6 !important;
+        }
+
+        .databox .databox-text {
+            font-size: 15px !important;
+        }
+
+        .databox.databox-lg .databox-number {
+            font-size: 16px;
+            margin: 0 auto;
+        }
+
+        .databox-text .header {
+            float: right;
+        }
+
+        .well.bordered-left.bordered-themeprimary {
+            margin-bottom: 2px !important;
+            padding: 10px !important;
+        }
+
+        @@media only screen and (max-width: 768px) {
+            .databox-right.bordered-thick.bordered-sky.bg-white {
+                padding: 0px 15px !important;
+            }
+
+            .databox.databox-lg .databox-number {
+                font-size: 15px !important;
+            }
+
+            .databox-text.header {
+                float: left;
+            }
+
+            .well.bordered-left.bordered-themeprimary {
+                /*padding: 2px 5px 16px 5px !important;*/
+                padding: 10px 5px -1px 5px !important;
+            }
+
+            span.label.label-info.pull-right {
+                position: absolute;
+                left: -47px;
+                cursor: pointer;
+                top: 26px;
+            }
+
+            span.btn-xs.btn-palegreen.pull-right {
+                position: absolute;
+                left: -22px;
+                top: 35px;
+            }
+        }
+/*END*/

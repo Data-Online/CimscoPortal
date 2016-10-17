@@ -5,7 +5,9 @@
 }
 
 @*<div data-ng-app="companyOverview" data-ng-controller="companyOverviewViewModel">*@
-<data-ng-app ="app.detailBySite" data-ng-controller="app.detailBySite.ctrl">
+<data-ng-app ="app.detailBySite" data-ng-controller="app.detailBySite.ctrl" data-ng-init="setCurrentFilter('@ViewBag.currentFilter')">
+    <input type="hidden" id="currentFilter" value="@ViewBag.currentFilter" />
+
     <div class="row">
         <div class="col-lg-6 col-sm-6 col-xs-12" ng-show="customerList.length>0">
             <div class="widget">

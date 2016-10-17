@@ -19,10 +19,10 @@
         $scope.allowDisplayByDivision = true;
         $scope.allowShowEnergySavings = true;
 
-        $scope.gczztest = gczztest;
-        var gczztest = function (element) {
-            console.log("Selected " + element);
-        };
+        //$scope.gczztest = gczztest;
+        //var gczztest = function (element) {
+        //    console.log("Selected " + element);
+        //};
         
 
         // elemenName == Page element where chart is to be reendered
@@ -48,6 +48,8 @@
         var _divisionDataStatus = { elementsAdded: false, updateRequired: true, basedUpon: ['energyChargesChart', 'electricityConsumptionChart'] };
         var _siteSelect = 0;  // 0 == select all sites for current user. Appropriate for the dashboard data display.
 
+        var _userData = [];
+
         // Directive required for (eg, where chart name = "energyChargesChart"):
         // <div class="col-lg-12" ng-if="energyChargesChart.data">
         //        <div google-chart chart="energyChargesChart" style="height:330px; width:100%; padding-right:5px;"></div>
@@ -67,8 +69,17 @@
         };
 
         var onUserData = function (data) {
-            $scope.monthSpanOptions = data.monthSpanOptions;
-            $scope.monthSpan = data.monthSpan;
+            _userData = data;
+            userDataSource.assignUserData($scope, _userData);
+
+            //$scope.monthSpanOptions = _userData.monthSpanOptions;
+            //$scope.monthSpan = _userData.monthSpan;
+            //$scope.showWelcomeMessage = _userData.showWelcomeMessage;
+            $scope.updateUserData = updateUserData;
+        };
+
+        var updateUserData = function (setting, value) {
+            _userData = userDataSource.updateUserData(_userData, setting, value);
         };
 
         var onFilterData = function (data) {
@@ -88,7 +99,6 @@
         function onError(reason) {
             $scope.loading = false;
             toaster.pop('error', "Data Load Error", "Unable to load data from database! Status ID =" + reason.status);
-            // console.log(reason);
         };
 
         var readAndShowStatistics = function () {
@@ -100,6 +110,7 @@
             $scope.loading = true;
             readAndPlotGoogleGraphData();
             readAndShowStatistics();
+            readAndUpdateDivisonGraphs();
         };
 
         var displayStatistics = function (data) {
@@ -109,6 +120,8 @@
         var _triggerName = filterData.getEventName();
         $scope.$on(_triggerName, function () {
             if (debugStatus_showMessages) { toaster.pop('success', "Event triggered", "(end of count down)"); }
+            _divisionDataStatus.updateRequired = true;
+
             getBusinessData();
         });
 
@@ -116,7 +129,9 @@
             .then(onWelcomeMessage, onError);
 
         userDataSource.getUserData()
-           .then(onUserData, onError);
+           .then(onUserData, onError);     
+
+
 
         filterData.getAllFilters()
                 .then(onFilterData, onError);
@@ -130,9 +145,10 @@
                     function (entry, key) {
                         var _element = [];
                         _element.push(entry);
+                        var _filter = filterData.createApiFilter($scope.categoriesModel, _element);
                         //console.log(filterData.createApiFilter($scope.categoriesModel, _element));
-                        filterData.getCostConsumptionData($scope.monthSpan, filterData.createApiFilter($scope.categoriesModel, _element), _siteSelect)
-                            .then(function success(data) { return onDivisionData(data, key) }, onError);
+                        filterData.getCostConsumptionData($scope.monthSpan, _filter, _siteSelect)
+                            .then(function success(data) { return onDivisionData(data, key, _filter) }, onError);
                     }
             )
             }
@@ -140,6 +156,7 @@
 
         var addDivisionElements = function () {
             if (_divisionDataStatus.elementsAdded) { return; }
+          
             angular.forEach($scope.divisionsData, function (entry, key) {
                 var _newArray = [JSON.parse(
                     JSON.stringify(_googleChartElements[filterData.elementIndex(_googleChartElements, _divisionDataStatus.basedUpon[0], _chartElementId)])),
@@ -172,13 +189,29 @@
             }
         };
 
-        var onDivisionData = function (data, pairNo) {
-            $scope.loading = false;
+        var onDivisionData = function (data, pairNo, filter) {
             var _target1 = "electricityConsumptionChart" + pairNo;
             var _target2 = "energyChargesChart" + pairNo;
+            var _filterIconRequired = filterData.filterTypeActive('category', filter);
             // Read the data and plot the graphs
+            //console.log("filter = " + filter);
+            //if (filterData.filterTypeActive('category', filter)) { console.log("categ"); }
+            //if (filterData.filterTypeActive('division',filter)) { console.log("div"); }
+            //if (filterData.filterTypeActive('any', filter)) { console.log("any"); }
+           
+            var getter = $parse(_target1 + '.filtersActive');
+            getter.assign($scope, _filterIconRequired);
+            var getter = $parse(_target2 + '.filtersActive');
+            getter.assign($scope, _filterIconRequired);
+
+            // Required for html link, if selected
+            var getter = $parse('divisionLinkFilter' + pairNo);
+            getter.assign($scope, filter);
+
+
             googleChart.initializeGoogleChart($scope, data, _googleChartElements[filterData.elementIndex(_googleChartElements, _target1, _chartElementId)]);
             googleChart.initializeGoogleChart($scope, data, _googleChartElements[filterData.elementIndex(_googleChartElements, _target2, _chartElementId)]);
+            $scope.loading = false;
 
             //console.log(sharedData.getSharedValues().topLevelName);
         };
@@ -187,23 +220,6 @@
 
         googleChart.createButtonControls($scope, _googleChartElements);
 
-        //$scope.togglePreviousYearsData = function ($event) {
-        //    $scope.loading = true;
-        //    // Decide which axes are to be displayed.
-        //    googleChart.toggleAxis2Display($scope.showPrevious12, _googleChartElements);
-        //    // Refresh
-        //    googleChart.refreshAllGoogleCharts($scope, _googleChartElements);
-        //    $scope.loading = false;
-        //};
-
-        //$scope.toggleEnergySavingData = function ($event) {
-        //    $scope.loading = true;
-        //    // Decide which axes are to be displayed.
-        //    googleChart.ZtoggleAxis2Display($scope.showSavings, _googleChartElements)
-        //    // Refresh
-        //    googleChart.refreshAllGoogleCharts($scope, _googleChartElements);
-        //    $scope.loading = false;
-        //};
 
         $scope.reviseMonths = function (newMonthSpan) {
             _divisionDataStatus.updateRequired = true;
@@ -212,6 +228,8 @@
             $scope.monthSpan = newMonthSpan;
             readAndPlotGoogleGraphData();
             readAndUpdateDivisonGraphs();
+
+            updateUserData("monthSpan", newMonthSpan);
         };
 
         $scope.toggleGraphType = function ($event) {
@@ -270,7 +288,7 @@
 
         var initializeGoogleCharts = function (charts, data, applyTitleDetail) {
             var _filtersActive = getReturnIds() != filterData.inactiveFilter();
-            console.log(_filtersActive);
+           // console.log(_filtersActive);
             angular.forEach(charts, function (chart, index) {
                 googleChart.initializeGoogleChart($scope, data, _googleChartElements[filterData.elementIndex(_googleChartElements, chart, _chartElementId)]);
                 if (applyTitleDetail) {
@@ -310,97 +328,97 @@
 
 
 
-        //TEST
-        var chart1 = {};
-        chart1.type = "LineChart";
-        chart1.displayed = false;
-        chart1.data = {
-            "cols": [{
-                id: "month",
-                label: "Month",
-                type: "string"
-            }, {
-                id: "laptop-id",
-                label: "Laptop",
-                type: "number"
-            }, {
-                id: "desktop-id",
-                label: "Desktop",
-                type: "number"
-            }, {
-                id: "server-id",
-                label: "Server",
-                type: "number"
-            }, {
-                id: "cost-id",
-                label: "Shipping",
-                type: "number"
-            }],
-            "rows": [{
-                c: [{
-                    v: "January"
-                }, {
-                    v: 19,
-                    f: "42 items"
-                }, {
-                    v: 12,
-                    f: "Ony 12 items"
-                }, {
-                    v: 7,
-                    f: "7 servers"
-                }, {
-                    v: 4
-                }]
-            }, {
-                c: [{
-                    v: "February"
-                }, {
-                    v: 13
-                }, {
-                    v: 1,
-                    f: "1 unit (Out of stock this month)"
-                }, {
-                    v: 12
-                }, {
-                    v: 2
-                }]
-            }, {
-                c: [{
-                    v: "March"
-                }, {
-                    v: 24
-                }, {
-                    v: 5
-                }, {
-                    v: 11
-                }, {
-                    v: 6
-                }
+        ////TEST
+        //var chart1 = {};
+        //chart1.type = "LineChart";
+        //chart1.displayed = false;
+        //chart1.data = {
+        //    "cols": [{
+        //        id: "month",
+        //        label: "Month",
+        //        type: "string"
+        //    }, {
+        //        id: "laptop-id",
+        //        label: "Laptop",
+        //        type: "number"
+        //    }, {
+        //        id: "desktop-id",
+        //        label: "Desktop",
+        //        type: "number"
+        //    }, {
+        //        id: "server-id",
+        //        label: "Server",
+        //        type: "number"
+        //    }, {
+        //        id: "cost-id",
+        //        label: "Shipping",
+        //        type: "number"
+        //    }],
+        //    "rows": [{
+        //        c: [{
+        //            v: "January"
+        //        }, {
+        //            v: 19,
+        //            f: "42 items"
+        //        }, {
+        //            v: 12,
+        //            f: "Ony 12 items"
+        //        }, {
+        //            v: 7,
+        //            f: "7 servers"
+        //        }, {
+        //            v: 4
+        //        }]
+        //    }, {
+        //        c: [{
+        //            v: "February"
+        //        }, {
+        //            v: 13
+        //        }, {
+        //            v: 1,
+        //            f: "1 unit (Out of stock this month)"
+        //        }, {
+        //            v: 12
+        //        }, {
+        //            v: 2
+        //        }]
+        //    }, {
+        //        c: [{
+        //            v: "March"
+        //        }, {
+        //            v: 24
+        //        }, {
+        //            v: 5
+        //        }, {
+        //            v: 11
+        //        }, {
+        //            v: 6
+        //        }
 
-                ]
-            }]
-        };
-        chart1.options = {
-            "title": "Sales per month",
-            "colors": ['#0000FF', '#009900', '#CC0000', '#DD9900'],
-            "defaultColors": ['#0000FF', '#009900', '#CC0000', '#DD9900'],
-            "isStacked": "true",
-            "fill": 20,
-            //"displayExactValues": true,
-            "vAxis": {
-                "title": "Sales unit",
-                "gridlines": {
-                    "count": 10
-                }
-            },
-            "hAxis": {
-                "title": "Date"
-            }
-        };
-        chart1.view = {
-            columns: [0, 1, 2, 3, 4]
-        };
-        $scope.myChart = chart1;
+        //        ]
+        //    }]
+        //};
+        //chart1.options = {
+        //    "title": "Sales per month",
+        //    "colors": ['#0000FF', '#009900', '#CC0000', '#DD9900'],
+        //    "defaultColors": ['#0000FF', '#009900', '#CC0000', '#DD9900'],
+        //    "isStacked": "true",
+        //    "fill": 20,
+        //    //"displayExactValues": true,
+        //    "vAxis": {
+        //        "title": "Sales unit",
+        //        "gridlines": {
+        //            "count": 10
+        //        }
+        //    },
+        //    "hAxis": {
+        //        "title": "Date"
+        //    }
+        //};
+        //chart1.view = {
+        //    columns: [0, 1, 2, 3, 4]
+        //};
+        //$scope.myChart = chart1;
 
         $scope.seriesSelected = function (selectedItem) {
             if (selectedItem) {

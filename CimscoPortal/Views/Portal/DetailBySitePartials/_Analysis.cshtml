@@ -8,16 +8,20 @@
 
 
             @{ var url1 = Url.Action("SiteOverview", "Portal", new { id = "{{siteDetail.siteId}}" });
-             url1 = HttpUtility.UrlDecode(url1);
+                url1 = HttpUtility.UrlDecode(url1);
             }
             <a ng-href="@url1">
                 <i class="stat-icon fa fa-search"></i>
                 <span style="font-size:large; color:GrayText">{{siteDetail.siteName}}</span>
             </a>
-            <span> - Total charges : {{siteDetail.invoiceCosts.invoiceValue | currency:$}}</span>
-            <span>(from {{siteDetail.invoiceKeyData.totalInvoicesOnFile}} invoice(s) on file)</span>
-            @*<i class="stat-icon fa fa-ban" ng-show="siteDetail.invoiceKeyData.totalInvoicesOnFile == 0"></i>*@
-
+            <span ng-if="siteDetail.invoiceKeyData.totalInvoicesOnFile">
+                <span> - Total charges : {{siteDetail.invoiceCosts.invoiceValue | currency:$}}</span>
+                <span>(from {{siteDetail.invoiceKeyData.totalInvoicesOnFile}} invoice(s) on file)</span>
+                @*<i class="stat-icon fa fa-ban" ng-show="siteDetail.invoiceKeyData.totalInvoicesOnFile == 0"></i>*@
+            </span>
+            <span ng-if="!siteDetail.invoiceKeyData.totalInvoicesOnFile">
+                <span> - No data currently on file</span>
+            </span>
         </th>
     </tr>
     <tbody ng-show="siteDetail.invoiceKeyData.totalInvoicesOnFile > 0">
@@ -222,9 +226,9 @@
                 </div>
 
                 @*<div class="progress-bar progress-bar-{{invTheme[1].theme}}" style="width: {{siteDetail.invoiceCosts.unitsPerSqmByPercentForDivision}}%"
-                     data-toggle="popover" title="" data-trigger="hover" data-content="Total Kwh per square meter from {{siteDetail.invoiceKeyData.totalInvoicesOnFile}} invoice(s)" data-placement="bottom">
-                    <span> {{siteDetail.invoiceCosts.unitsPerSqm| number:2}}  </span>
-                </div>*@
+                         data-toggle="popover" title="" data-trigger="hover" data-content="Total Kwh per square meter from {{siteDetail.invoiceKeyData.totalInvoicesOnFile}} invoice(s)" data-placement="bottom">
+                        <span> {{siteDetail.invoiceCosts.unitsPerSqm| number:2}}  </span>
+                    </div>*@
             </td>
             <td width="20%">
                 <div ng-if="siteDetail.unitsPerSqmHistory.totals.length > 0">
@@ -236,5 +240,4 @@
         </tr>
     </tbody>
 </table>
-
 

@@ -5,8 +5,8 @@
         .module("app.invoices")
         .controller("app.invoices.ctrl", detailBySite)
 
-    detailBySite.$inject = ['$scope', '$filter', 'inDataSource', 'userDataSource', 'filterData', 'toaster'];
-    function detailBySite($scope, $filter, inDataSource, userDataSource, filterData, toaster) {
+    detailBySite.$inject = ['$scope', '$filter', 'inDataSource', 'userDataSource', 'filterData', 'toaster', 'dataFormatting'];
+    function detailBySite($scope, $filter, inDataSource, userDataSource, filterData, toaster, dataFormatting) {
 
         var _triggerEventName = filterData.getEventName();
         var _invTypes = [];
@@ -14,6 +14,8 @@
         var _previousSiteId = -1;
         var _previousMonthSpan = 0;
         var debugStatus_showMessages = false;
+        var _userData = [];
+
         $scope.requests = [];
 
         // Invoice display control
@@ -38,7 +40,14 @@
             _previousMonthSpan = $scope.monthSpan;
             $scope.monthSpan = newMonthSpan;
             $scope.$emit(_triggerEventName);
+
+            updateUserData("monthSpan", newMonthSpan);
+
             // $scope.loading = false;
+        };
+
+        var updateUserData = function (setting, value) {
+            _userData = userDataSource.updateUserData(_userData, setting, value);
         };
 
         $scope.$on(_triggerEventName, function (data) {
@@ -279,8 +288,11 @@
 
         var onUserData = function (data) {
             $scope.loading = true;
-            $scope.monthSpanOptions = data.monthSpanOptions;
-            $scope.monthSpan = data.monthSpan;
+            _userData = data;
+            userDataSource.assignUserData($scope, _userData);
+
+            //$scope.monthSpanOptions = data.monthSpanOptions;
+            //$scope.monthSpan = data.monthSpan;
             _previousMonthSpan = $scope.monthSpan;
             if (debugStatus_showMessages) { toaster.pop('success', "User data read", ""); }
             //filterData.getAllFilters()
@@ -289,6 +301,10 @@
             //console.log($scope.selectItems);
             setInitialScope();
 
+        };
+
+        var updateUserSettings = function (setting, value) {
+            _userData = userDataSource.updateUserSettings(_userData, setting, value);
         };
 
         var setInitialScope = function () {
@@ -478,25 +494,9 @@
             }
         };
 
+        $scope.pctBoxStyle = dataFormatting.pctBoxStyle;
+        $scope.negativeValue = dataFormatting.negativeValue;
 
-        // GPA *** --> duplicate in SiteOverview controller. Re-factor this!
-        $scope.pctBoxStyle = function (myValue) {
-            var num = parseInt(myValue);
-            var style = 'databox-stat radius-bordered';
-            if (num <= -999) {
-                style = style + ' hide-element';
-            }
-            else if (num > 0) {
-                style = style + ' bg-warning';
-            }
-            else if (num < 0) {
-                style = style + ' bg-green';
-            }
-            else {
-                style = style + ' bg-sky';
-            }
-            return style;
-        };
 
         $scope.getCountByFilter = function (field, data) {
             // GPA*** refactor!!

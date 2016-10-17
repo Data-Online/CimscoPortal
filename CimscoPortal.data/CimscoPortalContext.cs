@@ -24,11 +24,15 @@ namespace CimscoPortal.Data.Models
             base.SaveChanges();
         }
 
-        public virtual void Update(InvoiceSummary _summary)
+        public virtual void Update(InvoiceSummary summary)
         {
-            base.Entry(_summary).State = EntityState.Modified;
+            base.Entry(summary).State = EntityState.Modified;
         }
 
+        public virtual void UpdateSettings(UserSetting settings)
+        {
+            base.Entry(settings).State = EntityState.Modified;
+        }
 
         public DbSet<Address> Addresses { get; set; }
         public DbSet<AspNetRole> AspNetRoles { get; set; }
@@ -51,6 +55,7 @@ namespace CimscoPortal.Data.Models
         public DbSet<CommonData> CommonData { get; set; }
         public DbSet<WelcomeScreen> WelcomeScreen { get; set; }
         public DbSet<SystemConfiguration> SystemConfiguration { get; set; }
+        public DbSet<UserSetting> UserSetting { get; set; }
 
         public DbSet<Division> Divisions { get; set; }
 
@@ -84,6 +89,7 @@ namespace CimscoPortal.Data.Models
             modelBuilder.Configurations.Add(new SystemConfigurationMap());
             modelBuilder.Configurations.Add(new DivisionMap());
             modelBuilder.Configurations.Add(new WelcomeScreenMap());
+            modelBuilder.Configurations.Add(new UserSettingMap());
 
             modelBuilder.Configurations.Add(new LoginHistoryMap());
           //  modelBuilder.Configurations.Add(new UserDetailMap());

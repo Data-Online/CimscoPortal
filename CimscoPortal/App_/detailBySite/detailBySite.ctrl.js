@@ -4,14 +4,23 @@
     angular.module("app.detailBySite")
             .controller("app.detailBySite.ctrl", detailBySite)
 
-    detailBySite.$inject = ['$scope', '$timeout', 'soDataSource', 'userDataSource', 'toaster'];
-    function detailBySite($scope, $timeout, soDataSource, userDataSource, toaster) {
+    detailBySite.$inject = ['$scope', '$timeout', 'soDataSource', 'userDataSource', 'toaster', 'sharedData'];
+    function detailBySite($scope, $timeout, soDataSource, userDataSource, toaster, sharedData) {
         // $scope.monthSpanOptions = [3, 6, 12, 24];
-        var monthSpan = 12; // Refactor out
+       // var monthSpan = 12; // Refactor out
+        var _userData = [];
         // Accordion
-        var debugStatus = false;
+        var debugStatus = true;
         $scope.oneAtATime = true;  // Accordion behaviour
         //$scope.emptyDivisionName = "Not Set";
+        var _currentFilter = "__";
+        $scope.setCurrentFilter = function (filter) {
+            if (filter.length > 0)
+                _currentFilter = filter;
+
+            // Start data load sequence
+            getUserData();
+        };
 
         $scope.groups = [
           {
@@ -50,7 +59,7 @@
             }
         }
         var onSiteData = function (data) {
-            $scope.monthSpan = monthSpan;
+            //$scope.monthSpan = monthSpan;
             $scope.siteDetailData = data.siteDetailData;
             $scope.divisions = data.divisions;
             //console.log($scope.divisions);
@@ -76,42 +85,45 @@
             //console.log("Len 1 : " + data.siteDetailData.length);
             for (index = 0, len = data.siteDetailData.length; index < len; ++index) {
                 //console.log("Div name " + data.siteDetailData[index].divisionName);
-                tallyArray.push({
-                    "invoiceCounts": [
-                        {
-                            "percent": (data.siteDetailData[index].invoiceKeyData.approved / data.siteDetailData[index].invoiceKeyData.totalInvoices * 100),
-                            "noOfInv": data.siteDetailData[index].invoiceKeyData.approved,
-                            "tooltip": "Approved"
-                        },
-                        {
-                            "percent": (data.siteDetailData[index].invoiceKeyData.pending / data.siteDetailData[index].invoiceKeyData.totalInvoices * 100),
-                            "noOfInv": data.siteDetailData[index].invoiceKeyData.pending,
-                            "tooltip": "To be Approved"
-                        },
-                        {
-                            "percent": (data.siteDetailData[index].invoiceKeyData.missing / data.siteDetailData[index].invoiceKeyData.totalInvoices * 100),
-                            "noOfInv": data.siteDetailData[index].invoiceKeyData.missing,
-                            "tooltip": "Missing"
-                        }
-                    ]
-                });
-                //console.log(tallyArray[0]);
-                $scope.siteDetailData[index].graphData = tallyArray[0];
-                //console.log("Invoices on file : " + (data.siteDetailData[index].invoiceKeyData.totalInvoicesOnFile));
+                if (data.siteDetailData[index].invoiceKeyData) {
+                    tallyArray.push({
+                        "invoiceCounts": [
+                            {
+                                "percent": (data.siteDetailData[index].invoiceKeyData.approved / data.siteDetailData[index].invoiceKeyData.totalInvoices * 100),
+                                "noOfInv": data.siteDetailData[index].invoiceKeyData.approved,
+                                "tooltip": "Approved"
+                            },
+                            {
+                                "percent": (data.siteDetailData[index].invoiceKeyData.pending / data.siteDetailData[index].invoiceKeyData.totalInvoices * 100),
+                                "noOfInv": data.siteDetailData[index].invoiceKeyData.pending,
+                                "tooltip": "To be Approved"
+                            },
+                            {
+                                "percent": (data.siteDetailData[index].invoiceKeyData.missing / data.siteDetailData[index].invoiceKeyData.totalInvoices * 100),
+                                "noOfInv": data.siteDetailData[index].invoiceKeyData.missing,
+                                "tooltip": "Missing"
+                            }
+                        ]
+                    });
 
-                // Expand the first division tab that contains data
-                if ((data.siteDetailData[index].invoiceKeyData.totalInvoicesOnFile) > 0 && !_tabSet) {
-                    //console.log("div len = " + $scope.divisions.length);
-                    for (var i = 0; i < $scope.divisions.length; i++) {
-                        // console.log("Test for Name  = " + $scope.divisions[i]);
-                        if (data.siteDetailData[index].divisionName == $scope.divisions[i]) {
-                            //console.log(data.siteDetailData[index].divisionName);
-                            $scope.divisionView[i] = true
-                            _tabSet = true;
+                    //console.log(tallyArray[0]);
+                    $scope.siteDetailData[index].graphData = tallyArray[0];
+                    //console.log("Invoices on file : " + (data.siteDetailData[index].invoiceKeyData.totalInvoicesOnFile));
+
+                    // Expand the first division tab that contains data
+                    if ((data.siteDetailData[index].invoiceKeyData.totalInvoicesOnFile) > 0 && !_tabSet) {
+                        //console.log("div len = " + $scope.divisions.length);
+                        for (var i = 0; i < $scope.divisions.length; i++) {
+                            // console.log("Test for Name  = " + $scope.divisions[i]);
+                            if (data.siteDetailData[index].divisionName == $scope.divisions[i]) {
+                                //console.log(data.siteDetailData[index].divisionName);
+                                $scope.divisionView[i] = true
+                                _tabSet = true;
+                            }
                         }
                     }
-                }
-                tallyArray = [];
+                    tallyArray = [];
+                };
             };
             //console.log($scope.divisionView);
             $scope.loading = false;
@@ -126,76 +138,79 @@
         //    $.sparkline_display_visible;
         //}
 
-        var onRepo = function (data) {
-            var index; var len;
-            var tallyArray = [];
-            var sumArray = [];
-            console.log('Data read..' + data.invoiceTallies.length);
-            var maxTotalInvoices = getMaxNoOfInvoices(data.invoiceTallies);
-            var maxEnergyCharge = getMaxEnergyCharge(data.invoiceCosts);
-            var maxKwh = getMaxKwh(data.invoiceCosts);
-            var maxUnitsPerSqm = getUnitsPerSqm(data.invoiceCosts);
-            var maxCostPerSqm = getMaxCostPerSqm(data.invoiceCosts);
-            console.log(maxTotalInvoices);
-            for (index = 0, len = data.invoiceTallies.length; index < len; ++index) {
-                // maxEnergyCharge = maxEnergyCharge * data.invoiceTallies[index].calculatedLossRate;
-                tallyArray.push({
-                    "site": data.invoiceTallies[index].siteName,
-                    "siteId": data.invoiceTallies[index].siteId,
-                    "firstInvoiceDate": data.invoiceTallies[index].firstInvoiceDate,
-                    "totalInvoicesOnFile": data.invoiceTallies[index].totalInvoicesOnFile,
-                    "data": [
-                        { "percent": (data.invoiceTallies[index].approvedInvoices / maxTotalInvoices * 100), "noOfInv": data.invoiceTallies[index].approvedInvoices },
-                        { "percent": (data.invoiceTallies[index].pendingInvoices / maxTotalInvoices * 100), "noOfInv": data.invoiceTallies[index].pendingInvoices },
-                        { "percent": (data.invoiceTallies[index].missingInvoices / maxTotalInvoices * 100), "noOfInv": data.invoiceTallies[index].missingInvoices }
-                    ]
-                });
+        //var onRepo = function (data) {
+        //    var index; var len;
+        //    var tallyArray = [];
+        //    var sumArray = [];
+        //    console.log('Data read..' + data.invoiceTallies.length);
+        //    var maxTotalInvoices = getMaxNoOfInvoices(data.invoiceTallies);
+        //    var maxEnergyCharge = getMaxEnergyCharge(data.invoiceCosts);
+        //    var maxKwh = getMaxKwh(data.invoiceCosts);
+        //    var maxUnitsPerSqm = getUnitsPerSqm(data.invoiceCosts);
+        //    var maxCostPerSqm = getMaxCostPerSqm(data.invoiceCosts);
+        //    console.log(maxTotalInvoices);
+        //    for (index = 0, len = data.invoiceTallies.length; index < len; ++index) {
+        //        // maxEnergyCharge = maxEnergyCharge * data.invoiceTallies[index].calculatedLossRate;
+        //        tallyArray.push({
+        //            "site": data.invoiceTallies[index].siteName,
+        //            "siteId": data.invoiceTallies[index].siteId,
+        //            "firstInvoiceDate": data.invoiceTallies[index].firstInvoiceDate,
+        //            "totalInvoicesOnFile": data.invoiceTallies[index].totalInvoicesOnFile,
+        //            "data": [
+        //                { "percent": (data.invoiceTallies[index].approvedInvoices / maxTotalInvoices * 100), "noOfInv": data.invoiceTallies[index].approvedInvoices },
+        //                { "percent": (data.invoiceTallies[index].pendingInvoices / maxTotalInvoices * 100), "noOfInv": data.invoiceTallies[index].pendingInvoices },
+        //                { "percent": (data.invoiceTallies[index].missingInvoices / maxTotalInvoices * 100), "noOfInv": data.invoiceTallies[index].missingInvoices }
+        //            ]
+        //        });
 
-                sumArray.push({
-                    "site": data.invoiceTallies[index].siteName,
-                    "siteId": data.invoiceTallies[index].siteId,
-                    "invCount": data.invoiceTallies[index].totalInvoicesOnFile,
-                    "billTotal": data.invoiceCosts[index].invoiceValue,
-                    "power": [{
-                        "reading": data.invoiceCosts[index].energyCharge, /// (1 + data.invoiceTallies[index].calculatedLossRate),
-                        "percent": (data.invoiceCosts[index].energyCharge / (1 + data.invoiceTallies[index].calculatedLossRate)) / maxEnergyCharge * 100
-                    },
-                    {
-                        "reading": (data.invoiceCosts[index].energyCharge / (1 + data.invoiceTallies[index].calculatedLossRate)) * data.invoiceTallies[index].calculatedLossRate,
-                        "percent": ((data.invoiceCosts[index].energyCharge / (1 + data.invoiceTallies[index].calculatedLossRate)) * data.invoiceTallies[index].calculatedLossRate)
-                                        / maxEnergyCharge * 100
-                    }],
-                    "kWh": [{ "reading": data.invoiceCosts[index].totalKwh, "percent": data.invoiceCosts[index].totalKwh / maxKwh * 100, "units": "kWh" }],
-                    "upsqm": [{ "reading": data.invoiceCosts[index].unitsPerSqm, "percent": data.invoiceCosts[index].unitsPerSqm / maxUnitsPerSqm * 100, "units": "" }],
-                    "cpsqm": [{ "reading": data.invoiceCosts[index].costPerSqm, "percent": data.invoiceCosts[index].costPerSqm / maxCostPerSqm * 100, "units": "$" }]
-                });
-                //  console.log("energy charge = " + data.invoiceCosts[index].energyCharge + " max charge = " + maxEnergyCharge + " loss rate = " + data.invoiceTallies[index].calculatedLossRate);
-            };
-            // console.log(sumArray);
-            //console.log(tallyArray);
-            $scope.invDistn = tallyArray;
-            $scope.invoiceDetail = sumArray;
-            $scope.monthSpan = monthSpan;
-            $scope.groupCompanyDetail = data.groupCompanyDetail;
-            $scope.customerList = data.customerList;
-            //console.log($scope.customerList);
-            console.log('change month span ... ' + monthSpan);
+        //        sumArray.push({
+        //            "site": data.invoiceTallies[index].siteName,
+        //            "siteId": data.invoiceTallies[index].siteId,
+        //            "invCount": data.invoiceTallies[index].totalInvoicesOnFile,
+        //            "billTotal": data.invoiceCosts[index].invoiceValue,
+        //            "power": [{
+        //                "reading": data.invoiceCosts[index].energyCharge, /// (1 + data.invoiceTallies[index].calculatedLossRate),
+        //                "percent": (data.invoiceCosts[index].energyCharge / (1 + data.invoiceTallies[index].calculatedLossRate)) / maxEnergyCharge * 100
+        //            },
+        //            {
+        //                "reading": (data.invoiceCosts[index].energyCharge / (1 + data.invoiceTallies[index].calculatedLossRate)) * data.invoiceTallies[index].calculatedLossRate,
+        //                "percent": ((data.invoiceCosts[index].energyCharge / (1 + data.invoiceTallies[index].calculatedLossRate)) * data.invoiceTallies[index].calculatedLossRate)
+        //                                / maxEnergyCharge * 100
+        //            }],
+        //            "kWh": [{ "reading": data.invoiceCosts[index].totalKwh, "percent": data.invoiceCosts[index].totalKwh / maxKwh * 100, "units": "kWh" }],
+        //            "upsqm": [{ "reading": data.invoiceCosts[index].unitsPerSqm, "percent": data.invoiceCosts[index].unitsPerSqm / maxUnitsPerSqm * 100, "units": "" }],
+        //            "cpsqm": [{ "reading": data.invoiceCosts[index].costPerSqm, "percent": data.invoiceCosts[index].costPerSqm / maxCostPerSqm * 100, "units": "$" }]
+        //        });
+        //        //  console.log("energy charge = " + data.invoiceCosts[index].energyCharge + " max charge = " + maxEnergyCharge + " loss rate = " + data.invoiceTallies[index].calculatedLossRate);
+        //    };
+        //    // console.log(sumArray);
+        //    //console.log(tallyArray);
+        //    $scope.invDistn = tallyArray;
+        //    $scope.invoiceDetail = sumArray;
+        //    $scope.monthSpan = monthSpan;
+        //    $scope.groupCompanyDetail = data.groupCompanyDetail;
+        //    $scope.customerList = data.customerList;
+        //    //console.log($scope.customerList);
+        //    console.log('change month span ... ' + monthSpan);
 
-            $scope.loading = false;
-        };
+        //    $scope.loading = false;
+        //};
 
         var getInvoiceData = function () {
-            var companyId = 0;
-            soDataSource.getInvoiceTally(monthSpan, companyId)
+            //var companyId = 0;
+            soDataSource.getInvoiceTally($scope.monthSpan, _currentFilter)
                .then(onSiteData, onError);
         };
 
         var onUserData = function (data) {
+            _userData = data;
+            userDataSource.assignUserData($scope, _userData);
+
             $scope.loading = true;
-            $scope.monthSpanOptions = data.monthSpanOptions;
-            $scope.monthSpan = data.monthSpan;
-            //$scope.companyId = data.companyId;
-            monthSpan = data.monthSpan;
+            //$scope.monthSpanOptions = data.monthSpanOptions;
+            //$scope.monthSpan = data.monthSpan;
+            ////$scope.companyId = data.companyId;
+            //monthSpan = data.monthSpan;
             getInvoiceData();
         };
 
@@ -249,21 +264,30 @@
 
         $scope.reviseMonths = function (newMonthSpan) {
             $scope.loading = true;
-            console.log('revise data...' + newMonthSpan);
-            monthSpan = newMonthSpan;
+            $scope.monthSpan = newMonthSpan;
             getInvoiceData();
+            updateUserData("monthSpan", newMonthSpan);
         };
 
-        $scope.changeCompany = function (newCompanyId) {
-            console.log('change company data...month span: ' + monthSpan + ' company Id: ' + newCompanyId);
-            companyId = newCompanyId;
-            soDataSource.getInvoiceTally(monthSpan, companyId)
-                .then(onRepo, onError);
+        var updateUserData = function (setting, value) {
+            _userData = userDataSource.updateUserData(_userData, setting, value);
         };
+        //$scope.changeCompany = function (newCompanyId) {
+        //    console.log('change company data...month span: ' + monthSpan + ' company Id: ' + newCompanyId);
+        //    companyId = newCompanyId;
+        //    soDataSource.getInvoiceTally(monthSpan, companyId)
+        //        .then(onRepo, onError);
+        //};
 
         $scope.loading = true;
-        userDataSource.getUserData()
-            .then(onUserData, onError);
+
+        var getUserData = function () {
+            userDataSource.getUserData()
+           .then(onUserData, onError);
+        };
+
+        //userDataSource.getUserData()
+        //    .then(onUserData, onError);
 
         $scope.tabTableHeader = 'Site Details';
 

@@ -67,60 +67,77 @@
                             </span>
                         </div>
                     </div>
-                    <i ng-show="loadingStats||loading" style="position:absolute; left:50%; top:20px; margin:auto;" class="fa fa-2x fa-refresh fa-fw" ng-class="{'fa-spin' : loadingStats||loading}"></i>
+                    <i ng-show="loadingStats||loading" style="position:absolute; left:48%; top:50px; margin:auto; z-index:99" class="fa fa-4x fa-refresh fa-fw" ng-class="{'fa-spin' : loadingStats||loading}"></i>
+                    @*<i ng-show="loadingStats||loading" style="position:absolute; left:50%; top:20px; margin:auto;" class="fa fa-2x fa-refresh fa-fw" ng-class="{'fa-spin' : loadingStats||loading}"></i>*@
                     <div class="row" ng-style="{opacity: ((loadingStats) && .4) || 1.0}">
                         <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12" ng-repeat="category in invoiceStatsBySite.summary ">
-                            <div class="databox databox-lg databox-shadowed databox-graded radius-bordered">
-                                <label data-toggle="popover" data-content="There are currently {{category.entries}} invoices {{category.header}} across {{category.sites}} sites. (approximately {{category.percent|percentage:100}} of invoiices)."
-                                       data-title="" data-placement="auto" data-trigger="hover">
-                                    <div class="databox-left bg-lightred" style="padding:4px;">
-                                        <div class="databox-piechart">
-                                            <span ng-if="category.percent" class="standard-piechart" easypiechart options="epOptions" percent="category.percent">
-                                                <span class="ep-integer" ng-bind="category.percent|percentage:100"></span>
-                                            </span>
+                            <div class="databox databox-lg c-custom databox-shadowed databox-graded radius-bordered">
+                                <div class="databox-row row-4 bg-lightred no-padding">
+                                    <div class="databox-cell cell-1 text-align-center no-padding padding-top-5">
+                                        <span class="databox-number white">
+                                            <i class="fa fa-bar-chart-o no-margin"></i>
+                                        </span>
+                                    </div>
+                                    <div class="databox-cell cell-8 no-padding padding-top-5 text-align-left">
+                                        <span class="databox-number white text-capitalize">{{category.header}}</span>
+                                    </div>
+                                    @*<div class="databox-cell cell-3 text-align-right padding-10">
+                                        <span class="databox-text white">13 DECEMBER</span>
+                                    </div>*@
+                                </div>
+                                @*<div class="databox-row row-8">*@
+                                    <label data-toggle="popover" data-content="There are currently {{category.entries}} invoices {{category.header}} across {{category.sites}} site(s). (approximately {{category.percent|percentage:100}} of invoices)."
+                                           data-title="" data-placement="auto" data-trigger="hover">
+                                        <div class="databox-left bg-lightred" style="padding:4px;">
+                                            <div class="databox-piechart">
+                                                <span ng-if="category.percent" class="standard-piechart" easypiechart options="epOptions" percent="category.percent">
+                                                    <span class="ep-integer" ng-bind="category.entries"></span>
+                                                    @*<span class="ep-integer" ng-bind="category.percent|percentage:100"></span>*@
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </label>
+                                    <div class="databox-right">
+                                        <span class="databox-number themesecondary">{{category.entries}} invoices {{category.header}} ({{category.percent|percentage:100}})</span>
+                                        <div class="databox-text darkgray">From {{category.sites}} sites</div>
+                                        <div class="databox-stat themesecondary radius-bordered">
+                                            <li ng-show="true">
+                                                <a id="approvals-action-button" class="dropdown-toggle" data-toggle="dropdown" title="Sites" href="#">
+                                                    @*<i class="icon fa fa-tasks"></i>*@
+                                                    <i class="stat-icon icon-lg fa fa-2x fa-tasks"></i>
+                                                    @*<span class="badge">4</span>*@
+                                                </a>
+                                                <!--Tasks Dropdown-->
+                                                <ul id="approvals-action" class="pull-right dropdown-menu dropdown-tasks dropdown-arrow ">
+                                                    <li class="dropdown-header bordered-darkorange">
+                                                        <i class="fa fa-2x fa-tasks"></i>
+                                                        {{category.sites}} Site(s)
+                                                    </li>
+
+                                                    <li ng-repeat="site in invoiceStatsBySite | filter:greaterThanZero(category.filter) | limitTo:8">
+                                                        <a href="#" ng-click="showInvoices(category.filter, site.siteId, site.siteName)">
+                                                            <div class="clearfix">
+                                                                <span class="pull-left">{{site.siteName | cut:true:25:' ..'}}</span>
+                                                                <span ng-init="_invCount = getCountByFilter(category.filter, site)" class=" pull-right">{{_invCount}}</span>
+                                                            </div>
+
+                                                            <div class="progress progress-xs">
+                                                                <div ng-init="_pctCount = getPercentByFilter(category.filter, site)" style="width:{{_pctCount}}%" class="progress-bar"></div>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                    <li class="dropdown-footer">
+                                                        <a href="#" ng-click="showInvoices(category.filter, 0, 'All Sites')">
+                                                            Show All Sites
+                                                        </a>
+                                                        <button class="btn btn-xs btn-default shiny darkorange icon-only pull-right"><i class="fa fa-check"></i></button>
+                                                    </li>
+                                                </ul>
+                                                <!--/Tasks Dropdown-->
+                                            </li>
                                         </div>
                                     </div>
-                                </label>
-                                <div class="databox-right">
-                                    <span class="databox-number themesecondary">{{category.entries}} invoices {{category.header}}</span>
-                                    <div class="databox-text darkgray">From {{category.sites}} Sites</div>
-                                    <div class="databox-stat themesecondary radius-bordered">
-                                        <li ng-show="true">
-                                            <a id="approvals-action-button" class="dropdown-toggle" data-toggle="dropdown" title="Sites" href="#">
-                                                @*<i class="icon fa fa-tasks"></i>*@
-                                                <i class="stat-icon icon-lg fa fa-tasks"></i>
-                                                @*<span class="badge">4</span>*@
-                                            </a>
-                                            <!--Tasks Dropdown-->
-                                            <ul id="approvals-action" class="pull-right dropdown-menu dropdown-tasks dropdown-arrow ">
-                                                <li class="dropdown-header bordered-darkorange">
-                                                    <i class="fa fa-tasks"></i>
-                                                    {{category.sites}} Sites
-                                                </li>
-
-                                                <li ng-repeat="site in invoiceStatsBySite | filter:greaterThanZero(category.filter) | limitTo:8">
-                                                    <a href="#" ng-click="showInvoices(category.filter, site.siteId, site.siteName)">
-                                                        <div class="clearfix">
-                                                            <span class="pull-left">{{site.siteName | cut:true:25:' ..'}}</span>
-                                                            <span ng-init="_invCount = getCountByFilter(category.filter, site)" class=" pull-right">{{_invCount}}</span>
-                                                        </div>
-
-                                                        <div class="progress progress-xs">
-                                                            <div ng-init="_pctCount = getPercentByFilter(category.filter, site)" style="width:{{_pctCount}}%" class="progress-bar"></div>
-                                                        </div>
-                                                    </a>
-                                                </li>
-                                                <li class="dropdown-footer">
-                                                    <a href="#" ng-click="showInvoices(category.filter, 0, 'All Sites')">
-                                                        Show All Sites
-                                                    </a>
-                                                    <button class="btn btn-xs btn-default shiny darkorange icon-only pull-right"><i class="fa fa-check"></i></button>
-                                                </li>
-                                            </ul>
-                                            <!--/Tasks Dropdown-->
-                                        </li>
-                                    </div>
-                                </div>
+                                @*</div>*@
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" ng-show="false">
@@ -146,7 +163,8 @@
                     <h6 ng-if="currentSiteName" class="row-title before-azure">{{currentSiteName}}</h6>
                     <h6 ng-if="!currentSiteName" class="row-title before-azure">No data selected</h6>
                     @*<div class="row"><span>Current Site Id = {{siteId}}. Site name {{siteName}}. Filter Status = {{invType}}</span></div>*@
-                    <i ng-show="loading" style="position:absolute; left:50%; top:20px; margin:auto;" class="fa fa-2x fa-refresh fa-fw" ng-class="{'fa-spin' : loading}"></i>
+                    @*<i ng-show="loading" style="position:absolute; left:50%; top:20px; margin:auto;" class="fa fa-2x fa-refresh fa-fw" ng-class="{'fa-spin' : loading}"></i>*@
+                    <i ng-show="loading" style="position:absolute; left:48%; top:50px; margin:auto; z-index:99" class="fa fa-4x fa-refresh fa-fw" ng-class="{'fa-spin' : loading}"></i>
                     <div class="tab-content tabs-flat no-padding" ng-style="{opacity: ((loading) && .4) || 1.0}">
                         <div id="invoices" class="tab-pane animated fadeInUp no-padding-bottom active" style="padding:20px 20px 0 20px;">
                             @Html.Partial("SiteOverviewPartials/_InvoiceList")
@@ -164,7 +182,7 @@
     }
 
 
-    <style type="text/css">
+    @*<style type="text/css">
         span.label.label-info.pull-right {
             position: absolute;
             left: -44px;
@@ -228,4 +246,4 @@
                 top: 35px;
             }
         }
-    </style>
+    </style>*@

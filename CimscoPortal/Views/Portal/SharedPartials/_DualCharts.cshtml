@@ -2,8 +2,12 @@
     var leftGraph = (string)ViewData["leftGraph"];
     var rightGraph = (string)ViewData["rightGraph"];
     var border = (string)ViewData["border"];
+    var filter = (string)ViewData["filter"];
+    var href = (string)ViewData["href"];
 }
 
+@*<a href="@Url.Action("InvoiceDetail", "Portal")/{{inv.invoiceId}}" title="Invoice Details"></a>*@
+<span dual-chart-filter filter="@filter" href="@href"></span>
 <div class="row" ng-style="{opacity: ((loading) && .4) || 1.0}">
     <div class="col-xs-12 col-md-6">
         <div class="widget">

@@ -125,7 +125,7 @@ namespace CimscoPortal.Controllers
             return View();
         }
 
-        public ActionResult DetailBySite()
+        public ActionResult DetailBySite(string id)
         {
             // int categoryId = 2;
             //var zz = _portalService.GetAlertsFor(categoryId);
@@ -133,6 +133,7 @@ namespace CimscoPortal.Controllers
             //var user = User.Identity.Name;
             //var userId = User.Identity.GetUserId();
             //var zz = User.IsInRole("Admin");
+            ViewBag.currentFilter = id ?? "";
             return View();
         }
 

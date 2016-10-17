@@ -25,7 +25,7 @@
                         <span ng-show="siteData.address2.length > 0">,{{siteData.address2}}</span>
                         <span ng-show="siteData.address3.length > 0">,{{siteData.address3}}</span>
                         <br />
-                        <span>
+                        <span ng-if="siteData.totalFloorSpaceSqMeters > 0">
                             Site Floor Space : {{siteData.totalFloorSpaceSqMeters}} Sq Meters
                         </span>
 

@@ -202,6 +202,9 @@ namespace CimscoPortal.App_Start
                 .ForMember(m => m.CustomerName, opt => opt.MapFrom(s => s.Customer.CustomerName))
                 .ForMember(m => m.DivisionName, opt => opt.MapFrom(s => s.GroupDivision.DivisionName ?? "Not Set" ));
 
+            Mapper.CreateMap<UserSetting, UserSettingsViewModel>();
+
+            Mapper.CreateMap<UserSettingsViewModel, UserSetting>();
         }
 
 

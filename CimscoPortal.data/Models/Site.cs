@@ -31,6 +31,8 @@ namespace CimscoPortal.Data.Models
         public int? GroupDivisionId { get; set; }
         public int? IndustryId { get; set; }
 
+        public int FiledInvoiceCount { get; set; }
+
         public virtual Group Group { get; set; }
         public virtual Customer Customer { get; set; }
 
