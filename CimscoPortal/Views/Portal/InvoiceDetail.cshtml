@@ -15,27 +15,6 @@
         </div>
     </div>
 
-
-
-    @*<div class="row">
-            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
-                <div class="row">
-                    <div class="col-xs-12">
-                        <div class="dashboard-box">
-                            <div class="box-header">
-                                <div class="deadline">
-                                    Bill Details
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-
-        </div>*@
     <div class="row">
         <div class="col-md-12">
             <div class="widget flat radius-bordered">
@@ -52,7 +31,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a data-toggle="tab" href="#network">
+                                    <a data-toggle="tab" href="#delivery">
                                         Delivery Charges
                                     </a>
                                 </li>
@@ -69,11 +48,11 @@
                                 </li>
                             </ul>
                             <div class="tab-content no-padding">
-                                <div id="network" class="tab-pane padding-5 animated fadeInUp">
+                                <div id="delivery" class="tab-pane padding-5 animated fadeInUp">
                                     <div class="row">
                                         <div class="col-lg-12">
                                             @*@Html.Partial("_SparklineBar")*@
-                                            @Html.Partial("InvoiceDetailPartials/_NetworkChargesTable")
+                                            @Html.Partial("InvoiceDetailPartials/_DeliveryChargesTable")
                                             <span data-display="sparklineBar"></span>
                                         </div>
                                     </div>
@@ -84,23 +63,25 @@
                                             @Html.Partial("InvoiceDetailPartials/_OtherChargesTable")
                                         </div>
                                     </div>
-
                                 </div>
-
                                 <div id="historical" class="tab-pane padding-10 animated fadeInUp">
                                     <div class="row">
-                                        <div height=" 300px" style="width: 100%; display: block;" class="chart chart-lg padding-40">
+                                        <div height="300px" style="width: 100%; display: block;" class="chart chart-lg padding-40">
                                             <flot dataset="SelectableChartData" options="SelectableChartOptions"></flot>
                                         </div>
                                         @Html.Partial("InvoiceDetailPartials/_HistoricalChargesTable")
                                     </div>
                                 </div>
-
                                 <div id="energy" class="tab-pane animated fadeInUp no-padding-bottom active" style="padding:20px 20px 0 20px;">
                                     <div class="row">
                                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" data-ng-repeat="nrgData in slModel.energyCostSeries">
-                                            @Html.Partial("_SparklineComposite")
+                                            @Html.Partial("InvoiceDetailPartials/_EnergyChargesCharts")
                                             <span data-display="sparklineComposite"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="databox-cell cell-4 padding-15 text-align-left bordered-right bordered-platinum">
+                                            <b><span class="databox-number lightcarbon no-margin">Total Energy Charges : {{invoiceDetail.energyChargesTotal | currency:$}}</span></b>
                                         </div>
                                     </div>
                                 </div>
@@ -110,24 +91,23 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row" ng-show="false">
-        <div id="yearToDateGraph" class="col-lg-9 col-sm-12 col-xs-12">
-            @Html.Partial("_YearToDateGraph")
+        <div class="row" ng-show="false">
+            <div id="yearToDateGraph" class="col-lg-9 col-sm-12 col-xs-12">
+                @Html.Partial("_YearToDateGraph")
+            </div>
         </div>
-    </div>
 
-    <div class="row" ng-show="true">
-        <div class="col-lg-9 col-sm-12 col-xs-12">
-            <hr class="wide" />
-            <h3>Stacked <button class="btn btn-sm btn-primary" type="button" ng-click="randomStacked()">Randomize</button></h3>
-            <progress><bar ng-repeat="bar in stacked track by $index" value="bar.value" type="{{bar.type}}"><span ng-hide="bar.value < 5">{{bar.value}}%</span></bar></progress>
+        <div class="row" ng-show="false">
+            <div class="col-lg-9 col-sm-12 col-xs-12">
+                <hr class="wide" />
+                <h3>Stacked <button class="btn btn-sm btn-primary" type="button" ng-click="randomStacked()">Randomize</button></h3>
+                <progress><bar ng-repeat="bar in stacked track by $index" value="bar.value" type="{{bar.type}}"><span ng-hide="bar.value < 5">{{bar.value}}%</span></bar></progress>
+            </div>
         </div>
+
+
     </div>
-
-
 </div>
-
 <style>
     .morris-hover {
         position: absolute;
@@ -187,13 +167,13 @@
     @*<script src="~/Scripts/angular-ui-utils/angular-ui-utils.js"></script>*@
 
     @*<script src="~/Scripts/charts/flot/jquery.flot.min.js"></script>
-    <script src="~/Scripts/charts/flot/jquery.flot.orderBars.js"></script>
-    <script src="~/Scripts/charts/flot/jquery.flot.resize.js"></script>
-    <script src="~/Scripts/charts/flot/jquery.flot.axislabels.js"></script>
-    <script src="~/Scripts/charts/flot/jquery.flot.tooltip.js"></script>
-    <script src="~/Scripts/charts/flot/jquery.flot.categories.min.js"></script>
-    <script src="~/App_/common/directives/angular-flot.js"></script>
-    <script src="~/App_/common/directives/widget.js"></script>*@
+        <script src="~/Scripts/charts/flot/jquery.flot.orderBars.js"></script>
+        <script src="~/Scripts/charts/flot/jquery.flot.resize.js"></script>
+        <script src="~/Scripts/charts/flot/jquery.flot.axislabels.js"></script>
+        <script src="~/Scripts/charts/flot/jquery.flot.tooltip.js"></script>
+        <script src="~/Scripts/charts/flot/jquery.flot.categories.min.js"></script>
+        <script src="~/App_/common/directives/angular-flot.js"></script>
+        <script src="~/App_/common/directives/widget.js"></script>*@
     @*<script src="~/App_/core/App.js"></script>*@
     <script src="~/App_/core/invoiceCommonFunctions.data.js"></script>
     <script src="~/App_/invoiceDetail/invoiceDetail.ctrl.js"></script>

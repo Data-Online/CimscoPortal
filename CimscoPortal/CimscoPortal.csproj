@@ -1622,11 +1622,11 @@
     <Content Include="Views\Portal\InvoiceDetail.cshtml" />
     <Content Include="Views\Portal\_YearToDateGraph-old.cshtml" />
     <Content Include="Views\Shared\_DonutPlusSummary-old.cshtml" />
-    <Content Include="Views\Portal\_SparklineComposite.cshtml" />
+    <Content Include="Views\Portal\SharedPartials\_SparklineComposite.cshtml" />
     <Content Include="Views\Portal\InvoiceOverview.cshtml" />
     <Content Include="Views\Portal\_SiteList.cshtml" />
     <Content Include="Views\Portal\SiteOverviewPartials\_InvoiceList.cshtml" />
-    <Content Include="Views\Portal\_SparklineBar.cshtml" />
+    <Content Include="Views\Portal\SharedPartials\_SparklineBar.cshtml" />
     <Content Include="Views\Portal\InvoiceDetailPartials\_DonutPlusSummary.cshtml" />
     <Content Include="Views\Portal\InvoiceDetailPartials\_OtherChargesTable.cshtml" />
     <Content Include="Views\Portal\_SiteListB.cshtml" />
@@ -1638,7 +1638,7 @@
     <Content Include="Views\Portal\CompanyOverviewPartials\_Analysis.cshtml" />
     <Content Include="Views\Portal\InvoiceDetailPartials\_HistoricalChargesTable.cshtml" />
     <Content Include="Views\Portal\InvoiceDetail_.cshtml" />
-    <Content Include="Views\Portal\InvoiceDetailPartials\_NetworkChargesTable.cshtml" />
+    <Content Include="Views\Portal\InvoiceDetailPartials\_DeliveryChargesTable.cshtml" />
     <Content Include="Views\Portal\SiteOverviewPartials\_Consumption.cshtml" />
     <Content Include="Views\Portal\SiteOverviewPartials\_InvoiceValue.cshtml" />
     <Content Include="Views\Portal\Dashboard.cshtml" />
@@ -1656,6 +1656,8 @@
     <Content Include="Views\Shared\_Default_.cshtml" />
     <Content Include="Views\Portal\SharedPartials\_Test.cshtml" />
     <Content Include="Views\Portal\SharedPartials\_DualCharts.cshtml" />
+    <Content Include="Views\Portal\InvoiceDetailPartials\_EnergyChargesCharts.cshtml" />
+    <Content Include="Views\Portal\InvoiceDetailPartials\_DonutPlusSummary_.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />

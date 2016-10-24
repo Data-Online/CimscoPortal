@@ -62,11 +62,12 @@ namespace CimscoPortal.Data.Models
         // Calculated values
         public decimal LossRate
         { get { return (BDL0004 / BDQ0004); } }
-        public decimal BDMeteredKwh
-        { get { return BD0004/BD0004R + BD0408/BD0004R + BD0812/BD0812R + BD1216/BD1216R + BD1620/BD1620R + BD2024/BD2024R; } }
+        //{ get { return (BDL0004 / (BDQ0004 + BDL0004)); } }
+        //public decimal BDMeteredKwh
+        //{ get { return BD0004/BD0004R + BD0408/BD0004R + BD0812/BD0812R + BD1216/BD1216R + BD1620/BD1620R + BD2024/BD2024R; } }
 
-        public decimal BDLossCharge
-        { get { return (BD0004 + BD0408 + BD0812 + BD1216 + BD1620 + BD2024) * LossRate; } }
+        //public decimal BDLossCharge
+        //{ get { return (BD0004 + BD0408 + BD0812 + BD1216 + BD1620 + BD2024) * LossRate; } }
 
         public virtual InvoiceSummary InvoiceSummary { get; set; }
     }

@@ -11,6 +11,7 @@ namespace CimscoPortal.Models
         public List<decimal> EnergyRateByBracket { get; set; }
         public List<decimal> EnergyChargeByBracket { get; set; }
         public HeaderData HeaderData { get; set; }
+        public decimal LossRate { get; set; }
         public decimal MaxCharge
         {
             get
@@ -23,6 +24,10 @@ namespace CimscoPortal.Models
         public decimal TotalCost
         {
             get { return EnergyChargeByBracket.Sum(); }
+        }
+        public decimal TotalLoss
+        {
+            get { return TotalCost * LossRate; }
         }
     }
 }

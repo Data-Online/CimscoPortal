@@ -128,7 +128,7 @@
                                         <a href="@Url.Action("InvoiceDetail", "Portal")/{{inv.invoiceId}}" title="Invoice Details">
                                             <i class="fa fa-cogs"></i>
                                         </a>
-                                        <a ng-show="{{inv.invoicePdf}} " href="https://cimsco.blob.core.windows.net/{{inv.siteId|padNumber:6}}/{{inv.invoiceId|padNumber:8}}.pdf" title="Download PDF">
+                                        <a ng-show="inv.invoicePdf " href="https://cimsco.blob.core.windows.net/{{inv.siteId|padNumber:6}}/{{inv.invoiceId|padNumber:8}}.pdf" title="Download PDF">
                                             <i class="fa fa-download"></i>
                                         </a>
                                     </span>

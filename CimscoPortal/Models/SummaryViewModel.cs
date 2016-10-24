@@ -72,8 +72,8 @@ namespace CimscoPortal.Models
         public string ApproversName { get; set;  }
         public DateTime ApprovedDate { get; set; }
         public decimal LossRate { get; set; }
-        public decimal BDLossCharge { get; set; }
-        public decimal BDMeteredKwh { get; set; }
+        //public decimal BDLossCharge { get; set; }
+        //public decimal BDMeteredKwh { get; set; }
         public bool ValidationError { get { return InvoiceTotal != (MiscChargesTotal + NetworkChargesTotal + EnergyChargesTotal); } }
         public int SiteId { get; set; }
         public bool InvoicePdf { get; set; }

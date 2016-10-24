@@ -1240,6 +1240,11 @@ namespace CimscoPortal.Services
             InvoiceDetail _invoiceDetail = _invoiceData.Project().To<InvoiceDetail>().FirstOrDefault();
             SetDefaultLossRateWhenZero(_invoiceDetail);
 
+            // GPA --> this is the 3rd location for this logic. Move to manage module.
+            // Check if Pdf file actually exists
+            string _sourcePdf = ConstructInvoicePdfPath(_invoiceDetail.SiteId, _invoiceDetail.InvoiceId, _azurePDFsource);
+            _invoiceDetail.InvoicePdf = CheckForPdfFile(_sourcePdf);
+
             // Energy Charges
             var _energyCharges = _invoiceData.Select(b => b.EnergyCharge).FirstOrDefault();
             SetDefaultEnergyChargesWhenFewerPeriods(_energyCharges);
@@ -1322,7 +1327,8 @@ namespace CimscoPortal.Services
                                                             _energyCharges.NBD1216, _energyCharges.NBD1620, _energyCharges.NBD2024 },
                 EnergyRateByBracket = new List<decimal> { _energyCharges.NBD0004R, _energyCharges.NBD0408R, _energyCharges.NBD0812R,
                                                           _energyCharges.NBD1216R, _energyCharges.NBD1620R, _energyCharges.NBD2024R },
-                HeaderData = new HeaderData() { Header = "Non Business Days" }
+                HeaderData = new HeaderData() { Header = "Non Business Days" },
+                LossRate = _energyCharges.LossRate
             };
             return _nonBusinessDayData;
         }
@@ -1335,7 +1341,8 @@ namespace CimscoPortal.Services
                                                             _energyCharges.BD1216, _energyCharges.BD1620, _energyCharges.BD2024 },
                 EnergyRateByBracket = new List<decimal>   { _energyCharges.BD0004R, _energyCharges.BD0408R, _energyCharges.BD0812R,
                                                             _energyCharges.BD1216R, _energyCharges.BD1620R, _energyCharges.BD2024R },
-                HeaderData = new HeaderData() { Header = "Business Days" }
+                HeaderData = new HeaderData() { Header = "Business Days" },
+                LossRate = _energyCharges.LossRate
             };
             return _businessDayData;
         }
@@ -2549,6 +2556,18 @@ namespace CimscoPortal.Services
 
         private void CheckPdfSourceFileExists(List<InvoiceOverviewViewModel> invoiceList)
         {
+            string _azurePDFsource = GetConfigValue("PdfFileSourceRoot");
+
+            string _sourcePdf;
+            foreach (var _invoice in invoiceList)
+            {
+                _sourcePdf = ConstructInvoicePdfPath(_invoice.SiteId, _invoice.InvoiceId, _azurePDFsource);
+                _invoice.InvoicePdf = CheckForPdfFile(_sourcePdf);
+            }
+        }
+
+        private void CheckPdfSourceFileExists_(List<InvoiceOverviewViewModel> invoiceList)
+        {
             System.Net.HttpWebResponse response = null;
             System.Net.HttpWebRequest request;
             string _azurePDFsource = GetConfigValue("PdfFileSourceRoot");
@@ -2576,6 +2595,31 @@ namespace CimscoPortal.Services
                     }
                 }
             }
+        }
+
+        private bool CheckForPdfFile(string sourcePdf)
+        {
+            System.Net.HttpWebResponse response = null;
+            System.Net.HttpWebRequest request;
+
+            request = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(sourcePdf);
+            request.Method = "Head";
+            try
+            {
+                response = (System.Net.HttpWebResponse)request.GetResponse();
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                if (response != null)
+                {
+                    response.Close();
+                }
+            }
+            return true;
         }
 
         private static string ConstructInvoicePdfPath(int siteId, int invoiceId, string azurePDFsource)

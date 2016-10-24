@@ -2,11 +2,12 @@
 
     var module = angular.module("app.invoiceDetail");
 
-    var invoiceDetail = function ($scope, idDataSource, icDataSource, commonTools) {
+    var invoiceDetail = function ($scope, idDataSource, icDataSource, commonTools, dataFormatting) {
 
         $scope.bcPageElement = 'invHistoryChart';
         $scope.doPageElement = 'donutChart';
-
+        $scope.pctBoxStyle = dataFormatting.pctBoxStyle;
+        $scope.negativeValue = dataFormatting.negativeValue;
 
         $scope.init = function (invoiceId) {
             $scope.invoiceId = invoiceId;
@@ -104,10 +105,12 @@
             $scope.slModel.minYbar = $scope.slModel.maxYbar * 0.1;
             $scope.slModel.maxYgraph = Math.max(data.energyCosts.energyCostSeries[0].maxRate, data.energyCosts.energyCostSeries[1].maxRate);
             $scope.slModel.minYgraph = $scope.slModel.maxYgraph * 0.1;
-            $scope.slModel.lossRate = $scope.invoiceDetail.lossRate;
+            //$scope.slModel.lossRate = $scope.invoiceDetail.lossRate;
             $scope.invoiceDetail.arrow = $scope.tools.arrowType(data.invoiceDetail.percentageChange);
 
             //console.log('Max bar : ' + $scope.slModel.maxYbar + ' max graph : ' + $scope.slModel.maxYgraph);
+            console.log("MODEL");
+            console.log($scope.slModel);
 
             if ((data.invoiceDetail.invoiceNumber).charAt(0) == 't') {
                 console.log('sample invoice!');
