@@ -63,9 +63,9 @@ namespace CimscoPortal.Controllers.Api
         [Route("saveUserData")]
         public HttpResponseMessage SaveUserData(HttpRequestMessage request, [FromBody] UserSettingsViewModel userSettings)
         {
-            UserSettingsViewModel _data = _portalService.SaveUserData(userSettings, User.Identity.Name);
-            if (_data != null)
-                return request.CreateResponse<UserSettingsViewModel>(HttpStatusCode.OK, _data);
+            //UserSettingsViewModel _data = _portalService.SaveUserData(userSettings, User.Identity.Name);
+            if (_portalService.SaveUserData(userSettings, User.Identity.Name))
+                return request.CreateResponse(HttpStatusCode.OK);
             else
                 return request.CreateResponse(HttpStatusCode.BadRequest);
         }
@@ -328,6 +328,21 @@ namespace CimscoPortal.Controllers.Api
         {
             var data = _portalService.GetInvoiceDetail(invoiceId);
             return request.CreateResponse<InvoiceDetailViewModel>(HttpStatusCode.OK, data);
+        }
+
+
+
+    
+
+        [HttpPost]
+        [Route("DatapointDetails")]
+        public HttpResponseMessage GetDatapointDetails(HttpRequestMessage request, [FromBody] DatapointIdentity datapointId)
+        {
+            //DatapointDetailView _response = new DatapointDetailView() { Notes = "<b>Test</b>", Status = "Test Status", Date = DateTime.Now };
+
+            DatapointDetailView _response = _portalService.GetDatapointDetails(datapointId);
+
+            return request.CreateResponse(HttpStatusCode.OK, _response);
         }
 
         [System.Web.Mvc.ValidateAntiForgeryToken]

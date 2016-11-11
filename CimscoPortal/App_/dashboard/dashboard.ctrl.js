@@ -11,19 +11,52 @@
         })
         .controller("app.dashboard.ctrl", dashboard);
 
-    dashboard.$inject = ['$scope', '$parse', '$interval', '$timeout', 'dbDataSource', 'userDataSource', 'filterData', 'dbConstants', 'toaster', 'googleChart', 'sharedData'];
-    function dashboard($scope, $parse, $interval, $timeout, dbDataSource, userDataSource, filterData, dbConstants, toaster, googleChart, sharedData) {
+    dashboard.$inject = ['$scope', '$parse', '$interval', '$timeout', 'dbDataSource', 'userDataSource', 'filterData', 'consumptionData', 'dbConstants', 'toaster', 'googleChart', 'sharedData'];
+    function dashboard($scope, $parse, $interval, $timeout, dbDataSource, userDataSource, filterData, consumptionData, dbConstants, toaster, googleChart, sharedData) {
 
         var debugStatus_showMessages = false;
         $scope.showAsBar = false;  // Whether to show line or bar initiually. Dictates setting for toggle switch
         $scope.allowDisplayByDivision = true;
         $scope.allowShowEnergySavings = true;
+        $scope.dpData = [];
 
-        //$scope.gczztest = gczztest;
-        //var gczztest = function (element) {
-        //    console.log("Selected " + element);
+        // Test info board
+        //var getDatapointDetails = function () {
+
+        //    var _testDate = new Date('01/10/2015');
+        //    var _testDate2 = new Date('04/12/2015');
+        //    var _testDate3 = new Date('02/12/2015');
+        //    $scope.dpData = [
+        //                        { status: "Attention", notes: "Missing invoices", date: _testDate },
+        //                        { status: "Test", notes: "Some other details", date: _testDate2 },
+        //                        { status: "Test2", notes: "Some more details", date: _testDate3 }
+        //    ];
         //};
-        
+
+        var pushDataPointDetails = function (item) {
+            $scope.dpData.push(item);
+        };
+
+        var onDatapointDetails = function (data) {
+            pushDataPointDetails(data);
+        };
+
+        $scope.removeDatapoint = function (item) {
+            var index = $scope.dpData.indexOf(item);
+            $scope.dpData.splice(index, 1);
+        };
+
+        $scope.seriesSelected = function (selectedItem, text) {
+            var _element = _googleChartElements[filterData.elementIndex(_googleChartElements, text, _chartElementId)];
+            var _datapointIdentity = googleChart.lineNameFromChartNumber($scope, _element, selectedItem.column, selectedItem.row);
+            console.log(_datapointIdentity);
+
+            if (selectedItem) {
+                //var zz = _googleChartElements[filterData.elementIndex(_googleChartElements, text, _chartElementId)].columnNames[selectedItem.column];
+                consumptionData.getDatapointDetails(_datapointIdentity)
+                    .then(onDatapointDetails, onError);
+            };
+        };
 
         // elemenName == Page element where chart is to be reendered
         // columnNames == [Primary, Seconday] axes for chart. Primary axis is displayed by default. These names need to match columns returned from server.
@@ -35,13 +68,15 @@
                 {
                     elementName: "energyChargesChart", columnNames: ["Invoice Total excl GST", "Previous Year Total", "Project Saving Estimate"],
                     title: "Energy Charges", activeAxes: [true, false, false],
-                    columns: [[], [], []], colours: ['#009900', '#0000FF', '#DD9900']
+                    columns: [[], [], []], colours: ['#009900', '#0000FF', '#DD9900'],
+                    filter: ""
                 },
                 {
                     elementName: "electricityConsumptionChart", columnNames: ["Total Kwh", "Previous Year Kwh"],
                     title: "Electricity Consumption", activeAxes: [true, false],
-                    columns: [[], []], colours: ['#009900', '#0000FF']
-                }
+                    columns: [[], []], colours: ['#009900', '#0000FF'],
+                    filter: ""
+            }
             ];
         //  ['#0000FF', '#009900', '#CC0000', '#DD9900'],
         var _chartElementId = 'elementName'; // Element used when finding entry by name from the above array.
@@ -71,10 +106,6 @@
         var onUserData = function (data) {
             _userData = data;
             userDataSource.assignUserData($scope, _userData);
-
-            //$scope.monthSpanOptions = _userData.monthSpanOptions;
-            //$scope.monthSpan = _userData.monthSpan;
-            //$scope.showWelcomeMessage = _userData.showWelcomeMessage;
             $scope.updateUserData = updateUserData;
         };
 
@@ -129,7 +160,7 @@
             .then(onWelcomeMessage, onError);
 
         userDataSource.getUserData()
-           .then(onUserData, onError);     
+           .then(onUserData, onError);
 
 
 
@@ -147,7 +178,7 @@
                         _element.push(entry);
                         var _filter = filterData.createApiFilter($scope.categoriesModel, _element);
                         //console.log(filterData.createApiFilter($scope.categoriesModel, _element));
-                        filterData.getCostConsumptionData($scope.monthSpan, _filter, _siteSelect)
+                        consumptionData.getCostConsumptionData($scope.monthSpan, _filter, _siteSelect)
                             .then(function success(data) { return onDivisionData(data, key, _filter) }, onError);
                     }
             )
@@ -156,7 +187,7 @@
 
         var addDivisionElements = function () {
             if (_divisionDataStatus.elementsAdded) { return; }
-          
+
             angular.forEach($scope.divisionsData, function (entry, key) {
                 var _newArray = [JSON.parse(
                     JSON.stringify(_googleChartElements[filterData.elementIndex(_googleChartElements, _divisionDataStatus.basedUpon[0], _chartElementId)])),
@@ -173,6 +204,7 @@
                 _googleChartElements = _googleChartElements.concat(_newArray);
             });
             _divisionDataStatus.elementsAdded = true;
+            googleChart.createButtonControls($scope, _googleChartElements);
         };
 
         $scope.splitOutDivisions = function () {
@@ -193,12 +225,7 @@
             var _target1 = "electricityConsumptionChart" + pairNo;
             var _target2 = "energyChargesChart" + pairNo;
             var _filterIconRequired = filterData.filterTypeActive('category', filter);
-            // Read the data and plot the graphs
-            //console.log("filter = " + filter);
-            //if (filterData.filterTypeActive('category', filter)) { console.log("categ"); }
-            //if (filterData.filterTypeActive('division',filter)) { console.log("div"); }
-            //if (filterData.filterTypeActive('any', filter)) { console.log("any"); }
-           
+
             var getter = $parse(_target1 + '.filtersActive');
             getter.assign($scope, _filterIconRequired);
             var getter = $parse(_target2 + '.filtersActive');
@@ -207,19 +234,19 @@
             // Required for html link, if selected
             var getter = $parse('divisionLinkFilter' + pairNo);
             getter.assign($scope, filter);
+            var _element1 = _googleChartElements[filterData.elementIndex(_googleChartElements, _target1, _chartElementId)];
+            var _element2 = _googleChartElements[filterData.elementIndex(_googleChartElements, _target2, _chartElementId)];
 
-
-            googleChart.initializeGoogleChart($scope, data, _googleChartElements[filterData.elementIndex(_googleChartElements, _target1, _chartElementId)]);
-            googleChart.initializeGoogleChart($scope, data, _googleChartElements[filterData.elementIndex(_googleChartElements, _target2, _chartElementId)]);
+            _element1.filter = filter;
+            _element2.filter = filter;
+            googleChart.initializeGoogleChart($scope, data, _element1);
+            googleChart.initializeGoogleChart($scope, data, _element2);
             $scope.loading = false;
-
-            //console.log(sharedData.getSharedValues().topLevelName);
         };
 
         // END
 
         googleChart.createButtonControls($scope, _googleChartElements);
-
 
         $scope.reviseMonths = function (newMonthSpan) {
             _divisionDataStatus.updateRequired = true;
@@ -282,22 +309,24 @@
 
         // Google chart control 
         var readAndPlotGoogleGraphData = function () {
-            filterData.getCostConsumptionData($scope.monthSpan, getReturnIds(), _siteSelect)
+            consumptionData.getCostConsumptionData($scope.monthSpan, getReturnIds(), _siteSelect)
                 .then(onGoogleGraphData, onError);
         };
 
         var initializeGoogleCharts = function (charts, data, applyTitleDetail) {
             var _filtersActive = getReturnIds() != filterData.inactiveFilter();
-           // console.log(_filtersActive);
+            // console.log(_filtersActive);
             angular.forEach(charts, function (chart, index) {
-                googleChart.initializeGoogleChart($scope, data, _googleChartElements[filterData.elementIndex(_googleChartElements, chart, _chartElementId)]);
+                var _element = _googleChartElements[filterData.elementIndex(_googleChartElements, chart, _chartElementId)];
+                googleChart.initializeGoogleChart($scope, data, _element);
                 if (applyTitleDetail) {
                     var getter = $parse(chart + '.title');
                     var _currentText = getter($scope, chart + '.title');
                     getter.assign($scope, _currentText + ' for ' + sharedData.getSharedValues().topLevelName + ' Group');
                 };
                 var getter = $parse(chart + '.filtersActive');
-                getter.assign($scope, _filtersActive)
+                getter.assign($scope, _filtersActive);
+                _element.filter = getReturnIds();
             });
         };
 
@@ -306,10 +335,10 @@
             //    _googleChartElements[filterData.elementIndex(_googleChartElements, "electricityConsumptionChart", _chartElementId)].title = "TEST UPDATE";
             //};
             // GPA ** --> Move to global and define only once. (divisions uses this also)
-            var _primaryCharts = [ "electricityConsumptionChart", "energyChargesChart" ];
+            var _primaryCharts = ["electricityConsumptionChart", "energyChargesChart"];
 
             initializeGoogleCharts(_primaryCharts, data, $scope.allowDisplayByDivision);
-           
+
             //googleChart.initializeGoogleChart($scope, data, _googleChartElements[filterData.elementIndex(_googleChartElements, "electricityConsumptionChart", _chartElementId)]);
             //googleChart.initializeGoogleChart($scope, data, _googleChartElements[filterData.elementIndex(_googleChartElements, "energyChargesChart", _chartElementId)]);
 
@@ -420,15 +449,7 @@
         //};
         //$scope.myChart = chart1;
 
-        $scope.seriesSelected = function (selectedItem) {
-            if (selectedItem) {
-                console.log("Selected point!" + selectedItem.row + " " + selectedItem.column);
-            };
-            //var chartData = $scope.myChart.data;
-            //var value = chartData.rows[selectedItem.row].c[selectedItem.column].v;
-            //var formattedValue = chartData.rows[selectedItem.row].c[selectedItem.column].f;
-            //console.log(value + ":" + formattedValue);
-        };
+
 
         //TEST
 

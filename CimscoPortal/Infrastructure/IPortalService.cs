@@ -2,6 +2,8 @@
 using CimscoPortal.Models;
 using System;
 using System.Collections.Generic;
+using CimscoPortal.Controllers.Api;
+
 namespace CimscoPortal.Infrastructure
 {
     public interface IPortalService
@@ -38,7 +40,7 @@ namespace CimscoPortal.Infrastructure
         IEnumerable<InvoiceOverviewViewModel> GetAllInvoiceOverview(string userId, int monthSpan, string filter, int pageNo);
 
         InvoiceOverviewViewModel ApproveInvoice(int invoiceId, string userId, string urlRoot);
-        UserSettingsViewModel SaveUserData(UserSettingsViewModel userSettings, string userId);
+        bool SaveUserData(UserSettingsViewModel userSettings, string userId);
         IEnumerable<MonthlyConsumptionViewModal> GetHistoricalDataForSite(int siteId);
         UserAccessModel CheckUserAccess(string userName);
         UserSettingsViewModel GetUserSettings(string userName);
@@ -63,6 +65,7 @@ namespace CimscoPortal.Infrastructure
         void UserloginUpdate(LoginHistory model);
 
         bool LogFeedback(object data, string userId);
+        DatapointDetailView GetDatapointDetails(DatapointIdentity datapointId);
     }
 
     public interface IMappingService

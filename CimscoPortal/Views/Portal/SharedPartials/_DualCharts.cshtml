@@ -15,7 +15,7 @@
             <div class="show-hide-animate">
                 <div class="widget-body show-hide-animate" style="height: 360px;  padding-top:5px; padding-right:0; padding-left:0">
                     <div class="col-lg-12">
-                        <div google-chart chart="@leftGraph" agc-on-select="seriesSelected(selectedItem)" style="height:330px; width:100%; padding-right:5px;"></div>
+                        <div google-chart chart="@leftGraph" agc-on-select="seriesSelected(selectedItem, '@leftGraph')" style="height:330px; width:100%; padding-right:5px;"></div>
                     </div>
                 </div>
             </div>
@@ -27,7 +27,7 @@
             <div class="show-hide-animate">
                 <div class="widget-body show-hide-animate" style="height: 360px;  padding-top:5px; padding-right:0; padding-left:0">
                     <div class="col-lg-12">
-                        <div google-chart chart="@rightGraph" agc-on-select="seriesSelected(selectedItem)" style="height:330px; width:100%; padding-right:5px;"></div>
+                        <div google-chart chart="@rightGraph" agc-on-select="seriesSelected(selectedItem, '@rightGraph')" style="height:330px; width:100%; padding-right:5px;"></div>
                     </div>
                 </div>
             </div>

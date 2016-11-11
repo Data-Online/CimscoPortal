@@ -11,8 +11,9 @@
         };
 
         var saveUserData = function (userSettings) {
+            console.log(userSettings);
+            console.log(JSON.stringify(userSettings));
             var dataApi = "/api/saveUserData";
-           // userSettings.ShowWelcomeMessage = false;
             var config = {
                 headers: {
                     'Content-Type': 'application/json'
@@ -20,24 +21,25 @@
             }
             return $http.post(dataApi, JSON.stringify(userSettings), config)
                         .then(function (response) {
-                            return response.data;
+                            return response; //.data;
                         });
         };
 
         var updateUserData = function (userData, setting, value) {
             var debugStatus_showMessages = true; // GPA - --> global variables
-            console.log(value);
             userData = returnValueForSetting(userData, setting, value);
             if (userData) {
                 saveUserData(userData)
                     .then(
-                    function success(data) { if (debugStatus_showMessages) { toaster.pop('success', "User data saved", "") }; return data; },
-                    function error() { toaster.pop('error', "Unable to save data", " user settings"); return userData; }
+                    function success() { if (debugStatus_showMessages) { toaster.pop('success', "User data saved", "") }; },
+                    function error() { toaster.pop('error', "Unable to save data", " user settings");  }
                     );
             }
             else {
                 if (debugStatus_showMessages) { toaster.pop('error', "No user data available", "") };
             }
+
+            return userData;
         };
 
         var returnValueForSetting = function (userData, setting, value) {

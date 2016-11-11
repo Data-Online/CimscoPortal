@@ -4,8 +4,8 @@
     var module = angular.module("app.siteOverview")
         .controller("app.siteOverview.ctrl", siteOverview);
 
-    siteOverview.$inject = ['$scope', '$timeout', '$filter', 'soDataSource', 'userDataSource', 'filterData', 'toaster', 'googleChart', 'dataFormatting'];
-    function siteOverview($scope, $timeout, $filter, soDataSource, userDataSource, filterData, toaster, googleChart, dataFormatting) {
+    siteOverview.$inject = ['$scope', '$timeout', '$filter', 'soDataSource', 'userDataSource', 'filterData', 'consumptionData', 'toaster', 'googleChart', 'dataFormatting'];
+    function siteOverview($scope, $timeout, $filter, soDataSource, userDataSource, filterData, consumptionData, toaster, googleChart, dataFormatting) {
 
         $scope.gczztest = gczztest;
         var gczztest = function (element) {
@@ -52,7 +52,7 @@
         // Core Data
         var _filterData = "__";
         var readAndPlotGoogleGraphData = function () {
-            filterData.getCostConsumptionData($scope.monthSpan, _filterData, siteId)
+            consumptionData.getCostConsumptionData($scope.monthSpan, _filterData, siteId)
                 .then(onGoogleGraphData, onError);
         };
         var onGoogleGraphData = function (data) {

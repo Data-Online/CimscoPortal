@@ -289,6 +289,7 @@
     <Compile Include="Extensions\RegexUtilities.cs" />
     <Compile Include="Models\ByMonthViewModel.cs" />
     <Compile Include="Models\DetailBySiteViewModel.cs" />
+    <Compile Include="Models\DatapointData.cs" />
     <Compile Include="Models\FeedbackData.cs" />
     <Compile Include="Models\CostConsumptionOptions.cs" />
     <Compile Include="Models\InvoiceStatsBySiteViewModel.cs" />
@@ -1658,6 +1659,7 @@
     <Content Include="Views\Portal\SharedPartials\_DualCharts.cshtml" />
     <Content Include="Views\Portal\InvoiceDetailPartials\_EnergyChargesCharts.cshtml" />
     <Content Include="Views\Portal\InvoiceDetailPartials\_DonutPlusSummary_.cshtml" />
+    <Content Include="Views\Portal\DashboardPartials\_DatapointDetailList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />
@@ -1667,7 +1669,6 @@
     <Folder Include="Domain\" />
     <Folder Include="fonts\" />
     <Folder Include="Views\CimscoPortal\" />
-    <Folder Include="Views\Portal\DashboardPartials\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

@@ -19,7 +19,7 @@
                 </div>
                 <div class="widget-body">
                     <div style="width: 100%;">
-                        <span><h2><b>ALPHA build</b> - Version 0.7.9</h2></span>
+                        <span><h2><b>ALPHA build</b> - Version 0.7.10</h2></span>
                         <span ng-repeat="line in welcomeText"><h5>{{line}}</h5></span>
                         <span class="pull-right" ng-click="updateUserData('welcomeMsg');"><a href="" widget-dispose-txt></a></span><br />
                     </div>
@@ -129,7 +129,9 @@
             </div>
         </div>
     </div>
-
+    <div class="row animate-show-hide" ng-show="dpData.length > 0">
+        @Html.Partial("DashboardPartials/_DatapointDetailList")
+    </div>
     <div class="row">
         <div class="col-xs-12 col-md-12">
             <div class="widget">

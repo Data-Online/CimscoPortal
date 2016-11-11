@@ -182,21 +182,12 @@
         };
 
 
-        var getCostConsumptionData = function (monthSpan, filter, siteId) {
-            var dataApi = "/api/CostAndConsumption_" + "/" + monthSpan + "/" + filter + "/" + siteId;
-            return $http.get(dataApi)
-                        .then(function (response) {
-                            return response.data;
-                        });
-        };
-
         return {
             createMultiDropdown: createMultiDropdown,
             getAllFilters: getAllFilters,
             getEventName: getEventName,
             createApiFilter: createApiFilter,
             elementIndex: elementIndex,
-            getCostConsumptionData: getCostConsumptionData,
             inactiveFilter: inactiveFilter,
             filterTypeActive: filterTypeActive
         };
@@ -247,4 +238,47 @@
             }
         };
     }
+})();
+
+(function () {
+    angular.module("commonDataControl")
+        .factory('consumptionData', consumptionData);
+
+    consumptionData.$inject = ['$http']
+    function consumptionData($http) {
+
+        var getCostConsumptionData = function (monthSpan, filter, siteId) {
+            var dataApi = "/api/CostAndConsumption_" + "/" + monthSpan + "/" + filter + "/" + siteId;
+            return $http.get(dataApi)
+                        .then(function (response) {
+                            return response.data;
+                        });
+        };
+
+        var getDatapointDetails = function (datapointIdentity) {
+            console.log(datapointIdentity);
+            console.log(JSON.stringify(datapointIdentity));
+            var dataApi = "/api/DatapointDetails";
+            var config = {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+            //var datapointIdentity = [];
+
+            return $http.post(dataApi, JSON.stringify(datapointIdentity), config)
+                        .then(function (response) {
+                            return response.data;
+                        });
+
+
+            console.log(datapointIdentity);
+            //return { status: "Attention", notes: "Missing invoices", date: new Date('01/10/2015') };
+        };
+
+        return {
+            getCostConsumptionData: getCostConsumptionData,
+            getDatapointDetails: getDatapointDetails
+        };
+    };
 })();

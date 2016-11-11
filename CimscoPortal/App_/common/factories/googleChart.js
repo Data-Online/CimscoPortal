@@ -157,6 +157,27 @@
             return _columns;
         };
 
+        var lineNameFromChartNumber = function (scope, chartElement, chartNumber, pointNumber) {
+            var getter = $parse(chartElement.elementName + '.view');
+            var _activeElements = getter(scope);
+            //var _lookingFor = _activeElements.columns[chartNumber];
+            var _lookingFor = getter(scope).columns[chartNumber];
+            var _returnValues = { name: "", filter: "", date: "" };
+
+            var getter = $parse(chartElement.elementName + '.data');
+            var _month = getter(scope).rows[pointNumber].c[0].v;
+
+            //console.log("Month = ");
+            //console.log(_month);
+
+            angular.forEach(chartElement.columns, function (column, index) {
+                if (column.indexOf(_lookingFor) >= 0) {
+                    _returnValues = { name: chartElement.columnNames[index], filter: chartElement.filter, date: _month};
+                }
+            });
+            return _returnValues;
+        };
+
         var initializeGoogleChart = function (scope, data, chartElements) {
             // data.axes defined the Axes labels and formats.
             // Axes 0 == X
@@ -166,7 +187,6 @@
 
             // Firstly assign all available data
             var _collatedData = collateData(data);
-            //console.log(_collatedData);
             var _chartElementName = chartElements.elementName;
             var getter = $parse(_chartElementName + '.title');
             getter.assign(scope, chartElements.title);
@@ -183,7 +203,7 @@
             var selectedColumnNames = [];
             selectedColumnNames.push(chartElements.columnNames[_firstDisplayAxis]);
             var _axesToDisplay = selectAxesByName(selectedColumnNames, _collatedData.axes);
-            console.log("Axes " + _axesToDisplay.columns);
+
             getter = $parse(_chartElementName + '.options');
             getter.assign(scope,
                 configureChart(chartElements.title, _axesToDisplay.axes, _collatedData.axes[0].title)
@@ -209,7 +229,6 @@
 
         var switchAllGoogleChartTypes = function (scope, chartType, allChartElements) {
             angular.forEach(allChartElements, function (element, key) {
-                console.log("switching : " + element);
                 switchGoogleChartType(scope, chartType, element);
             });
         };
@@ -272,7 +291,6 @@
         };
         var ZtoggleAxis2Display = function (display, chartElements) {
             angular.forEach(chartElements, function (value, key) {
-                console.log(value + " " + (value.activeAxes[2]));
                 value.activeAxes[2] = display;
             });
         };
@@ -303,7 +321,8 @@
             switchAllGoogleChartTypes: switchAllGoogleChartTypes,
             refreshAllGoogleCharts: refreshAllGoogleCharts,
             //ZtoggleAxis2Display: ZtoggleAxis2Display,
-            createButtonControls: createButtonControls
+            createButtonControls: createButtonControls,
+            lineNameFromChartNumber: lineNameFromChartNumber
         };
 
     }

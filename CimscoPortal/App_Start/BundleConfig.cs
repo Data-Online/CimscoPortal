@@ -32,7 +32,8 @@ namespace CimscoPortal
                 "~/Scripts/angular-ui-bootstrap/ui-bootstrap.js",
                // "~/Scripts/charts/chartjs/tc-angular-chartjs.js",
                 "~/Scripts/charts/flot/angular-flot.js",
-                "~/Scripts/angular-ui-utils/angular-ui-utils.js"
+                "~/Scripts/angular-ui-utils/angular-ui-utils.js",
+                "~/Scripts/angular-sanitize.min.js"
                 ));
 
             bundles.Add(new StyleBundle("~/Content/css/bootstrap").Include(

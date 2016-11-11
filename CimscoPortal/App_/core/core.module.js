@@ -34,7 +34,9 @@
         "commonDataControl",
 
         /* Feedback Tab */
-        "angular-send-feedback"
+        "angular-send-feedback",
+
+        "ngSanitize"
     ])
    // .constant("debugStatus", { "showMessages": false });
 })();

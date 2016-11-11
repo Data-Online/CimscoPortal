@@ -30,6 +30,7 @@ namespace CimscoPortal.Services
         private bool approved = true;
         private int MonthsOfHistoryData = 24; // GPA** Move to configuration for user
         private string emptyFilter = "__"; // Blank filter, select all sites
+        private static string standardDateFormat = "d/M/yyyy";
 
         private string _azurePDFsource = System.Configuration.ConfigurationManager.AppSettings["PdfFileSourceRoot"];
 
@@ -97,7 +98,7 @@ namespace CimscoPortal.Services
         }
 
 
-        public UserSettingsViewModel SaveUserData(UserSettingsViewModel userSetting, string userId)
+        public bool SaveUserData(UserSettingsViewModel userSetting, string userId)
         {
             //
             // read and save data
@@ -123,8 +124,9 @@ namespace CimscoPortal.Services
             }
             catch (Exception ex)
             {
+                return false;
             }
-            return userSetting;
+            return true;
         }
 
         //public UserSettingsViewModel GetUserSettings_(string userId)
@@ -142,6 +144,12 @@ namespace CimscoPortal.Services
         //    }
         //    return _userSetting;
         //}
+
+        public DatapointDetailView GetDatapointDetails(DatapointIdentity datapointId)
+        {
+            DateTime _date = DateTime.ParseExact(datapointId.date, standardDateFormat, CultureInfo.InvariantCulture);
+            return new DatapointDetailView() { Notes = "<b>Test</b>", Status = "Test Status", Date = _date };
+        }
 
         public UserSettingsViewModel GetUserSettings(string userId)
         {
@@ -721,7 +729,7 @@ namespace CimscoPortal.Services
 
             foreach (var _values in Result.OrderBy(o => o.Key))
             {
-                _flags = FormatGraphPoint(_values.Value.TotalInvoices, Result12.Where(w => w.Key == _values.Key.AddYears(-1)).Select(s => s.Value.TotalInvoices).FirstOrDefault(), invoiceStdCount);
+                _flags = FlagColourSetBasedOnInvoiceCounts(_values.Value.TotalInvoices, Result12.Where(w => w.Key == _values.Key.AddYears(-1)).Select(s => s.Value.TotalInvoices).FirstOrDefault(), invoiceStdCount);
 
                 decimal _total12 = Result12.Where(w => w.Key == _values.Key.AddYears(-1)).Select(s => s.Value.InvoiceTotal).FirstOrDefault();
                 decimal _power12 = Result12.Where(w => w.Key == _values.Key.AddYears(-1)).Select(s => s.Value.EnergyTotal).FirstOrDefault();
@@ -748,14 +756,18 @@ namespace CimscoPortal.Services
                 //else
                 //{
                 //    _invoiceCount = "";
-                //};
+                //};colored-red
 
                 _invoiceCount = ReturnInvoiceCountText(_values.Value.TotalInvoices);
                 _invoiceCount12 = ReturnInvoiceCountText(Result12.Where(w => w.Key == _values.Key.AddYears(-1)).Select(s => s.Value.TotalInvoices).FirstOrDefault());
 
                 _dataRows = new List<CPart>();
                 // X axis
-                _dataRows.Add(new CPart { v = _values.Value.InvoicePeriodDate.ToString("MMMM") + " '" + _values.Value.InvoicePeriodDate.ToString("yy"), f = null });
+                //_dataRows.Add(new CPart { v = _values.Value.InvoicePeriodDate.ToString("MMMM") + " '" + _values.Value.InvoicePeriodDate.ToString("yy"), f = _values.Value.InvoicePeriodDate.ToString("dd-MM-yyyy") });
+                _dataRows.Add(new CPart {
+                    f = _values.Value.InvoicePeriodDate.ToString("MMMM") + " '" + _values.Value.InvoicePeriodDate.ToString("yy"),
+                    v = _values.Value.InvoicePeriodDate.ToString(standardDateFormat)
+                });
 
                 // Invoice Total + tooltip + style
                 _dataRows.Add(new CPart { v = _invoiceTotal, f = _values.Value.InvoiceTotal.ToString(_currencySymbol + _decimalFormat) + _invoiceCount });
@@ -763,14 +775,15 @@ namespace CimscoPortal.Services
                 {
                     f = ReturnHtmlFormattedTooltip(_values.Value.InvoicePeriodDate,
                                                    _values.Value.InvoiceTotal.ToString(_currencySymbol + _decimalFormat), _invoiceCount,
-                                                   (FormatDelta(_total12, _values.Value.InvoiceTotal, _decimalFormat))
+                                                   (FormatDelta(_total12, _values.Value.InvoiceTotal, _decimalFormat)),
+                                                   _flags[0]
                                                   )
                 });
                 _dataRows.Add(new CPart
                 {
                     //v = "point { size: 18; shape-type: star; } "
                     //v = ""
-                    v = _flags[0]
+                    v = _flags[0]   // Set colour if invoice total for current year is less than the expected count
                 });
 
                 // Kwh + tooltip + style
@@ -779,12 +792,13 @@ namespace CimscoPortal.Services
                 {
                     f = ReturnHtmlFormattedTooltip(_values.Value.InvoicePeriodDate,
                                                    _values.Value.EnergyTotal.ToString(_decimalFormat) + " " + _energySymbol, _invoiceCount,
-                                                   (FormatDelta(_power12, _values.Value.EnergyTotal, _decimalFormat))
+                                                   (FormatDelta(_power12, _values.Value.EnergyTotal, _decimalFormat)), 
+                                                   _flags[0]
                                                   )
                 });
                 _dataRows.Add(new CPart
                 {
-                    v = _flags[0]
+                    v = _flags[0] // Set colour if invoice total for current year is less than the expected count
                     //v = "point { size: 12; shape-type: star; } "
                     //v = ""
                 });
@@ -808,13 +822,13 @@ namespace CimscoPortal.Services
                 _dataRows.Add(new CPart
                 {
                     f = ReturnHtmlFormattedTooltip(_values.Value.InvoicePeriodDate.AddYears(-1),
-                                                   _total12.ToString(_currencySymbol + _decimalFormat), _invoiceCount12,
-                                                   ""
+                                                   _total12.ToString(_currencySymbol + _decimalFormat), _invoiceCount12, 
+                                                   "", _flags[1]
                                                    )
                 });
                 _dataRows.Add(new CPart
                 {
-                    v = _flags[1]
+                    v = _flags[1] // Set colour if invoice total for previous year is less than the expected count
                     //v = "point { size: 12; shape-type: star; } "
                     //v = ""
                 });
@@ -825,12 +839,12 @@ namespace CimscoPortal.Services
                 {
                     f = ReturnHtmlFormattedTooltip(_values.Value.InvoicePeriodDate.AddYears(-1),
                                                   _power12.ToString(_decimalFormat) + " " + _energySymbol, _invoiceCount12,
-                                                  ""
+                                                  "", _flags[1]
                                                   )
                 });
                 _dataRows.Add(new CPart
                 {
-                    v = _flags[1]
+                    v = _flags[1] // Set colour if invoice total for current year is less than the expected count
                     //v = "point { size: 12; shape-type: star; } "
                     //v = ""
                 });
@@ -859,12 +873,13 @@ namespace CimscoPortal.Services
                 {
                     f = ReturnHtmlFormattedTooltip_CostSavings(_values.Value.InvoicePeriodDate, _costSavingEstimate.ToString(_currencySymbol + _decimalFormat),
                     _values.Value.InvoiceTotal.ToString(_currencySymbol + _decimalFormat),
-                    FormatDelta(_costSavingEstimate, _values.Value.InvoiceTotal, _currencySymbol + _decimalFormat)
+                    FormatDelta(_costSavingEstimate, _values.Value.InvoiceTotal, _currencySymbol + _decimalFormat),
+                    _flags[2]
                     )
                 });
                 _dataRows.Add(new CPart
                 {
-                    v = _flags[2]
+                    v = _flags[2] // Set colour if invoice count for current and prevous year do not match
                 });
 
 
@@ -874,7 +889,7 @@ namespace CimscoPortal.Services
             return _model;
         }
 
-        private static string[] FormatGraphPoint(int count, int count12, int countExpected)
+        private static string[] FlagColourSetBasedOnInvoiceCounts(int count, int count12, int countExpected)
         {
             // Both counts below expected - both axes
             // count below expected 
@@ -883,17 +898,17 @@ namespace CimscoPortal.Services
             string[] _flag = new string[3];
             if (count < countExpected)
             {
-                _flag[0] = "point { fill-color: #a52714; } ";
+                _flag[0] = "point { fill-color: red; } ";
             }
 
             if (count12 < countExpected)
             {
-                _flag[1] = "point { fill-color: #a52714; } ";
+                _flag[1] = "point { fill-color: red; } ";
             }
 
             if (count12 != count)
             {
-                _flag[2] = "point { fill-color: #a52714; } ";
+                _flag[2] = "point { fill-color: red; } ";
             }
             return _flag;
         }
@@ -908,7 +923,7 @@ namespace CimscoPortal.Services
             return string.Format("<br/><span class='{0} {1}'> {2}</span>", "gc-tooltip", _positiveNegative, _result.ToString(format));
         }
 
-        private static string ReturnHtmlFormattedTooltip(DateTime date, string value, string count, string variation)
+        private static string ReturnHtmlFormattedTooltip(DateTime date, string value, string count, string variation, string flag)
         {
             string _result = string.Format("<div style='width:180px; margin:10px;'><b>{0} {1}</b>{3}<br/>{2}", date.ToString("MMMM"), date.ToString("yyyy"), value, count);
 
@@ -917,10 +932,14 @@ namespace CimscoPortal.Services
                 _result = _result + string.Format("{0} <span>cf {1}</span>", variation, date.AddYears(-1).ToString("yyyy"));
             }
             _result = _result + string.Format("</div");
+            if (!String.IsNullOrEmpty(flag))
+            {
+                _result = _result + string.Format("<br/><div><i class='red fa fa-circle'></i>Note: invoice(s) missing</div>");
+            }
             return _result;
         }
 
-        private static string ReturnHtmlFormattedTooltip_CostSavings(DateTime date, string estimatedValue, string currentValue, string delta)
+        private static string ReturnHtmlFormattedTooltip_CostSavings(DateTime date, string estimatedValue, string currentValue, string delta, string flag)
         {
             string _line;
             string _result = "";
@@ -929,6 +948,11 @@ namespace CimscoPortal.Services
             _result = TooltipLine(_line, _result);
             _line = string.Format("A difference of {0}", delta);
             _result = TooltipLine(_line, _result);
+            if (!String.IsNullOrEmpty(flag))
+            {
+                _line = string.Format("<br/><div><i class='red fa fa-circle'></i>Note: invoice(s) missing</div>");
+                _result = TooltipLine(_line, _result);
+            }
             return TooltipWrapper(_result);
         }
 

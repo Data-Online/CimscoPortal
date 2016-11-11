@@ -8,8 +8,8 @@
 
 <div class="login-container animated fadeIn">
     <div class="loginbox bg-white">
-        <div class="loginbox-title"><img src="~/assets/img/cimsco-logo.png" align="middle" width="90%"/></div>
-        <div class="loginbox-title"></div><div class="loginbox-title"></div>
+        <div class="loginbox-title"><img src="~/assets/img/cimsco-logo.png" align="middle" width="70%"/></div>
+        <div class="loginbox-title"></div><div class="loginbox-title">Welcome</div>
             
             <div class="loginbox-title">PLEASE SIGN IN</div>
 
@@ -32,13 +32,14 @@
                 <div class="loginbox-submit">
                     @Html.Bootstrap().SubmitButton().Text("Login").Color(BootstrapColors.Primary).ButtonBlock()
                 </div>
-                <div class="loginbox-signup">
+                @*<div class="loginbox-signup">
                     @Html.ActionLink("Sign Up With Email", "Register")
-                </div>
+                </div>*@
             }
         </div>
-    <div class="logobox">
-    </div>
+    @*<div class="logobox">
+        <img src="~/assets/img/cimsco-logo.png" align="middle" width="70%" />
+    </div>*@
 </div>
 @section PageScripts {
     @Scripts.Render("~/bundles/jqueryval")
