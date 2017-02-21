@@ -40,3 +40,11 @@
     ])
    // .constant("debugStatus", { "showMessages": false });
 })();
+
+(function () {
+    angular.module('app.core')
+    .constant('CONFIG', {
+        'debug': true,
+        'googleChartTheme': ['#009900', '#0000FF', '#DD9900', '#CC0000']
+    });
+})();

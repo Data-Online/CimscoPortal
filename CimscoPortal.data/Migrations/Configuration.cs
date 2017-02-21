@@ -34,7 +34,9 @@ namespace CimscoPortal.Data.Migrations
             "nees.hardware@cimsco.co.nz",
             "masterton.supermarkets@cimsco.co.nz",
             "foodstuffs.ni@cimsco.co.nz",
-            "mitre10.nz@cimsco.co.nz"
+            "mitre10.nz@cimsco.co.nz",
+            "AHL.Hotels@eeknz.co.nz",
+            "QT.Wellington@eeknz.co.nz"
         };
         // ==>**** Ref at AccountController.cs: This is where these accounts are created
 
@@ -139,11 +141,17 @@ namespace CimscoPortal.Data.Migrations
             LinkUsersCustomer("Masterton Supermarkets Ltd", new string[] { "masterton@cimsco.co.nz", "masterton2@cimsco.co.nz", "masterton.supermarkets@cimsco.co.nz" }, context);
             //LinkUsersCustomer("Intercontinental Group", new string[] { "masterton@cimsco.co.nz" }, context);
             LinkUsersCustomer("Nees Hardware Ltd", new string[] { "mitre10@cimsco.co.nz", "nees.hardware@cimsco.co.nz" }, context);
+            LinkUsersCustomer("QT Museum Wellington", new string[] { "QT.Wellington@eeknz.co.nz" }, context);
+
+            
+            LinkUsersGroup("AHL Hotels (NZ) Limited", new string[] { "AHL.Hotels@eeknz.co.nz" }, context);
 
             LinkUsersGroup("Foodstuffs North Island", new string[] { "foodstuffs@cimsco.co.nz", "foodstuffs2@cimsco.co.nz", "foodstuffs.ni@cimsco.co.nz" }, context);
             LinkUsersGroup("Mitre 10 New Zealand", new string[] { "mitre10_2@cimsco.co.nz", "mitre10.nz@cimsco.co.nz" }, context);
 
             LinkUserSite("HP Lane St Data Center", "HP@cimsco.co.nz", context);
+
+
             
 
         }
@@ -395,8 +403,8 @@ namespace CimscoPortal.Data.Migrations
         {
             AspNetUser _userName;
             _userName = context.AspNetUsers.Where(x => x.UserName == targetUser).FirstOrDefault();
-            CimscoPortal.Data.Models.Site _site = context.Sites.Where(x => x.SiteName== targetSite).First();
-            _site.Users = _userName;
+            CimscoPortal.Data.Models.Site _site = context.Sites.Where(x => x.SiteName == targetSite).First();
+            _site.Users.Add(_userName);
         }
 
         private void CreateSites(CimscoPortal.Data.Models.CimscoPortalContext context, string[] sampleSites)

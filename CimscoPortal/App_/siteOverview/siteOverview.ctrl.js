@@ -4,13 +4,13 @@
     var module = angular.module("app.siteOverview")
         .controller("app.siteOverview.ctrl", siteOverview);
 
-    siteOverview.$inject = ['$scope', '$timeout', '$filter', 'soDataSource', 'userDataSource', 'filterData', 'consumptionData', 'toaster', 'googleChart', 'dataFormatting'];
-    function siteOverview($scope, $timeout, $filter, soDataSource, userDataSource, filterData, consumptionData, toaster, googleChart, dataFormatting) {
+    siteOverview.$inject = ['$scope', '$timeout', '$filter', 'soDataSource', 'userDataSource', 'filterData', 'consumptionData', 'datapointDetails', 'toaster', 'googleChart', 'dataFormatting'];
+    function siteOverview($scope, $timeout, $filter, soDataSource, userDataSource, filterData, consumptionData, datapointDetails, toaster, googleChart, dataFormatting) {
 
-        $scope.gczztest = gczztest;
-        var gczztest = function (element) {
-            console.log("Selected " + element);
-        };
+        //$scope.gczztest = gczztest;
+        //var gczztest = function (element) {
+        //    console.log("Selected " + element);
+        //};
 
         var debugStatus_showMessages = false;
         var siteId = 0;
@@ -48,6 +48,20 @@
         $scope.includeBarChart = true;  // Whether histogram chart is available as option
         $scope.showAsBar = false;
         $scope.allowDisplayByDivision = false;
+
+        // Datapoint detail display functions
+        var dpConfig = { dataElementName: 'dpData', loadIconElementName: 'dpLoading' };
+        console.log(dpConfig);
+        $scope.dpData = [];
+        $scope.seriesSelected = function (selectedItem, text) {
+            //$scope.dpLoading = true;
+            var _element = _googleChartElements[filterData.elementIndex(_googleChartElements, text, _chartElementId)];
+            datapointDetails.selectedDatapoint(selectedItem, _element, $scope, dpConfig, siteId);
+        };
+        $scope.removeDatapoint = function (item) {
+            datapointDetails.removeDatapoint(item, $scope, dpConfig.dataElementName);
+        }
+        // End
 
         // Core Data
         var _filterData = "__";

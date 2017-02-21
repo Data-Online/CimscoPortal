@@ -130,14 +130,13 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
-    <Reference Include="Telerik.JustMock">
-      <HintPath>..\packages\JustMock.2014.1.1424.1\lib\Net35\Telerik.JustMock.dll</HintPath>
+    <Reference Include="Telerik.JustMock, Version=2016.2.426.1, Culture=neutral, PublicKeyToken=721b6c5bc0326b3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\JustMock.2016.2.426.1\lib\Net35\Telerik.JustMock.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Telerik.JustMock.Container">
-      <HintPath>..\packages\JustMock.2014.1.1424.1\lib\Net35\Telerik.JustMock.Container.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.JustMock.EntityFramework">
-      <HintPath>..\packages\JustMock.EntityFramework.1.0.1\lib\Net45\Telerik.JustMock.EntityFramework.dll</HintPath>
+    <Reference Include="Telerik.JustMock.EntityFramework, Version=2015.3.929.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\JustMock.EntityFramework.2015.3.929.5\lib\Net45\Telerik.JustMock.EntityFramework.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>

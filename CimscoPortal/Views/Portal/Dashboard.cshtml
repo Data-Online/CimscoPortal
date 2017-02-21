@@ -129,8 +129,12 @@
             </div>
         </div>
     </div>
+    @*<div ng-show="dpLoading && dpData.length == 0">
+            @Html.Partial("SharedPartials/_EmptyWidget_1")
+        </div>*@
+    <i ng-show="dpLoading" style="position:relative; left:49%; top:0px; margin:auto; z-index:99" class="fa fa-2x fa-refresh fa-fw" ng-class="{'fa-spin' : dpLoading}"></i>
     <div class="row animate-show-hide" ng-show="dpData.length > 0">
-        @Html.Partial("DashboardPartials/_DatapointDetailList")
+        @Html.Partial("SharedPartials/_DatapointDetailList")
     </div>
     <div class="row">
         <div class="col-xs-12 col-md-12">

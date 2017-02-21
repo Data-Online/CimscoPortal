@@ -111,6 +111,12 @@
             </div>
         </div>
     </div>
+
+    <i ng-show="dpLoading" style="position:relative; left:49%; top:0px; margin:auto; z-index:99" class="fa fa-2x fa-refresh fa-fw" ng-class="{'fa-spin' : dpLoading}"></i>
+    <div class="row animate-show-hide" ng-show="dpData.length > 0">
+        @Html.Partial("SharedPartials/_DatapointDetailList")
+    </div>
+
 </div>
 @section PageScripts{
     <script src="~/App_/siteOverview/siteOverview.data.js"></script>

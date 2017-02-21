@@ -11,72 +11,34 @@
         })
         .controller("app.dashboard.ctrl", dashboard);
 
-    dashboard.$inject = ['$scope', '$parse', '$interval', '$timeout', 'dbDataSource', 'userDataSource', 'filterData', 'consumptionData', 'dbConstants', 'toaster', 'googleChart', 'sharedData'];
-    function dashboard($scope, $parse, $interval, $timeout, dbDataSource, userDataSource, filterData, consumptionData, dbConstants, toaster, googleChart, sharedData) {
+    dashboard.$inject = ['$scope', '$parse', '$interval', '$timeout', 'dbDataSource', 'userDataSource', 'filterData', 'consumptionData', 'datapointDetails', 'dbConstants', 'toaster', 'googleChart', 'sharedData', 'CONFIG'];
+    function dashboard($scope, $parse, $interval, $timeout, dbDataSource, userDataSource, filterData, consumptionData, datapointDetails, dbConstants, toaster, googleChart, sharedData, CONFIG) {
 
-        var debugStatus_showMessages = false;
-        $scope.showAsBar = false;  // Whether to show line or bar initiually. Dictates setting for toggle switch
+        // Option buttons
         $scope.allowDisplayByDivision = true;
         $scope.allowShowEnergySavings = true;
-        $scope.dpData = [];
-
-        // Test info board
-        //var getDatapointDetails = function () {
-
-        //    var _testDate = new Date('01/10/2015');
-        //    var _testDate2 = new Date('04/12/2015');
-        //    var _testDate3 = new Date('02/12/2015');
-        //    $scope.dpData = [
-        //                        { status: "Attention", notes: "Missing invoices", date: _testDate },
-        //                        { status: "Test", notes: "Some other details", date: _testDate2 },
-        //                        { status: "Test2", notes: "Some more details", date: _testDate3 }
-        //    ];
-        //};
-
-        var pushDataPointDetails = function (item) {
-            $scope.dpData.push(item);
-        };
-
-        var onDatapointDetails = function (data) {
-            pushDataPointDetails(data);
-        };
-
-        $scope.removeDatapoint = function (item) {
-            var index = $scope.dpData.indexOf(item);
-            $scope.dpData.splice(index, 1);
-        };
-
-        $scope.seriesSelected = function (selectedItem, text) {
-            var _element = _googleChartElements[filterData.elementIndex(_googleChartElements, text, _chartElementId)];
-            var _datapointIdentity = googleChart.lineNameFromChartNumber($scope, _element, selectedItem.column, selectedItem.row);
-            console.log(_datapointIdentity);
-
-            if (selectedItem) {
-                //var zz = _googleChartElements[filterData.elementIndex(_googleChartElements, text, _chartElementId)].columnNames[selectedItem.column];
-                consumptionData.getDatapointDetails(_datapointIdentity)
-                    .then(onDatapointDetails, onError);
-            };
-        };
+        $scope.includeBarChart = true; // Include bar chart seletion option ?
+        $scope.showAsBar = false;  // Whether to show line or bar initiually. Dictates setting for toggle switch
 
         // elemenName == Page element where chart is to be reendered
         // columnNames == [Primary, Seconday] axes for chart. Primary axis is displayed by default. These names need to match columns returned from server.
         // title == Title to render on page (if required)
         // activeAxes == Which of the 2 axes are displayed. Current suppor is for Primary, !Secondary (true, false) OR Primary, Secondary (true, true)
-
+        //console.log(CONFIG.googleChartTheme);
         var _googleChartElements =
             [
                 {
                     elementName: "energyChargesChart", columnNames: ["Invoice Total excl GST", "Previous Year Total", "Project Saving Estimate"],
                     title: "Energy Charges", activeAxes: [true, false, false],
-                    columns: [[], [], []], colours: ['#009900', '#0000FF', '#DD9900'],
+                    columns: [[], [], []], colours: CONFIG.googleChartTheme,//['#009900', '#0000FF', '#DD9900'],
                     filter: ""
                 },
                 {
                     elementName: "electricityConsumptionChart", columnNames: ["Total Kwh", "Previous Year Kwh"],
                     title: "Electricity Consumption", activeAxes: [true, false],
-                    columns: [[], []], colours: ['#009900', '#0000FF'],
+                    columns: [[], []], colours: CONFIG.googleChartTheme, //['#009900', '#0000FF'],
                     filter: ""
-            }
+                }
             ];
         //  ['#0000FF', '#009900', '#CC0000', '#DD9900'],
         var _chartElementId = 'elementName'; // Element used when finding entry by name from the above array.
@@ -92,11 +54,25 @@
 
         $scope.chartHelpText = {
             title: "Cost and Consumption Data", // Tootltip title is not handled correctly - hard coded in partial for now.
-            detail: "Charts show total energy and invoice costs for all sites with data on file. All totals exclude GST."
+            detail: "Charts show total energy and invoice costs for all sites with data on file. All totals exclude GST. Values shown are for the month the costs were incurred, not the Invoice date"
         };
 
-        $scope.includeBarChart = true;
         $scope.loading = true;
+
+        // Datapoint detail display functions
+        var dpConfig = { dataElementName: 'dpData', loadIconElementName: 'dpLoading' };
+        $scope.dpData = [];
+        $scope.seriesSelected = function (selectedItem, text) {
+            //$scope.dpLoading = true;
+            var _siteId = 0; // i.e all sites
+            var _element = _googleChartElements[filterData.elementIndex(_googleChartElements, text, _chartElementId)];
+            datapointDetails.selectedDatapoint(selectedItem, _element, $scope, dpConfig, _siteId);
+        };
+        $scope.removeDatapoint = function (item) {
+            datapointDetails.removeDatapoint(item, $scope, dpConfig.dataElementName);
+        }
+        // End
+
 
         var onWelcomeMessage = function (data) {
             $scope.welcomeHeader = data.header;
@@ -118,13 +94,6 @@
             $scope.allowDisplayByDivision = (data.divisions != null);
             filterData.createMultiDropdown('divisions', data.divisions, _createWatch, $scope);
             filterData.createMultiDropdown('categories', data.categories, _createWatch, $scope);
-        };
-
-
-        var plotAllGraphs = function (data) {
-            if (debugStatus_showMessages) { toaster.pop('success', "All data loaded!", "Read histogram and stats data from database") };
-            displayStats(data.invoiceStats);
-            $scope.loading = false;
         };
 
         function onError(reason) {
@@ -150,7 +119,7 @@
 
         var _triggerName = filterData.getEventName();
         $scope.$on(_triggerName, function () {
-            if (debugStatus_showMessages) { toaster.pop('success', "Event triggered", "(end of count down)"); }
+            if (CONFIG.debug) { toaster.pop('success', "Event triggered", "(end of count down)"); }
             _divisionDataStatus.updateRequired = true;
 
             getBusinessData();
@@ -331,129 +300,10 @@
         };
 
         var onGoogleGraphData = function (data) {
-            //if (!_divisionDataStatus.elementsAdded) {
-            //    _googleChartElements[filterData.elementIndex(_googleChartElements, "electricityConsumptionChart", _chartElementId)].title = "TEST UPDATE";
-            //};
             // GPA ** --> Move to global and define only once. (divisions uses this also)
             var _primaryCharts = ["electricityConsumptionChart", "energyChargesChart"];
-
             initializeGoogleCharts(_primaryCharts, data, $scope.allowDisplayByDivision);
-
-            //googleChart.initializeGoogleChart($scope, data, _googleChartElements[filterData.elementIndex(_googleChartElements, "electricityConsumptionChart", _chartElementId)]);
-            //googleChart.initializeGoogleChart($scope, data, _googleChartElements[filterData.elementIndex(_googleChartElements, "energyChargesChart", _chartElementId)]);
-
-            //updateChartTitles("electricityConsumptionChart")
-            //if (getReturnIds() != '__') {
-            //    $scope.electricityConsumptionChart.title = $scope.electricityConsumptionChart.title + "TEST 2";
-            //}
-            //if (debugStatus_showMessages) { toaster.pop('success', "Google graph data loaded!", ""); }
-            //$scope.electricityConsumptionChart.view = [0];
-            //if ($scope.electricityConsumptionChart) {
-            //    console.log($scope.electricityConsumptionChart.view);
-            //    console.log($scope.electricityConsumptionChart.options.colors);
-            //};
             $scope.loading = false;
         };
-
-
-
-        ////TEST
-        //var chart1 = {};
-        //chart1.type = "LineChart";
-        //chart1.displayed = false;
-        //chart1.data = {
-        //    "cols": [{
-        //        id: "month",
-        //        label: "Month",
-        //        type: "string"
-        //    }, {
-        //        id: "laptop-id",
-        //        label: "Laptop",
-        //        type: "number"
-        //    }, {
-        //        id: "desktop-id",
-        //        label: "Desktop",
-        //        type: "number"
-        //    }, {
-        //        id: "server-id",
-        //        label: "Server",
-        //        type: "number"
-        //    }, {
-        //        id: "cost-id",
-        //        label: "Shipping",
-        //        type: "number"
-        //    }],
-        //    "rows": [{
-        //        c: [{
-        //            v: "January"
-        //        }, {
-        //            v: 19,
-        //            f: "42 items"
-        //        }, {
-        //            v: 12,
-        //            f: "Ony 12 items"
-        //        }, {
-        //            v: 7,
-        //            f: "7 servers"
-        //        }, {
-        //            v: 4
-        //        }]
-        //    }, {
-        //        c: [{
-        //            v: "February"
-        //        }, {
-        //            v: 13
-        //        }, {
-        //            v: 1,
-        //            f: "1 unit (Out of stock this month)"
-        //        }, {
-        //            v: 12
-        //        }, {
-        //            v: 2
-        //        }]
-        //    }, {
-        //        c: [{
-        //            v: "March"
-        //        }, {
-        //            v: 24
-        //        }, {
-        //            v: 5
-        //        }, {
-        //            v: 11
-        //        }, {
-        //            v: 6
-        //        }
-
-        //        ]
-        //    }]
-        //};
-        //chart1.options = {
-        //    "title": "Sales per month",
-        //    "colors": ['#0000FF', '#009900', '#CC0000', '#DD9900'],
-        //    "defaultColors": ['#0000FF', '#009900', '#CC0000', '#DD9900'],
-        //    "isStacked": "true",
-        //    "fill": 20,
-        //    //"displayExactValues": true,
-        //    "vAxis": {
-        //        "title": "Sales unit",
-        //        "gridlines": {
-        //            "count": 10
-        //        }
-        //    },
-        //    "hAxis": {
-        //        "title": "Date"
-        //    }
-        //};
-        //chart1.view = {
-        //    columns: [0, 1, 2, 3, 4]
-        //};
-        //$scope.myChart = chart1;
-
-
-
-        //TEST
-
-
-
     };
 })();

@@ -27,6 +27,9 @@ namespace CimscoPortal.Tests.Services
             MockContextAndService(out _repository, out _portalService);
         }
 
+        #region Active test
+
+        #region Common data and tools
         [TestMethod]
         public void GetCommonData_ReturnsCommonInfoViewModel_IfUserValid()
         {
@@ -34,12 +37,12 @@ namespace CimscoPortal.Tests.Services
             var _mockSet = MockDataSet(FakeUserList());
             _repository.Setup(x => x.AspNetUsers).Returns(_mockSet);
 
-
             // Act
-            var _result = _portalService.GetCommonData("testuser1");
+            var _result = _portalService.GetCommonData("customeruser@test.com");
 
             // Assert
-            Assert.AreEqual(_result.eMail, "test1@test.com");
+            Assert.AreEqual("customeruser@test.com", _result.eMail);
+            Assert.AreEqual("Test Customer", _result.TopLevelName);
             Assert.IsInstanceOfType(_result, typeof(CommonInfoViewModel));
         }
 
@@ -59,6 +62,20 @@ namespace CimscoPortal.Tests.Services
             Assert.IsInstanceOfType(_result, typeof(CommonInfoViewModel));
         }
 
+        #endregion
+
+        #endregion Active tests
+
+        [TestMethod]
+        public void CheckUserAccess_ReturnsValidModel()
+        {
+            // Arrange
+            ////var _mockSet = MockDataSet(FakeSiteList());
+            ////_repository.Setup(x => x.Sites).Returns(_mockSet);
+            var zz = new PrivateObject(_portalService);
+            var output = (List<int>)zz.Invoke("GetValidSiteIdListForUser", "test");
+        }
+
         [TestMethod]
         public void GetNavbarDataFor_ReturnsDataForUser()
         {
@@ -66,7 +83,7 @@ namespace CimscoPortal.Tests.Services
             SetupMockNavbarEnvironment();
 
             // Act
-            var _result = _portalService.GetNavbarDataFor("test1@test.com");
+            var _result = _portalService.GetNavbarData("test1@test.com");
 
             // Assert
             Assert.AreEqual(_result.FirstOrDefault().Message, "Test Message1");
@@ -82,12 +99,11 @@ namespace CimscoPortal.Tests.Services
             SetupMockNavbarEnvironment();
 
             // Act
-            var _result = _portalService.GetNavbarDataFor("nomessages@test.com");
+            var _result = _portalService.GetNavbarData("nomessages@test.com");
 
             // Assert
             Assert.AreEqual(_result.Count(), 0);
         }
-
 
         [TestMethod]
         public void GetSiteHierachy_ReturnsGroupDataWhenUserMemberOfGroup()
@@ -103,8 +119,6 @@ namespace CimscoPortal.Tests.Services
             Assert.AreEqual(2, _result.SiteData.Count());
             Assert.IsInstanceOfType(_result, typeof(SiteHierarchyViewModel));
         }
-
-
 
         [TestMethod]
         public void GetSiteHierachy_ReturnsCustomerDataWhenUserMemberOfCustomer()
@@ -256,15 +270,19 @@ namespace CimscoPortal.Tests.Services
 
         private static List<Data.Models.AspNetUser> TestUsers()
         {
-            var _customer = new List<Data.Models.Customer> { new Data.Models.Customer { CustomerName = "Test Customer" } };
+            var _customer = new List<Data.Models.Customer> {
+                new Data.Models.Customer { CustomerName = "Test Customer" }
+            };
+            var _group = new List<Data.Models.Group> {
+                new Data.Models.Group { GroupName = "Test Group" }
+            };
             var _emptyCustomerList = new List<Data.Models.Customer>();
-            var _group = new List<Data.Models.Group> { new Data.Models.Group { GroupName = "Test Group" } };
             var _emptyGroupList = new List<Data.Models.Group>();
 
             return new List<Data.Models.AspNetUser> 
             {
-                new Data.Models.AspNetUser { Email ="test1@test.com", UserName="testuser1"},
-                new Data.Models.AspNetUser { Email ="test2@test.com", UserName="testuser2"},
+                new Data.Models.AspNetUser { Email ="customeruser@test.com", UserName="customeruser@test.com", Customers = _customer, Groups = _emptyGroupList },
+                new Data.Models.AspNetUser { Email ="groupuser@test.com", UserName="groupuser@test.com", Groups = _group, Customers = _emptyCustomerList},
                 new Data.Models.AspNetUser { Email ="customeruser@test.com", UserName="testuser3", Customers = _customer},
                 new Data.Models.AspNetUser { Email ="groupuser@test.com", UserName="testuser4", Groups = _group},                    
                 new Data.Models.AspNetUser { Email ="nocustomer@test.com", UserName="testuser5", Customers = _emptyCustomerList },       
@@ -272,6 +290,19 @@ namespace CimscoPortal.Tests.Services
             };
         }
 
+        private static IQueryable<Data.Models.Site> FakeSiteList()
+        {
+            return TestSites().AsQueryable();
+        }
+
+        private static List<Data.Models.Site> TestSites()
+        {
+            return new List<Data.Models.Site>
+            {
+                new Data.Models.Site { SiteId = 1, SiteName = "TestSite1" },
+                new Data.Models.Site { SiteId = 2, SiteName = "TestSite2" }
+            };
+        }
         #endregion
     }
 }

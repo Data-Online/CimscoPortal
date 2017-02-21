@@ -23,7 +23,7 @@
         //};
 
         var getDashboardStatistics = function (monthSpan, filter) {
-            var dataApi = "/api/DashboardStatistics/" + monthSpan + "/" + filter;
+            var dataApi = "/api/dashboardStatistics/" + monthSpan + "/" + filter;
             return $http.get(dataApi)
                         .then(function (response) {
                             return response.data;
@@ -32,7 +32,7 @@
 
         var getAllFilters = function () {
 
-            var dataApi = "/api/Filters";
+            var dataApi = "/api/filters";
             return $http.get(dataApi)
                         .then(function (response) {
                             return response.data;
@@ -41,7 +41,7 @@
 
         var getWelcomeScreen = function () {
 
-            var dataApi = "/api/WelcomeScreen";
+            var dataApi = "/api/welcomeScreen";
             return $http.get(dataApi)
                 .then(function (response) {
                     return response.data;
@@ -49,20 +49,20 @@
         };
 
         // GPA: Copied from SiteOverview
-        var getCostConsumptionData = function (monthSpan, filter) {
-            var dataApi = "/api/CostAndConsumption" + "/" + monthSpan + "/" + filter;
-            return $http.get(dataApi)
-                        .then(function (response) {
-                            return response.data;
-                        });
-        };
+        //var getCostConsumptionData = function (monthSpan, filter) {
+        //    var dataApi = "/api/CostAndConsumption" + "/" + monthSpan + "/" + filter;
+        //    return $http.get(dataApi)
+        //                .then(function (response) {
+        //                    return response.data;
+        //                });
+        //};
 
         return {
             //getTotalCostsByMonth: getTotalCostsByMonth,
             //getTotalCostAndConsumption: getTotalCostAndConsumption,
             getAllFilters: getAllFilters,
             getWelcomeScreen: getWelcomeScreen,
-            getCostConsumptionData: getCostConsumptionData,
+            //getCostConsumptionData: getCostConsumptionData,
             getDashboardStatistics: getDashboardStatistics
         };
 

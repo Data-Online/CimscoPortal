@@ -39,9 +39,19 @@ namespace CimscoPortal.Data.Models.Mapping
                 .HasForeignKey(d => d.CustomerId);
 
             // Relationships
-            this.HasOptional(t => t.Users)
-                .WithOptionalDependent(t => t.Site)
-                .Map(m => m.MapKey("UserId"));
+            //this.HasOptional(t => t.Users)
+            //    .WithOptionalDependent(t => t.Site)
+            //    .Map(m => m.MapKey("UserId"));
+
+            // Site (1) to Many Users - optional
+            this.HasMany<AspNetUser>(t => t.Users)
+                .WithMany(c => c.Sites)
+                .Map(cs =>
+                    {
+                        cs.MapLeftKey("SiteId");
+                        cs.MapRightKey("UserId");
+                        cs.ToTable("SiteUserLink");
+                    });
             //.Map(m =>
             //{
             //    m.ToTable("SiteUserLink");

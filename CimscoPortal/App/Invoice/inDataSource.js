@@ -3,7 +3,7 @@
     var inDataSource = function ($http) {
 
         var getInvSummary = function (invoiceId) {
-            var dataApi = "/api/invoicesummaryfor/" + invoiceId;
+            var dataApi = "/api/invoiceSummaryFor/" + invoiceId;
             return $http.get(dataApi)
                         .then(function (response) {
                             return response.data;
@@ -20,7 +20,7 @@
         //};
 
         var getInvDetail_ = function (invoiceId) {
-            var dataApi = "/api/invoicedetailfor_/" + invoiceId;
+            var dataApi = "/api/invoiceDetailFor_/" + invoiceId;
             return $http.get(dataApi)
                         .then(function (response) {
                             return response.data;
@@ -46,7 +46,7 @@
         };
 
         var getSiteInvoices = function (siteId) {
-            var dataApi = "/api/siteinvoicedatafor/" + siteId;
+            var dataApi = "/api/siteInvoiceDataFor/" + siteId;
             return $http.get(dataApi)
                         .then(function (response) {
                             return response.data;

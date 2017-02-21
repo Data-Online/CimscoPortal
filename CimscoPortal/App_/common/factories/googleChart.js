@@ -108,7 +108,7 @@
                 "interpolateNulls": true,
                 "chartArea": { left: 100, top: 50, bottom: 100, right: _right, width: "100%", height: "100%" },//{ "width": "80%", "height": "60%" },
                 "title": "", //title,
-                "colors": ['#0000FF', '#009900', '#CC0000', '#DD9900'],
+                "colors": ['#0000FF', '#009900', '#CC0000', '#DD9900'],   // These colours are replaced through call to refreshGoogleChart using chartElement data 
                 "defaultColors": ['#0000FF', '#009900', '#CC0000', '#DD9900'],
                 //     "isStacked": "true",
                 "fill": 20,
@@ -162,7 +162,7 @@
             var _activeElements = getter(scope);
             //var _lookingFor = _activeElements.columns[chartNumber];
             var _lookingFor = getter(scope).columns[chartNumber];
-            var _returnValues = { name: "", filter: "", date: "" };
+            var _returnValues = { name: "", filter: "", date: "", colour: "" };
 
             var getter = $parse(chartElement.elementName + '.data');
             var _month = getter(scope).rows[pointNumber].c[0].v;
@@ -172,7 +172,7 @@
 
             angular.forEach(chartElement.columns, function (column, index) {
                 if (column.indexOf(_lookingFor) >= 0) {
-                    _returnValues = { name: chartElement.columnNames[index], filter: chartElement.filter, date: _month};
+                    _returnValues = { name: chartElement.columnNames[index], filter: chartElement.filter, date: _month, colour: chartElement.colours[index]};
                 }
             });
             return _returnValues;

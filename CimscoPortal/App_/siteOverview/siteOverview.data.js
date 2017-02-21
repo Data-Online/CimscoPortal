@@ -42,13 +42,13 @@
                         });
         };
 
-        var getCostConsumptionData = function (siteId, monthSpan) {
-            var dataApi = "/api/CostAndConsumption/" + siteId + "/" + monthSpan + "/__";
-            return $http.get(dataApi)
-                        .then(function (response) {
-                            return response.data;
-                        });
-        };
+        //var getCostConsumptionData = function (siteId, monthSpan) {
+        //    var dataApi = "/api/CostAndConsumption/" + siteId + "/" + monthSpan + "/__";
+        //    return $http.get(dataApi)
+        //                .then(function (response) {
+        //                    return response.data;
+        //                });
+        //};
 
         
         return {
@@ -56,7 +56,7 @@
             getInvoiceData: getInvoiceData,
             postInvoiceApproval: postInvoiceApproval,
             getTestModel: getTestModel,
-            getCostConsumptionData: getCostConsumptionData,
+            //getCostConsumptionData: getCostConsumptionData,
             getSiteDetails: getSiteDetails
 
         };

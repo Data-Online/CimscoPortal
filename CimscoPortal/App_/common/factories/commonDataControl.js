@@ -97,7 +97,7 @@
 
 
         var getAllFilters = function () {
-            var dataApi = "/api/Filters";
+            var dataApi = "/api/filters";
             return $http.get(dataApi)
                         .then(function (response) {
                             return response.data;
@@ -150,7 +150,7 @@
         //    for (var i = 0; i < elements.length; i++) {
         //        if (elements[i].elementName == elementName) { return i }
         //    };
-            
+
         //    return -1;
         //};
 
@@ -171,14 +171,14 @@
             //});
             return -1;
             //            for (var i = 0; i < elements.length; i++) {
-//                var _element = elements[i];
-//                //console.log(_element.elementName);
-//                getter = $parse('elementName');
-//                var ztest = getter(_element);
-//                console.log(ztest);
-////                if (elements[i].elementName == elementName) { return i }
-//            };
-  //          return -1;
+            //                var _element = elements[i];
+            //                //console.log(_element.elementName);
+            //                getter = $parse('elementName');
+            //                var ztest = getter(_element);
+            //                console.log(ztest);
+            ////                if (elements[i].elementName == elementName) { return i }
+            //            };
+            //          return -1;
         };
 
 
@@ -199,7 +199,7 @@
     angular.module("commonDataControl")
         .factory('dataFormatting', dataFormatting);
 
-    function dataFormatting () {
+    function dataFormatting() {
         return {
             pctBoxStyle: function (value) {
                 var num = parseInt(value);
@@ -248,17 +248,17 @@
     function consumptionData($http) {
 
         var getCostConsumptionData = function (monthSpan, filter, siteId) {
-            var dataApi = "/api/CostAndConsumption_" + "/" + monthSpan + "/" + filter + "/" + siteId;
+            var dataApi = "/api/costAndConsumption" + "/" + monthSpan + "/" + filter + "/" + siteId;
             return $http.get(dataApi)
                         .then(function (response) {
                             return response.data;
                         });
         };
 
-        var getDatapointDetails = function (datapointIdentity) {
-            console.log(datapointIdentity);
-            console.log(JSON.stringify(datapointIdentity));
-            var dataApi = "/api/DatapointDetails";
+        var getDatapointDetails = function (datapointIdentity, siteId) {
+            //console.log(datapointIdentity);
+            //console.log(JSON.stringify(datapointIdentity));
+            var dataApi = "/api/DatapointDetails/" + siteId;
             var config = {
                 headers: {
                     'Content-Type': 'application/json'
@@ -272,13 +272,58 @@
                         });
 
 
-            console.log(datapointIdentity);
+            //console.log(datapointIdentity);
             //return { status: "Attention", notes: "Missing invoices", date: new Date('01/10/2015') };
         };
 
         return {
             getCostConsumptionData: getCostConsumptionData,
             getDatapointDetails: getDatapointDetails
+        };
+    };
+})();
+
+(function () {
+    angular.module("commonDataControl")
+    .factory('datapointDetails', datapointDetails);
+    
+    datapointDetails.$inject = ['$parse', 'googleChart', 'consumptionData'];
+    function datapointDetails($parse, googleChart, consumptionData) {
+
+        var removeDatapoint = function (item, thisScope, dataElementName) {
+            var getter = $parse(dataElementName);
+            if (item == 0) {
+                getter.assign(thisScope, []);
+            }
+            else {
+                var index = getter(thisScope).indexOf(item);
+                getter(thisScope).splice(index, 1);
+            }
+        };
+        var onDatapointDetails = function (data, colour, thisScope, dataElementName) {
+            data.colour = colour;
+            var getter = $parse(dataElementName);
+            getter(thisScope).push(data);
+        };
+        function onError(reason) {
+            toaster.pop('error', "Data Load Error", "Unable to load datapoint details. Status ID =" + reason.status);
+        };
+        var selectedDatapoint = function (selectedItem, element, thisScope, configData, siteId) {
+            if (selectedItem) {
+                //var loadIconGetter = $parse(loadingIconActive);
+                var loadIconGetter = $parse(configData.loadIconElementName);
+                loadIconGetter.assign(thisScope, true);
+                var _datapointIdentity = googleChart.lineNameFromChartNumber(thisScope, element, selectedItem.column, selectedItem.row);
+                //console.log(_datapointIdentity);
+                consumptionData.getDatapointDetails(_datapointIdentity, siteId)
+                    .then(function success(data) { loadIconGetter.assign(thisScope, false); return onDatapointDetails(data, _datapointIdentity.colour, thisScope, configData.dataElementName) },
+                            function error() { loadIconGetter.assign(thisScope, false); return onError });
+            };
+        };
+
+        return {
+            selectedDatapoint: selectedDatapoint,
+            removeDatapoint: removeDatapoint
         };
     };
 })();

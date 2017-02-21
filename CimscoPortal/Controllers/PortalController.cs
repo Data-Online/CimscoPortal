@@ -263,7 +263,7 @@ namespace CimscoPortal.Controllers
                     SubTitle = "Bill History"
                 }
             };
-            var ss = _portalService.GetHistoryByMonth(2);
+            var ss = _portalService.InvoiceSummaryByMonth(2);
            // model.MonthlyData = ss;
             //for (int i = 0; i < ss.MonthlyData.Count(); i++)
             //{

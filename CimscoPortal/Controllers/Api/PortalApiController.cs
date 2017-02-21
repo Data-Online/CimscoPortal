@@ -38,7 +38,7 @@ namespace CimscoPortal.Controllers.Api
         public HttpResponseMessage GetMessages(HttpRequestMessage request)
         {
             return request.CreateResponse<MessageViewModel[]>(HttpStatusCode.OK,
-                            _portalService.GetNavbarDataFor(User.Identity.Name).ToArray());
+                            _portalService.GetNavbarData(User.Identity.Name).ToArray());
         }
 
         [HttpGet]
@@ -61,17 +61,17 @@ namespace CimscoPortal.Controllers.Api
         [System.Web.Mvc.ValidateAntiForgeryToken]
         [HttpPost]
         [Route("saveUserData")]
-        public HttpResponseMessage SaveUserData(HttpRequestMessage request, [FromBody] UserSettingsViewModel userSettings)
+        public HttpResponseMessage SaveUserSettings(HttpRequestMessage request, [FromBody] UserSettingsViewModel userSettings)
         {
             //UserSettingsViewModel _data = _portalService.SaveUserData(userSettings, User.Identity.Name);
-            if (_portalService.SaveUserData(userSettings, User.Identity.Name))
+            if (_portalService.SaveUserSettings(userSettings, User.Identity.Name))
                 return request.CreateResponse(HttpStatusCode.OK);
             else
                 return request.CreateResponse(HttpStatusCode.BadRequest);
         }
 
         [HttpGet]
-        [Route("Filters")]
+        [Route("filters")]
         public HttpResponseMessage GetAllFilters(HttpRequestMessage request)
         {
             return request.CreateResponse<AvailableFiltersModel>(HttpStatusCode.OK,
@@ -79,7 +79,7 @@ namespace CimscoPortal.Controllers.Api
         }
 
         [HttpGet]
-        [Route("WelcomeScreen")]
+        [Route("welcomeScreen")]
         public HttpResponseMessage GetWelcomeScreen(HttpRequestMessage request)
         {
             return request.CreateResponse<TextViewModel>(HttpStatusCode.OK,
@@ -108,6 +108,7 @@ namespace CimscoPortal.Controllers.Api
         {
             if (GetCurrentUserAccess().ValidSites.Contains(siteId))
             {
+                var _data = _portalService.GetSiteDetails(siteId);
                 return request.CreateResponse<SiteDetailViewModel>(HttpStatusCode.OK,
                                 _portalService.GetSiteDetails(siteId));
             }
@@ -115,10 +116,10 @@ namespace CimscoPortal.Controllers.Api
         }
 
         [HttpGet]
-        [Route("CostAndConsumption_/{monthSpan}/{filter}/{siteId}")]
+        [Route("costAndConsumption/{monthSpan}/{filter}/{siteId}")]
         public HttpResponseMessage GetCostsAndConsumption(HttpRequestMessage request, int monthSpan, string filter, int siteId)
         {
-            if (CheckUserAccess(siteId))
+            if (CheckUserAccessToSite(siteId))
             //if (GetCurrentUserAccess().ValidSites.Contains(siteId))
             {
                 CostConsumptionOptions _options = new CostConsumptionOptions();
@@ -129,20 +130,14 @@ namespace CimscoPortal.Controllers.Api
                 _options.previous12 = true;
 
                 //var data = _portalService.GetCostsAndConsumption(User.Identity.Name, monthSpan, siteId);
-                var data = _portalService.GetCostsAndConsumption(monthSpan, _options);
-                return request.CreateResponse<GoogleChartViewModel>(HttpStatusCode.OK, data);
+                //GoogleChartViewModel data = _portalService.GetCostsAndConsumption(monthSpan, _options);
+                return request.CreateResponse<GoogleChartViewModel>(HttpStatusCode.OK,
+                    _portalService.GetCostsAndConsumption(monthSpan, _options));
             }
             return request.CreateResponse(HttpStatusCode.Forbidden);
         }
 
-        private bool CheckUserAccess(int siteId)
-        {
-            if (siteId == 0)
-            {
-                return true;
-            }
-            return GetCurrentUserAccess().ValidSites.Contains(siteId);
-        }
+
 
 
         //[HttpGet]
@@ -195,7 +190,7 @@ namespace CimscoPortal.Controllers.Api
         //}
 
         [HttpGet]
-        [Route("DashboardStatistics/{monthSpan}/{filter}")]
+        [Route("dashboardStatistics/{monthSpan}/{filter}")]
         public HttpResponseMessage GetDashboardStatistics(HttpRequestMessage request, int monthSpan, string filter)
         {
             var data = _portalService.GetDashboardStatistics(User.Identity.Name, monthSpan, filter);
@@ -213,36 +208,42 @@ namespace CimscoPortal.Controllers.Api
         //}
 
         // --> GPA ** This is only used in tests - logic now in Service layer. Move tests to there.
-        [HttpGet]
-        [Route("sitehierarchy")]
-        public HttpResponseMessage GetSiteHierarchy(HttpRequestMessage request)
-        {
-            var userId = User.Identity.Name;
-            return request.CreateResponse<SiteHierarchyViewModel>(HttpStatusCode.OK, _portalService.GetSiteHierarchy(userId));
-        }
+        //[HttpGet]
+        //[Route("sitehierarchy")]
+        //public HttpResponseMessage GetSiteHierarchy(HttpRequestMessage request)
+        //{
+        //    var userId = User.Identity.Name;
+        //    return request.CreateResponse<SiteHierarchyViewModel>(HttpStatusCode.OK, _portalService.GetSiteHierarchy(userId));
+        //}
+        #region Invoices
 
         [HttpGet]
-        [Route("siteinvoicedatafor/{siteId}")]
+        [Route("siteInvoiceDataFor/{siteId}")]
         public HttpResponseMessage GetSiteInvoiceData(HttpRequestMessage request, int siteId)
         {
-            var data = _portalService.GetInvoiceDetailForSite(siteId);
-            return request.CreateResponse<InvoiceDetail[]>(HttpStatusCode.OK, data.ToArray());
+            if (CheckUserAccessToSite(siteId))
+            {
+                var data = _portalService.GetInvoiceDetailForSite(siteId);
+                return request.CreateResponse<InvoiceDetail[]>(HttpStatusCode.OK, data.ToArray());
+            }
+            return request.CreateResponse(HttpStatusCode.Forbidden);
         }
 
         [HttpGet]
-        [Route("sitehistorydatafor/{invoiceId}")]
+        [Route("siteHistoryDataFor/{invoiceId}")]
         public HttpResponseMessage GetSiteHistoricalData(HttpRequestMessage request, int invoiceId)
         {
+            // Need check to ensure user can view this data invId --> siteId --> check
             var data = _portalService.GetHistoricalDataForSite(invoiceId);
             return request.CreateResponse<MonthlyConsumptionViewModal[]>(HttpStatusCode.OK, data.ToArray());
         }
 
-        #region GetInvoiceOverview
+
         [HttpGet]
         [Route("invoiceOverviewFor/{siteId}")]
         public HttpResponseMessage GetInvoiceOverview(HttpRequestMessage request, int siteId)
         {
-            if (GetCurrentUserAccess().ValidSites.Contains(siteId))
+            if (CheckUserAccessToSite(siteId))
             {
                 var data = _portalService.GetInvoiceOverviewForSite(siteId);
                 return request.CreateResponse<InvoiceOverviewViewModel[]>(HttpStatusCode.OK, data.ToArray());
@@ -254,14 +255,13 @@ namespace CimscoPortal.Controllers.Api
         [Route("invoiceOverviewFor/{siteId}/{monthsToDisplay}")]
         public HttpResponseMessage GetInvoiceOverview(HttpRequestMessage request, int siteId, int monthsToDisplay)
         {
-            if (GetCurrentUserAccess().ValidSites.Contains(siteId))
+            if (CheckUserAccessToSite(siteId))
             {
                 var data = _portalService.GetInvoiceOverviewForSite(siteId, monthsToDisplay);
                 return request.CreateResponse<InvoiceOverviewViewModel[]>(HttpStatusCode.OK, data.ToArray());
             }
             return request.CreateResponse(HttpStatusCode.Forbidden);
         }
-        #endregion
 
 
         [HttpGet]
@@ -272,6 +272,24 @@ namespace CimscoPortal.Controllers.Api
             var data = _portalService.GetAllInvoiceOverview(User.Identity.Name, monthSpan, filter, pageNo);
             return request.CreateResponse<InvoiceOverviewViewModel[]>(HttpStatusCode.OK, data.ToArray());
         }
+
+        [HttpGet]
+        [Route("invoiceSummaryFor/{invoiceId}")]
+        public HttpResponseMessage GetInvoiceSummary(HttpRequestMessage request, int invoiceId)
+        {
+            var data = _portalService.InvoiceSummaryByMonth(invoiceId);
+            return request.CreateResponse<StackedBarChartViewModel>(HttpStatusCode.OK, data);
+        }
+
+        [HttpGet]
+        [Route("invoiceDetailFor/{invoiceId}")]
+        public HttpResponseMessage GetInvoiceDetail(HttpRequestMessage request, int invoiceId)   // Rename ?
+        {
+            var data = _portalService.GetInvoiceDetail(invoiceId);
+            return request.CreateResponse<InvoiceDetailViewModel>(HttpStatusCode.OK, data);
+        }
+
+        #endregion
 
         [HttpGet]
         [Route("summarydata")]
@@ -306,43 +324,24 @@ namespace CimscoPortal.Controllers.Api
         //    return request.CreateResponse<InvoiceTallyViewModel>(HttpStatusCode.OK, data);
         //}
 
-        [HttpGet]
-        [Route("invoicesummaryfor/{invoiceId}")]
-        public HttpResponseMessage GetInvoiceData(HttpRequestMessage request, int invoiceId)
-        {
-            var data = _portalService.GetHistoryByMonth(invoiceId);
-            return request.CreateResponse<StackedBarChartViewModel>(HttpStatusCode.OK, data);
-        }
 
-        //[HttpGet]
-        //[Route("invoicedetailfor/{invoiceId}")]
-        //public HttpResponseMessage GetInvoiceDetailData(HttpRequestMessage request, int invoiceId)
-        //{
-        //    var data = _portalService.GetCurrentMonth_(invoiceId);
-        //    return request.CreateResponse<InvoiceDetailViewModel>(HttpStatusCode.OK, data);
-        //}
-
-        [HttpGet]
-        [Route("invoicedetailfor/{invoiceId}")]
-        public HttpResponseMessage GetInvoiceDetail(HttpRequestMessage request, int invoiceId)   // Rename ?
-        {
-            var data = _portalService.GetInvoiceDetail(invoiceId);
-            return request.CreateResponse<InvoiceDetailViewModel>(HttpStatusCode.OK, data);
-        }
-
-
-
-    
 
         [HttpPost]
-        [Route("DatapointDetails")]
-        public HttpResponseMessage GetDatapointDetails(HttpRequestMessage request, [FromBody] DatapointIdentity datapointId)
+        [Route("DatapointDetails/{siteId}")]
+        public HttpResponseMessage GetDatapointDetails(HttpRequestMessage request, [FromBody] DatapointIdentity datapointId, int siteId)
         {
-            //DatapointDetailView _response = new DatapointDetailView() { Notes = "<b>Test</b>", Status = "Test Status", Date = DateTime.Now };
-
-            DatapointDetailView _response = _portalService.GetDatapointDetails(datapointId);
-
-            return request.CreateResponse(HttpStatusCode.OK, _response);
+            if (CheckUserAccessToSite(siteId))
+            {
+                CostConsumptionOptions _options = new CostConsumptionOptions();
+                _options.userId = User.Identity.Name;
+                _options.siteId = siteId;
+                //_options.filter = filter;
+                _options.includeMissing = true;
+                //_options.previous12 = true;
+                DatapointDetailView _response = _portalService.GetDatapointDetails(datapointId, _options);
+                return request.CreateResponse(HttpStatusCode.OK, _response);
+            }
+            return request.CreateResponse(HttpStatusCode.Forbidden);
         }
 
         [System.Web.Mvc.ValidateAntiForgeryToken]
@@ -350,13 +349,19 @@ namespace CimscoPortal.Controllers.Api
         [Route("invoiceApproval/{invoiceId}")]
         public HttpResponseMessage SetInvoiceApproved(HttpRequestMessage request, int invoiceId)
         {
-            var _rootUrl = System.Web.HttpContext.Current.Request.Url.Host + ":" + System.Web.HttpContext.Current.Request.Url.Port;
-            var _data = _portalService.ApproveInvoice(invoiceId, User.Identity.Name, _rootUrl);
-            if (_data.Approved)
-                return request.CreateResponse<InvoiceOverviewViewModel>(HttpStatusCode.OK, _data);
-            else
-                return request.CreateResponse(HttpStatusCode.BadRequest);
+            if (CheckUserAccessToInvoice(User.Identity.Name, invoiceId))
+            {
+                string _rootUrl = GetRootUrl();
+                var _data = _portalService.ApproveInvoice(invoiceId, User.Identity.Name, _rootUrl);
+                if (_data.Approved)
+                    return request.CreateResponse<InvoiceOverviewViewModel>(HttpStatusCode.OK, _data);
+                else
+                    return request.CreateResponse(HttpStatusCode.BadRequest);
+            }
+            return request.CreateResponse(HttpStatusCode.BadRequest);
         }
+
+
 
         [System.Web.Mvc.ValidateAntiForgeryToken]
         [HttpGet]
@@ -366,7 +371,6 @@ namespace CimscoPortal.Controllers.Api
             var data = _portalService.GetInvoiceStatsForSites(User.Identity.Name, monthSpan, filter);
             return request.CreateResponse<InvoiceStatsBySiteViewModel[]>(HttpStatusCode.OK, data.ToArray());
         }
-
 
         [System.Web.Mvc.ValidateAntiForgeryToken]
         [HttpPost]
@@ -390,8 +394,6 @@ namespace CimscoPortal.Controllers.Api
 
         #endregion
 
-
-
         public class JsonResponseFactory
         {
             public static object ErrorResponse(string error)
@@ -411,7 +413,6 @@ namespace CimscoPortal.Controllers.Api
 
         }
 
-
         public UserAccessModel GetCurrentUserAccess()
         {
             var _user = User.Identity.Name;
@@ -421,6 +422,25 @@ namespace CimscoPortal.Controllers.Api
             UserAccessModel = _portalService.CheckUserAccess(_user);
 
             return UserAccessModel;
+        }
+
+        private bool CheckUserAccessToSite(int siteId)
+        {
+            if (siteId == 0)
+            {
+                return true;
+            }
+            return GetCurrentUserAccess().ValidSites.Contains(siteId);
+        }
+
+        public bool CheckUserAccessToInvoice(string userId, int invoiceId)
+        {
+            return _portalService.CheckUserAccessToInvoice(userId, invoiceId);
+        }
+
+        public static string GetRootUrl()
+        {
+            return "http://" + System.Web.HttpContext.Current.Request.Url.Host + ":" + System.Web.HttpContext.Current.Request.Url.Port;
         }
     }
 }

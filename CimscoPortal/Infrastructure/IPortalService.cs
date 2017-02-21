@@ -27,8 +27,8 @@ namespace CimscoPortal.Infrastructure
         IEnumerable<CimscoPortal.Models.InvoiceDetail> GetInvoiceDetailForSite(int contactId);
         CimscoPortal.Models.CommonInfoViewModel GetCommonData(string userId);
         CimscoPortal.Models.InvoiceDetailViewModel GetInvoiceDetail(int _invoiceId);
-        IEnumerable<CimscoPortal.Models.MessageViewModel> GetNavbarDataFor(string pageElement);
-        
+        IEnumerable<CimscoPortal.Models.MessageViewModel> GetNavbarData(string pageElement);
+
         //InvoiceTallyViewModel GetInvoiceTally(string userId, int monthSpan, int? customerId);
         DetailBySiteViewModel GetDetailBySite(string userId, int monthSpan, string filter, int maximumSitesToReturn = 0);
         IEnumerable<InvoiceStatsBySiteViewModel> GetInvoiceStatsForSites(string userId, int monthSpan, string filter);
@@ -40,19 +40,20 @@ namespace CimscoPortal.Infrastructure
         IEnumerable<InvoiceOverviewViewModel> GetAllInvoiceOverview(string userId, int monthSpan, string filter, int pageNo);
 
         InvoiceOverviewViewModel ApproveInvoice(int invoiceId, string userId, string urlRoot);
-        bool SaveUserData(UserSettingsViewModel userSettings, string userId);
+        bool SaveUserSettings(UserSettingsViewModel userSettings, string userId);
         IEnumerable<MonthlyConsumptionViewModal> GetHistoricalDataForSite(int siteId);
         UserAccessModel CheckUserAccess(string userName);
         UserSettingsViewModel GetUserSettings(string userName);
         // <--
+        bool CheckUserAccessToInvoice(string userId, int invoiceId);
 
         //System.Collections.Generic.List<CimscoPortal.Models.AlertViewModel> GetAlertsFor(int category);
 
-        CimscoPortal.Models.StackedBarChartViewModel GetHistoryByMonth(int _energyPointId);
+        CimscoPortal.Models.StackedBarChartViewModel InvoiceSummaryByMonth(int _energyPointId);
         System.Collections.Generic.List<CimscoPortal.Models.AlertData> GetNavbarDataFor_Z(int customerId, string elementType);
-      //  System.Data.Entity.DbSet<CimscoPortal.Data.PortalMessage> PortalMessages { get; }
+        //  System.Data.Entity.DbSet<CimscoPortal.Data.PortalMessage> PortalMessages { get; }
 
-        
+
 
         //CimscoPortal.Models.InvoiceDetailViewModel GetCurrentMonth_(int _energyPointId);
 
@@ -65,7 +66,8 @@ namespace CimscoPortal.Infrastructure
         void UserloginUpdate(LoginHistory model);
 
         bool LogFeedback(object data, string userId);
-        DatapointDetailView GetDatapointDetails(DatapointIdentity datapointId);
+
+        DatapointDetailView GetDatapointDetails(DatapointIdentity datapointId, CostConsumptionOptions options);
     }
 
     public interface IMappingService

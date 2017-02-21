@@ -36,7 +36,7 @@ namespace CimscoPortal.Data.Models
         public virtual Group Group { get; set; }
         public virtual Customer Customer { get; set; }
 
-        public virtual AspNetUser Users { get; set; }
+        public virtual ICollection<AspNetUser> Users { get; set; }
 
         [ForeignKey("GroupDivisionId")]
         public virtual Division GroupDivision { get; set; }

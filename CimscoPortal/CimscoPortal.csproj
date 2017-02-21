@@ -340,6 +340,7 @@
     <Compile Include="Models\CommonInfoViewModel.cs" />
     <Compile Include="Models\InvoiceCountsViewModel.cs" />
     <Compile Include="Models\AvailableFiltersModel.cs" />
+    <Compile Include="Services\Partials\DataAnnotationServices.cs" />
     <Compile Include="Services\Partials\SiteDataService.cs" />
     <Compile Include="Services\PortalService.cs" />
     <Compile Include="SharedController.generated.cs">
@@ -614,6 +615,7 @@
     <Content Include="Content\css\metro\static\fonts\fontawesome-webfont.woff" />
     <Content Include="Content\css\metro\static\fonts\FontAwesome.otf" />
     <Content Include="Content\css\metro\static\js\.DS_Store" />
+    <Content Include="ClassDiagram1.cd" />
     <None Include="MvcSiteMapSchema.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -1659,7 +1661,8 @@
     <Content Include="Views\Portal\SharedPartials\_DualCharts.cshtml" />
     <Content Include="Views\Portal\InvoiceDetailPartials\_EnergyChargesCharts.cshtml" />
     <Content Include="Views\Portal\InvoiceDetailPartials\_DonutPlusSummary_.cshtml" />
-    <Content Include="Views\Portal\DashboardPartials\_DatapointDetailList.cshtml" />
+    <Content Include="Views\Portal\SharedPartials\_DatapointDetailList.cshtml" />
+    <Content Include="Views\Portal\SharedPartials\_EmptyWidget_1.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />
@@ -1669,6 +1672,7 @@
     <Folder Include="Domain\" />
     <Folder Include="fonts\" />
     <Folder Include="Views\CimscoPortal\" />
+    <Folder Include="Views\Portal\DashboardPartials\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

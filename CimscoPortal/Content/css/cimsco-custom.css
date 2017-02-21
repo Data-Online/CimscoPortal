@@ -559,6 +559,29 @@ div.google-visualization-tooltip > ul > li > span {
     height: 120px;
 }
 
+/*
+    Datapoint detail list custom formatting
+*/
+.task-container .tasks-list .task-item .datapoint-missingData {
+    left: 45px;
+    position: absolute;
+    top: 150px;
+}
+.task-container .tasks-list .datapoint-extendedTaskItem {
+    height: 200px;
+    position: relative;
+}
+
+.task-container .tasks-list .task-item .datapoint-extendedTaskBody {
+    height: 80px;
+    left: 45px;
+    line-height: 22px;
+    overflow: hidden;
+    padding-right: 25px;
+    position: absolute;
+    top: 60px;
+}
+
 /* from Invoices page formatting */
         span.label.label-info.pull-right {
             position: absolute;

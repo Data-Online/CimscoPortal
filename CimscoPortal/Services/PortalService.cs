@@ -8,31 +8,34 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
-using System.Data.Entity.SqlServer;
 using System.Globalization;
 using CimscoPortal.Data.Models;
 using CimscoPortal.Extensions;
-
-using System.Net;
 using System.Net.Mail;
 using SendGrid;
 using System.Web.Mvc;
-using LinqKit;
-using System.Linq.Expressions;
 using System.Collections;
 
 namespace CimscoPortal.Services
 {
-    class PortalService : IPortalService
+    partial class PortalService : IPortalService
     {
         ICimscoPortalContext _repository;
 
         private bool approved = true;
         private int MonthsOfHistoryData = 24; // GPA** Move to configuration for user
-        private string emptyFilter = "__"; // Blank filter, select all sites
+        private static string emptyFilter = "__"; // Blank filter, select all sites
         private static string standardDateFormat = "d/M/yyyy";
+        private static string standardMonthYearFormat = "MMMM yyyy";
+        private static string chartAnnotateDateFormat = "MMMM yy";
+        private static string decimalFormat = "#,##0.00";
+        private static string currencyFormat = "C2";
+        private static string percentFormat = "0.00%";
+        private static string energySymbol = "Kwh";
+        private static string energyFormat = decimalFormat + " " + energySymbol;
 
-        private string _azurePDFsource = System.Configuration.ConfigurationManager.AppSettings["PdfFileSourceRoot"];
+
+        private static string azurePDFsource = System.Configuration.ConfigurationManager.AppSettings["PdfFileSourceRoot"];
 
         public PortalService()
         {
@@ -43,25 +46,12 @@ namespace CimscoPortal.Services
             this._repository = repository;
         }
 
-
-
         #region Common data and tools
         public bool LogFeedback(object data, string userId)
         {
             var _json = Newtonsoft.Json.JsonConvert.DeserializeObject<FeedbackData>(data.ToString());
 
             return SendFeedbackMail(_json, userId);
-        }
-
-        public UserAccessModel CheckUserAccess(string userName)
-        {
-            UserAccessModel _userAccess = new UserAccessModel();
-
-            _userAccess.ValidSites = GetValidSiteIdListForUser(userName);
-            _userAccess.CanApproveInvoices = CheckAuthorizedToApproveInvoice(userName);
-            _userAccess.ViewInvoices = true;
-
-            return _userAccess;
         }
 
         public CommonInfoViewModel GetCommonData(string userId)
@@ -81,24 +71,13 @@ namespace CimscoPortal.Services
             return _commonData ?? new CommonInfoViewModel();
         }
 
-        private static string GetSystemSettings(string setting)
-        {
-            return System.Configuration.ConfigurationManager.AppSettings[setting];
-        }
-
-        private void LogMessage()
-        {
-
-        }
-
-        public IEnumerable<MessageViewModel> GetNavbarDataFor(string userName)
+        public IEnumerable<MessageViewModel> GetNavbarData(string userName)
         {
             return _repository.PortalMessages.Where(i => i.User.Email == userName)
                                             .Project().To<MessageViewModel>();
         }
 
-
-        public bool SaveUserData(UserSettingsViewModel userSetting, string userId)
+        public bool SaveUserSettings(UserSettingsViewModel userSetting, string userId)
         {
             //
             // read and save data
@@ -129,28 +108,6 @@ namespace CimscoPortal.Services
             return true;
         }
 
-        //public UserSettingsViewModel GetUserSettings_(string userId)
-        //{
-        //    UserSettingsViewModel _userSetting = new Models.UserSettingsViewModel();
-
-        //    try
-        //    {
-        //        string _userRecordId = GetUserRecordId(userId);
-        //        _userSetting = _repository.UserSetting.Where(s => s.UserId.Id == _userRecordId).Project().To<UserSettingsViewModel>().FirstOrDefault() ?? GetDefaultUserSettings();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //throw;
-        //    }
-        //    return _userSetting;
-        //}
-
-        public DatapointDetailView GetDatapointDetails(DatapointIdentity datapointId)
-        {
-            DateTime _date = DateTime.ParseExact(datapointId.date, standardDateFormat, CultureInfo.InvariantCulture);
-            return new DatapointDetailView() { Notes = "<b>Test</b>", Status = "Test Status", Date = _date };
-        }
-
         public UserSettingsViewModel GetUserSettings(string userId)
         {
             UserSettingsViewModel _userSetting = new UserSettingsViewModel();
@@ -172,16 +129,6 @@ namespace CimscoPortal.Services
             return _userSetting;
         }
 
-        //private static UserSettingsViewModel GetDefaultUserSettings()
-        //{
-        //    return new UserSettingsViewModel() { ShowWelcomeMessage = true, MonthSpan = 12 };
-        //}
-
-        private static UserSetting GetDefaultUserSettings()
-        {
-            return new UserSetting() { ShowWelcomeMessage = true, MonthSpan = 12 };
-        }
-
         public TextViewModel GetWelcomeScreen(string userId)
         {
             // Very basic - Update needed to make more flexable.
@@ -198,6 +145,117 @@ namespace CimscoPortal.Services
             if (WelcomeScreenText.Line5.Trim().Length > 0)
                 WelcomeText.Text.Add(WelcomeScreenText.Line5);
             return WelcomeText;
+        }
+
+        private static UserSetting GetDefaultUserSettings()
+        {
+            return new UserSetting() { ShowWelcomeMessage = true, MonthSpan = 12 };
+        }
+
+        private void LogMessage()
+        {
+
+        }
+
+        private static string GetSystemSettings(string setting)
+        {
+            return System.Configuration.ConfigurationManager.AppSettings[setting];
+        }
+
+        #endregion Common data and tools
+
+        #region User access rights
+
+        public UserAccessModel CheckUserAccess(string userName)
+        {
+            UserAccessModel _userAccess = new UserAccessModel();
+
+            _userAccess.ValidSites = GetValidSiteIdListForUser(userName);
+            _userAccess.CanApproveInvoices = CheckAuthorizedToApproveInvoice(userName);
+            _userAccess.ViewInvoices = true;
+
+            return _userAccess;
+        }
+
+        public bool CheckUserAccessToInvoice(string userId, int invoiceId)
+        {
+            int _siteId = _repository.InvoiceSummaries.Where(s => s.InvoiceId == invoiceId).Project().To<InvoiceDetail>().Select(s => s.SiteId).FirstOrDefault();
+            return CheckUserAccess(userId).ValidSites.Contains(_siteId);
+        }
+
+        #endregion User access rights
+
+        #region Datapoint Annotation
+        public DatapointDetailView GetDatapointDetails(DatapointIdentity datapointId, CostConsumptionOptions options)
+        {
+            bool _limitSitesToActive = true;
+            //bool _includeMissing = true;
+            IQueryable<InvoiceSummary> _invoiceData, _invoiceData12;
+            MonthlySummaryModel _allDataForCurrentDate, _allDataForCurrentDate12;
+            DateTime _date = DateTime.ParseExact(datapointId.date, standardDateFormat, CultureInfo.InvariantCulture);
+
+            IList<int> _allSitesInCurrentSelection = GetSitesBasedOnOptions(options, _limitSitesToActive);
+
+
+            //IList<int> _allSitesInCurrentSelection = CreateSiteList(userId, datapointId.filter, _limitSitesToActive);
+            GetDatapointWorkingData(options.includeMissing, _date, _allSitesInCurrentSelection, out _invoiceData, out _invoiceData12, out _allDataForCurrentDate, out _allDataForCurrentDate12);
+            IList<DatapointSiteDetails> _missingSites = GetMissingSites(datapointId.name, _allSitesInCurrentSelection, _invoiceData, _invoiceData12);
+
+            DatapointDetailView _annotation = AnnotateDatapoint(_allDataForCurrentDate, _allDataForCurrentDate12,
+                                                                datapointId.name, _allSitesInCurrentSelection, _missingSites, _date);
+            return _annotation;
+        }
+
+        private IList<DatapointSiteDetails> GetMissingSites(string graphName, IList<int> _allSitesInCurrentSelection, IQueryable<InvoiceSummary> _invoiceData, IQueryable<InvoiceSummary> _invoiceData12)
+        {
+            IList<DatapointSiteDetails> _missingSites = new List<DatapointSiteDetails>();
+            string[] year12Items = { "Previous Year Total", "Previous Year Kwh", "Previous Year Cost / Sqm", "Previous Year Kwh / SqM" };
+            bool year12 = year12Items.Contains(graphName);
+
+            int _distinctSitesWithData = 0;
+            IList<int> _siteIdList;
+            if (year12)
+            {
+                _distinctSitesWithData = CountOfDistinctSites(_invoiceData12);
+                _siteIdList = _invoiceData12.Select(m => m.SiteId).ToList();
+
+            }
+            else
+            {
+                _distinctSitesWithData = CountOfDistinctSites(_invoiceData);
+                _siteIdList = _invoiceData.Select(m => m.SiteId).ToList();
+            }
+
+            int _totalSitesInSelection = _allSitesInCurrentSelection.Count;
+
+            if (_distinctSitesWithData < _totalSitesInSelection)
+            {
+                _missingSites = ListMissingSites(_siteIdList, _allSitesInCurrentSelection);
+            }
+
+            return _missingSites;
+        }
+
+        private void GetDatapointWorkingData(bool IncludeMissing, DateTime _date, IList<int> _allSitesInCurrentSelection, out IQueryable<InvoiceSummary> _invoiceData, out IQueryable<InvoiceSummary> _invoiceData12, out MonthlySummaryModel _allDataForCurrentDate, out MonthlySummaryModel _allDataForCurrentDate12)
+        {
+            _invoiceData = ConstructInvoiceQueryForDates(_allSitesInCurrentSelection, _date.StartOfThisMonth(), _date.EndOfTheMonth()).OrderBy(o => o.PeriodEnd);
+            _invoiceData12 = ConstructInvoiceQueryForDates(_allSitesInCurrentSelection, _date.AddYears(-1).StartOfThisMonth(), _date.AddYears(-1).EndOfTheMonth()).OrderBy(o => o.PeriodEnd);
+            _allDataForCurrentDate = CollateInvoiceData(_invoiceData, _date.StartOfThisMonth(), _date.EndOfTheMonth(), IncludeMissing).Values.FirstOrDefault();
+            _allDataForCurrentDate12 = CollateInvoiceData(_invoiceData12, _date.AddYears(-1).StartOfThisMonth(), _date.AddYears(-1).EndOfTheMonth(), IncludeMissing).Values.FirstOrDefault();
+        }
+
+        private IList<DatapointSiteDetails> ListMissingSites(IList<int> sitesWithData, IList<int> activeSites)
+        {
+            IList<DatapointSiteDetails> _result = new List<DatapointSiteDetails>();
+            foreach (var _site in activeSites)
+            {
+                if (sitesWithData.IndexOf(_site) == -1)
+                {
+                    var _details = GetSiteDetails(_site); // GPA --> automap
+                    _result.Add(new DatapointSiteDetails() { SiteName = _details.SiteName, SiteId = _details.SiteId });
+                };
+            }
+            return _result;
         }
         #endregion
 
@@ -244,6 +302,7 @@ namespace CimscoPortal.Services
         //}
 
         #endregion
+
         #region Dashboard
 
         public InvoiceStatsViewModel GetDashboardStatistics(string userId, int monthSpan, string filter)
@@ -496,7 +555,7 @@ namespace CimscoPortal.Services
                 query = SearchByInvoiceType(GetInvoiceTypesFromFilter(filter), query);
             }
             catch { }
- 
+
             return query;
         }
 
@@ -629,22 +688,12 @@ namespace CimscoPortal.Services
             if (!monthSpan.In(3, 6, 12, 24)) { monthSpan = 12; }
             bool LimitSitesToActive = false;
 
-            int _siteArea = 0;
             DateTime _selectFromDate;
             DateTime _selectToDate;
             CalculateDateRange(monthSpan, out _selectFromDate, out _selectToDate);
 
-            IList<int> _allSitesInCurrentSelection = new List<int>();
-
-            if (options.siteId == 0)
-            {
-                _allSitesInCurrentSelection = CreateSiteList(options.userId, options.filter, LimitSitesToActive);
-            }
-            else
-            {
-                _allSitesInCurrentSelection = CreateSiteList(options.siteId);
-                _siteArea = _repository.Sites.Where(s => s.SiteId == options.siteId).Select(c => c.TotalFloorSpaceSqMeters ?? 0).FirstOrDefault();
-            }
+            IList<int> _allSitesInCurrentSelection = GetSitesBasedOnOptions(options, LimitSitesToActive);
+            int _siteArea = GetSiteArea(options);
 
             Dictionary<DateTime, MonthlySummaryModel> _result12 = new Dictionary<DateTime, MonthlySummaryModel>();
             Dictionary<DateTime, MonthlySummaryModel> _result = new Dictionary<DateTime, MonthlySummaryModel>();
@@ -657,6 +706,31 @@ namespace CimscoPortal.Services
 
             GoogleChartViewModel _model = GoogleChartFor_PowerConsumption(_result, _result12, CountOfDistinctSites(_invoiceData), _siteArea);
             return _model;
+        }
+
+        private int GetSiteArea(CostConsumptionOptions options)
+        {
+            int _result = 0;
+            if (options.siteId > 0)
+            {
+                _result = _repository.Sites.Where(s => s.SiteId == options.siteId).Select(c => c.TotalFloorSpaceSqMeters ?? 0).FirstOrDefault();
+            }
+            return _result;
+        }
+
+        private IList<int> GetSitesBasedOnOptions(CostConsumptionOptions options, bool LimitSitesToActive)
+        {
+            IList<int> _allSitesInCurrentSelection;
+            if (options.siteId == 0)
+            {
+                _allSitesInCurrentSelection = CreateSiteList(options.userId, options.filter, LimitSitesToActive);
+            }
+            else
+            {
+                _allSitesInCurrentSelection = CreateSiteList(options.siteId);
+            }
+
+            return _allSitesInCurrentSelection;
         }
 
         private static IList<int> CreateSiteList(int siteId)
@@ -684,7 +758,11 @@ namespace CimscoPortal.Services
 
         #region Site Overview private functions
 
-        private static GoogleChartViewModel GoogleChartFor_PowerConsumption(Dictionary<DateTime, MonthlySummaryModel> Result, Dictionary<DateTime, MonthlySummaryModel> Result12, int invoiceStdCount, int? SiteArea = 0)
+        private static GoogleChartViewModel GoogleChartFor_PowerConsumption(
+            Dictionary<DateTime, MonthlySummaryModel> Result,
+            Dictionary<DateTime, MonthlySummaryModel> Result12,
+            int invoiceStdCount, int? SiteArea = 0
+            )
         {
             GoogleChartViewModel _model = new GoogleChartViewModel();
             _model.Columns = new List<GoogleCols>();
@@ -729,13 +807,13 @@ namespace CimscoPortal.Services
 
             foreach (var _values in Result.OrderBy(o => o.Key))
             {
-                _flags = FlagColourSetBasedOnInvoiceCounts(_values.Value.TotalInvoices, Result12.Where(w => w.Key == _values.Key.AddYears(-1)).Select(s => s.Value.TotalInvoices).FirstOrDefault(), invoiceStdCount);
+                _flags = SetPointColourBasedOnInvoiceCounts(_values.Value.TotalInvoices, Result12.Where(w => w.Key == _values.Key.AddYears(-1)).Select(s => s.Value.TotalInvoices).FirstOrDefault(), invoiceStdCount);
 
                 decimal _total12 = Result12.Where(w => w.Key == _values.Key.AddYears(-1)).Select(s => s.Value.InvoiceTotal).FirstOrDefault();
                 decimal _power12 = Result12.Where(w => w.Key == _values.Key.AddYears(-1)).Select(s => s.Value.EnergyTotal).FirstOrDefault();
 
-                string _currencySymbol = "$"; string _decimalFormat = "#,##0.00";
-                string _energySymbol = "Kwh";
+                //string _currencySymbol = "$";// string _decimalFormat = "#,##0.00";
+                //string _energySymbol = "Kwh";
                 string _invoiceTotal = _values.Value.InvoiceTotal == 0 ? null : _values.Value.InvoiceTotal.ToString();
                 string _invoicePower = _values.Value.EnergyTotal == 0 ? null : _values.Value.EnergyTotal.ToString();
                 string _invoiceTotal12 = _total12 == 0 ? null : _total12.ToString();
@@ -764,19 +842,28 @@ namespace CimscoPortal.Services
                 _dataRows = new List<CPart>();
                 // X axis
                 //_dataRows.Add(new CPart { v = _values.Value.InvoicePeriodDate.ToString("MMMM") + " '" + _values.Value.InvoicePeriodDate.ToString("yy"), f = _values.Value.InvoicePeriodDate.ToString("dd-MM-yyyy") });
-                _dataRows.Add(new CPart {
-                    f = _values.Value.InvoicePeriodDate.ToString("MMMM") + " '" + _values.Value.InvoicePeriodDate.ToString("yy"),
+                _dataRows.Add(new CPart
+                {
+                    f = _values.Value.InvoicePeriodDate.ToString(chartAnnotateDateFormat),
+                    //f = _values.Value.InvoicePeriodDate.ToString("MMMM") + " '" + _values.Value.InvoicePeriodDate.ToString("yy"),
                     v = _values.Value.InvoicePeriodDate.ToString(standardDateFormat)
                 });
 
                 // Invoice Total + tooltip + style
-                _dataRows.Add(new CPart { v = _invoiceTotal, f = _values.Value.InvoiceTotal.ToString(_currencySymbol + _decimalFormat) + _invoiceCount });
+                _dataRows.Add(new CPart { v = _invoiceTotal, f = _values.Value.InvoiceTotal.ToString(currencyFormat) + _invoiceCount });
                 _dataRows.Add(new CPart
                 {
+                    //f = ReturnHtmlFormattedTooltip(_values.Value.InvoicePeriodDate,
+                    //                               _values.Value.InvoiceTotal.ToString(currencyFormat), _invoiceCount,
+                    //                               (NewLine() + FormatDelta(_total12, _values.Value.InvoiceTotal, currencyFormat)),
+                    //                               _flags[0]
+                    //                              )
                     f = ReturnHtmlFormattedTooltip(_values.Value.InvoicePeriodDate,
-                                                   _values.Value.InvoiceTotal.ToString(_currencySymbol + _decimalFormat), _invoiceCount,
-                                                   (FormatDelta(_total12, _values.Value.InvoiceTotal, _decimalFormat)),
-                                                   _flags[0]
+                                                   _values.Value.InvoiceTotal,
+                                                   _total12,
+                                                   _invoiceCount,
+                                                   _flags[0],
+                                                   currencyFormat
                                                   )
                 });
                 _dataRows.Add(new CPart
@@ -787,13 +874,20 @@ namespace CimscoPortal.Services
                 });
 
                 // Kwh + tooltip + style
-                _dataRows.Add(new CPart { v = _invoicePower, f = _values.Value.EnergyTotal.ToString(_decimalFormat) + _invoiceCount });
+                _dataRows.Add(new CPart { v = _invoicePower, f = _values.Value.EnergyTotal.ToString(decimalFormat) + _invoiceCount });
                 _dataRows.Add(new CPart
                 {
+                    //f = ReturnHtmlFormattedTooltip(_values.Value.InvoicePeriodDate,
+                    //                               _values.Value.EnergyTotal.ToString(decimalFormat) + " " + energySymbol, _invoiceCount,
+                    //                               (NewLine() + FormatDelta(_power12, _values.Value.EnergyTotal, decimalFormat)),
+                    //                               _flags[0]
+                    //                              )
                     f = ReturnHtmlFormattedTooltip(_values.Value.InvoicePeriodDate,
-                                                   _values.Value.EnergyTotal.ToString(_decimalFormat) + " " + _energySymbol, _invoiceCount,
-                                                   (FormatDelta(_power12, _values.Value.EnergyTotal, _decimalFormat)), 
-                                                   _flags[0]
+                                                   _values.Value.EnergyTotal,
+                                                   _power12,
+                                                   _invoiceCount,
+                                                   _flags[0],
+                                                   energyFormat
                                                   )
                 });
                 _dataRows.Add(new CPart
@@ -807,23 +901,30 @@ namespace CimscoPortal.Services
                 _dataRows.Add(new CPart
                 {
                     v = _invoiceTotalPerSqM,
-                    f = NumericExtensions.SafeDivision(_values.Value.InvoiceTotal, (decimal)SiteArea).ToString(_currencySymbol + _decimalFormat)
+                    f = NumericExtensions.SafeDivision(_values.Value.InvoiceTotal, (decimal)SiteArea).ToString(currencyFormat)
                 });
 
                 // Kwh / Sqm
                 _dataRows.Add(new CPart
                 {
                     v = _invoicePowerPerSqM,
-                    f = NumericExtensions.SafeDivision(_values.Value.EnergyTotal, (decimal)SiteArea).ToString(_decimalFormat)
+                    f = NumericExtensions.SafeDivision(_values.Value.EnergyTotal, (decimal)SiteArea).ToString(decimalFormat)
                 });
 
                 // Previous years total cost + tooltip + style
-                _dataRows.Add(new CPart { v = _invoiceTotal12, f = _total12.ToString(_currencySymbol + _decimalFormat) + _invoiceCount12 });
+                //_dataRows.Add(new CPart { v = _invoiceTotal12, f = _total12.ToString(_currencySymbol + _decimalFormat) + _invoiceCount12 });
+                _dataRows.Add(new CPart { v = _invoiceTotal12, f = _total12.ToString(currencyFormat) + _invoiceCount12 });
                 _dataRows.Add(new CPart
                 {
+                    //f = ReturnHtmlFormattedTooltip(_values.Value.InvoicePeriodDate.AddYears(-1),
+                    //                               _total12.ToString(currencyFormat), _invoiceCount12,
+                    //                               "", _flags[1]
+                    //                               )
                     f = ReturnHtmlFormattedTooltip(_values.Value.InvoicePeriodDate.AddYears(-1),
-                                                   _total12.ToString(_currencySymbol + _decimalFormat), _invoiceCount12, 
-                                                   "", _flags[1]
+                                                   _total12, 0.0M,
+                                                   _invoiceCount12,
+                                                   _flags[1],
+                                                   currencyFormat
                                                    )
                 });
                 _dataRows.Add(new CPart
@@ -834,12 +935,20 @@ namespace CimscoPortal.Services
                 });
 
                 // Previous years Kwh + tooltip + style
-                _dataRows.Add(new CPart { v = _invoicePower12, f = _power12.ToString(_decimalFormat) + _invoiceCount12 });
+                _dataRows.Add(new CPart { v = _invoicePower12, f = _power12.ToString(decimalFormat) + _invoiceCount12 });
                 _dataRows.Add(new CPart
                 {
+                    //f = ReturnHtmlFormattedTooltip(_values.Value.InvoicePeriodDate.AddYears(-1),
+                    //                              //_power12.ToString(decimalFormat) + " " + energySymbol, _invoiceCount12,     
+                    //                              _power12.ToString(energyFormat), _invoiceCount12,     // energyFormat
+                    //                              "", _flags[1]
+                    //                              )
                     f = ReturnHtmlFormattedTooltip(_values.Value.InvoicePeriodDate.AddYears(-1),
-                                                  _power12.ToString(_decimalFormat) + " " + _energySymbol, _invoiceCount12,
-                                                  "", _flags[1]
+                                                  _power12,
+                                                  0.0M,
+                                                  _invoiceCount12,     // energyFormat
+                                                  _flags[1],
+                                                  energyFormat
                                                   )
                 });
                 _dataRows.Add(new CPart
@@ -853,28 +962,30 @@ namespace CimscoPortal.Services
                 _dataRows.Add(new CPart
                 {
                     v = _invoiceTotalPerSqM,
-                    f = NumericExtensions.SafeDivision(_total12, (decimal)SiteArea).ToString(_currencySymbol + _decimalFormat)
+                    f = NumericExtensions.SafeDivision(_total12, (decimal)SiteArea).ToString(currencyFormat)
                 });
 
                 // Previous years kwh / sqm
                 _dataRows.Add(new CPart
                 {
                     v = _invoicePowerPerSqM,
-                    f = NumericExtensions.SafeDivision(_power12, (decimal)SiteArea).ToString(_decimalFormat)
+                    f = NumericExtensions.SafeDivision(_power12, (decimal)SiteArea).ToString(decimalFormat)
                 });
 
                 // Project saving estimate + tooltip + style
                 _dataRows.Add(new CPart
                 {
                     v = (_costSavingEstimate == 0 ? null : _costSavingEstimate.ToString()),
-                    f = _costSavingEstimate.ToString(_currencySymbol + _decimalFormat)
+                    f = _costSavingEstimate.ToString(currencyFormat)
                 });
                 _dataRows.Add(new CPart
                 {
-                    f = ReturnHtmlFormattedTooltip_CostSavings(_values.Value.InvoicePeriodDate, _costSavingEstimate.ToString(_currencySymbol + _decimalFormat),
-                    _values.Value.InvoiceTotal.ToString(_currencySymbol + _decimalFormat),
-                    FormatDelta(_costSavingEstimate, _values.Value.InvoiceTotal, _currencySymbol + _decimalFormat),
-                    _flags[2]
+                    f = ReturnHtmlFormattedTooltip_CostSavings(
+                        _values.Value.InvoicePeriodDate,
+                        _costSavingEstimate,
+                        _values.Value.InvoiceTotal,
+                        _invoiceCount,
+                        _flags[2]
                     )
                 });
                 _dataRows.Add(new CPart
@@ -889,103 +1000,12 @@ namespace CimscoPortal.Services
             return _model;
         }
 
-        private static string[] FlagColourSetBasedOnInvoiceCounts(int count, int count12, int countExpected)
-        {
-            // Both counts below expected - both axes
-            // count below expected 
-            // count12 below expected
-
-            string[] _flag = new string[3];
-            if (count < countExpected)
-            {
-                _flag[0] = "point { fill-color: red; } ";
-            }
-
-            if (count12 < countExpected)
-            {
-                _flag[1] = "point { fill-color: red; } ";
-            }
-
-            if (count12 != count)
-            {
-                _flag[2] = "point { fill-color: red; } ";
-            }
-            return _flag;
-        }
-
-        private static string FormatDelta(decimal value1, decimal value2, string format)
-        {
-            if (value1 == 0 | value2 == 0) { return ""; }
-            decimal _result = value2 - value1;
-            string _positiveNegative = "positive fa fa-long-arrow-up";
-            if (_result < 0) { _result = _result * -1; _positiveNegative = "negative fa fa-long-arrow-down"; }
-
-            return string.Format("<br/><span class='{0} {1}'> {2}</span>", "gc-tooltip", _positiveNegative, _result.ToString(format));
-        }
-
-        private static string ReturnHtmlFormattedTooltip(DateTime date, string value, string count, string variation, string flag)
-        {
-            string _result = string.Format("<div style='width:180px; margin:10px;'><b>{0} {1}</b>{3}<br/>{2}", date.ToString("MMMM"), date.ToString("yyyy"), value, count);
-
-            if (variation.Length > 0)
-            {
-                _result = _result + string.Format("{0} <span>cf {1}</span>", variation, date.AddYears(-1).ToString("yyyy"));
-            }
-            _result = _result + string.Format("</div");
-            if (!String.IsNullOrEmpty(flag))
-            {
-                _result = _result + string.Format("<br/><div><i class='red fa fa-circle'></i>Note: invoice(s) missing</div>");
-            }
-            return _result;
-        }
-
-        private static string ReturnHtmlFormattedTooltip_CostSavings(DateTime date, string estimatedValue, string currentValue, string delta, string flag)
-        {
-            string _line;
-            string _result = "";
-            _line = string.Format("If consumption remained at {0} levels", date.AddYears(-1).ToString("yyyy"));
-            _line = _line + string.Format(", the bill for <b>{0} {1}</b> ({3}) has an estimated value of {2}", date.ToString("MMMM"), date.ToString("yyyy"), estimatedValue, currentValue);
-            _result = TooltipLine(_line, _result);
-            _line = string.Format("A difference of {0}", delta);
-            _result = TooltipLine(_line, _result);
-            if (!String.IsNullOrEmpty(flag))
-            {
-                _line = string.Format("<br/><div><i class='red fa fa-circle'></i>Note: invoice(s) missing</div>");
-                _result = TooltipLine(_line, _result);
-            }
-            return TooltipWrapper(_result);
-        }
-
-        private static string TooltipWrapper(string result)
-        {
-            string _boxWidth = "180";
-            return string.Format("<div style='width:{0}px; margin:10px;'>{1}</div>", _boxWidth, result);
-        }
-
-        private static string TooltipLine(string line, string result)
-        {
-            string _divider = "";
-            if (result.Length > 0) { _divider = "<br/>"; }
-            return string.Format("{0}{2}{1}", result, line, _divider);
-        }
-
-        // fa-arrows-h
-        // fa-long-arrow-up
-        private static string ReturnInvoiceCountText(int total)
-        {
-            string _pl = "";
-            if (total > 1)
-            {
-                _pl = "s";
-            }
-            return " (" + total.ToString() + " invoice" + _pl + ")";
-        }
 
         #endregion
 
         #endregion
 
-        // GPA ** THIS NEEDS TO BE REMOVED
+        // GPA ** THIS NEEDS TO BE REMOVED (used in legacy tests)
         public SiteHierarchyViewModel GetSiteHierarchy(string userId)
         {
             // Group level
@@ -1266,7 +1286,7 @@ namespace CimscoPortal.Services
 
             // GPA --> this is the 3rd location for this logic. Move to manage module.
             // Check if Pdf file actually exists
-            string _sourcePdf = ConstructInvoicePdfPath(_invoiceDetail.SiteId, _invoiceDetail.InvoiceId, _azurePDFsource);
+            string _sourcePdf = ConstructInvoicePdfPath(_invoiceDetail.SiteId, _invoiceDetail.InvoiceId, azurePDFsource);
             _invoiceDetail.InvoicePdf = CheckForPdfFile(_sourcePdf);
 
             // Energy Charges
@@ -1469,7 +1489,7 @@ namespace CimscoPortal.Services
 
         //}
 
-        public StackedBarChartViewModel GetHistoryByMonth(int _invoiceId)
+        public StackedBarChartViewModel InvoiceSummaryByMonth(int _invoiceId)
         {
             int _monthsToDisplay = Convert.ToInt16(GetConfigValue("HistoryGraphMonths"));
             DateTime _fromMonth = DateTime.Today.AddMonths(_monthsToDisplay * -1);
@@ -1866,6 +1886,8 @@ namespace CimscoPortal.Services
             decimal _maxKwhForDivision;
             decimal _maxEnergyChargeForDivision;
 
+
+            // GPA --> What if no results??
             IEnumerable<SiteDetailData> _siteDetailSelection = detailBySiteData.SiteDetailData.Where(s => s.FiledInvoiceCount > 0);
 
             // Efficiency needed for this section. Run time approx. 16s
@@ -2010,6 +2032,8 @@ namespace CimscoPortal.Services
             // Does user have authority to approve?
             // Should not get to this point, as button should not be available. But include test to be sure.
 
+            // Also need to check user has access to this invoice
+
             UserAccessModel _access = CheckUserAccess(userId);
             InvoiceOverviewViewModel _result = new InvoiceOverviewViewModel();
             if (_access.CanApproveInvoices)
@@ -2147,7 +2171,8 @@ namespace CimscoPortal.Services
 
                 myMessage.Subject = "Invoice " + _invoiceDetail.InvoiceNumber + " has been approved for payment";
                 var _urlHelper = new UrlHelper(System.Web.HttpContext.Current.Request.RequestContext);
-                var _linkToInvoiceDetail = "http://" + rootUrl + _urlHelper.Action("InvoiceDetail", "Portal", new { id = invoiceId });
+                var _linkToInvoiceDetail = rootUrl + _urlHelper.Action("InvoiceDetail", "Portal", new { id = invoiceId });
+                //var _linkToInvoiceDetail = "http://" + rootUrl + _urlHelper.Action("InvoiceDetail", "Portal", new { id = invoiceId });
 
                 CreateApprovalMailMessage(myMessage, _invoiceDetail, _logoImage, _rootForPdf, _linkToInvoiceDetail,
                                             _customerGroupName, _siteName);
@@ -2505,26 +2530,36 @@ namespace CimscoPortal.Services
 
         private CurrentUserLevel GetUserLevel(string userId)
         {
-            string _groupName = _repository.AspNetUsers.Where(s => s.Email == userId).FirstOrDefault().Groups.Select(g => g.GroupName).FirstOrDefault();
-            string _customerName = _repository.AspNetUsers.Where(s => s.Email == userId).FirstOrDefault().Customers.Select(c => c.CustomerName).FirstOrDefault();
+            string _groupName = "", _customerName = "", _siteName = "";
+            try
+            {
+                var _userQuery = _repository.AspNetUsers.Where(s => s.Email == userId).FirstOrDefault();
+                _groupName = _userQuery.Groups.Select(g => g.GroupName).DefaultIfEmpty("").First();
+                if (!String.IsNullOrEmpty(_groupName))
+                {
+                    return new CurrentUserLevel() { UserLevel = "Group", TopLevelName = _groupName };
+                }
+                _customerName = _userQuery.Customers.Select(c => c.CustomerName).DefaultIfEmpty("").First();
+                if (!String.IsNullOrEmpty(_customerName))
+                {
+                    return new CurrentUserLevel() { UserLevel = "Customer", TopLevelName = _customerName };
+                }
+                _siteName = _userQuery.Sites.Select(c => c.SiteName).DefaultIfEmpty("").First();
+                if (!String.IsNullOrEmpty(_siteName))
+                {
+                    return new CurrentUserLevel() { UserLevel = "Site", TopLevelName = _siteName };
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage();
+            }
 
+            return new CurrentUserLevel();
 
-            if (!String.IsNullOrEmpty(_groupName))
-            {
-                return new CurrentUserLevel() { UserLevel = "Group", TopLevelName = _groupName };
-            }
-            else if (!String.IsNullOrEmpty(_customerName))
-            {
-                return new CurrentUserLevel() { UserLevel = "Customer", TopLevelName = _customerName };
-            }
-            else
-            {
-                string _siteName = _repository.AspNetUsers.Where(s => s.Email == userId).FirstOrDefault().Site.SiteName;
-                return new CurrentUserLevel() { UserLevel = "Site", TopLevelName = _siteName };
-            }
         }
 
-        private List<InvoiceDetail> InvoiceDetailForSite(int siteId)
+         private List<InvoiceDetail> InvoiceDetailForSite(int siteId)
         {
             return _repository.InvoiceSummaries.Where(s => s.SiteId == siteId)
                 .OrderBy(o => o.InvoiceDate).Project().To<InvoiceDetail>().ToList();
@@ -2659,7 +2694,7 @@ namespace CimscoPortal.Services
             string _sourcePdf;
             foreach (var _invoice in invoicesDue)
             {
-                _sourcePdf = _azurePDFsource + "/" + _invoice.SiteId.ToString().PadLeft(6, '0') + "/" + _invoice.InvoiceId.ToString().PadLeft(8, '0') + ".pdf";
+                _sourcePdf = azurePDFsource + "/" + _invoice.SiteId.ToString().PadLeft(6, '0') + "/" + _invoice.InvoiceId.ToString().PadLeft(8, '0') + ".pdf";
                 request = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(_sourcePdf);
                 request.Method = "Head";
                 try

@@ -533,7 +533,9 @@ namespace CimscoPortal.Controllers
                         "nees.hardware@cimsco.co.nz",
                         "masterton.supermarkets@cimsco.co.nz",
                         "foodstuffs.ni@cimsco.co.nz",
-                        "mitre10.nz@cimsco.co.nz"
+                        "mitre10.nz@cimsco.co.nz",
+                        "AHL.Hotels@eeknz.co.nz",
+                        "QT.Wellington@eeknz.co.nz"
                 };
 
                 foreach (var _userName in _sampleUsers)

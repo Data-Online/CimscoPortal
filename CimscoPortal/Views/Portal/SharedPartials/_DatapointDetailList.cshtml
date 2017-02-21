@@ -1,0 +1,56 @@
+﻿
+<div class="col-lg-6 col-sm-12 col-xs-12">
+    <div class="widget">
+        <div class="widget-header bordered-bottom bordered-themeprimary">
+            <i class="widget-icon fa fa-tasks themeprimary"></i>
+            <span class="widget-caption themeprimary">Datapoint Details</span>
+        </div><!--Widget Header-->
+        <div class="widget-body no-padding">
+            <div class="task-container">
+                <div class="task-search">
+                    <span class="input-icon">
+                        <input class="form-control" placeholder="Search Datapoint Notes" ng-model="query" type="text">
+                        <i class="fa fa-search gray"></i>
+                    </span>
+                </div>
+                <div>
+                    <label>
+                        <input type="checkbox" ng-click="removeDatapoint(0)"><span class="text" style="margin-left:15px; margin-top:5px; margin-right:10px"></span>Clear All
+                    </label>
+                </div>
+                <ul class="tasks-list animate-repeat" ng-repeat="entry in dpData |  filter: { notes:query } | orderBy : 'date' : false">
+                    <li class="datapoint-extendedTaskItem task-item ">
+                        <div class="task-check">
+                            <label>
+                                <input type="checkbox" ng-click="removeDatapoint(entry)">
+                                <span class="text"></span>
+                            </label>
+                        </div>
+                        <div class="task-state">
+                            <span class="label" ng-style="{backgroundColor: entry.colour}">
+                                @*{{entry.status}}*@
+                                {{entry.date | date : "MMMM yyyy"}} 
+                            </span>
+                        </div>
+                        @*<div class="task-time">{{entry.date | date : "MMMM yyyy"}}</div>
+                            <div class="task-body">
+                                <p ng-bind-html="entry.notes"></p>
+                            </div>*@
+                        <div class="task-time" style="font-size:12pt"><p ng-bind-html="entry.status"></p></div>
+                        <div class="datapoint-extendedTaskBody task-body">
+                            <p ng-bind-html="entry.notes"></p>
+                        </div>
+
+                        <div ng-if="entry.sitesMissingInvoices.length > 0" class="datapoint-missingData">
+                            <p ng-repeat="site in entry.sitesMissingInvoices">Invoice missing for : {{site.siteName}}</p>
+                        </div>
+
+                        @*<div class="task-creator"><a href="">Cameron Hetfield</a></div>
+                            <div class="task-assignedto">assigned to you</div>*@
+                    </li>
+                </ul>
+            </div>
+        </div><!--Widget Body-->
+    </div>
+</div>
+
