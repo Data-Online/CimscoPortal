@@ -75,6 +75,7 @@ namespace CimscoPortal.Data.Models.Mapping
             this.Property(t => t.Approved).HasColumnName("Approved");
             this.Property(t => t.Verified).HasColumnName("Verified"); 
             this.Property(t => t.OnFile).HasColumnName("OnFile");
+            this.Property(t => t.CheckedOk).HasColumnName("CheckedOk");
 
             //this.HasOptional(o => o.EnergySupplier);
 

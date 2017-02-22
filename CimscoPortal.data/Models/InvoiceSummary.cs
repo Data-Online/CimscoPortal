@@ -36,6 +36,7 @@ namespace CimscoPortal.Data.Models
         public bool Approved { get; set; }
         public bool Verified { get; set; }
         public bool OnFile { get; set; }
+        public bool CheckedOk { get; set; }
         public int InvoiceSummaryId { get; set; }
         public string ApprovedById { get; set; }
         public Nullable<System.DateTime> ApprovedDate { get; set; }
