@@ -608,12 +608,10 @@
     <Content Include="Content\fonts\WeatherIcons-Regular.otf" />
     <Content Include="Content\fonts\YekanWeb-Bold.woff" />
     <Content Include="Content\fonts\YekanWeb-Regular.woff" />
-    <Content Include="Content\css\metro\static\css\.DS_Store" />
     <Content Include="Content\css\metro\static\fonts\fontawesome-webfont.eot" />
     <Content Include="Content\css\metro\static\fonts\fontawesome-webfont.ttf" />
     <Content Include="Content\css\metro\static\fonts\fontawesome-webfont.woff" />
     <Content Include="Content\css\metro\static\fonts\FontAwesome.otf" />
-    <Content Include="Content\css\metro\static\js\.DS_Store" />
     <Content Include="ClassDiagram1.cd" />
     <None Include="MvcSiteMapSchema.xsd">
       <SubType>Designer</SubType>
