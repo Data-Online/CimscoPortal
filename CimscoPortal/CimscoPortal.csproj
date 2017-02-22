@@ -608,7 +608,6 @@
     <Content Include="Content\fonts\WeatherIcons-Regular.otf" />
     <Content Include="Content\fonts\YekanWeb-Bold.woff" />
     <Content Include="Content\fonts\YekanWeb-Regular.woff" />
-    <Content Include="Content\css\metro\static\.DS_Store" />
     <Content Include="Content\css\metro\static\css\.DS_Store" />
     <Content Include="Content\css\metro\static\fonts\fontawesome-webfont.eot" />
     <Content Include="Content\css\metro\static\fonts\fontawesome-webfont.ttf" />
