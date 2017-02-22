@@ -91,7 +91,6 @@ F:\Project\CimscoPortal\CimscoPortal\bin\Microsoft.Owin.Security.MicrosoftAccoun
 F:\Project\CimscoPortal\CimscoPortal\obj\Debug\CimscoPortal.csprojResolveAssemblyReference.cache
 F:\Project\CimscoPortal\CimscoPortal\obj\Debug\CimscoPortal.dll
 F:\Project\CimscoPortal\CimscoPortal\obj\Debug\CimscoPortal.pdb
-P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\obj\Debug\CimscoPortal.csprojResolveAssemblyReference.cache
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\AutoMapper.Net4.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\AutoMapper.Unity.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\CimscoPortal.dll.config
@@ -153,6 +152,7 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Unity.Mvc4.dl
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\WebActivatorEx.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\WebApiContrib.IoC.Unity.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\WebGrease.dll
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.Web.Administration.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\CimscoPortal.data.pdb
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\AutoMapper.pdb
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\AutoMapper.xml
@@ -237,6 +237,6 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\ko\System.Spa
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\ru\System.Spatial.resources.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\zh-Hans\System.Spatial.resources.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\zh-Hant\System.Spatial.resources.dll
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\obj\Debug\CimscoPortal.csprojResolveAssemblyReference.cache
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\obj\Debug\CimscoPortal.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\obj\Debug\CimscoPortal.pdb
-P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\Microsoft.Web.Administration.dll
