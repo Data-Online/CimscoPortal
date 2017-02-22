@@ -582,6 +582,7 @@
     <Content Include="Content\images\foodstuffs.png" />
     <Content Include="Content\images\mitre10.png" />
     <Content Include="Content\images\PakNSave.jpg" />
+    <Content Include="Content\images\qtHotels.png" />
     <Content Include="Content\images\uhf_ic_logo.png" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />

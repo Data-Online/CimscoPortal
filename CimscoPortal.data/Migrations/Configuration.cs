@@ -134,6 +134,8 @@ namespace CimscoPortal.Data.Migrations
             context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Foodstuffs', [LastName] = 'Admin', [CompanyLogo] = 'foodstuffs.png' where [eMail] = 'foodstuffs.ni@cimsco.co.nz'");
             context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Foodstuffs', [LastName] = 'Admin', [CompanyLogo] = 'foodstuffs.png' where [eMail] = 'foodstuffs@cimsco.co.nz'");
             context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Foodstuffs', [LastName] = 'Admin', [CompanyLogo] = 'foodstuffs.png' where [eMail] = 'foodstuffs2@cimsco.co.nz'");
+            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'QT Hotels', [LastName] = 'Admin', [CompanyLogo] = 'qtHotels.png' where [eMail] = 'QT.Wellington@eeknz.co.nz'");
+            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'QT Hotels', [LastName] = 'Admin', [CompanyLogo] = 'qtHotels.png' where [eMail] = 'AHL.Hotels@eeknz.co.nz'");
         }
 
         private void LinkTestUsersToCustomerOrGroup(CimscoPortal.Data.Models.CimscoPortalContext context)
