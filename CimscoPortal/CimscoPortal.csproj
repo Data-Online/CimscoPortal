@@ -478,6 +478,15 @@
     <Content Include="assets\img\cimsco-logo.png" />
     <Content Include="assets\img\cimsco-logoA.png" />
     <Content Include="assets\img\CimscoLogoBase.png" />
+    <Content Include="assets\img\eek-favicon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assets\img\eek-logo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assets\img\eekLogoNoText.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="assets\img\favicon.png" />
     <Content Include="assets\img\jquery.minicolors.png" />
     <Content Include="assets\img\logo-inverted.png" />

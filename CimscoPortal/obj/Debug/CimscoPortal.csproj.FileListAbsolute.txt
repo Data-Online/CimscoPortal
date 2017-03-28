@@ -240,3 +240,6 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\zh-Hant\Syste
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\obj\Debug\CimscoPortal.csprojResolveAssemblyReference.cache
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\obj\Debug\CimscoPortal.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\obj\Debug\CimscoPortal.pdb
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\assets\img\eek-favicon.png
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\assets\img\eek-logo.png
+P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal\bin\assets\img\eekLogoNoText.png
