@@ -37,6 +37,7 @@ namespace CimscoPortal.Models
         public string SiteName { get; set; }
         public int InvoiceId { get; set; }
         public bool InvoicePdf { get; set; }
+        public string BlobUri { get; set; }
 
        // public string _uniqueID { get { return InvoicePeriodDate.ToString("MM-YY-") + SiteId.ToString(); } }
     };

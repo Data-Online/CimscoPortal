@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CimscoPortal.Extensions
 {
-    public static class IntegerExtensions
+    public static class Extensions
     {
         public static int RoundOff(this int i)
         {
@@ -80,12 +80,17 @@ namespace CimscoPortal.Extensions
         }
     }
 
-    //public static class StringExtensions
-    //{
-    //    public static string[] ToStringArray(this string values)
-    //    {
+    public static class StringExtensions
+    {
+        //public static string[] ToStringArray(this string values)
+        //{
 
-    //        return new string[] { "test", "test2" };
-    //    }
-    //}
+        //    return new string[] { "test", "test2" };
+        //}
+
+        public static string RemoveEmptyRecord(this string value, string emptyText)
+        {
+                return (value == emptyText) ? "" : value;
+        }
+    }
 }

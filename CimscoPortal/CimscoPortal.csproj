@@ -301,7 +301,7 @@
     <Compile Include="Models\PortalDataModels.cs" />
     <Compile Include="Models\Internal\UserAccessModel.cs" />
     <Compile Include="Controllers\UserAdminController.cs" />
-    <Compile Include="Extensions\IntegerExtensions.cs" />
+    <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Helpers\ButtonExtension.cs" />
     <Compile Include="Helpers\JavaScriptHelper.cs" />
     <Compile Include="Helpers\MenuVisibilityProvider.cs" />
@@ -340,6 +340,7 @@
     <Compile Include="Models\CommonInfoViewModel.cs" />
     <Compile Include="Models\InvoiceCountsViewModel.cs" />
     <Compile Include="Models\AvailableFiltersModel.cs" />
+    <Compile Include="Services\Partials\BlobStorageManagement.cs" />
     <Compile Include="Services\Partials\DataAnnotationServices.cs" />
     <Compile Include="Services\Partials\SiteDataService.cs" />
     <Compile Include="Services\PortalService.cs" />
@@ -579,6 +580,7 @@
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\fonts\typicons.svg" />
     <Content Include="Content\fonts\weathericons-regular-webfont.svg" />
+    <Content Include="Content\images\blankIcon.png" />
     <Content Include="Content\images\foodstuffs.png" />
     <Content Include="Content\images\mitre10.png" />
     <Content Include="Content\images\PakNSave.jpg" />

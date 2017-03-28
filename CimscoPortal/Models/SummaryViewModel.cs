@@ -52,6 +52,7 @@ namespace CimscoPortal.Models
         public int InvoiceId { get; set; }
         public bool InvoicePdf { get; set; }
         public DateTime InvoiceKeyDate { get; set; }
+        public string BlobUri { get; set; }
     }
 
     public class InvoiceDetail
@@ -77,7 +78,7 @@ namespace CimscoPortal.Models
         public bool ValidationError { get { return InvoiceTotal != (MiscChargesTotal + NetworkChargesTotal + EnergyChargesTotal); } }
         public int SiteId { get; set; }
         public bool InvoicePdf { get; set; }
-        public bool OnFile { get; private set; }
+        public bool OnFile { get; private set; }  // GPA ** should only be OnFile or InvoicePdf??
         public string MiscChargesLabel { get { return "Other"; } }
         public string NetworkChargesLabel { get { return "Delivery"; } }
         public string EnergyChargesLabel { get { return "Energy"; } }      

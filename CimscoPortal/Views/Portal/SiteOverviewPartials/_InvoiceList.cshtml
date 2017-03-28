@@ -128,7 +128,8 @@
                                         <a href="@Url.Action("InvoiceDetail", "Portal")/{{inv.invoiceId}}" title="Invoice Details">
                                             <i class="fa fa-cogs"></i>
                                         </a>
-                                        <a ng-show="inv.invoicePdf " href="https://cimsco.blob.core.windows.net/{{inv.siteId|padNumber:6}}/{{inv.invoiceId|padNumber:8}}.pdf" title="Download PDF">
+                                        @*<a ng-show="inv.invoicePdf " href="https://cimsco.blob.core.windows.net/{{inv.siteId|padNumber:6}}/{{inv.invoiceId|padNumber:8}}.pdf" title="Download PDF">*@
+                                        <a ng-show="inv.invoicePdf " href="{{inv.blobUri}}" title="Download PDF">
                                             <i class="fa fa-download"></i>
                                         </a>
                                     </span>
@@ -169,25 +170,25 @@
                                                     </div>
                                                 </div>
                                                 @*<div class="col-xs-12 col-sm-1 col-md-1 col-lg-1" style="height:20px;">
-                            <div ng-show="!inv.missing" class="databox-stat radius-bordered">
-                                <span ng-show="inv.verified" class="btn-xs  btn-maroon pull-right">
-                                    <i class="fa fa-eye"></i>
-                                </span>
-                                <span data-toggle="popover" data-content="Invoice Approved" data-title="" data-placement="right" data-trigger="hover"
-                                      ng-show="inv.approved" class="btn-xs btn-palegreen pull-right">
-                                    <i class="fa fa-check"></i>
-                                </span>
-                                <span data-toggle="popover" data-content="Click to Approve this Invoice" data-title="" data-placement="right" data-trigger="hover" ng-show="!inv.approved" ng-click="approveInv(inv.approved, inv.invoiceId)"
-                                      class="label label-info pull-right">
-                                    Approve
-                                </span>
-                            </div>
-                            <div ng-show="inv.missing" class="databox-stat radius-bordered">
-                                <span data-toggle="popover" data-content="Missing Invoice" data-title="" data-placement="right" data-trigger="hover" class="label label-info pull-right">
-                                    Missing
-                                </span>
-                            </div>
-                        </div>*@
+                                                        <div ng-show="!inv.missing" class="databox-stat radius-bordered">
+                                                            <span ng-show="inv.verified" class="btn-xs  btn-maroon pull-right">
+                                                                <i class="fa fa-eye"></i>
+                                                            </span>
+                                                            <span data-toggle="popover" data-content="Invoice Approved" data-title="" data-placement="right" data-trigger="hover"
+                                                                  ng-show="inv.approved" class="btn-xs btn-palegreen pull-right">
+                                                                <i class="fa fa-check"></i>
+                                                            </span>
+                                                            <span data-toggle="popover" data-content="Click to Approve this Invoice" data-title="" data-placement="right" data-trigger="hover" ng-show="!inv.approved" ng-click="approveInv(inv.approved, inv.invoiceId)"
+                                                                  class="label label-info pull-right">
+                                                                Approve
+                                                            </span>
+                                                        </div>
+                                                        <div ng-show="inv.missing" class="databox-stat radius-bordered">
+                                                            <span data-toggle="popover" data-content="Missing Invoice" data-title="" data-placement="right" data-trigger="hover" class="label label-info pull-right">
+                                                                Missing
+                                                            </span>
+                                                        </div>
+                                                    </div>*@
                                             </div>
                                         </div>
                                         <div class=" col-xs-5 col-sm-12 col-md-12 col-lg-12 invoices-custom" ng-show="!inv.missing">

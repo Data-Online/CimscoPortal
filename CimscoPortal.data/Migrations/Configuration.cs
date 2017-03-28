@@ -135,7 +135,7 @@ namespace CimscoPortal.Data.Migrations
             context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Foodstuffs', [LastName] = 'Admin', [CompanyLogo] = 'foodstuffs.png' where [eMail] = 'foodstuffs@cimsco.co.nz'");
             context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Foodstuffs', [LastName] = 'Admin', [CompanyLogo] = 'foodstuffs.png' where [eMail] = 'foodstuffs2@cimsco.co.nz'");
             context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'QT Hotels', [LastName] = 'Admin', [CompanyLogo] = 'qtHotels.png' where [eMail] = 'QT.Wellington@eeknz.co.nz'");
-            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'QT Hotels', [LastName] = 'Admin', [CompanyLogo] = 'qtHotels.png' where [eMail] = 'AHL.Hotels@eeknz.co.nz'");
+            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'QT Hotels', [LastName] = 'Admin', [CompanyLogo] = 'blankIcon.png' where [eMail] = 'AHL.Hotels@eeknz.co.nz'");
         }
 
         private void LinkTestUsersToCustomerOrGroup(CimscoPortal.Data.Models.CimscoPortalContext context)
@@ -171,7 +171,10 @@ namespace CimscoPortal.Data.Migrations
                 new CimscoPortal.Data.Models.SystemConfiguration { Values = @"https://cimsco.blob.core.windows.net/images/Cimsco-logo-sml.png", Key = "CimscoTextSml" },
                 new CimscoPortal.Data.Models.SystemConfiguration { Values = @"https://cimsco.blob.core.windows.net", Key = "PdfFileSourceRoot" },
                 new CimscoPortal.Data.Models.SystemConfiguration { Values = "13", Key = "HistoryGraphMonths" },
-                new CimscoPortal.Data.Models.SystemConfiguration { Values = "0.028", Key = "DefaultLossRate" }
+                new CimscoPortal.Data.Models.SystemConfiguration { Values = "0.028", Key = "DefaultLossRate" },
+                new CimscoPortal.Data.Models.SystemConfiguration { Values = "PksZKzyFD8gQHjl3k99omKqM/VYD/XPe2NF5thB+oNUJjmoUN7oROO90rrsECzNGp0B5XyA58Nb0E/fhSDeJ6g==", Key = "BlobPdfStoreKey" },
+                new CimscoPortal.Data.Models.SystemConfiguration { Values = "eeknz", Key = "BlobPdfStoreAccount" },
+                new CimscoPortal.Data.Models.SystemConfiguration { Values = "10", Key = "BlobPdfKeyLifeMins" }
                 );
         }
 

@@ -23,5 +23,6 @@ namespace CimscoPortal
 
             CimscoPortal.App_Start.AutoMapperConfig.Configure();
         }
+
     }
 }

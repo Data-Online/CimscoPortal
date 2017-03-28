@@ -35,7 +35,7 @@ namespace CimscoPortal.Services
         private static string energyFormat = decimalFormat + " " + energySymbol;
 
 
-        private static string azurePDFsource = System.Configuration.ConfigurationManager.AppSettings["PdfFileSourceRoot"];
+        private static string azurePDFsource = System.Configuration.ConfigurationManager.AppSettings["PdfFileSourceRoot"];  // GPA ** redundant
 
         public PortalService()
         {
@@ -656,7 +656,9 @@ namespace CimscoPortal.Services
                                SiteId = (from f in g select f.SiteId).FirstOrDefault(),
                                SiteName = (from f in g select f.Site.SiteName).FirstOrDefault(),
                                InvoiceId = (from f in g select f.InvoiceId).FirstOrDefault(),
-                               InvoicePdf = false // *** GPA - this does not need to be calculated with every select
+                               InvoicePdf = (from f in g select f.OnFile).FirstOrDefault(),
+                               BlobUri = (from f in g select f.BlobUri).FirstOrDefault()
+                               //InvoicePdf = false // *** GPA - this does not need to be calculated with every select
                            }).ToDictionary(k => k.InvoiceKeyDate);
 
             if (includeMissing) { PopulateEmptyMonths(selectFromDate, selectToDate, _result); }
@@ -1120,6 +1122,8 @@ namespace CimscoPortal.Services
 
         private IEnumerable<InvoiceOverviewViewModel> InvoiceOverviewForSite(int siteId, int monthSpan)
         {
+
+            //string zz = GetBlobAdHocSharedAccessSignatureUrl("000002", "00000226.pdf");
             IList<int> _allSitesInCurrentSelection = CreateSiteList(siteId);
 
             List<InvoiceOverviewViewModel> _result = GenerateInvoiceList(monthSpan, _allSitesInCurrentSelection);
@@ -1148,15 +1152,20 @@ namespace CimscoPortal.Services
 
             foreach (var _siteId in allSitesInCurrentSelection)
             {
+
                 //var _query = CollateInvoiceData(_invoiceData.Where(s => s.SiteId == _siteId), _selectFromDate, _selectToDate, _includeMissing).Where(s => s.Value.Missing == true);
                 var _query = FilterForMissingInvoicesIfRequested(
                                     CollateInvoiceData(_invoiceData.Where(s => s.SiteId == _siteId), _selectFromDate, _selectToDate, _includeMissing),
                                     _filterIncludesMissing
                                     );
                 //var _collatedData = (CollateInvoiceData(_invoiceData.Where(s => s.SiteId == _siteId), _selectFromDate, _selectToDate, _includeMissing))
-                var _collatedData = (_query)
+               IOrderedEnumerable<MonthlySummaryModel> _collatedData = (_query)
                     .Select(s => s.Value)
                     .OrderByDescending(o => o.InvoicePeriodDate);
+
+                // Ensure access to Blob Stored PDF file, if available.
+                _collatedData = CreateBlobUriForSite(_siteId, _collatedData);
+
                 _result.AddRange(AutoMapper.Mapper.Map<List<MonthlySummaryModel>, List<InvoiceOverviewViewModel>>(_collatedData.ToList()));
             };
 
@@ -1165,8 +1174,21 @@ namespace CimscoPortal.Services
             //                        .OrderByDescending(o => o.InvoicePeriodDate);
             //  _result = AutoMapper.Mapper.Map<List<MonthlySummaryModel>, List<InvoiceOverviewViewModel>>(_collatedData.ToList());
 
-            CheckPdfSourceFileExists(_result); // Only need to do this once? --> Move to Manage module
+            //CheckPdfSourceFileExists(_result); // Only need to do this once? --> Move to Manage module
             return _result;
+        }
+
+        private IOrderedEnumerable<MonthlySummaryModel> CreateBlobUriForSite(int _siteId, IOrderedEnumerable<MonthlySummaryModel> collatedData)
+        {
+            object[] blobAccess = GetBlobStorageSharedAccessSignature_(_siteId.ToString("D6"));
+
+            foreach (var _inv in collatedData)
+            {
+                if (_inv.InvoicePdf)
+                    _inv.BlobUri = blobAccess[0] + "/" + _inv.InvoiceId.ToString("D8") + ".pdf" + blobAccess[1];
+            }
+
+            return collatedData;
         }
 
         private bool CheckFilterByText(string filter, string text)
@@ -2534,12 +2556,12 @@ namespace CimscoPortal.Services
             try
             {
                 var _userQuery = _repository.AspNetUsers.Where(s => s.Email == userId).FirstOrDefault();
-                _groupName = _userQuery.Groups.Select(g => g.GroupName).DefaultIfEmpty("").First();
+                _groupName = _userQuery.Groups.Where(s => s.GroupName != "Group not set").Select(g => g.GroupName).DefaultIfEmpty("").First();
                 if (!String.IsNullOrEmpty(_groupName))
                 {
                     return new CurrentUserLevel() { UserLevel = "Group", TopLevelName = _groupName };
                 }
-                _customerName = _userQuery.Customers.Select(c => c.CustomerName).DefaultIfEmpty("").First();
+                _customerName = _userQuery.Customers.Where(s => s.CustomerName != "Customer not set").Select(c => c.CustomerName).DefaultIfEmpty("").First();
                 if (!String.IsNullOrEmpty(_customerName))
                 {
                     return new CurrentUserLevel() { UserLevel = "Customer", TopLevelName = _customerName };
