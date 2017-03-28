@@ -656,8 +656,8 @@ namespace CimscoPortal.Services
                                SiteId = (from f in g select f.SiteId).FirstOrDefault(),
                                SiteName = (from f in g select f.Site.SiteName).FirstOrDefault(),
                                InvoiceId = (from f in g select f.InvoiceId).FirstOrDefault(),
-                               InvoicePdf = (from f in g select f.OnFile).FirstOrDefault(),
-                               BlobUri = (from f in g select f.BlobUri).FirstOrDefault()
+                               InvoicePdf = (from f in g select f.OnFile).FirstOrDefault()//,
+                               //BlobUri = (from f in g select f.BlobUri).FirstOrDefault()
                                //InvoicePdf = false // *** GPA - this does not need to be calculated with every select
                            }).ToDictionary(k => k.InvoiceKeyDate);
 
