@@ -233,11 +233,36 @@
                             </div>
                         </div>
                     </div>
+
+            
+
                     <div class="clearfix"></div>
                 </div>
             </div>
         </div>
     </div>
+
+
+    <div ng-if="true" class="row">
+        <div class="col-md-12">
+            <div class="widget">
+                <div class="widget-header bg-themeprimary">
+                    <span class="widget-caption">Comparison Data</span>
+
+                    <div class="widget-buttons">
+                        <a href="" widget-collapse></a>
+                        <a href="" widget-dispose></a>
+                    </div>
+                </div>
+                <div class="widget-body">
+                    <div google-chart chart="myChartObject" style="height:150px; width:50%;"></div>
+                    <p><b>Average cost saving if higest consuming site consumed at lowest rate : {{testDelta | currency}}</b></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
 </div>
 
 

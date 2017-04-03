@@ -276,9 +276,18 @@
             //return { status: "Attention", notes: "Missing invoices", date: new Date('01/10/2015') };
         };
 
+        var getComparisonData = function (monthSpan, filter, siteId) {
+            var dataApi = "/api/comparisonData" + "/" + monthSpan + "/" + filter + "/" + siteId;
+            return $http.get(dataApi)
+                        .then(function (response) {
+                            return response.data;
+                        });
+        };
+
         return {
             getCostConsumptionData: getCostConsumptionData,
-            getDatapointDetails: getDatapointDetails
+            getDatapointDetails: getDatapointDetails,
+            getComparisonData: getComparisonData
         };
     };
 })();

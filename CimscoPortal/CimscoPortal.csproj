@@ -340,9 +340,9 @@
     <Compile Include="Models\CommonInfoViewModel.cs" />
     <Compile Include="Models\InvoiceCountsViewModel.cs" />
     <Compile Include="Models\AvailableFiltersModel.cs" />
+    <Compile Include="Services\ConsumptionChartDatapoints.cs" />
     <Compile Include="Services\Partials\BlobStorageManagement.cs" />
     <Compile Include="Services\Partials\DataAnnotationServices.cs" />
-    <Compile Include="Services\Partials\SiteDataService.cs" />
     <Compile Include="Services\PortalService.cs" />
     <Compile Include="SharedController.generated.cs">
       <DependentUpon>T4MVC.tt</DependentUpon>

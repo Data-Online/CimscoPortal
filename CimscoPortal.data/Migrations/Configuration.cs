@@ -19,24 +19,24 @@ namespace CimscoPortal.Data.Migrations
         }
 
         private string[] _sampleUsers = new string[] { 
-            "user1@cimsco.co.nz", 
-            "mitre10@cimsco.co.nz",
-            "mitre10_2@cimsco.co.nz",
-            "HP@cimsco.co.nz",
-            "intercontinental@cimsco.co.nz", 
-            "masterton@cimsco.co.nz", 
-            "admin@cimsco.co.nz",
-            "masterton2@cimsco.co.nz",
-            "foodstuffs@cimsco.co.nz",
-            "foodstuffs2@cimsco.co.nz",
-            "holiday1@cimsco.co.nz",
-            "holiday2@cimsco.co.nz",
-            "nees.hardware@cimsco.co.nz",
-            "masterton.supermarkets@cimsco.co.nz",
-            "foodstuffs.ni@cimsco.co.nz",
-            "mitre10.nz@cimsco.co.nz",
-            "AHL.Hotels@eeknz.co.nz",
-            "QT.Wellington@eeknz.co.nz"
+            "user1@eek.nz", 
+            "mitre10@eek.nz",
+            "mitre10_2@eek.nz",
+            "HP@eek.nz",
+            "intercontinental@eek.nz", 
+            "masterton@eek.nz", 
+            "admin@eek.nz",
+            "masterton2@eek.nz",
+            "foodstuffs@eek.nz",
+            "foodstuffs2@eek.nz",
+            "holiday1@eek.nz",
+            "holiday2@eek.nz",
+            "nees.hardware@eek.nz",
+            "masterton.supermarkets@eek.nz",
+            "foodstuffs.ni@eek.nz",
+            "mitre10.nz@eek.nz",
+            "AHL.Hotels@eek.nz",
+            "QT.Wellington@eek.nz"
         };
         // ==>**** Ref at AccountController.cs: This is where these accounts are created
 

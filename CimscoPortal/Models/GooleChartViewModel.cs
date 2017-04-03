@@ -10,6 +10,7 @@ namespace CimscoPortal.Models
     {
         public IList<GoogleCols> Columns { get; set; }
         public IList<GoogleRows> Rows { get; set; }
+        public IList<double> StartEnd { get; set; }
     }
 
     public class GoogleCols
@@ -30,5 +31,10 @@ namespace CimscoPortal.Models
     {
         public string v { get; set;}
         public string f { get; set;}
+    }
+
+    public class GoogleAnalsysData : GoogleChartViewModel
+    {
+        public IList<double> AnalysisFigures { get; set; } 
     }
 }

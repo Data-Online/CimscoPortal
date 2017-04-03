@@ -178,12 +178,20 @@
             return _returnValues;
         };
 
+        var zTestGoogle = function(data) {
+            console.log(data);
+            var _collatedData = collateData(data);
+            //console.log("Collated data...");
+            //console.log(_collatedData);
+            return _collatedData;
+        };
+
         var initializeGoogleChart = function (scope, data, chartElements) {
             // data.axes defined the Axes labels and formats.
             // Axes 0 == X
             // Remaining Axes are Y
             var _firstDisplayAxis = 0; // Element in chartElements that should be treated as primary axis data (displayed initially)
-
+            
 
             // Firstly assign all available data
             var _collatedData = collateData(data);
@@ -322,7 +330,8 @@
             refreshAllGoogleCharts: refreshAllGoogleCharts,
             //ZtoggleAxis2Display: ZtoggleAxis2Display,
             createButtonControls: createButtonControls,
-            lineNameFromChartNumber: lineNameFromChartNumber
+            lineNameFromChartNumber: lineNameFromChartNumber,
+            zTestGoogle: zTestGoogle
         };
 
     }

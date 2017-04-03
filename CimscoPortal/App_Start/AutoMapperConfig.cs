@@ -205,6 +205,8 @@ namespace CimscoPortal.App_Start
             Mapper.CreateMap<UserSetting, UserSettingsViewModel>();
 
             Mapper.CreateMap<UserSettingsViewModel, UserSetting>();
+
+            Mapper.CreateMap<GoogleChartViewModel, GoogleAnalsysData>();
         }
 
 

@@ -684,6 +684,79 @@ namespace CimscoPortal.Services
 
         #endregion Dashboard data
 
+        #region Comparison charts
+        public GoogleChartViewModel GetComparisonData(int monthSpan, CostConsumptionOptions options)
+        {
+            // Get summary data
+            if (!monthSpan.In(3, 6, 12, 24)) { monthSpan = 12; }
+            bool LimitSitesToActive = true;
+
+            DateTime _selectFromDate;
+            DateTime _selectToDate;
+            CalculateDateRange(monthSpan, out _selectFromDate, out _selectToDate);
+
+            IList<int> _allSitesInCurrentSelection = GetSitesBasedOnOptions(options, LimitSitesToActive);
+
+            IQueryable<InvoiceSummary> _invoiceData = ConstructInvoiceQueryForDates(_allSitesInCurrentSelection, _selectFromDate, _selectToDate);
+
+            // First we need the site areas
+            IQueryable<int?> _siteAreas = _repository.Sites.Where(s => _allSitesInCurrentSelection.Contains(s.SiteId)).Select(v => v.TotalFloorSpaceSqMeters);
+            var _siteAreas_ = _repository.Sites.Where(s => _allSitesInCurrentSelection.Contains(s.SiteId) & s.TotalFloorSpaceSqMeters > 0).Select(v => new SiteAreas
+            {
+                area = v.TotalFloorSpaceSqMeters,
+                id = v.SiteId
+            });
+
+            decimal _avg_avg = 0.0M;
+            decimal _minimum = 0.0M;
+            decimal _maximum = 0.0M;
+
+            decimal _maxAverage = 0.0M;
+            int _maxSiteId = 0, _minSiteId = 0;
+
+            int _sitesWithArea = _siteAreas_.Count();
+            foreach (int _siteId in _siteAreas_.Select(s => s.id).ToList())// _allSitesInCurrentSelection)
+            {
+                int? _siteArea = _siteAreas_.Where(s => s.id == _siteId).Select(v => v.area).FirstOrDefault();
+                //var _average = _repository.InvoiceSummaries.Where(s => s.SiteId == _siteId).Average(s => s.KwhTotal);
+                var _average = _invoiceData.Where(s => s.SiteId == _siteId).Average(s => s.KwhTotal);
+                if (_maxAverage < _average) { _maxAverage = _average; }
+                var _perSqM = NumericExtensions.SafeDivision((decimal)_average, (decimal)_siteArea);
+                if (_perSqM > _maximum) { _maximum = _perSqM; _maxSiteId = _siteId;  }
+                if (_perSqM < _minimum | _minimum == 0) { _minimum = _perSqM; _minSiteId = _siteId; }
+                _avg_avg += _perSqM;
+            }
+
+            _avg_avg = NumericExtensions.SafeDivision(_avg_avg, _sitesWithArea);
+
+            int? _maxSiteArea = _siteAreas_.Where(s => s.id == _maxSiteId).Select(v => v.area).FirstOrDefault();
+            decimal _delta = _maxAverage - (_minimum * _maxSiteArea ?? 1);
+            decimal _avgCostPerKwh = _invoiceData.Where(s => s.SiteId == _maxSiteId).Average(s => s.InvoiceTotal / s.KwhTotal);
+
+
+            IList<double> _analysisFigures = new List<double>() { (double)(_delta*_avgCostPerKwh) };
+            // Return data for plotting
+            //GoogleChartViewModel _model = GoogleChartFor_PowerComparison((double)_avg_avg, (double)_maximum, (double)_minimum);
+            GoogleAnalsysData _model = new Models.GoogleAnalsysData();
+
+            _model = AutoMapper.Mapper.Map<GoogleChartViewModel, GoogleAnalsysData>(
+                GoogleChartFor_PowerComparison((double)_avg_avg, (double)_maximum, (double)_minimum, GetSiteName(_minSiteId), GetSiteName(_maxSiteId)));
+            _model.AnalysisFigures = _analysisFigures;
+            return _model;
+        }
+
+        private string GetSiteName(int siteId)
+        {
+            return _repository.Sites.Where(s => s.SiteId == siteId).Select(v => v.SiteName).FirstOrDefault();
+        }
+
+        private class SiteAreas
+        {
+            public int? area { get; set; }
+            public int id { get; set; }
+        }
+
+        #endregion
         #region Site Overview data
         public GoogleChartViewModel GetCostsAndConsumption(int monthSpan, CostConsumptionOptions options)
         {
@@ -760,6 +833,194 @@ namespace CimscoPortal.Services
 
         #region Site Overview private functions
 
+        private static GoogleChartViewModel GoogleChartFor_PowerComparison(double avg, double max, double min,
+            string minSiteName, string maxSiteName)
+        {
+            GoogleChartViewModel _model = new GoogleChartViewModel();
+            _model.Columns = DefineGoogleColumns("comparisonChart");
+
+            _model.Rows = new List<GoogleRows>();
+
+            var _comparisonChart = new ConsumptionChartDatapoints();
+
+            _comparisonChart.SetDecimalFormat(decimalFormat);
+            _comparisonChart.SetMinAvgMax(min,avg,max);
+            _comparisonChart.SetMetricValue(6.2);
+            _comparisonChart.SetDatatype("KWh / SqM");
+            _comparisonChart.SetMinMaxAnnotation(minSiteName, maxSiteName);
+            _model.StartEnd = _comparisonChart.GetBarMinMaxValues();
+
+            List<CPart> _dataRows = _comparisonChart.GetRowData();
+
+            //_dataRows = testData();
+
+            _model.Rows.Add(new GoogleRows { Cparts = _dataRows });
+            return _model;
+
+        }
+
+        private static List<CPart> testData()
+        {
+            List<CPart> _dataRows = new List<CPart>();
+            // Titles
+            _dataRows.Add(new CPart
+            {
+                v = "KWh / SqM"
+            });
+
+            // 1st PAD
+            _dataRows.Add(new CPart
+            {
+                v = (4.5439801).ToString()
+            });
+            //_dataRows.Add(new CPart
+            //{
+            //    //v = "lightblue"
+            //});
+
+            // Min value
+            _dataRows.Add(new CPart
+            {
+                v = (0.02).ToString()
+            });
+            _dataRows.Add(new CPart
+            {
+                f = "<div><p><b>Min value</b></p></div>"
+            });
+            _dataRows.Add(new CPart
+            {
+                //v = "blue"
+            });
+
+            // 2nd PAD
+            _dataRows.Add(new CPart
+            {
+                v = (0.964878575).ToString()
+            });
+            //_dataRows.Add(new CPart
+            //{
+            //    //v = "lightblue"
+            //});
+
+            // Avg value
+            _dataRows.Add(new CPart
+            {
+                v = (0.02).ToString()
+            });
+            _dataRows.Add(new CPart
+            {
+                f = "<div><p><b>Avg value</b></p></div>"
+            });
+            _dataRows.Add(new CPart
+            {
+                //v = "green"
+                v = "point { fill-color: red; } "
+            });
+
+            // 3nd PAD
+            _dataRows.Add(new CPart
+            {
+                v = (1.173357222).ToString()
+            });
+            //_dataRows.Add(new CPart
+            //{
+            //    //v = "lightblue"
+            //});
+
+            // Max value
+            _dataRows.Add(new CPart
+            {
+                v = (0.02).ToString()
+            });
+            _dataRows.Add(new CPart
+            {
+                f = "<div><p><b>Max value</b></p></div>"
+            });
+            _dataRows.Add(new CPart
+            {
+                //v = "red"
+            });
+
+            // 4th PAD
+            _dataRows.Add(new CPart
+            {
+                v = (0.257784103).ToString()
+            });
+            //_dataRows.Add(new CPart
+            //{
+            //    //v = "lightblue"
+            //});
+            return _dataRows;
+        }
+
+        private static List<GoogleCols> DefineGoogleColumns(string chartType)
+        {
+            List<GoogleCols> _columns = new List<GoogleCols>();
+
+            switch (chartType)
+            {
+                case "consumptionChart":
+                    _columns.Add(new GoogleCols { label = "Month", type = "string", format = "string" });
+                    // Y Axes
+                    _columns.Add(new GoogleCols { label = "Invoice Total excl GST", type = "number", format = "currency", role = "data" });
+                    _columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
+                    _columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
+
+                    _columns.Add(new GoogleCols { label = "Total Kwh", type = "number", format = "decimal", role = "data" });
+                    _columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
+                    _columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
+
+                    _columns.Add(new GoogleCols { label = "Cost / Sqm", type = "number", format = "currency", role = "data" });
+                    _columns.Add(new GoogleCols { label = "Kwh / SqM", type = "number", format = "decimal" });
+
+                    _columns.Add(new GoogleCols { label = "Previous Year Total", type = "number", format = "currency", role = "data" });
+                    _columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
+                    _columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
+
+
+                    _columns.Add(new GoogleCols { label = "Previous Year Kwh", type = "number", format = "decimal", role = "data" });
+                    _columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
+                    _columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
+
+
+                    _columns.Add(new GoogleCols { label = "Previous Year Cost / Sqm", type = "number", format = "currency", role = "data" });
+                    _columns.Add(new GoogleCols { label = "Previous Year Kwh / SqM", type = "number", format = "decimal", role = "data" });
+
+                    _columns.Add(new GoogleCols { label = "Project Saving Estimate", type = "number", format = "decimal", role = "data" });
+                    _columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
+                    _columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
+                    break;
+                case "comparisonChart":
+                    _columns.Add(new GoogleCols { label = "Measurement", type = "string" });
+                    // Y Axes
+                    _columns.Add(new GoogleCols { label = "pad", type = "number", format = "decimal", role = "data" });
+                    //_columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
+
+                    _columns.Add(new GoogleCols { label = "Min", type = "number", format = "decimal", role = "data" });
+                    _columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
+                    _columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
+
+                    _columns.Add(new GoogleCols { label = "pad", type = "number", format = "decimal", role = "data" });
+                    //_columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
+
+                    _columns.Add(new GoogleCols { label = "Avg", type = "number", format = "decimal", role = "data" });
+                    _columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
+                    _columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
+
+                    _columns.Add(new GoogleCols { label = "pad", type = "number", format = "decimal", role = "data" });
+                    //_columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
+
+                    _columns.Add(new GoogleCols { label = "Max", type = "number", format = "decimal", role = "data" });
+                    _columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
+                    _columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
+
+                    _columns.Add(new GoogleCols { label = "pad", type = "number", format = "decimal", role = "data" });
+                    //_columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
+                    break;
+            }
+            return _columns;
+        }
+
         private static GoogleChartViewModel GoogleChartFor_PowerConsumption(
             Dictionary<DateTime, MonthlySummaryModel> Result,
             Dictionary<DateTime, MonthlySummaryModel> Result12,
@@ -767,40 +1028,39 @@ namespace CimscoPortal.Services
             )
         {
             GoogleChartViewModel _model = new GoogleChartViewModel();
-            _model.Columns = new List<GoogleCols>();
+            _model.Columns = DefineGoogleColumns("consumptionChart");
             _model.Rows = new List<GoogleRows>();
 
-            // X Axis
+            ////// X Axis
+            ////_model.Columns.Add(new GoogleCols { label = "Month", type = "string", format = "string" });
+            ////// Y Axes
+            ////_model.Columns.Add(new GoogleCols { label = "Invoice Total excl GST", type = "number", format = "currency", role = "data" });
+            ////_model.Columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
+            ////_model.Columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
 
-            _model.Columns.Add(new GoogleCols { label = "Month", type = "string", format = "string" });
-            // Y Axes
-            _model.Columns.Add(new GoogleCols { label = "Invoice Total excl GST", type = "number", format = "currency", role = "data" });
-            _model.Columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
-            _model.Columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
+            ////_model.Columns.Add(new GoogleCols { label = "Total Kwh", type = "number", format = "decimal", role = "data" });
+            ////_model.Columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
+            ////_model.Columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
 
-            _model.Columns.Add(new GoogleCols { label = "Total Kwh", type = "number", format = "decimal", role = "data" });
-            _model.Columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
-            _model.Columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
+            ////_model.Columns.Add(new GoogleCols { label = "Cost / Sqm", type = "number", format = "currency", role = "data" });
+            ////_model.Columns.Add(new GoogleCols { label = "Kwh / SqM", type = "number", format = "decimal" });
 
-            _model.Columns.Add(new GoogleCols { label = "Cost / Sqm", type = "number", format = "currency", role = "data" });
-            _model.Columns.Add(new GoogleCols { label = "Kwh / SqM", type = "number", format = "decimal" });
-
-            _model.Columns.Add(new GoogleCols { label = "Previous Year Total", type = "number", format = "currency", role = "data" });
-            _model.Columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
-            _model.Columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
-
-
-            _model.Columns.Add(new GoogleCols { label = "Previous Year Kwh", type = "number", format = "decimal", role = "data" });
-            _model.Columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
-            _model.Columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
+            ////_model.Columns.Add(new GoogleCols { label = "Previous Year Total", type = "number", format = "currency", role = "data" });
+            ////_model.Columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
+            ////_model.Columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
 
 
-            _model.Columns.Add(new GoogleCols { label = "Previous Year Cost / Sqm", type = "number", format = "currency", role = "data" });
-            _model.Columns.Add(new GoogleCols { label = "Previous Year Kwh / SqM", type = "number", format = "decimal", role = "data" });
+            ////_model.Columns.Add(new GoogleCols { label = "Previous Year Kwh", type = "number", format = "decimal", role = "data" });
+            ////_model.Columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
+            ////_model.Columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
 
-            _model.Columns.Add(new GoogleCols { label = "Project Saving Estimate", type = "number", format = "decimal", role = "data" });
-            _model.Columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
-            _model.Columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
+
+            ////_model.Columns.Add(new GoogleCols { label = "Previous Year Cost / Sqm", type = "number", format = "currency", role = "data" });
+            ////_model.Columns.Add(new GoogleCols { label = "Previous Year Kwh / SqM", type = "number", format = "decimal", role = "data" });
+
+            ////_model.Columns.Add(new GoogleCols { label = "Project Saving Estimate", type = "number", format = "decimal", role = "data" });
+            ////_model.Columns.Add(new GoogleCols { type = "number", role = "tooltip", format = "html" });
+            ////_model.Columns.Add(new GoogleCols { type = "string", role = "style", format = "" });
 
             List<CPart> _dataRows;
             string _invoiceCount;
@@ -852,7 +1112,7 @@ namespace CimscoPortal.Services
                 });
 
                 // Invoice Total + tooltip + style
-                _dataRows.Add(new CPart { v = _invoiceTotal, f = _values.Value.InvoiceTotal.ToString(currencyFormat) + _invoiceCount });
+                _dataRows.Add(new CPart { v = _invoiceTotal });//, f = _values.Value.InvoiceTotal.ToString(currencyFormat) + _invoiceCount });  // ** GPA remove, as tool tip defined below.
                 _dataRows.Add(new CPart
                 {
                     //f = ReturnHtmlFormattedTooltip(_values.Value.InvoicePeriodDate,
@@ -1159,9 +1419,9 @@ namespace CimscoPortal.Services
                                     _filterIncludesMissing
                                     );
                 //var _collatedData = (CollateInvoiceData(_invoiceData.Where(s => s.SiteId == _siteId), _selectFromDate, _selectToDate, _includeMissing))
-               IOrderedEnumerable<MonthlySummaryModel> _collatedData = (_query)
-                    .Select(s => s.Value)
-                    .OrderByDescending(o => o.InvoicePeriodDate);
+                IOrderedEnumerable<MonthlySummaryModel> _collatedData = (_query)
+                     .Select(s => s.Value)
+                     .OrderByDescending(o => o.InvoicePeriodDate);
 
                 // Ensure access to Blob Stored PDF file, if available.
                 _collatedData = CreateBlobUriForSite(_siteId, _collatedData);
@@ -2581,7 +2841,7 @@ namespace CimscoPortal.Services
 
         }
 
-         private List<InvoiceDetail> InvoiceDetailForSite(int siteId)
+        private List<InvoiceDetail> InvoiceDetailForSite(int siteId)
         {
             return _repository.InvoiceSummaries.Where(s => s.SiteId == siteId)
                 .OrderBy(o => o.InvoiceDate).Project().To<InvoiceDetail>().ToList();
@@ -2819,6 +3079,8 @@ namespace CimscoPortal.Services
 
         #endregion
     }
+
+
 }
 
 

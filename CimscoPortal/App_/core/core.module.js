@@ -45,6 +45,7 @@
     angular.module('app.core')
     .constant('CONFIG', {
         'debug': true,
-        'googleChartTheme': ['#009900', '#0000FF', '#DD9900', '#CC0000']
+        'googleChartTheme': ['#009900', '#0000FF', '#DD9900', '#CC0000'],
+        'googleComparisonBarTheme': ['#009999', '#009900', '#009999', '#CC0000', '#009999', '#DD9900', '#009999']
     });
 })();

@@ -137,7 +137,24 @@ namespace CimscoPortal.Controllers.Api
             return request.CreateResponse(HttpStatusCode.Forbidden);
         }
 
-
+        [HttpGet]
+        [Route("comparisonData/{monthSpan}/{filter}/{siteId}")]
+        public HttpResponseMessage GetComparisonData(HttpRequestMessage request, int monthSpan, string filter, int siteId)
+        {
+            if (CheckUserAccessToSite(siteId))
+            //if (GetCurrentUserAccess().ValidSites.Contains(siteId))
+            {
+                CostConsumptionOptions _options = new CostConsumptionOptions();
+                _options.userId = User.Identity.Name;
+                _options.siteId = siteId;
+                _options.filter = filter;
+                _options.includeMissing = true;
+                _options.previous12 = true;
+                return request.CreateResponse<GoogleChartViewModel>(HttpStatusCode.OK,
+                   _portalService.GetComparisonData(monthSpan, _options));
+            }
+            return request.CreateResponse(HttpStatusCode.Forbidden);
+        }
 
 
         //[HttpGet]

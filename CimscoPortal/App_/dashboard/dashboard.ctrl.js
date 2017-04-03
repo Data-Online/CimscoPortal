@@ -20,6 +20,176 @@
         $scope.includeBarChart = true; // Include bar chart seletion option ?
         $scope.showAsBar = false;  // Whether to show line or bar initiually. Dictates setting for toggle switch
 
+        // Test stacked 100% bar
+
+        //consumptionData.getComparisonData()
+        //                    .then(function success(data) { return onComparisonData(data) }, onError);
+
+
+        // Google chart control 
+        var readAndPlotComparisonData = function () {
+            consumptionData.getComparisonData($scope.monthSpan, getReturnIds(), _siteSelect)
+                .then(onComparisonData, onError);
+        };
+        ////consumptionData.getComparisonData($scope.monthSpan, _filter, _siteSelect)
+        ////                    .then(function success(data) { return onComparisonData(data, key, _filter) }, onError);
+
+
+        $scope.myChartObject = {};
+        $scope.myChartObject.type = "BarChart";
+
+        var onComparisonData = function (data) {
+            //console.log(pairNo);
+            var _zData = googleChart.zTestGoogle(data);
+
+            $scope.myChartObject.data =
+                {
+                    "cols": _zData.cols,
+                    "rows": _zData.rows
+                }
+
+            var _legend = { position: 'top', maxLines: 3 };
+            var _width = { groupWidth: '60%' };
+            var _isHtml = { isHtml: true };
+            //var _haxis = { minValue: 4.0, viewWindow: { min: 4, max: 7 }, maxValue: 7.0, gridlines: { count: 10 } };
+            var _haxis = { minValue: data.startEnd[0], viewWindow: { min: data.startEnd[0], max: data.startEnd[1] }, maxValue: data.startEnd[1], gridlines: { count: 10 } };
+            $scope.myChartObject.options = {
+                'title': 'Average energy consumption per SqM',
+                'isStacked': 'true',
+                'legend': 'none',
+                'bar': _width,
+                'height': 150,
+                'tooltip': _isHtml,
+                'hAxis': _haxis,
+                "colors": CONFIG.googleComparisonBarTheme, // ['#0000FF', '#009900', '#0000FF', '#CC0000', '#0000FF', '#DD9900', '#0000FF']
+                "series": { 0: { tooltip: false }, 2: { tooltip: false }, 4: { tooltip: false }, 6: { tooltip: false } }
+                //, 1: { tooltip: true }, 1: { tooltip: false}, 2: { tooltip: true }, 3: { tooltip: false }, 4: { tooltip: true }, 5: { tooltip: false } }
+            };
+            $scope.testDelta = data.analysisFigures[0];
+        };
+
+        //  $scope.myChartObject = {};
+
+        //  $scope.myChartObject.type = "BarChart";
+        //  var _html = "<div><p><b>Test text</b></p></div>";
+        //  $scope.kwh = [
+        //      { v: "KWh / SqM" },
+
+        //      {
+        //          v: 4.5439801
+        //      },  // Pad
+        //      { f: _html },
+        //      { v: "lightblue" },
+
+        //      { v: 0.02 },             // Low
+        //      { f: "Low" },
+
+        //      {
+        //          v: 0.964878575
+        //      },     // Pad
+        //      { f: "pad" },
+        //      { v: "lightblue" },
+
+        //      { v: 0.02 },      // Avg
+        //      { f: "avg" },
+
+        //      {
+        //          v: 1.173357222
+        //      },       // Pad
+        //      { f: "pad" },
+        //      { v: "lightblue" },
+
+        //      { v: 0.02 },      // Avg
+        //      { f: "max" },
+
+        //      {
+        //          v: 0.257784103
+
+        //      },          // Pad
+        //      { f: "endpad" },
+        //      { v: "lightblue" },
+
+        //  ];
+
+        //  var _columnData = [
+        //          { id: "t", label: "Measurement", type: "string" },
+
+        //          { id: "s", label: "% Sites using less energy", type: "number" },
+        //          { id: "tt", type: "number", role: "tooltip", p: { "html": true } },
+        //          { id: "s1", type: "string", role: "style" },
+
+        //          { id: "x", label: "Selected site(s)", type: "number" },
+        //          { id: "tt2", label: "Title", type: "number", role: "tooltip" },
+
+        //          { id: "y", label: "% Sites using more energy", type: "number" },
+        //          { id: "tt3", label: "Title", type: "number", role: "tooltip" },
+        //          { id: "s1", type: "string", role: "style" },
+
+        //          { id: "y", label: "% Sites using more energy", type: "number" },
+        //          { id: "tt4", label: "Title", type: "number", role: "tooltip" },
+
+        //          { id: "y", label: "% Sites using more energy", type: "number" },
+        //          { id: "tt5", label: "Title", type: "number", role: "tooltip" },
+        //          { id: "s1", type: "string", role: "style" },
+
+        //          { id: "y", label: "% Sites using more energy", type: "number", color: "yellow" },
+        //          { id: "tt6", label: "Title", type: "number", role: "tooltip" },
+
+        //          { id: "y", label: "% Sites using more energy", type: "number" },
+        //          { id: "tt7", label: "Title", type: "number", role: "tooltip" },
+        //          { id: "s1", type: "string", role: "style" }
+
+        //  ];
+        //  var _rowData =  [ { c: $scope.kwh } ];
+        //  var ztest = { "columns": _columnData, "rows": _rowData };
+        ////  googleChart.zTestGoogle(ztest);
+
+        //  $scope.myChartObject.data = {
+        //      "cols": [
+        //          { id: "t", label: "Measurement", type: "string" },
+
+        //          { id: "s", label: "% Sites using less energy", type: "number" },
+        //          { id: "tt", type: "number", role: "tooltip", p: { "html": true } },
+        //          { id: "s1", type: "string", role: "style" },
+
+        //          { id: "x", label: "Selected site(s)", type: "number" },
+        //          { id: "tt2", label: "Title", type: "number", role: "tooltip" },
+
+        //          { id: "y", label: "% Sites using more energy", type: "number" },
+        //          { id: "tt3", label: "Title", type: "number", role: "tooltip" },
+        //          { id: "s1", type: "string", role: "style" },
+
+        //          { id: "y", label: "% Sites using more energy", type: "number" },
+        //          { id: "tt4", label: "Title", type: "number", role: "tooltip" },
+
+        //          { id: "y", label: "% Sites using more energy", type: "number" },
+        //          { id: "tt5", label: "Title", type: "number", role: "tooltip" },
+        //          { id: "s1", type: "string", role: "style" },
+
+        //          { id: "y", label: "% Sites using more energy", type: "number", color: "yellow" },
+        //          { id: "tt6", label: "Title", type: "number", role: "tooltip" },
+
+        //          { id: "y", label: "% Sites using more energy", type: "number" },
+        //          { id: "tt7", label: "Title", type: "number", role: "tooltip" },
+        //          { id: "s1", type: "string", role: "style" }
+
+        //      ], "rows": [
+        //          { c: $scope.kwh }
+        //      ]
+        //  };
+
+        //  $scope.myChartObject.data = {
+        //      "cols": _columnData,
+        //      "rows": [
+        //          { c: $scope.kwh }
+        //      ]
+        //  };
+
+
+
+        //
+
+
         // elemenName == Page element where chart is to be reendered
         // columnNames == [Primary, Seconday] axes for chart. Primary axis is displayed by default. These names need to match columns returned from server.
         // title == Title to render on page (if required)
@@ -111,6 +281,7 @@
             readAndPlotGoogleGraphData();
             readAndShowStatistics();
             readAndUpdateDivisonGraphs();
+            readAndPlotComparisonData();
         };
 
         var displayStatistics = function (data) {

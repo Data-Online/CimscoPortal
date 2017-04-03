@@ -10,6 +10,7 @@ namespace CimscoPortal.Infrastructure
     {
         // Test data
         GoogleChartViewModel GetCostsAndConsumption(int monthSpan, CostConsumptionOptions options);
+        GoogleChartViewModel GetComparisonData(int monthSpan, CostConsumptionOptions options);
 
         InvoiceStatsViewModel GetDashboardStatistics(string userId, int monthSpan, string filter);
 
