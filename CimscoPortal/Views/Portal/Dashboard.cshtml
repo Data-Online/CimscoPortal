@@ -243,7 +243,7 @@
     </div>
 
 
-    <div ng-if="myChartObject.data" class="row">
+    <div class="row">
         <div class="col-md-12">
             <div class="widget" ng-style="{opacity: ((loading) && .4) || 1.0}">
                 <div class="widget-header bg-themeprimary">
@@ -254,8 +254,9 @@
                         <a href="" widget-dispose></a>
                     </div>
                 </div>
-                <div class="widget-body" style="height:300px;">
-                        <span ng-show="true" class="databox-number white tootip-info pull-left"
+                <div class="widget-body" >
+                    <div ng-if="myChartObject.data" class="row" style="height:250px;">
+                        <span ng-show="true" class="databox-number white tootip-info pull-left" style="padding-left:15px;"
                               data-container="body"
                               data-titleclass="bordered-blue"
                               data-class="dark"
@@ -263,45 +264,46 @@
                               data-placement="auto"
                               data-title="Compare Kwh by SqM betweeen sites"
                               data-content="{{::bar1HelpText.detail}}"
-                              data-original-title="" 
+                              data-original-title=""
                               data-trigger="hover">
                             <i class="fa fa-2x fa-info-circle" style="color:#262626"></i>
                         </span>
-                    <div class="col-md-6 show-hide-animate">
-                        <div class="col-md-12" google-chart chart="myChartObject"></div>
-                    </div>
-                    <div class="well with-header col-md-3">
-                        <div class="header databox-number darkgray bordered-magenta">
-                            <span>Notes on consumption per SqM</span>
+                        <div class="col-md-6 show-hide-animate">
+                            <div class="col-md-12" google-chart chart="myChartObject"></div>
                         </div>
-                        <p class="databox-number darkgray">
-                            <span class="pull-left no-margin ">Average cost saving per month if highest consuming site consumed at lowest rate : <b>{{testDelta | currency}}</b></span>
-                        </p>
+                        <div class="well with-header col-md-3">
+                            <div class="header databox-number darkgray bordered-magenta">
+                                <span>Notes on consumption per SqM</span>
+                            </div>
+                            <p class="databox-number darkgray">
+                                <span class="pull-left no-margin ">Average cost saving per month if site with consuming site matched the lowest rate : <b>{{testDelta | currency}}</b></span>
+                            </p>
+                        </div>
+                        <div class="col-md-3">
+                        </div>
                     </div>
-                    <div class="col-md-3">
-                    </div>
+                </div>
             </div>
+
+
         </div>
 
 
     </div>
 
 
-</div>
+    @section PageScripts{
+
+        <!-- Dashboard -->
+
+        <script src="~/App_/dashboard/dashboard.data.js"></script>
+        <script src="~/App_/dashboard/dashboard.ctrl.js"></script>
+
+        <!--Specific to Elements on this page-->
+        @*<script src="~/Scripts/charts/chartjs/Chart.js"></script>*@
 
 
-@section PageScripts{
-
-    <!-- Dashboard -->
-
-    <script src="~/App_/dashboard/dashboard.data.js"></script>
-    <script src="~/App_/dashboard/dashboard.ctrl.js"></script>
-
-    <!--Specific to Elements on this page-->
-    @*<script src="~/Scripts/charts/chartjs/Chart.js"></script>*@
+        <script src="~/App_/core/customFilters.js"></script>
 
 
-    <script src="~/App_/core/customFilters.js"></script>
-
-
-}
+    }

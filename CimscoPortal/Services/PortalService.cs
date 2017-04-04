@@ -715,33 +715,37 @@ namespace CimscoPortal.Services
             int _maxSiteId = 0, _minSiteId = 0;
 
             int _sitesWithArea = _siteAreas_.Count();
-            foreach (int _siteId in _siteAreas_.Select(s => s.id).ToList())// _allSitesInCurrentSelection)
-            {
-                int? _siteArea = _siteAreas_.Where(s => s.id == _siteId).Select(v => v.area).FirstOrDefault();
-                //var _average = _repository.InvoiceSummaries.Where(s => s.SiteId == _siteId).Average(s => s.KwhTotal);
-                var _average = _invoiceData.Where(s => s.SiteId == _siteId).Average(s => s.KwhTotal);
-                if (_maxAverage < _average) { _maxAverage = _average; }
-                var _perSqM = NumericExtensions.SafeDivision((decimal)_average, (decimal)_siteArea);
-                if (_perSqM > _maximum) { _maximum = _perSqM; _maxSiteId = _siteId;  }
-                if (_perSqM < _minimum | _minimum == 0) { _minimum = _perSqM; _minSiteId = _siteId; }
-                _avg_avg += _perSqM;
-            }
-
-            _avg_avg = NumericExtensions.SafeDivision(_avg_avg, _sitesWithArea);
-
-            int? _maxSiteArea = _siteAreas_.Where(s => s.id == _maxSiteId).Select(v => v.area).FirstOrDefault();
-            decimal _delta = _maxAverage - (_minimum * _maxSiteArea ?? 1);
-            decimal _avgCostPerKwh = _invoiceData.Where(s => s.SiteId == _maxSiteId).Average(s => s.InvoiceTotal / s.KwhTotal);
-
-
-            IList<double> _analysisFigures = new List<double>() { (double)(_delta*_avgCostPerKwh) };
-            // Return data for plotting
-            //GoogleChartViewModel _model = GoogleChartFor_PowerComparison((double)_avg_avg, (double)_maximum, (double)_minimum);
             GoogleAnalsysData _model = new Models.GoogleAnalsysData();
 
-            _model = AutoMapper.Mapper.Map<GoogleChartViewModel, GoogleAnalsysData>(
-                GoogleChartFor_PowerComparison((double)_avg_avg, (double)_maximum, (double)_minimum, GetSiteName(_minSiteId), GetSiteName(_maxSiteId)));
-            _model.AnalysisFigures = _analysisFigures;
+            if (_sitesWithArea >= 3)
+            {
+                foreach (int _siteId in _siteAreas_.Select(s => s.id).ToList())// _allSitesInCurrentSelection)
+                {
+                    int? _siteArea = _siteAreas_.Where(s => s.id == _siteId).Select(v => v.area).FirstOrDefault();
+                    //var _average = _repository.InvoiceSummaries.Where(s => s.SiteId == _siteId).Average(s => s.KwhTotal);
+                    var _average = _invoiceData.Where(s => s.SiteId == _siteId).Average(s => s.KwhTotal);
+                    if (_maxAverage < _average) { _maxAverage = _average; }
+                    var _perSqM = NumericExtensions.SafeDivision((decimal)_average, (decimal)_siteArea);
+                    if (_perSqM > _maximum) { _maximum = _perSqM; _maxSiteId = _siteId; }
+                    if (_perSqM < _minimum | _minimum == 0) { _minimum = _perSqM; _minSiteId = _siteId; }
+                    _avg_avg += _perSqM;
+                }
+
+                _avg_avg = NumericExtensions.SafeDivision(_avg_avg, _sitesWithArea);
+
+                int? _maxSiteArea = _siteAreas_.Where(s => s.id == _maxSiteId).Select(v => v.area).FirstOrDefault();
+                decimal _delta = _maxAverage - (_minimum * _maxSiteArea ?? 1);
+                decimal _avgCostPerKwh = _invoiceData.Where(s => s.SiteId == _maxSiteId).Average(s => s.InvoiceTotal / s.KwhTotal);
+
+
+                IList<double> _analysisFigures = new List<double>() { (double)(_delta * _avgCostPerKwh) };
+                // Return data for plotting
+                //GoogleChartViewModel _model = GoogleChartFor_PowerComparison((double)_avg_avg, (double)_maximum, (double)_minimum);
+
+                _model = AutoMapper.Mapper.Map<GoogleChartViewModel, GoogleAnalsysData>(
+                    GoogleChartFor_PowerComparison((double)_avg_avg, (double)_maximum, (double)_minimum, GetSiteName(_minSiteId), GetSiteName(_maxSiteId)));
+                _model.AnalysisFigures = _analysisFigures;
+            }
             return _model;
         }
 

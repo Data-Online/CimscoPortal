@@ -181,6 +181,9 @@
             //          return -1;
         };
 
+        var validData = function (value) {
+            return !value;
+        };
 
         return {
             createMultiDropdown: createMultiDropdown,
@@ -189,7 +192,8 @@
             createApiFilter: createApiFilter,
             elementIndex: elementIndex,
             inactiveFilter: inactiveFilter,
-            filterTypeActive: filterTypeActive
+            filterTypeActive: filterTypeActive,
+            validData: validData
         };
     }
 

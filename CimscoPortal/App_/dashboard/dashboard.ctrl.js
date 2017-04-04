@@ -43,33 +43,38 @@
         $scope.myChartObject.type = "BarChart";
 
         var onComparisonData = function (data) {
-            //console.log(pairNo);
-            var _zData = googleChart.zTestGoogle(data);
+            if (!filterData.validData(data.columns)) {
+                //console.log(pairNo);
+                var _zData = googleChart.zTestGoogle(data);
 
-            $scope.myChartObject.data =
-                {
-                    "cols": _zData.cols,
-                    "rows": _zData.rows
-                }
+                $scope.myChartObject.data =
+                    {
+                        "cols": _zData.cols,
+                        "rows": _zData.rows
+                    }
 
-            var _legend = { position: 'top', maxLines: 3 };
-            var _width = { groupWidth: '60%' };
-            var _isHtml = { isHtml: true };
-            //var _haxis = { minValue: 4.0, viewWindow: { min: 4, max: 7 }, maxValue: 7.0, gridlines: { count: 10 } };
-            var _haxis = { minValue: data.startEnd[0], viewWindow: { min: data.startEnd[0], max: data.startEnd[1] }, maxValue: data.startEnd[1], gridlines: { count: 10 } };
-            $scope.myChartObject.options = {
-                'title': 'Average energy consumption per SqM',
-                'isStacked': 'true',
-                'legend': 'none',
-                'bar': _width,
-                'height': 150,
-                'tooltip': _isHtml,
-                'hAxis': _haxis,
-                "colors": CONFIG.googleComparisonBarTheme, // ['#0000FF', '#009900', '#0000FF', '#CC0000', '#0000FF', '#DD9900', '#0000FF']
-                "series": { 0: { tooltip: false }, 2: { tooltip: false }, 4: { tooltip: false }, 6: { tooltip: false } }
-                //, 1: { tooltip: true }, 1: { tooltip: false}, 2: { tooltip: true }, 3: { tooltip: false }, 4: { tooltip: true }, 5: { tooltip: false } }
-            };
-            $scope.testDelta = data.analysisFigures[0];
+                var _legend = { position: 'top', maxLines: 3 };
+                var _width = { groupWidth: '60%' };
+                var _isHtml = { isHtml: true };
+                //var _haxis = { minValue: 4.0, viewWindow: { min: 4, max: 7 }, maxValue: 7.0, gridlines: { count: 10 } };
+                var _haxis = { minValue: data.startEnd[0], viewWindow: { min: data.startEnd[0], max: data.startEnd[1] }, maxValue: data.startEnd[1], gridlines: { count: 10 } };
+                $scope.myChartObject.options = {
+                    'title': 'Average energy consumption per SqM',
+                    'isStacked': 'true',
+                    'legend': 'none',
+                    'bar': _width,
+                    'height': 150,
+                    'tooltip': _isHtml,
+                    'hAxis': _haxis,
+                    "colors": CONFIG.googleComparisonBarTheme, // ['#0000FF', '#009900', '#0000FF', '#CC0000', '#0000FF', '#DD9900', '#0000FF']
+                    "series": { 0: { tooltip: false }, 2: { tooltip: false }, 4: { tooltip: false }, 6: { tooltip: false } }
+                    //, 1: { tooltip: true }, 1: { tooltip: false}, 2: { tooltip: true }, 3: { tooltip: false }, 4: { tooltip: true }, 5: { tooltip: false } }
+                };
+                $scope.testDelta = data.analysisFigures[0];
+            }
+            else {
+                $scope.myChartObject.data = null;
+            }
         };
 
         //  $scope.myChartObject = {};
@@ -480,9 +485,11 @@
         };
 
         var onGoogleGraphData = function (data) {
-            // GPA ** --> Move to global and define only once. (divisions uses this also)
-            var _primaryCharts = ["electricityConsumptionChart", "energyChargesChart"];
-            initializeGoogleCharts(_primaryCharts, data, $scope.allowDisplayByDivision);
+            if (!filterData.validData(data.columns.length)) {
+                // GPA ** --> Move to global and define only once. (divisions uses this also)
+                var _primaryCharts = ["electricityConsumptionChart", "energyChargesChart"];
+                initializeGoogleCharts(_primaryCharts, data, $scope.allowDisplayByDivision);
+            }
             $scope.loading = false;
         };
     };
