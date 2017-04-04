@@ -34,7 +34,11 @@
         ////consumptionData.getComparisonData($scope.monthSpan, _filter, _siteSelect)
         ////                    .then(function success(data) { return onComparisonData(data, key, _filter) }, onError);
 
-
+        // Comparison bar #1 Kwh / SqM
+        $scope.bar1HelpText = {
+            title: "Comparison between sites", // Tootltip title is not handled correctly - hard coded in partial for now.
+            detail: "Bar compares average power consumption (Kwh per SqM) between all sites in current selection. Sites with minimum and maximum consumption are shown along with the average."
+        };
         $scope.myChartObject = {};
         $scope.myChartObject.type = "BarChart";
 
@@ -224,8 +228,10 @@
 
         $scope.chartHelpText = {
             title: "Cost and Consumption Data", // Tootltip title is not handled correctly - hard coded in partial for now.
-            detail: "Charts show total energy and invoice costs for all sites with data on file. All totals exclude GST. Values shown are for the month the costs were incurred, not the Invoice date"
+            detail: "Charts show total energy and invoice costs for all sites with data on file. All totals exclude GST. Values shown are for the month the costs were incurred, not the invoice date."
         };
+
+
 
         $scope.loading = true;
 
@@ -295,6 +301,18 @@
 
             getBusinessData();
         });
+
+        $scope.reviseMonths = function (newMonthSpan) {
+            //_divisionDataStatus.updateRequired = true;
+            $scope.monthSpan = newMonthSpan;
+            $scope.$emit(_triggerName);
+
+            //$scope.loading = true;
+           // readAndPlotGoogleGraphData();
+           // readAndUpdateDivisonGraphs();
+
+            updateUserData("monthSpan", newMonthSpan);
+        };
 
         dbDataSource.getWelcomeScreen()
             .then(onWelcomeMessage, onError);
@@ -388,16 +406,7 @@
 
         googleChart.createButtonControls($scope, _googleChartElements);
 
-        $scope.reviseMonths = function (newMonthSpan) {
-            _divisionDataStatus.updateRequired = true;
 
-            $scope.loading = true;
-            $scope.monthSpan = newMonthSpan;
-            readAndPlotGoogleGraphData();
-            readAndUpdateDivisonGraphs();
-
-            updateUserData("monthSpan", newMonthSpan);
-        };
 
         $scope.toggleGraphType = function ($event) {
             $scope.loading = true;

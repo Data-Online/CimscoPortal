@@ -28,7 +28,7 @@ namespace CimscoPortal.Services
             const double endMargin = 0.1; // % margin to use at each end of bar
             public const double startMgn = 1.0 - endMargin;
             public const double endMgn = 1.0 + endMargin;
-            public const double markerWidth = 0.04;
+            public const double markerWidth = 0.06;
         }
 
         private struct formatting
