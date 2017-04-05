@@ -59,15 +59,23 @@ Purchase: http://wrapbootstrap.com
                 <div class="navbar-header pull-left" style="padding-right:25px;">
                     <a href="@Url.Action("","Portal")" class="navbar-brand">
                         <small>
-                            <img src="~/assets/img/eekLogoNoText.png" alt="" />
+                            <img class="visible-md visible-lg" src="~/assets/img/eekLogoNoText.png" alt="Go To Dashboard" />
+                            <img class="visible-sm visible-xs" style="width:auto" src="~/assets/img/eek_icon_sm.png" alt="" />
+                            
                         </small>
                     </a>
                 </div>
                 <!-- /Navbar Barnd -->
                 <!-- Sidebar Collapse -->
                 <!-- /Sidebar Collapse -->
-                <div class="navbar-topLevelName">{{common.topLevelName}}</div>
-
+                <section class="indent-1">
+                    <section>
+                        <div class="visible-md visible-lg navbar-topLevelName">{{common.topLevelName}}</div>
+                    </section>
+                    <section>
+                        <div style="padding:0px;" id="MetroMenuDiv"></div>
+                    </section>
+                </section>
                 <!-- Account Area and Settings --->
                 <div class="navbar-header pull-right">
                     <div id="navbar" class="navbar-account">
@@ -129,7 +137,7 @@ Purchase: http://wrapbootstrap.com
                     </div>
                     <!--Header Buttons End-->
                 </div>
-                <div style="padding:20px;" id="MetroMenuDiv"></div>
+                @*<div class="visible-sm visible-xs" style="padding:10px;" id="MetroMenuDiv-"></div>*@
                 <!-- /Page Header -->
                 <!-- Page Body -->
                 <div class="page-body">
@@ -245,19 +253,19 @@ Purchase: http://wrapbootstrap.com
                 items: [
                     {
                         name: "Dashboard",
-                        fa: "fa-dashboard fa-3x",
+                        fa: "fa-dashboard fa-2x",
                         link: "@Url.Action("","Portal")"
                         //icon: "/Content/css/metro/static/img/calendar.png"
                     },
                     {
                         name: "Detail by Site",
-                        fa: "fa-sitemap fa-3x",
+                        fa: "fa-sitemap fa-2x",
                         link: "@Url.Action("DetailBySite","Portal")" ///Portal/SitesOverview"
                         //icon: "/Content/css/metro/static/img/calendar.png"
                     },
                         {
                             name: "Invoices",
-                            fa: "fa-check-square-o fa-3x",
+                            fa: "fa-check-square-o fa-2x",
                             link: "@Url.Action("Invoices","Portal")"
                         }]
                 }
@@ -284,6 +292,26 @@ Purchase: http://wrapbootstrap.com
         </script>*@
 
     <!--Page Related Scripts-->
+
+    @*<style type="text/css">
+        #MetroMenuDiv {
+            height: 85px;
+            width: 50%;
+            background-color: #662d91;
+        }
+    </style>*@
+    <style type="text/css">
+        .indent-1 {
+            float: left;
+            width: 50%;
+        }
+
+            .indent-1 section {
+                width: 50%;
+                float: left;
+            }
+    </style>
+
     @RenderSection("PageScripts", required: false)
 
 

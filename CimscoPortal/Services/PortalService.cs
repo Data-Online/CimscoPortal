@@ -735,7 +735,7 @@ namespace CimscoPortal.Services
 
                 int? _maxSiteArea = _siteAreas_.Where(s => s.id == _maxSiteId).Select(v => v.area).FirstOrDefault();
                 decimal _delta = _maxAverage - (_minimum * _maxSiteArea ?? 1);
-                decimal _avgCostPerKwh = _invoiceData.Where(s => s.SiteId == _maxSiteId).Average(s => s.InvoiceTotal / s.KwhTotal);
+                decimal _avgCostPerKwh = _invoiceData.Where(s => s.SiteId == _maxSiteId).Average(s => (s.InvoiceTotal - s.GstTotal) / s.KwhTotal);
 
 
                 IList<double> _analysisFigures = new List<double>() { (double)(_delta * _avgCostPerKwh) };

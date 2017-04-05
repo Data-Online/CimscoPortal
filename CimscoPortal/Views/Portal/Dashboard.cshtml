@@ -233,9 +233,6 @@
                             </div>
                         </div>
                     </div>
-
-
-
                     <div class="clearfix"></div>
                 </div>
             </div>
@@ -243,7 +240,7 @@
     </div>
 
 
-    <div class="row">
+    <div ng-if="myChartObject.data" class="row">
         <div class="col-md-12">
             <div class="widget" ng-style="{opacity: ((loading) && .4) || 1.0}">
                 <div class="widget-header bg-themeprimary">
@@ -276,7 +273,7 @@
                                 <span>Notes on consumption per SqM</span>
                             </div>
                             <p class="databox-number darkgray">
-                                <span class="pull-left no-margin ">Average cost saving per month if site with consuming site matched the lowest rate : <b>{{testDelta | currency}}</b></span>
+                                <span class="pull-left no-margin ">Average cost saving per month if site with the highest consuming rate matched the lowest rate : <b>{{testDelta | currency}}</b></span>
                             </p>
                         </div>
                         <div class="col-md-3">
