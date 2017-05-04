@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CimscoPortal.Services
 {
-    internal class ConsumptionChartDatapoints
+    internal class ComparisonBarChart
     {
         private double min;
         private double avg;
@@ -37,7 +37,7 @@ namespace CimscoPortal.Services
 
         }
 
-            public ConsumptionChartDatapoints()
+            public ComparisonBarChart()
         {
 
         }

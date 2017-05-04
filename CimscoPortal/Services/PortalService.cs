@@ -842,25 +842,21 @@ namespace CimscoPortal.Services
         {
             GoogleChartViewModel _model = new GoogleChartViewModel();
             _model.Columns = DefineGoogleColumns("comparisonChart");
-
             _model.Rows = new List<GoogleRows>();
 
-            var _comparisonChart = new ConsumptionChartDatapoints();
+            var _comparisonBarChart = new ComparisonBarChart();
 
-            _comparisonChart.SetDecimalFormat(decimalFormat);
-            _comparisonChart.SetMinAvgMax(min,avg,max);
-            _comparisonChart.SetMetricValue(6.2);
-            _comparisonChart.SetDatatype("KWh / SqM");
-            _comparisonChart.SetMinMaxAnnotation(minSiteName, maxSiteName);
-            _model.StartEnd = _comparisonChart.GetBarMinMaxValues();
+            _comparisonBarChart.SetDecimalFormat(decimalFormat);
+            _comparisonBarChart.SetMinAvgMax(min,avg,max);
+            _comparisonBarChart.SetMetricValue(6.2);
+            _comparisonBarChart.SetDatatype("KWh / SqM");
+            _comparisonBarChart.SetMinMaxAnnotation(minSiteName, maxSiteName);
 
-            List<CPart> _dataRows = _comparisonChart.GetRowData();
-
-            //_dataRows = testData();
-
+            _model.StartEnd = _comparisonBarChart.GetBarMinMaxValues();
+            List<CPart> _dataRows = _comparisonBarChart.GetRowData();
             _model.Rows.Add(new GoogleRows { Cparts = _dataRows });
-            return _model;
 
+            return _model;
         }
 
         private static List<CPart> testData()
