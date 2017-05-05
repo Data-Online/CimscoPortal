@@ -111,6 +111,8 @@ namespace CimscoPortal.Data.Migrations
                 CalculatePercentageChange(context);
                 context.SaveChanges();
             }
+
+
         }
 
         private void ManageTestUserData(CimscoPortal.Data.Models.CimscoPortalContext context)
@@ -124,39 +126,65 @@ namespace CimscoPortal.Data.Migrations
 
         private static void AssignLogosToUserNames(CimscoPortal.Data.Models.CimscoPortalContext context)
         {
-            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Pac n Save', [LastName] = 'Admin', [CompanyLogo] = 'PakNSave.jpg' where [eMail] = 'masterton@cimsco.co.nz'");
-            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Michael ', [LastName] = 'Kelly', [CompanyLogo] = 'PakNSave.jpg' where [eMail] = 'masterton.supermarkets@cimsco.co.nz'");
-            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Cimsco', [LastName] = 'Admin', [CompanyLogo] = 'uhf_ic_logo.png' where [eMail] = 'admin@cimsco.co.nz'");
-            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Mitre10', [LastName] = 'Admin', [CompanyLogo] = 'mitre10.png' where [eMail] = 'mitre10@cimsco.co.nz'");
-            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Mitre10 NZ', [LastName] = 'Admin', [CompanyLogo] = 'mitre10.png' where [eMail] = 'mitre10_2@cimsco.co.nz'");
-            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Steven', [LastName] = 'Nelson', [CompanyLogo] = 'mitre10.png' where [eMail] = 'nees.hardware@cimsco.co.nz'");
-            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Mitre10', [LastName] = 'Admin', [CompanyLogo] = 'mitre10.png' where [eMail] = 'mitre10.nz@cimsco.co.nz'");
-            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Foodstuffs', [LastName] = 'Admin', [CompanyLogo] = 'foodstuffs.png' where [eMail] = 'foodstuffs.ni@cimsco.co.nz'");
-            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Foodstuffs', [LastName] = 'Admin', [CompanyLogo] = 'foodstuffs.png' where [eMail] = 'foodstuffs@cimsco.co.nz'");
-            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Foodstuffs', [LastName] = 'Admin', [CompanyLogo] = 'foodstuffs.png' where [eMail] = 'foodstuffs2@cimsco.co.nz'");
+            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Pac n Save', [LastName] = 'Admin', [CompanyLogo] = 'PakNSave.jpg' where [eMail] = 'masterton@eek.nz'");
+            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Michael ', [LastName] = 'Kelly', [CompanyLogo] = 'PakNSave.jpg' where [eMail] = 'masterton.supermarkets@eek.nz'");
+            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Cimsco', [LastName] = 'Admin', [CompanyLogo] = 'uhf_ic_logo.png' where [eMail] = 'admin@eek.nz'");
+            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Mitre10', [LastName] = 'Admin', [CompanyLogo] = 'mitre10.png' where [eMail] = 'mitre10@eek.nz'");
+            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Mitre10 NZ', [LastName] = 'Admin', [CompanyLogo] = 'mitre10.png' where [eMail] = 'mitre10_2@eek.nz'");
+            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Steven', [LastName] = 'Nelson', [CompanyLogo] = 'mitre10.png' where [eMail] = 'nees.hardware@eek.nz'");
+            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Mitre10', [LastName] = 'Admin', [CompanyLogo] = 'mitre10.png' where [eMail] = 'mitre10.nz@eek.nz'");
+            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Foodstuffs', [LastName] = 'Admin', [CompanyLogo] = 'foodstuffs.png' where [eMail] = 'foodstuffs.ni@eek.nz'");
+            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Foodstuffs', [LastName] = 'Admin', [CompanyLogo] = 'foodstuffs.png' where [eMail] = 'foodstuffs@eek.nz'");
+            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Foodstuffs', [LastName] = 'Admin', [CompanyLogo] = 'foodstuffs.png' where [eMail] = 'foodstuffs2@eek.nz'");
             context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'QT Hotels', [LastName] = 'Admin', [CompanyLogo] = 'qtHotels.png' where [eMail] = 'QT.Wellington@eeknz.co.nz'");
             context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'QT Hotels', [LastName] = 'Admin', [CompanyLogo] = 'blankIcon.png' where [eMail] = 'AHL.Hotels@eeknz.co.nz'");
         }
 
         private void LinkTestUsersToCustomerOrGroup(CimscoPortal.Data.Models.CimscoPortalContext context)
         {
-            LinkUsersCustomer("Masterton Supermarkets Ltd", new string[] { "masterton@cimsco.co.nz", "masterton2@cimsco.co.nz", "masterton.supermarkets@cimsco.co.nz" }, context);
-            //LinkUsersCustomer("Intercontinental Group", new string[] { "masterton@cimsco.co.nz" }, context);
-            LinkUsersCustomer("Nees Hardware Ltd", new string[] { "mitre10@cimsco.co.nz", "nees.hardware@cimsco.co.nz" }, context);
-            LinkUsersCustomer("QT Museum Wellington", new string[] { "QT.Wellington@eeknz.co.nz" }, context);
+            LinkUsersCustomer("Masterton Supermarkets Ltd", new string[] { "masterton@eek.nz", "masterton2@eek.nz", "masterton.supermarkets@eek.nz" }, context);
+            //LinkUsersCustomer("Intercontinental Group", new string[] { "masterton@eek.nz" }, context);
+            LinkUsersCustomer("Nees Hardware Ltd", new string[] { "mitre10@eek.nz", "nees.hardware@eek.nz" }, context);
+            LinkUsersCustomer("QT Museum Wellington", new string[] { "QT.Wellington@eeknz.nz" }, context);
 
-            
-            LinkUsersGroup("AHL Hotels (NZ) Limited", new string[] { "AHL.Hotels@eeknz.co.nz" }, context);
+            LinkUsersGroup("AHL Hotels (NZ) Limited", new string[] { "AHL.Hotels@eeknz.nz" }, context);
 
-            LinkUsersGroup("Foodstuffs North Island", new string[] { "foodstuffs@cimsco.co.nz", "foodstuffs2@cimsco.co.nz", "foodstuffs.ni@cimsco.co.nz" }, context);
-            LinkUsersGroup("Mitre 10 New Zealand", new string[] { "mitre10_2@cimsco.co.nz", "mitre10.nz@cimsco.co.nz" }, context);
+            LinkUsersGroup("Foodstuffs North Island", new string[] { "foodstuffs@eek.nz", "foodstuffs2@eek.nz", "foodstuffs.ni@eek.nz" }, context);
+            LinkUsersGroup("Mitre 10 New Zealand", new string[] { "mitre10_2@eek.nz", "mitre10.nz@eek.nz" }, context);
 
-            LinkUserSite("HP Lane St Data Center", "HP@cimsco.co.nz", context);
-
-
-            
-
+            LinkUserSite("HP Lane St Data Center", "HP@eek.nz", context);
         }
+
+        //private static void AssignLogosToUserNames(CimscoPortal.Data.Models.CimscoPortalContext context)
+        //{
+        //    context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Pac n Save', [LastName] = 'Admin', [CompanyLogo] = 'PakNSave.jpg' where [eMail] = 'masterton@cimsco.co.nz'");
+        //    context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Michael ', [LastName] = 'Kelly', [CompanyLogo] = 'PakNSave.jpg' where [eMail] = 'masterton.supermarkets@cimsco.co.nz'");
+        //    context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Cimsco', [LastName] = 'Admin', [CompanyLogo] = 'uhf_ic_logo.png' where [eMail] = 'admin@cimsco.co.nz'");
+        //    context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Mitre10', [LastName] = 'Admin', [CompanyLogo] = 'mitre10.png' where [eMail] = 'mitre10@cimsco.co.nz'");
+        //    context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Mitre10 NZ', [LastName] = 'Admin', [CompanyLogo] = 'mitre10.png' where [eMail] = 'mitre10_2@cimsco.co.nz'");
+        //    context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Steven', [LastName] = 'Nelson', [CompanyLogo] = 'mitre10.png' where [eMail] = 'nees.hardware@cimsco.co.nz'");
+        //    context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Mitre10', [LastName] = 'Admin', [CompanyLogo] = 'mitre10.png' where [eMail] = 'mitre10.nz@cimsco.co.nz'");
+        //    context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Foodstuffs', [LastName] = 'Admin', [CompanyLogo] = 'foodstuffs.png' where [eMail] = 'foodstuffs.ni@cimsco.co.nz'");
+        //    context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Foodstuffs', [LastName] = 'Admin', [CompanyLogo] = 'foodstuffs.png' where [eMail] = 'foodstuffs@cimsco.co.nz'");
+        //    context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Foodstuffs', [LastName] = 'Admin', [CompanyLogo] = 'foodstuffs.png' where [eMail] = 'foodstuffs2@cimsco.co.nz'");
+        //    context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'QT Hotels', [LastName] = 'Admin', [CompanyLogo] = 'qtHotels.png' where [eMail] = 'QT.Wellington@eeknz.co.nz'");
+        //    context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'QT Hotels', [LastName] = 'Admin', [CompanyLogo] = 'blankIcon.png' where [eMail] = 'AHL.Hotels@eeknz.co.nz'");
+        //}
+
+        //private void LinkTestUsersToCustomerOrGroup(CimscoPortal.Data.Models.CimscoPortalContext context)
+        //{
+        //    LinkUsersCustomer("Masterton Supermarkets Ltd", new string[] { "masterton@cimsco.co.nz", "masterton2@cimsco.co.nz", "masterton.supermarkets@cimsco.co.nz" }, context);
+        //    //LinkUsersCustomer("Intercontinental Group", new string[] { "masterton@cimsco.co.nz" }, context);
+        //    LinkUsersCustomer("Nees Hardware Ltd", new string[] { "mitre10@cimsco.co.nz", "nees.hardware@cimsco.co.nz" }, context);
+        //    LinkUsersCustomer("QT Museum Wellington", new string[] { "QT.Wellington@eeknz.co.nz" }, context);
+
+        //    LinkUsersGroup("AHL Hotels (NZ) Limited", new string[] { "AHL.Hotels@eeknz.co.nz" }, context);
+
+        //    LinkUsersGroup("Foodstuffs North Island", new string[] { "foodstuffs@cimsco.co.nz", "foodstuffs2@cimsco.co.nz", "foodstuffs.ni@cimsco.co.nz" }, context);
+        //    LinkUsersGroup("Mitre 10 New Zealand", new string[] { "mitre10_2@cimsco.co.nz", "mitre10.nz@cimsco.co.nz" }, context);
+
+        //    LinkUserSite("HP Lane St Data Center", "HP@cimsco.co.nz", context);
+        //}
 
         private static void PopulateConfigurationTable(CimscoPortal.Data.Models.CimscoPortalContext context)
         {

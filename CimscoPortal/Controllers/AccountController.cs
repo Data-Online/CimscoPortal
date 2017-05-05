@@ -503,7 +503,7 @@ namespace CimscoPortal.Controllers
             {
                 var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
                 var roleManager = HttpContext.GetOwinContext().Get<ApplicationRoleManager>();
-
+                
                 //Create Role Admin if it does not exist
                 var role = roleManager.FindByName(roleName);
                 if (role == null)
@@ -567,7 +567,7 @@ namespace CimscoPortal.Controllers
             if (user == null)
             {
                 user = new ApplicationUser { UserName = name, Email = name }; //, FirstName = "Test", LastName = "Test" };
-                var result = userManager.Create(user, password);
+                var result = userManager.Create(user, password); 
                 result = userManager.SetLockoutEnabled(user.Id, false);
             }
             else
