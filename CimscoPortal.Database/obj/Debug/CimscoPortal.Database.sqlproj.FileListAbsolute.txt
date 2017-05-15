@@ -3,3 +3,8 @@ P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Database\bin\Debu
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Database\bin\Debug\CimscoPortal.Database.pdb
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Database\obj\Debug\CimscoPortal.Database.dll
 P:\Projects\Cloud_Development\GitHub\CimscoPortal\CimscoPortal.Database\obj\Debug\CimscoPortal.Database.pdb
+C:\Users\atkin\Source\Repos\CimscoPortal\CimscoPortal.Database\bin\Debug\CimscoPortal.Database.dacpac
+C:\Users\atkin\Source\Repos\CimscoPortal\CimscoPortal.Database\bin\Debug\CimscoPortal.Database.dll
+C:\Users\atkin\Source\Repos\CimscoPortal\CimscoPortal.Database\bin\Debug\CimscoPortal.Database.pdb
+C:\Users\atkin\Source\Repos\CimscoPortal\CimscoPortal.Database\obj\Debug\CimscoPortal.Database.dll
+C:\Users\atkin\Source\Repos\CimscoPortal\CimscoPortal.Database\obj\Debug\CimscoPortal.Database.pdb

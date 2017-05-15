@@ -287,6 +287,7 @@
     <Compile Include="Controllers\Api\PortalApiController.cs" />
     <Compile Include="CustomConfig\UserRoles.cs" />
     <Compile Include="Extensions\RegexUtilities.cs" />
+    <Compile Include="Helpers\Settings.cs" />
     <Compile Include="Models\ByMonthViewModel.cs" />
     <Compile Include="Models\DetailBySiteViewModel.cs" />
     <Compile Include="Models\DatapointData.cs" />

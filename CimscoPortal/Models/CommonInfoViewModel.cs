@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using CimscoPortal.Helpers;
+using System;
+using System.ComponentModel;
 
 namespace CimscoPortal.Models
 {
@@ -13,6 +12,10 @@ namespace CimscoPortal.Models
         public string CompanyLogo { get; set; }
         public string TopLevelName { get; set; }
 
+        public CommonInfoViewModel()
+        {
+            CompanyLogo = Settings.DefaultLogo;
+        }
     }
 
     public class UsefulInfo

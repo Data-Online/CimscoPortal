@@ -136,8 +136,8 @@ namespace CimscoPortal.Data.Migrations
             context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Foodstuffs', [LastName] = 'Admin', [CompanyLogo] = 'foodstuffs.png' where [eMail] = 'foodstuffs.ni@eek.nz'");
             context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Foodstuffs', [LastName] = 'Admin', [CompanyLogo] = 'foodstuffs.png' where [eMail] = 'foodstuffs@eek.nz'");
             context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'Foodstuffs', [LastName] = 'Admin', [CompanyLogo] = 'foodstuffs.png' where [eMail] = 'foodstuffs2@eek.nz'");
-            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'QT Hotels', [LastName] = 'Admin', [CompanyLogo] = 'qtHotels.png' where [eMail] = 'QT.Wellington@eeknz.co.nz'");
-            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'QT Hotels', [LastName] = 'Admin', [CompanyLogo] = 'blankIcon.png' where [eMail] = 'AHL.Hotels@eeknz.co.nz'");
+            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'QT Hotels', [LastName] = 'Admin', [CompanyLogo] = 'qtHotels.png' where [eMail] = 'QT.Wellington@eek.nz'");
+            context.Database.ExecuteSqlCommand("update [AspNetUsers] set [FirstName] = 'QT Hotels', [LastName] = 'Admin', [CompanyLogo] = 'blankIcon.png' where [eMail] = 'AHL.Hotels@eek.nz'");
         }
 
         private void LinkTestUsersToCustomerOrGroup(CimscoPortal.Data.Models.CimscoPortalContext context)
@@ -145,9 +145,9 @@ namespace CimscoPortal.Data.Migrations
             LinkUsersCustomer("Masterton Supermarkets Ltd", new string[] { "masterton@eek.nz", "masterton2@eek.nz", "masterton.supermarkets@eek.nz" }, context);
             //LinkUsersCustomer("Intercontinental Group", new string[] { "masterton@eek.nz" }, context);
             LinkUsersCustomer("Nees Hardware Ltd", new string[] { "mitre10@eek.nz", "nees.hardware@eek.nz" }, context);
-            LinkUsersCustomer("QT Museum Wellington", new string[] { "QT.Wellington@eeknz.nz" }, context);
+            LinkUsersCustomer("QT Museum Wellington", new string[] { "QT.Wellington@eek.nz" }, context);
 
-            LinkUsersGroup("AHL Hotels (NZ) Limited", new string[] { "AHL.Hotels@eeknz.nz" }, context);
+            LinkUsersGroup("AHL Hotels (NZ) Limited", new string[] { "AHL.Hotels@eek.nz" }, context);
 
             LinkUsersGroup("Foodstuffs North Island", new string[] { "foodstuffs@eek.nz", "foodstuffs2@eek.nz", "foodstuffs.ni@eek.nz" }, context);
             LinkUsersGroup("Mitre 10 New Zealand", new string[] { "mitre10_2@eek.nz", "mitre10.nz@eek.nz" }, context);

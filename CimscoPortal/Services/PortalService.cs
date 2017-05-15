@@ -518,6 +518,7 @@ namespace CimscoPortal.Services
                     query = query.Where(s => s.Customer.CustomerName == userLevel.TopLevelName);
                     break;
                 default:
+                    query = query.Where(s => s.Customer.CustomerId < 0 ); // No level defined, so ensure no sites returned
                     break;
             }
             return query;
