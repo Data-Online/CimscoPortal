@@ -518,7 +518,7 @@ namespace CimscoPortal.Services
                     query = query.Where(s => s.Customer.CustomerName == userLevel.TopLevelName);
                     break;
                 default:
-                    query = query.Where(s => s.Customer.CustomerId < 0 ); // No level defined, so ensure no sites returned
+                    query = query.Where(s => s.Customer.CustomerId < 0); // No level defined, so ensure no sites returned
                     break;
             }
             return query;
@@ -848,7 +848,7 @@ namespace CimscoPortal.Services
             var _comparisonBarChart = new ComparisonBarChart();
 
             _comparisonBarChart.SetDecimalFormat(decimalFormat);
-            _comparisonBarChart.SetMinAvgMax(min,avg,max);
+            _comparisonBarChart.SetMinAvgMax(min, avg, max);
             _comparisonBarChart.SetMetricValue(6.2);
             _comparisonBarChart.SetDatatype("KWh / SqM");
             _comparisonBarChart.SetMinMaxAnnotation(minSiteName, maxSiteName);
@@ -2792,6 +2792,7 @@ namespace CimscoPortal.Services
         {
             public string UserLevel { get; set; }
             public string TopLevelName { get; set; }
+            public int Id { get; set; }
         };
 
         // GPA --> duplicate
@@ -2818,19 +2819,22 @@ namespace CimscoPortal.Services
             {
                 var _userQuery = _repository.AspNetUsers.Where(s => s.Email == userId).FirstOrDefault();
                 _groupName = _userQuery.Groups.Where(s => s.GroupName != "Group not set").Select(g => g.GroupName).DefaultIfEmpty("").First();
-                if (!String.IsNullOrEmpty(_groupName))
+                var _groupNameZ = _userQuery.Groups.Where(s => s.GroupName != "Group not set").DefaultIfEmpty(new Group()).First();
+                if (!String.IsNullOrEmpty(_groupNameZ.GroupName))
                 {
-                    return new CurrentUserLevel() { UserLevel = "Group", TopLevelName = _groupName };
+                    return new CurrentUserLevel() { UserLevel = "Group", TopLevelName = _groupNameZ.GroupName, Id = _groupNameZ.GroupId };
                 }
                 _customerName = _userQuery.Customers.Where(s => s.CustomerName != "Customer not set").Select(c => c.CustomerName).DefaultIfEmpty("").First();
+                var _customerNameZ = _userQuery.Customers.Where(s => s.CustomerName != "Customer not set").DefaultIfEmpty(new Customer()).First();
                 if (!String.IsNullOrEmpty(_customerName))
                 {
-                    return new CurrentUserLevel() { UserLevel = "Customer", TopLevelName = _customerName };
+                    return new CurrentUserLevel() { UserLevel = "Customer", TopLevelName = _customerNameZ.CustomerName, Id = _customerNameZ.CustomerId };
                 }
-                _siteName = _userQuery.Sites.Select(c => c.SiteName).DefaultIfEmpty("").First();
+                _siteName = _userQuery.Sites.Select(c => c.SiteName).DefaultIfEmpty("").First(); // Should only be the one entry
+                var _siteNameZ = _userQuery.Sites.DefaultIfEmpty(new Site()).First(); // Should only be the one entry
                 if (!String.IsNullOrEmpty(_siteName))
                 {
-                    return new CurrentUserLevel() { UserLevel = "Site", TopLevelName = _siteName };
+                    return new CurrentUserLevel() { UserLevel = "Site", TopLevelName = _siteNameZ.SiteName, Id = _siteNameZ.SiteId };
                 }
             }
             catch (Exception ex)
@@ -2873,7 +2877,7 @@ namespace CimscoPortal.Services
             return _userRecordId;
         }
 
-        public async Task<List<CimscoPortal.Data.Models.AspNetUser>> GetUserByGroupOrCompany(string id)
+        public async Task<List<AspNetUser>> GetUserByGroupOrCompany(string id)  // DELETE
         {
             var _customers = _repository.Customers.FirstOrDefault(f => f.Users.Any(w => w.Id == id));
             if (_customers != null)
@@ -2883,6 +2887,67 @@ namespace CimscoPortal.Services
             else
             {
                 return await _repository.AspNetUsers.Where(w => w.Groups.Any(f => f.GroupId == _repository.Groups.FirstOrDefault(g => g.Users.Any(a => a.Id == id)).GroupId)).ToListAsync();
+            }
+        }
+        public async Task<List<AspNetUser>> GetUserByGroupOrCompany_(string userId) // RENAME
+        {
+            var _userLevel = GetUserLevel(userId);
+            switch (_userLevel.UserLevel)
+            {
+                case "Customer":
+                    return await _repository.AspNetUsers.Where(w => w.Customers.Any(a => a.CustomerName == _userLevel.TopLevelName)).ToListAsync();
+                case "Group":
+                    return await _repository.AspNetUsers.Where(w => w.Groups.Any(f => f.GroupName == _userLevel.TopLevelName)).ToListAsync();
+                default:
+                    return new List<AspNetUser>();
+            }
+        }
+
+        public async Task<UserHierachyViewModel> GetUserByGroupOrCompany__(string userId) // RENAME
+        {
+            // Need all users at current user level and below, by Group, Customer and Site levels
+
+            UserHierachyViewModel _result = new UserHierachyViewModel();
+            CurrentUserLevel _userLevel = GetUserLevel(userId);
+
+            // Assuming user level is group, then need an customer and site users also
+            IQueryable _userSelect = _repository.AspNetUsers.Where(s => s.Groups.Any(x => x.GroupId == _userLevel.Id));
+
+            var _groupLevelUsers = await _userSelect.ToListAsync();
+
+            // Customers under this group
+            var _customerIdList = _repository.Sites.Where(s => s.GroupId == _userLevel.Id).Select(x => x.CustomerId).ToList();
+            var _usersAtCustomerLevel = (from users in _repository.AspNetUsers where _customerIdList.Contains(users.Customers.Select(s => s.CustomerId).FirstOrDefault()) select users).ToList();
+
+
+                        // _repository.AspNetUsers.Where(w => _customerIdList.Contains(w.Customers.Select(s => s.CustomerId).ToList()));
+
+
+            //var _invoiceData = _repository.InvoiceSummaries.Where(s => AllSitesInCurrentSelection.Contains(s.SiteId) & s.PeriodEnd >= SelectFromDate & s.PeriodEnd <= SelectToDate);
+
+                        //switch (_userLevel.UserLevel)
+                        //{
+                        //    case "Group":
+                        //        _userSelect = _repository.AspNetUsers.Where(s => s.Groups.Any(x => x.GroupName == _userLevel.TopLevelName));
+                        //        break;
+                        //    default:
+                        //        break;
+                        //}
+
+            var test = await _userSelect.ToListAsync();
+
+            switch (_userLevel.UserLevel)
+            {
+                case "Customer":
+                    _result.UserList = await _repository.AspNetUsers.Where(w => w.Customers.Any(a => a.CustomerName == _userLevel.TopLevelName)).ToListAsync();
+
+                    _result.TopLevelName = _userLevel.TopLevelName;
+                    
+                    return _result;
+                case "Group":
+                    //return await _repository.AspNetUsers.Where(w => w.Groups.Any(f => f.GroupName == _userLevel.TopLevelName)).ToListAsync();
+                default:
+                    return _result;
             }
         }
 

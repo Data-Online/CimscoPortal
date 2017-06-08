@@ -36,7 +36,8 @@ namespace CimscoPortal.Data.Migrations
             "foodstuffs.ni@eek.nz",
             "mitre10.nz@eek.nz",
             "AHL.Hotels@eek.nz",
-            "QT.Wellington@eek.nz"
+            "QT.Wellington@eek.nz",
+            "PSUpperHutt@eek.nz"
         };
         // ==>**** Ref at AccountController.cs: This is where these accounts are created
 
@@ -153,6 +154,8 @@ namespace CimscoPortal.Data.Migrations
             LinkUsersGroup("Mitre 10 New Zealand", new string[] { "mitre10_2@eek.nz", "mitre10.nz@eek.nz" }, context);
 
             LinkUserSite("HP Lane St Data Center", "HP@eek.nz", context);
+            LinkUserSite("PAK 'n SAVE Upper Hutt", "PSUpperHutt@eek.nz", context);
+            
         }
 
         //private static void AssignLogosToUserNames(CimscoPortal.Data.Models.CimscoPortalContext context)

@@ -17,10 +17,20 @@ using CimscoPortal.Data.Models;
 namespace CimscoPortal.Controllers
 {
     [Authorize(Roles = "Administrator")]
-    public class UserAdminController : Controller
+    public class UserAdminController : CimscoPortalController
     {
+        private IPortalService _portalService;
         public UserAdminController()
         {
+            // ** GPA Unable to get Unity DI to manage here. Needs investigation. 
+            var repository = new CimscoPortalContext();
+            //////            IPortalService _portalService_ = new PortalService(repository);
+            this._portalService = new PortalService(repository);
+        }
+
+        public UserAdminController(IPortalService portalService)
+        {
+            this._portalService = portalService;
         }
 
         public UserAdminController(ApplicationUserManager userManager, ApplicationRoleManager roleManager)
@@ -59,9 +69,12 @@ namespace CimscoPortal.Controllers
         // GET: /Users/
         public async Task<ActionResult> Index()
         {
-            var repository = new CimscoPortal.Data.Models.CimscoPortalContext();
-            IPortalService _portalService = new PortalService(repository);
-            return View(await _portalService.GetUserByGroupOrCompany(User.Identity.GetUserId()));
+            //////            var repository = new CimscoPortal.Data.Models.CimscoPortalContext();
+            //////            IPortalService _portalService_ = new PortalService(repository);
+            ////////            return View(await _portalService.GetUserByGroupOrCompany(User.Identity.GetUserId()));
+            //////            return View(await _portalService_.GetUserByGroupOrCompany_(User.Identity.GetUserName()));
+            var result = await _portalService.GetUserByGroupOrCompany__(User.Identity.GetUserName());
+           return View(await _portalService.GetUserByGroupOrCompany_(User.Identity.GetUserName()));
         }
 
         //
@@ -173,7 +186,7 @@ namespace CimscoPortal.Controllers
                 {
                     return HttpNotFound();
                 }
-                IPortalService _portalService = new PortalService();
+               // IPortalService _portalService = new PortalService();
                 _portalService.UpdateUser(editUser);
                 var userRoles = await UserManager.GetRolesAsync(user.Id);
 

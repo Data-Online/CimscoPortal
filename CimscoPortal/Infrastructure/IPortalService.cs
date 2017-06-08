@@ -6,7 +6,7 @@ using CimscoPortal.Controllers.Api;
 
 namespace CimscoPortal.Infrastructure
 {
-    public interface IPortalService
+    public interface IPortalService 
     {
         // Test data
         GoogleChartViewModel GetCostsAndConsumption(int monthSpan, CostConsumptionOptions options);
@@ -59,6 +59,8 @@ namespace CimscoPortal.Infrastructure
         //CimscoPortal.Models.InvoiceDetailViewModel GetCurrentMonth_(int _energyPointId);
 
         System.Threading.Tasks.Task<List<CimscoPortal.Data.Models.AspNetUser>> GetUserByGroupOrCompany(string id);
+        System.Threading.Tasks.Task<List<CimscoPortal.Data.Models.AspNetUser>> GetUserByGroupOrCompany_(string userId);
+        System.Threading.Tasks.Task<UserHierachyViewModel> GetUserByGroupOrCompany__(string userId);
 
         void UpdateUser(EditUserViewModel model);
 

@@ -9,9 +9,9 @@ using System.Web.Mvc;
 using AutoMapper.QueryableExtensions;
 
 using Microsoft.AspNet.Identity;
-using Microsoft.WindowsAzure.Storage.Blob;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Auth;
+//using Microsoft.WindowsAzure.Storage.Blob;
+//using Microsoft.WindowsAzure.Storage;
+//using Microsoft.WindowsAzure.Storage.Auth;
 
 
 namespace CimscoPortal.Controllers
@@ -20,29 +20,29 @@ namespace CimscoPortal.Controllers
     public class PortalController : CimscoPortalController
     {
 
-        Dictionary<string, CloudBlockBlob> dicBBlob = new Dictionary<string, CloudBlockBlob>();
-        Dictionary<string, CloudPageBlob> dicPBlob = new Dictionary<string, CloudPageBlob>();
-        Dictionary<string, List<string>> dicSelectedBlob = new Dictionary<string, List<string>>();
-        List<string> lstContainer = new List<string>();
+        //Dictionary<string, CloudBlockBlob> dicBBlob = new Dictionary<string, CloudBlockBlob>();
+        //Dictionary<string, CloudPageBlob> dicPBlob = new Dictionary<string, CloudPageBlob>();
+        //Dictionary<string, List<string>> dicSelectedBlob = new Dictionary<string, List<string>>();
+        //List<string> lstContainer = new List<string>();
 
-        CloudStorageAccount csa_storageAccount;
+        //CloudStorageAccount csa_storageAccount;
 
 
-        public CloudStorageAccount Csa_storageAccount
-        {
-            get
-            {
-                if (csa_storageAccount == null)
-                {
-                    string strAccount = "cimsco";
-                    string strKey = "rblKAeB7iHoOf4zCbZL15TBLTpSP3kOwDCN2L8nHzrkY/+rRH/lwpW3Qu1FSpLwIjKFPbBT+SgOGffIQZKYH1w==";
+        //public CloudStorageAccount Csa_storageAccount
+        //{
+        //    get
+        //    {
+        //        if (csa_storageAccount == null)
+        //        {
+        //            string strAccount = "cimsco";
+        //            string strKey = "rblKAeB7iHoOf4zCbZL15TBLTpSP3kOwDCN2L8nHzrkY/+rRH/lwpW3Qu1FSpLwIjKFPbBT+SgOGffIQZKYH1w==";
 
-                    StorageCredentials credential = new StorageCredentials(strAccount, strKey);
-                    csa_storageAccount = new CloudStorageAccount(credential, true);
-                }
-                return csa_storageAccount;
-            }
-        }
+        //            StorageCredentials credential = new StorageCredentials(strAccount, strKey);
+        //            csa_storageAccount = new CloudStorageAccount(credential, true);
+        //        }
+        //        return csa_storageAccount;
+        //    }
+        //}
 
 
         private IPortalService _portalService;

@@ -345,6 +345,7 @@
     <Compile Include="Services\Partials\BlobStorageManagement.cs" />
     <Compile Include="Services\Partials\DataAnnotationServices.cs" />
     <Compile Include="Services\PortalService.cs" />
+    <Compile Include="Models\UserHierachyViewModel.cs" />
     <Compile Include="SharedController.generated.cs">
       <DependentUpon>T4MVC.tt</DependentUpon>
     </Compile>
@@ -1673,6 +1674,7 @@
     <Content Include="Views\Portal\InvoiceDetailPartials\_DonutPlusSummary_.cshtml" />
     <Content Include="Views\Portal\SharedPartials\_DatapointDetailList.cshtml" />
     <Content Include="Views\Portal\SharedPartials\_EmptyWidget_1.cshtml" />
+    <Content Include="Views\UserAdmin\Index_.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />

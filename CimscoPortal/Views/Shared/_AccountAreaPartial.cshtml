@@ -166,14 +166,14 @@
             <!--Avatar Area-->
             <li class="edit">
                 <a href="#" class="pull-left">Profile</a>
-                <a href="#" class="pull-right">Settings</a>
+                <a href="@Url.Action("","UserAdmin")" clas class="pull-right">Users and Settings</a>
             </li>
             @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
             {
-            @Html.AntiForgeryToken()
-            <li class="dropdown-footer">
-                <a href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
-            </li>
+                @Html.AntiForgeryToken()
+                <li class="dropdown-footer">
+                    <a href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
+                </li>
             }
         </ul>
         <!--/Login Area Dropdown-->

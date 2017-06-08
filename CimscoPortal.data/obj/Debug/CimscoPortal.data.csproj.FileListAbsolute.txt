@@ -33,7 +33,6 @@ C:\Users\atkin\Source\Repos\CimscoPortal\CimscoPortal.data\bin\Debug\EntityFrame
 C:\Users\atkin\Source\Repos\CimscoPortal\CimscoPortal.data\bin\Debug\EntityFramework.SqlServer.dll
 C:\Users\atkin\Source\Repos\CimscoPortal\CimscoPortal.data\bin\Debug\EntityFramework.xml
 C:\Users\atkin\Source\Repos\CimscoPortal\CimscoPortal.data\bin\Debug\EntityFramework.SqlServer.xml
-C:\Users\atkin\Source\Repos\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.Data.csprojResolveAssemblyReference.cache
 C:\Users\atkin\Source\Repos\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.Data.Migrations.Initial.resources
 C:\Users\atkin\Source\Repos\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.Data.Migrations.City.resources
 C:\Users\atkin\Source\Repos\CimscoPortal\CimscoPortal.data\obj\Debug\CimscoPortal.Data.Migrations.Customer.resources
