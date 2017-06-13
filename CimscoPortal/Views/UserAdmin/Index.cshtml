@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CimscoPortal.Data.Models.AspNetUser>
+﻿@model IEnumerable<CimscoPortal.Models.EditUserViewModel>
 @{
     ViewBag.Title = "User Accounts";
     Layout = "~/Views/Shared/_Default.cshtml";
@@ -127,9 +127,12 @@
                                     @Html.DisplayNameFor(model => model.UserName)
                                 </th>
                                 <th style="width:15%">Full Name</th>
-                                <th style="width:17%">Roles</th>
-                                <th style="width:25%">Company</th>
-                                <th style="width:18%">&nbsp;</th>
+                                <th style="width:15%">Roles</th>
+                                <th style="width:15%">Company</th>
+                                <th style="width:15%">Top Level</th>
+                                <th style="width:15%">User Level</th>
+                                <th style="width:15%">Parent Level</th>
+                                <th style="width:5%">&nbsp;</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -139,19 +142,20 @@
                                     <td>@Html.DisplayFor(modelItem => item.UserName)</td>
                                     <td>@item.FirstName @item.LastName</td>
                                     <td>
-                                        @foreach (var role in item.AspNetRoles)
-                                        { <p>@role.Name</p>}
+                                        @foreach (var role in item.RolesList)
+                                        { <p>@role.Text</p>}
                                     </td>
-                                    <td>@item.AspNetRoles.FirstOrDefault().Name</td>
-
                                     <td>
-                                        @{
-                                            var customer = item.Customers.FirstOrDefault();
-                                            if (customer != null)
-                                            {
-                                                <text>@customer.CustomerName</text>
-                                            }
-                                        }
+                                        @item.FirstName
+                                    </td>
+                                    <td>
+                                        @item.TopLevelName
+                                    </td>
+                                    <td>
+                                        @item.UserLevel
+                                    </td>
+                                    <td>
+                                        @item.ParentLevel
                                     </td>
                                     <td>
                                         @Html.Edit(Url.Action("Edit", new { id = item.Id }), User.IsInRole("Administrator"), new { @class = "btn btn-primary btn-xs" })

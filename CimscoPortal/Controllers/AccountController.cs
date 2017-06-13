@@ -536,7 +536,11 @@ namespace CimscoPortal.Controllers
                         "mitre10.nz@eek.nz",
                         "AHL.Hotels@eek.nz",
                         "QT.Wellington@eek.nz",
-                        "PSUpperHutt@eek.nz"
+                        "PSUpperHutt@eek.nz",
+                        "PS2UpperHutt@eek.nz",
+                        "MHWellington@eek.nz",
+                        "QT.Wellington2@eek.nz",
+                        "RG.Queenstown@eek.nz"
                 };
 
                 foreach (var _userName in _sampleUsers)

@@ -8,13 +8,13 @@ using System.Web.Mvc;
 
 namespace CimscoPortal.Models
 {
-    public class RoleViewModel
-    {
-        public string Id { get; set; }
-        [Required(AllowEmptyStrings = false)]
-        [Display(Name = "RoleName")]
-        public string Name { get; set; }
-    }
+    //public class RoleViewModel
+    //{
+    //    public string Id { get; set; }
+    //    [Required(AllowEmptyStrings = false)]
+    //    [Display(Name = "RoleName")]
+    //    public string Name { get; set; }
+    //}
 
     public class EditUserViewModel
     {
@@ -26,6 +26,9 @@ namespace CimscoPortal.Models
         public string Email { get; set; }
 
         public IEnumerable<SelectListItem> RolesList { get; set; }
+        //public virtual ICollection<Data.Models.AspNetRole> AspNetRoles { get; set; }
+
+        public string UserName { get; set; }
 
         public string FirstName { get; set; }
 
@@ -34,5 +37,11 @@ namespace CimscoPortal.Models
         public string Phone { get; set; }
 
         public string Mobile { get; set; }
+
+        // Define user position in current hierachy - allowing management on user entry screen
+        public string UserLevel { get; set; }
+        public string TopLevelName { get; set; }
+        public string ParentLevel { get; set; }
+
     }
 }

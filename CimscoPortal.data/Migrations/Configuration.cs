@@ -37,7 +37,11 @@ namespace CimscoPortal.Data.Migrations
             "mitre10.nz@eek.nz",
             "AHL.Hotels@eek.nz",
             "QT.Wellington@eek.nz",
-            "PSUpperHutt@eek.nz"
+            "PSUpperHutt@eek.nz",
+            "PS2UpperHutt@eek.nz",
+            "MHWellington@eek.nz",
+            "QT.Wellington2@eek.nz",
+            "RG.Queenstown@eek.nz"
         };
         // ==>**** Ref at AccountController.cs: This is where these accounts are created
 
@@ -143,19 +147,26 @@ namespace CimscoPortal.Data.Migrations
 
         private void LinkTestUsersToCustomerOrGroup(CimscoPortal.Data.Models.CimscoPortalContext context)
         {
-            LinkUsersCustomer("Masterton Supermarkets Ltd", new string[] { "masterton@eek.nz", "masterton2@eek.nz", "masterton.supermarkets@eek.nz" }, context);
-            //LinkUsersCustomer("Intercontinental Group", new string[] { "masterton@eek.nz" }, context);
-            LinkUsersCustomer("Nees Hardware Ltd", new string[] { "mitre10@eek.nz", "nees.hardware@eek.nz" }, context);
-            LinkUsersCustomer("QT Museum Wellington", new string[] { "QT.Wellington@eek.nz" }, context);
-
-            LinkUsersGroup("AHL Hotels (NZ) Limited", new string[] { "AHL.Hotels@eek.nz" }, context);
-
+            // TESTS
+            // A. Foodstuffs NI
             LinkUsersGroup("Foodstuffs North Island", new string[] { "foodstuffs@eek.nz", "foodstuffs2@eek.nz", "foodstuffs.ni@eek.nz" }, context);
-            LinkUsersGroup("Mitre 10 New Zealand", new string[] { "mitre10_2@eek.nz", "mitre10.nz@eek.nz" }, context);
+            LinkUsersCustomer("Masterton Supermarkets Ltd", new string[] { "masterton@eek.nz", "masterton2@eek.nz", "masterton.supermarkets@eek.nz" }, context);
+            LinkUserSite("PAK 'n SAVE Upper Hutt", new string[] { "PSUpperHutt@eek.nz", "PS2UpperHutt@eek.nz" }, context);
 
+            // B. AHL Hotels Ltd
+            LinkUsersGroup("AHL Hotels (NZ) Limited", new string[] { "AHL.Hotels@eek.nz" }, context);
+            LinkUsersCustomer("QT Museum Wellington", new string[] { "QT.Wellington@eek.nz" }, context);
+            LinkUsersCustomer("Rydges Queenstown", new string[] { "RG.Queenstown@eek.nz" }, context);
+            LinkUserSite("QT Museum Hotel Wellington", new string[] { "QT.Wellington2@eek.nz" }, context);
+
+            // Others
+            LinkUsersCustomer("Nees Hardware Ltd", new string[] { "mitre10@eek.nz", "nees.hardware@eek.nz" }, context);
+            LinkUsersGroup("Mitre 10 New Zealand", new string[] { "mitre10_2@eek.nz", "mitre10.nz@eek.nz" }, context);
             LinkUserSite("HP Lane St Data Center", "HP@eek.nz", context);
-            LinkUserSite("PAK 'n SAVE Upper Hutt", "PSUpperHutt@eek.nz", context);
+
             
+
+
         }
 
         //private static void AssignLogosToUserNames(CimscoPortal.Data.Models.CimscoPortalContext context)
@@ -441,6 +452,22 @@ namespace CimscoPortal.Data.Migrations
             _userName = context.AspNetUsers.Where(x => x.UserName == targetUser).FirstOrDefault();
             CimscoPortal.Data.Models.Site _site = context.Sites.Where(x => x.SiteName == targetSite).First();
             _site.Users.Add(_userName);
+        }
+
+        private void LinkUserSite(string targetSite, string[] targetUsers, CimscoPortal.Data.Models.CimscoPortalContext context)
+        {
+            AspNetUser[] _userList;
+            CimscoPortal.Data.Models.Site _site = context.Sites.Where(x => x.SiteName == targetSite).First();
+
+            foreach (string _entry in targetUsers)
+            {
+                _userList = context.AspNetUsers.Where(x => x.UserName == _entry).ToArray();
+                foreach (var _userId in _userList)
+                {
+                    _site.Users.Add(_userId);
+                }
+            }
+
         }
 
         private void CreateSites(CimscoPortal.Data.Models.CimscoPortalContext context, string[] sampleSites)

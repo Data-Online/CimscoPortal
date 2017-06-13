@@ -1675,6 +1675,7 @@
     <Content Include="Views\Portal\SharedPartials\_DatapointDetailList.cshtml" />
     <Content Include="Views\Portal\SharedPartials\_EmptyWidget_1.cshtml" />
     <Content Include="Views\UserAdmin\Index_.cshtml" />
+    <Content Include="Views\UserAdmin\Index - Copy.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />

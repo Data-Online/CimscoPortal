@@ -58,9 +58,9 @@ namespace CimscoPortal.Infrastructure
 
         //CimscoPortal.Models.InvoiceDetailViewModel GetCurrentMonth_(int _energyPointId);
 
-        System.Threading.Tasks.Task<List<CimscoPortal.Data.Models.AspNetUser>> GetUserByGroupOrCompany(string id);
-        System.Threading.Tasks.Task<List<CimscoPortal.Data.Models.AspNetUser>> GetUserByGroupOrCompany_(string userId);
-        System.Threading.Tasks.Task<UserHierachyViewModel> GetUserByGroupOrCompany__(string userId);
+        //System.Threading.Tasks.Task<List<CimscoPortal.Data.Models.AspNetUser>> GetUserByGroupOrCompany(string id);
+        //System.Threading.Tasks.Task<List<CimscoPortal.Data.Models.AspNetUser>> GetUserByGroupOrCompany_(string userId);
+        System.Threading.Tasks.Task<UserHierachyViewModel> GetUserByGroupOrCompany(string userId);
 
         void UpdateUser(EditUserViewModel model);
 

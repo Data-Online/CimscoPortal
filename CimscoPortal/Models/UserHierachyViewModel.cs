@@ -7,9 +7,9 @@ namespace CimscoPortal.Models
 
     public class UserHierachyViewModel
     {
-        public IList<AspNetUser> UserList { get; set; }
         public string CustomerGroupSiteName { get; set; }
         public string TopLevelName { get; set; }
+        public IList<EditUserViewModel> UserList { get; set; }
     }
 
 }

@@ -69,12 +69,9 @@ namespace CimscoPortal.Controllers
         // GET: /Users/
         public async Task<ActionResult> Index()
         {
-            //////            var repository = new CimscoPortal.Data.Models.CimscoPortalContext();
-            //////            IPortalService _portalService_ = new PortalService(repository);
-            ////////            return View(await _portalService.GetUserByGroupOrCompany(User.Identity.GetUserId()));
-            //////            return View(await _portalService_.GetUserByGroupOrCompany_(User.Identity.GetUserName()));
-            var result = await _portalService.GetUserByGroupOrCompany__(User.Identity.GetUserName());
-           return View(await _portalService.GetUserByGroupOrCompany_(User.Identity.GetUserName()));
+            // EditUserViewModel
+            var result = await _portalService.GetUserByGroupOrCompany(User.Identity.GetUserName());
+            return View(result.UserList);
         }
 
         //

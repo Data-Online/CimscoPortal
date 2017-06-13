@@ -2814,27 +2814,27 @@ namespace CimscoPortal.Services
 
         private CurrentUserLevel GetUserLevel(string userId)
         {
-            string _groupName = "", _customerName = "", _siteName = "";
+            //string _groupName = "", _customerName = "", _siteName = "";
             try
             {
                 var _userQuery = _repository.AspNetUsers.Where(s => s.Email == userId).FirstOrDefault();
-                _groupName = _userQuery.Groups.Where(s => s.GroupName != "Group not set").Select(g => g.GroupName).DefaultIfEmpty("").First();
-                var _groupNameZ = _userQuery.Groups.Where(s => s.GroupName != "Group not set").DefaultIfEmpty(new Group()).First();
-                if (!String.IsNullOrEmpty(_groupNameZ.GroupName))
+                //_groupName = _userQuery.Groups.Where(s => s.GroupName != "Group not set").Select(g => g.GroupName).DefaultIfEmpty("").First();
+                var _groupName = _userQuery.Groups.Where(s => s.GroupName != "Group not set").DefaultIfEmpty(new Group()).First();
+                if (!String.IsNullOrEmpty(_groupName.GroupName))
                 {
-                    return new CurrentUserLevel() { UserLevel = "Group", TopLevelName = _groupNameZ.GroupName, Id = _groupNameZ.GroupId };
+                    return new CurrentUserLevel() { UserLevel = "Group", TopLevelName = _groupName.GroupName, Id = _groupName.GroupId };
                 }
-                _customerName = _userQuery.Customers.Where(s => s.CustomerName != "Customer not set").Select(c => c.CustomerName).DefaultIfEmpty("").First();
-                var _customerNameZ = _userQuery.Customers.Where(s => s.CustomerName != "Customer not set").DefaultIfEmpty(new Customer()).First();
-                if (!String.IsNullOrEmpty(_customerName))
+                //_customerName = _userQuery.Customers.Where(s => s.CustomerName != "Customer not set").Select(c => c.CustomerName).DefaultIfEmpty("").First();
+                var _customerName = _userQuery.Customers.Where(s => s.CustomerName != "Customer not set").DefaultIfEmpty(new Customer()).First();
+                if (!String.IsNullOrEmpty(_customerName.CustomerName))
                 {
-                    return new CurrentUserLevel() { UserLevel = "Customer", TopLevelName = _customerNameZ.CustomerName, Id = _customerNameZ.CustomerId };
+                    return new CurrentUserLevel() { UserLevel = "Customer", TopLevelName = _customerName.CustomerName, Id = _customerName.CustomerId };
                 }
-                _siteName = _userQuery.Sites.Select(c => c.SiteName).DefaultIfEmpty("").First(); // Should only be the one entry
-                var _siteNameZ = _userQuery.Sites.DefaultIfEmpty(new Site()).First(); // Should only be the one entry
-                if (!String.IsNullOrEmpty(_siteName))
+                //_siteName = _userQuery.Sites.Select(c => c.SiteName).DefaultIfEmpty("").First(); // Should only be the one entry
+                var _siteName = _userQuery.Sites.DefaultIfEmpty(new Site()).First(); // Should only be the one entry
+                if (!String.IsNullOrEmpty(_siteName.SiteName))
                 {
-                    return new CurrentUserLevel() { UserLevel = "Site", TopLevelName = _siteNameZ.SiteName, Id = _siteNameZ.SiteId };
+                    return new CurrentUserLevel() { UserLevel = "Site", TopLevelName = _siteName.SiteName, Id = _siteName.SiteId };
                 }
             }
             catch (Exception ex)
@@ -2877,79 +2877,226 @@ namespace CimscoPortal.Services
             return _userRecordId;
         }
 
-        public async Task<List<AspNetUser>> GetUserByGroupOrCompany(string id)  // DELETE
-        {
-            var _customers = _repository.Customers.FirstOrDefault(f => f.Users.Any(w => w.Id == id));
-            if (_customers != null)
-            {
-                return await _repository.AspNetUsers.Where(w => w.Customers.Any(a => a.CustomerId == _customers.CustomerId)).ToListAsync();
-            }
-            else
-            {
-                return await _repository.AspNetUsers.Where(w => w.Groups.Any(f => f.GroupId == _repository.Groups.FirstOrDefault(g => g.Users.Any(a => a.Id == id)).GroupId)).ToListAsync();
-            }
-        }
-        public async Task<List<AspNetUser>> GetUserByGroupOrCompany_(string userId) // RENAME
-        {
-            var _userLevel = GetUserLevel(userId);
-            switch (_userLevel.UserLevel)
-            {
-                case "Customer":
-                    return await _repository.AspNetUsers.Where(w => w.Customers.Any(a => a.CustomerName == _userLevel.TopLevelName)).ToListAsync();
-                case "Group":
-                    return await _repository.AspNetUsers.Where(w => w.Groups.Any(f => f.GroupName == _userLevel.TopLevelName)).ToListAsync();
-                default:
-                    return new List<AspNetUser>();
-            }
-        }
+        //public async Task<List<AspNetUser>> GetUserByGroupOrCompany(string id)  // DELETE
+        //{
+        //    var _customers = _repository.Customers.FirstOrDefault(f => f.Users.Any(w => w.Id == id));
+        //    if (_customers != null)
+        //    {
+        //        return await _repository.AspNetUsers.Where(w => w.Customers.Any(a => a.CustomerId == _customers.CustomerId)).ToListAsync();
+        //    }
+        //    else
+        //    {
+        //        return await _repository.AspNetUsers.Where(w => w.Groups.Any(f => f.GroupId == _repository.Groups.FirstOrDefault(g => g.Users.Any(a => a.Id == id)).GroupId)).ToListAsync();
+        //    }
+        //}
+        //public async Task<List<AspNetUser>> GetUserByGroupOrCompany_(string userId) // RENAME
+        //{
+        //    var _userLevel = GetUserLevel(userId);
+        //    switch (_userLevel.UserLevel)
+        //    {
+        //        case "Customer":
+        //            return await _repository.AspNetUsers.Where(w => w.Customers.Any(a => a.CustomerName == _userLevel.TopLevelName)).ToListAsync();
+        //        case "Group":
+        //            return await _repository.AspNetUsers.Where(w => w.Groups.Any(f => f.GroupName == _userLevel.TopLevelName)).ToListAsync();
+        //        default:
+        //            return new List<AspNetUser>();
+        //    }
+        //}
 
-        public async Task<UserHierachyViewModel> GetUserByGroupOrCompany__(string userId) // RENAME
+
+
+        public async Task<UserHierachyViewModel> GetUserByGroupOrCompany(string userId) // RENAME
         {
-            // Need all users at current user level and below, by Group, Customer and Site levels
+            // Need all users at current user level and below, by Group, Customer or Site levels
 
             UserHierachyViewModel _result = new UserHierachyViewModel();
+            _result.UserList = new List<EditUserViewModel>();
+
             CurrentUserLevel _userLevel = GetUserLevel(userId);
+           // _result.UserList = AutoMapper.Mapper.Map<IList<AspNetUser>, IList<EditUserViewModel>>(await GetUserHierachyFromAssignedLevel(_userLevel));
 
-            // Assuming user level is group, then need an customer and site users also
-            IQueryable _userSelect = _repository.AspNetUsers.Where(s => s.Groups.Any(x => x.GroupId == _userLevel.Id));
+            _result.UserList = await GetUserHierachyFromAssignedLevel(_userLevel);
 
-            var _groupLevelUsers = await _userSelect.ToListAsync();
+            _result.TopLevelName = _userLevel.TopLevelName;
+            return _result;
 
-            // Customers under this group
-            var _customerIdList = _repository.Sites.Where(s => s.GroupId == _userLevel.Id).Select(x => x.CustomerId).ToList();
-            var _usersAtCustomerLevel = (from users in _repository.AspNetUsers where _customerIdList.Contains(users.Customers.Select(s => s.CustomerId).FirstOrDefault()) select users).ToList();
-
-
-                        // _repository.AspNetUsers.Where(w => _customerIdList.Contains(w.Customers.Select(s => s.CustomerId).ToList()));
+        }
 
 
-            //var _invoiceData = _repository.InvoiceSummaries.Where(s => AllSitesInCurrentSelection.Contains(s.SiteId) & s.PeriodEnd >= SelectFromDate & s.PeriodEnd <= SelectToDate);
+        #region User Hierachy private function to manage for display and edit functions
 
-                        //switch (_userLevel.UserLevel)
-                        //{
-                        //    case "Group":
-                        //        _userSelect = _repository.AspNetUsers.Where(s => s.Groups.Any(x => x.GroupName == _userLevel.TopLevelName));
-                        //        break;
-                        //    default:
-                        //        break;
-                        //}
 
-            var test = await _userSelect.ToListAsync();
 
-            switch (_userLevel.UserLevel)
+        //private async Task<IList<AspNetUser>> GetUserHierachyFromAssignedLevel(CurrentUserLevel userLevel)
+        //{
+        //    var zz = await UsersFromGroupLevel_(userLevel);
+        //    switch (userLevel.UserLevel)
+        //    {
+        //        case "Group":
+        //            return await UsersFromGroupLevel(userLevel);
+        //        case "Customer":
+        //            return await UsersFromCustomerLevel(userLevel.Id);
+        //        case "Site":
+        //            return await UsersFromSiteLevel(userLevel.Id);
+        //        default:
+        //            return new List<AspNetUser>();
+        //    }
+        //    //return new List<AspNetUser>();
+        //}
+
+        //private async Task<IList<AspNetUser>> UsersFromSiteLevel(int userId)
+        //{
+        //    // SITE LEVEL
+        //    //IQueryable _userSelect3 = _repository.AspNetUsers.Where(s => s.Sites.Any(x => x.SiteId == userId));
+        //    //var _usersAtSiteLevel3 = await _userSelect3.ToListAsync();
+        //    return await _repository.AspNetUsers.Where(s => s.Sites.Any(x => x.SiteId == userId)).ToListAsync();
+        //}
+
+        //private async Task<IList<AspNetUser>> UsersFromCustomerLevel(int userId)
+        //{
+        //    // CUSTOMER LEVEL
+        //    var _result = await _repository.AspNetUsers.Where(s => s.Customers.Any(x => x.CustomerId == userId)).ToListAsync();
+
+        //    var _siteIdList = await _repository.Sites.Where(s => s.CustomerId == userId).Select(x => x.CustomerId).ToListAsync();
+        //    var _usersAtSiteLevel = await (from users in _repository.AspNetUsers
+        //                                   where _siteIdList.Contains(users.Sites.Select(s => s.SiteId).FirstOrDefault())
+        //                                   select users).ToListAsync();
+
+        //    _result = _result.Concat(_usersAtSiteLevel).ToList();
+        //    return _result;
+        //}
+
+        //private async Task<IList<AspNetUser>> UsersFromGroupLevel(CurrentUserLevel userLevel)
+        //{
+        //    // GROUP LEVEL
+        //    var _result = await _repository.AspNetUsers.Where(s => s.Groups.Any(x => x.GroupId == userLevel.Id)).ToListAsync();
+        //    // MapUserData(_result, userLevel);
+
+        //    // Customers under this group
+        //    var _customerIdList = await _repository.Sites.Where(s => s.GroupId == userLevel.Id).Select(x => x.CustomerId).ToListAsync();
+        //    var _usersAtCustomerLevel = await (from users in _repository.AspNetUsers
+        //                                       where _customerIdList.Contains(users.Customers.Select(s => s.CustomerId).FirstOrDefault())
+        //                                       select users).ToListAsync();
+
+        //    // Sites 
+        //    var _siteIdList = await _repository.Sites.Where(s => s.GroupId == userLevel.Id).Select(x => x.SiteId).ToListAsync();
+        //    var _usersAtSiteLevel = await (from users in _repository.AspNetUsers
+        //                                   where _siteIdList.Contains(users.Sites.Select(s => s.SiteId).FirstOrDefault())
+        //                                   select users).ToListAsync();
+
+        //    _result = _result.Concat(_usersAtCustomerLevel).Concat(_usersAtSiteLevel).ToList();
+
+        //    var zz = AutoMapper.Mapper.Map<IList<AspNetUser>, IList<EditUserViewModel>>(_result);
+        //    foreach (var z in zz)
+        //    {
+        //        z.TopLevelName = "";
+        //        z.UserLevel = "";
+        //    }
+
+        //    return _result;
+        //}
+
+        private async Task<IList<EditUserViewModel>> GetUserHierachyFromAssignedLevel(CurrentUserLevel parentUserLevel)
+        {
+            switch (parentUserLevel.UserLevel)
             {
-                case "Customer":
-                    _result.UserList = await _repository.AspNetUsers.Where(w => w.Customers.Any(a => a.CustomerName == _userLevel.TopLevelName)).ToListAsync();
-
-                    _result.TopLevelName = _userLevel.TopLevelName;
-                    
-                    return _result;
                 case "Group":
-                    //return await _repository.AspNetUsers.Where(w => w.Groups.Any(f => f.GroupName == _userLevel.TopLevelName)).ToListAsync();
+                    return await UsersFromGroupLevel(parentUserLevel);
+                case "Customer":
+                    return await UsersFromCustomerLevel(parentUserLevel);
+                case "Site":
+                    return await UsersFromSiteLevel(parentUserLevel);
                 default:
-                    return _result;
+                    return new List<EditUserViewModel>();
             }
         }
+
+        private async Task<IList<EditUserViewModel>> UsersFromGroupLevel(CurrentUserLevel parentUserLevel)
+        {
+            IList<EditUserViewModel> _result = new List<EditUserViewModel>();
+
+            // GROUP LEVEL
+            var _userData = await _repository.AspNetUsers.Where(s => s.Groups.Any(x => x.GroupId == parentUserLevel.Id)).ToListAsync();
+            _result = MapUserData(_userData, parentUserLevel);
+
+            // Customers under this group
+            var _customerIdList = await _repository.Sites.Where(s => s.GroupId == parentUserLevel.Id).Select(x => x.CustomerId).ToListAsync();
+            _userData = await (from users in _repository.AspNetUsers
+                               where _customerIdList.Contains(users.Customers.Select(s => s.CustomerId).FirstOrDefault())
+                               select users).ToListAsync();
+            _result = _result.Concat(MapUserData(_userData, parentUserLevel.TopLevelName)).ToList();
+
+            // Sites 
+            var _siteIdList = await _repository.Sites.Where(s => s.GroupId == parentUserLevel.Id).Select(x => x.SiteId).ToListAsync();
+            _userData = await (from users in _repository.AspNetUsers
+                               where _siteIdList.Contains(users.Sites.Select(s => s.SiteId).FirstOrDefault())
+                               select users).ToListAsync();
+            _result = _result.Concat(MapUserData(_userData, parentUserLevel.TopLevelName)).ToList();
+
+            return _result;
+        }
+
+        private async Task<IList<EditUserViewModel>> UsersFromCustomerLevel(CurrentUserLevel parentUserLevel)
+        {
+            IList<EditUserViewModel> _result = new List<EditUserViewModel>();
+
+            // CUSTOMER LEVEL
+            var _userData = await _repository.AspNetUsers.Where(s => s.Customers.Any(x => x.CustomerId == parentUserLevel.Id)).ToListAsync();
+            _result = MapUserData(_userData, parentUserLevel);
+
+            var _siteIdList = await _repository.Sites.Where(s => s.CustomerId == parentUserLevel.Id).Select(x => x.SiteId).ToListAsync();
+            //var _siteIdList = await _repository.Sites.Where(s => s.CustomerId == userLevel.Id).Select(x => x.CustomerId).ToListAsync();
+            _userData = await (from users in _repository.AspNetUsers
+                                           where _siteIdList.Contains(users.Sites.Select(s => s.SiteId).FirstOrDefault())
+                                           select users).ToListAsync();
+            _result = _result.Concat(MapUserData(_userData, parentUserLevel.TopLevelName)).ToList();
+
+            return _result;
+        }
+
+        private async Task<IList<EditUserViewModel>> UsersFromSiteLevel(CurrentUserLevel userLevel)
+        {
+            IList<EditUserViewModel> _result = new List<EditUserViewModel>();
+            // SITE LEVEL
+            var _userData = await _repository.AspNetUsers.Where(s => s.Sites.Any(x => x.SiteId == userLevel.Id)).ToListAsync();
+            _result = MapUserData(_userData, userLevel);
+
+            return _result;
+        }
+
+        private IList<EditUserViewModel> MapUserData(List<AspNetUser> userData, CurrentUserLevel userLevel)
+        {
+            var _result = AutoMapper.Mapper.Map<IList<AspNetUser>, IList<EditUserViewModel>>(userData);
+            foreach (var _entry in _result)
+            {
+                _entry.TopLevelName = userLevel.TopLevelName;
+                _entry.UserLevel = userLevel.UserLevel;
+            }
+            return _result;
+        }
+
+        private IList<EditUserViewModel> MapUserData(List<AspNetUser> userData, string parentLevel)
+        {
+            var _result = AutoMapper.Mapper.Map<IList<AspNetUser>, IList<EditUserViewModel>>(userData);
+            foreach (var _entry in _result)
+            {
+                CurrentUserLevel userLevel = GetUserLevel(_entry.UserName);
+                _entry.TopLevelName = userLevel.TopLevelName;
+                _entry.UserLevel = userLevel.UserLevel;
+                if (userLevel.UserLevel == "Site")
+                {
+                    _entry.ParentLevel = _repository.Sites.Where(s => s.SiteId == userLevel.Id).Select(sel => sel.Customer.CustomerName).FirstOrDefault();
+                }
+                else
+                {
+                    _entry.ParentLevel = parentLevel;
+                }
+            }
+            return _result;
+        }
+
+
+        #endregion
 
         private static CommonInfoViewModel ProvideEmptyUserDetailsIfNull(CommonInfoViewModel _commonData)
         {

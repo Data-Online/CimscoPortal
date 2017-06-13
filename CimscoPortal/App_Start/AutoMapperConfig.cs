@@ -3,6 +3,7 @@ using CimscoPortal.Data.Models;
 using CimscoPortal.Extensions;
 using CimscoPortal.Models;
 using System;
+using System.Web.Mvc;
 
 namespace CimscoPortal.App_Start
 {
@@ -207,6 +208,17 @@ namespace CimscoPortal.App_Start
             Mapper.CreateMap<UserSettingsViewModel, UserSetting>();
 
             Mapper.CreateMap<GoogleChartViewModel, GoogleAnalsysData>();
+
+            Mapper.CreateMap<AspNetRole, SelectListItem>()
+                .ForMember(m => m.Text, opt => opt.MapFrom(s => s.Name))
+                .ForMember(m => m.Value, opt => opt.MapFrom(s => s.Name))
+                .ForMember(m => m.Selected, opt => opt.UseValue(true));
+
+            Mapper.CreateMap<AspNetUser, EditUserViewModel>()
+                .ForMember(m => m.RolesList, opt => opt.MapFrom(src => src.AspNetRoles))
+                .ForMember(m => m.TopLevelName, opt => opt.Ignore())
+                .ForMember(m => m.UserLevel, opt => opt.Ignore());
+
         }
 
 
